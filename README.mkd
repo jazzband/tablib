@@ -3,6 +3,13 @@ Tabbed -- Pythonic Tabular Datasets
 
 **Tabbed is under active documentation-driven development.**
 
+	_____         ______  ______        _________
+	__  /_______ ____  /_ ___  /_ _____ ______  /
+	_  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
+	/ /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
+	\__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
+
+
 Formats supported:
 
   - JSON
