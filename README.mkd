@@ -31,29 +31,36 @@ Populate fresh data files:
 		('George', 'Washington', 2.6),
 		('Henry', 'Ford', 2.3)
 	]
-
 	
 	data = tabbed.Data(*data, headers=headers)
 
-	# Save data, but no 
-	data.save()
-	# >>> Error: No filename has been established
-	
 	# Establish file location and save
 	data.save('test.xls')
 	
+
+Intelligently add new rows:
+
 	data.addRow('Bob', 'Dylan')
 	# >>> Warning: Existing column count is 3
 	
 	print data.headers
 	# >>> ('first_name', 'last_name', 'gpa')
 	
+
+Slice rows:	
+
 	print data[0:1]
 	# >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
 	
+
+Slice columns by header:
+
 	print data['first_name']
 	# >>> ['John', 'George', 'Henry']
 	
+
+Manipulate rows by index:
+
 	data.delRow(0)
 	print data[0:1]
 	# >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
@@ -61,5 +68,8 @@ Populate fresh data files:
 	# Update saved file
 	data.save()
 	
+
+Export to various formats:
+
 	# Save copy as CSV
 	data.export('backup.csv')
