@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
+<title>The xlwt Module</title>
+</head>
+<body>
+<h1>The xlwt Module</h1>
+<p /><p><b>A Python package for generating Microsoft Excel &#8482; spreadsheet files.
+</b></p>
+
+<h2>General information</h2>
+
+<h3>State of Documentation</h3>
+
+<p>
+This documentation is currently incomplete. There may be methods and
+classes not included and any item marked with a <em
+style="color:red;">[NC]</em> is not complete and may have further
+parameters, methods, attributes and functionality that are not
+documented. In these cases, you'll have to refer to the source if the
+documentation provided is insufficient.
+</p>
+
+</p>
+
+<h2>Module Contents <em style="color:red;">[NC]</em></h2>
+<dl>
+  <dt><b>easyxf</b> (function)</dt>
+  <dd>
+  <p>
+  This function is used to create and configure XFStyle objects
+  for use with (for example) the Worksheet.write method.
+  </p>
+  <dl>
+    <dt><i>strg_to_parse</i></dt>
+    <dd>
+      <p>
+      	A string to be parsed to obtain attribute values for Alignment, Borders, Font,
+      	Pattern and Protection objects. Refer to the examples
+      	in the file .../examples/xlwt_easyxf_simple_demo.py and to the xf_dict
+      	dictionary in Style.py. Various synonyms including color/colour, center/centre and gray/grey
+      	are allowed. Case is irrelevant (except maybe in font names). '-' may be used instead
+      	of '_'.<br />
+		Example: "font: bold on; align: wrap on, vert centre, horiz center"
+      </p>
+    </dd>
+    <dt><i>num_format_str</i></dt>
+    <dd>
+      <p>
+		To get the "number format string" of an existing cell whose format you want to reproduce,
+		select the cell and click on Format/Cells/Number/Custom. Otherwise, refer to Excel help.<br />
+		Examples: "#,##0.00", "dd/mm/yyyy"
+      </p>
+    </dd>
+    <dt>Returns:</dt>
+    <dd>
+      An object of the XFstyle class
+    </dd>
+  </dl>
+  <br />
+
+  </dd>
+
+  <dt><b>Workbook</b> (class)  [<a href='#xlwt.Workbook-class'>#</a>]</dt>
+  <dd>
+    <p>The class to instantiate to create a workbook</p>
+    <p>For more information about this class, see <a href='#xlwt.Workbook-class'><i>The Workbook Class</i></a>.</p>
+  </dd>
+  <dt><b>Worksheet</b> (class)  [<a href='#xlwt.Worksheet-class'>#</a>]</dt>
+  <dd>
+    <p>A class to represent the contents of a sheet in a workbook.</p>
+    <p>For more information about this class, see <a href='#xlwt.Worksheet-class'><i>The Worksheet Class</i></a>.</p>
+  </dd>
+</dl>
+
+<h2><a id='xlwt.Workbook-class' name='xlwt.Workbook-class'>The Workbook Class</a><em style="color:red;">[NC]</em></h2>
+<dl>
+<dt><b>Workbook(encoding='ascii',style_compression=0)</b> (class) [<a href='#xlwt.Workbook-class'>#</a>]</dt>
+<dd>
+  <p>
+  This is a class representing a workbook and all its contents.
+  When creating Excel files with xlwt, you will normally start by
+  instantiating an object of this class.
+  </p>
+  <dl>
+    <dt><i>encoding</i></dt>
+    <dd>
+      <em style="color:red;">[NC]</em>
+    </dd>
+    <dt><i>style_compression</i></dt>
+    <dd>
+      <em style="color:red;">[NC]</em>
+    </dd>
+    <dt>Returns:</dt>
+    <dd>
+      An object of the <a href="#xlwt.Workbook-class">Workbook</a> class
+    </dd>
+  </dl>
+  <br />
+</dd>
+<dt><a id='xlwt.Workbook.add_sheet-method' name='xlwt.Workbook.add_sheet-method'><b>add_sheet(sheetname)</b></a> [<a href='#xlwt.Workbook.add_sheet-method'>#</a>]</dt>
+<dd>
+  <p>
+  This method is used to create Worksheets in a Workbook.
+  </p>
+  <dl>
+    <dt><i>sheetname</i></dt>
+    <dd>
+      The name to use for this sheet, as it will appear in the tabs at
+      the bottom of the Excel application.
+    </dd>
+    <dt>Returns:</dt>
+    <dd>
+      An object of the <a href="#xlwt.Worksheet-class">Worksheet</a> class
+    </dd>
+  </dl>
+  <br />
+</dd>
+<dt><a id='xlwt.Workbook.save-method' name='xlwt.Workbook.save-method'><b>save(filename_or_stream)</b></a> [<a href='#xlwt.Workbook.save-method'>#</a>]</dt>
+<dd>
+  <p>
+  This method is used to save Workbook to a file in native Excel format.
+  </p>
+  <dl>
+    <dt><i>filename_or_stream</i></dt>
+    <dd>
+      <p>
+      This can be a string containing a filename of the file, in which case
+      the excel file is saved to disk using the name provided.
+      </p>
+      <p>
+      It can also be a stream object with a write method, such as a
+      StringIO, in which case the data for the excel file is written
+      to the stream.
+      </p>
+    </dd>
+  </dl>
+  <br />
+</dd>
+</dl>
+
+<h2><a id='xlwt.Worksheet-class' name='xlwt.Worksheet-class'>The Worksheet Class</a><em style="color:red;">[NC]</em></h2>
+<dl>
+<dt><b>Worksheet(sheetname, parent_book)</b> (class) [<a href='#xlwt.Worksheet-class'>#</a>]</dt>
+<dd>
+  <p>
+  This is a class representing the contents of a sheet in a workbook.
+  </p>
+  <p>
+   WARNING: You don't normally create instances of this class
+   yourself. They are returned from calls to <a href="#xlwt.Workbook.add_sheet-method">Workbook.add_sheet</a>
+  </p>
+</dd>
+<dt><a id='xlwt.Worksheet.write-method'
+name='xlwt.Worksheet.write-method'><b>write(r, c, label="", style=Style.default_style)</b></a> [<a href='#xlwt.Worksheet.write-method'>#</a>]</dt>
+<dd>
+  <p>
+  This method is used to write a cell to a Worksheet..
+  </p>
+  <dl>
+    <dt><i>r</i></dt>
+    <dd>
+      	The zero-relative number of the row in the worksheet to which the cell should be written.
+    </dd>
+    <dt><i>c</i></dt>
+    <dd>
+      	The zero-relative number of the column in the worksheet to which the cell should be written.
+    </dd>
+    <dt><i>label</i></dt>
+    <dd>
+    	The data value to be written.
+    	An int, long, or decimal.Decimal instance is converted to float.
+    	A unicode instance is written as is.
+    	A str instance is converted to unicode using the encoding (default: 'ascii') specified
+    	when the Workbook instance was created.
+    	A datetime.datetime, datetime.date, or datetime.time instance is converted into Excel date format
+    	(a float representing the number of days since (typically) 1899-12-31T00:00:00,
+    	under the pretence that 1900 was a leap year).
+    	A bool instance will show up as TRUE or FALSE in Excel.
+    	None causes the cell to be blank -- no data, only formatting.
+    	An xlwt.Formula instance causes an Excel formula to be written.
+    	<em style="color:red;">[NC]</em>
+    </dd>
+    <dt><i>style</i></dt>
+    <dd>
+    	A style -- also known as an XF (extended format) -- is an XFStyle object, which encapsulates
+    	the formatting applied to the cell and its contents. XFStyle objects are best set up using the
+    	<i>easyxf</i> function. They may also be set up by setting attributes in
+    	Alignment, Borders, Pattern, Font and Protection objects
+    	then setting those objects and a format string as attributes of an XFStyle object.
+    	<em style="color:red;">[NC]</em>
+    </dd>
+  </dl>
+  <br />
+</dd>
+</dl>
+
+</body></html>
