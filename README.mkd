@@ -1,0 +1,65 @@
+Tabbed -- Pythonic Tabular Datasets
+===================================
+
+**Tabbed is under active documentation-driven development.**
+
+Formats supported:
+
+  - JSON
+  - YAML
+  - Excel
+  - CSV
+  - CDL
+
+Please note that this list _purposefully_ excludes XML. And it always will.
+
+
+Features
+--------
+
+Convert data formats:
+
+	tabbed.import(filename='data.csv').export('data.json')
+	
+	
+Populate fresh data files:
+	
+	headers = ('first_name', 'last_name', 'gpa')
+
+	data = [
+		('John', 'Adams', 4.0),
+		('George', 'Washington', 2.6),
+		('Henry', 'Ford', 2.3)
+	]
+
+	
+	data = tabbed.Data(*data, headers=headers)
+
+	# Save data, but no 
+	data.save()
+	# >>> Error: No filename has been established
+	
+	# Establish file location and save
+	data.save('test.xls')
+	
+	data.addRow('Bob', 'Dylan')
+	# >>> Warning: Existing column count is 3
+	
+	print data.headers
+	# >>> ('first_name', 'last_name', 'gpa')
+	
+	print data[0:1]
+	# >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
+	
+	print data['first_name']
+	# >>> ['John', 'George', 'Henry']
+	
+	data.delRow(0)
+	print data[0:1]
+	# >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
+	
+	# Update saved file
+	data.save()
+	
+	# Save copy as CSV
+	data.export('backup.csv')
