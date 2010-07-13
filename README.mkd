@@ -16,6 +16,7 @@ Formats supported:
   - Excel
   - CSV
   - CDL
+  - HTML
 
 Please note that tabbed _purposefully_ excludes XML support. It always will.
 
