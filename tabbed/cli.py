@@ -1,26 +1,32 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+""" Tabbed CLI Inteface Application
+"""
+
 import io
 import sys
 
 from helpers import *
 import tabbed.core
 
-
 from packages import opster
 
-opts = [('v', 'version', False, 'Report tabbed version')]
 
-formats = ('json', 'yaml', 'xls', 'csv', 'html')
+FORMATS = ('json', 'yaml', 'xls', 'csv', 'html')
 
-for format in formats:
+opts = []
+
+opts.append(('v', 'version', False, 'Report tabbed version'))
+
+for format in FORMATS:
 	opts.append(('', format, False, 'Output to %s' % (format.upper())))
+
 
 
 @opster.command(options=opts, usage='[FILE] [--FORMAT | FILE]')
 def start(in_file=None, out_file=None, **opts):
-	""" Converts dataset formats """
+	"""Covertly convert dataset formats"""
 	
 	opts = Object(**opts)
 	
@@ -35,29 +41,26 @@ def start(in_file=None, out_file=None, **opts):
 	
 	elif in_file:
 		
-		in_file = io.open(in_file, 'r')
-		
-		print in_file.read()
 		try:
-			in_file = io.open(in_file)
+			in_file = io.open(in_file, 'r')
 		except Exception, e:
 			print(' %s cannot be read.' % in_file)
 			exit(65)
 		
-		
 		file_ext = in_file.name.split('.')[-1]
 		
-		if file_ext.lower() in formats:
+		if file_ext.lower() in FORMATS:
 			setattr(opts, file_ext, True)
 		else:
 			print('Import format not supported.')
 			exit(65)
 	else:
 		print('Please provide input.')
+		exit(65)
 		
 
 	
-	_formats_sum = sum(opts[f] for f in formats)
+	_formats_sum = sum(opts[f] for f in FORMATS)
 	
 	# Multiple output formats given
 	if _formats_sum > 1:
