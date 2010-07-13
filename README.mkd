@@ -26,14 +26,18 @@ Please note that tabbed _purposefully_ excludes XML support. It always will.
 Features
 --------
 
-Convert data formats via API:
+Convert datafile formats via API:
 
 	tabbed.import(filename='data.csv').export('data.json')
 
 
-Convert data formats via CLI:
+Convert datafile formats via CLI:
 
 	tabbed data.csv data.json
+	
+Convert data formats via CLI pipe interface:
+	
+	cat data.csv | tabbed --to csv | gist -p
 	
 	
 Populate fresh data files:
