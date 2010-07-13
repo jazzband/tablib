@@ -1,6 +1,3 @@
-Tabbed -- Pythonic Tabular Datasets
-===================================
-
 	_____         ______  ______        _________
 	__  /_______ ____  /_ ___  /_ _____ ______  /
 	_  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
@@ -8,6 +5,8 @@ Tabbed -- Pythonic Tabular Datasets
 	\__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
 
 **Tabbed is under active documentation-driven development.**
+
+Tabbed is a format-agnostic tabular dataset library, written in Python. It is a full python module which doubles as a CLI application for quick dataset conversions. 
 
 Formats supported:
 
