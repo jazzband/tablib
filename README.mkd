@@ -37,7 +37,7 @@ Convert datafile formats via CLI:
 	
 Convert data formats via CLI pipe interface:
 	
-	cat data.csv | tabbed --to csv | gist -p
+	curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
 	
 	
 Populate fresh data files:
