@@ -8,6 +8,7 @@ class Object(object):
 	
 	def __init__(self, **entries): 
 		self.__dict__.update(entries)
+		
 	def __getitem__(self, key):
 		return getattr(self, key)
 
