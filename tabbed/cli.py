@@ -20,4 +20,4 @@ def start(**opts):
 	
 	print opts
 	
-	opts = Object(**opts
+	opts = Object(**opts)
