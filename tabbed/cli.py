@@ -32,7 +32,7 @@ def start(in_file=None, out_file=None, **opts):
 	
 	if opts.version:
 		print('Tabbed, Ver. %s' % tabbed.core.__version__)
-		exit(0)
+		sys.sys.exit(0)
 	
 	stdin = piped()
 	
@@ -45,7 +45,7 @@ def start(in_file=None, out_file=None, **opts):
 			in_file = io.open(in_file, 'r')
 		except Exception, e:
 			print(' %s cannot be read.' % in_file)
-			exit(65)
+			sys.exit(65)
 		
 		file_ext = in_file.name.split('.')[-1]
 		
@@ -53,10 +53,10 @@ def start(in_file=None, out_file=None, **opts):
 			setattr(opts, file_ext, True)
 		else:
 			print('Import format not supported.')
-			exit(65)
+			sys.exit(65)
 	else:
 		print('Please provide input.')
-		exit(65)
+		sys.exit(65)
 		
 
 	
@@ -65,12 +65,12 @@ def start(in_file=None, out_file=None, **opts):
 	# Multiple output formats given
 	if _formats_sum > 1:
 		print('Please specify a single output format.')
-		exit(64)
+		sys.exit(64)
 		
 	# No output formats given
 	elif _formats_sum < 1:
 		print('Please specify an output format.')
-		exit(64)
+		sys.exit(64)
 	
 	
 	# fetch options.formats list
