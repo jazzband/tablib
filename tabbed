@@ -6,9 +6,9 @@ Tabbed
 Copyright (c) 2010 Kenneth Reitz. MIT License.
 """
 
-import tabbed.cli
+import tablib.cli
 
 
 if __name__ == '__main__':
 	
-	tabbed.cli.start()
+	tablib.cli.start()
