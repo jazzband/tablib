@@ -1,5 +1,7 @@
 **Tabbed is under active documentation-driven development.**
 
+
+::
 	_____         ______  ______        _________
 	__  /_______ ____  /_ ___  /_ _____ ______  /
 	_  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
@@ -13,11 +15,11 @@ dataset conversions.
 
 Formats supported:
 
-  - JSON
-  - YAML
-  - Excel
-  - CSV
-  - HTML
+- JSON
+- YAML
+- Excel
+- CSV
+- HTML
 
 Please note that tabbed _purposefully_ excludes XML support. It always will.
 
@@ -25,21 +27,21 @@ Please note that tabbed _purposefully_ excludes XML support. It always will.
 Features
 --------
 
-Convert datafile formats via API:
+Convert datafile formats via API: ::
 
 	tabbed.import(filename='data.csv').export('data.json')
 
 
-Convert datafile formats via CLI:
+Convert datafile formats via CLI: ::
 
-	tabbed data.csv data.json
+	$ tabbed data.csv data.json
 	
-Convert data formats via CLI pipe interface:
+Convert data formats via CLI pipe interface: ::
 	
-	curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
+	$ curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
 	
 	
-Populate fresh data files:
+Populate fresh data files: ::
 	
 	headers = ('first_name', 'last_name', 'gpa')
 
@@ -55,7 +57,7 @@ Populate fresh data files:
 	data.save('test.xls')
 	
 
-Intelligently add new rows:
+Intelligently add new rows: ::
 
 	data.addRow('Bob', 'Dylan')
 	# >>> Warning: Existing column count is 3
@@ -64,19 +66,19 @@ Intelligently add new rows:
 	# >>> ('first_name', 'last_name', 'gpa')
 	
 
-Slice rows:	
+Slice rows:	 ::
 
 	print data[0:1]
 	# >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
 	
 
-Slice columns by header:
+Slice columns by header: ::
 
 	print data['first_name']
 	# >>> ['John', 'George', 'Henry']
 	
 
-Manipulate rows by index:
+Manipulate rows by index: ::
 
 	data.delRow(0)
 	print data[0:1]
@@ -86,7 +88,7 @@ Manipulate rows by index:
 	data.save()
 	
 
-Export to various formats:
+Export to various formats: ::
 
 	# Save copy as CSV
 	data.export('backup.csv')
