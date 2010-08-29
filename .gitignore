@@ -11,6 +11,5 @@ dist/*
 profile
 
 # pycharm noise
-.idea.idea
-.idea/dictionaries
-.idea/workspace.xml
+.idea
+.idea/*
