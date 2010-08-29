@@ -1,0 +1,16 @@
+# application builds
+build/*
+dist/*
+
+# python skin
+.pyc
+.pyo
+
+# osx noise
+.DS_Store
+profile
+
+# pycharm noise
+.idea.idea
+.idea/dictionaries
+.idea/workspace.xml
