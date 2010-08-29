@@ -8,7 +8,7 @@ import io
 import sys
 
 from helpers import *
-import tabbed.core
+import tablib.core
 
 from packages import opster
 
