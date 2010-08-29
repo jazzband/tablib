@@ -13,7 +13,26 @@ __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
 
-def cheese():
+def importer():
 	"""docstring for import"""
-	pass
+
+
+
+class Data(object):
+	"""test"""
+	def __init__(self):
+		pass
+		self.headers = None
+
+
+		
+
+	def add_row(self, index=None):
+		pass
+
+	def del_row(self):
+		pass
+
+	def save(self):
+		pass
 
