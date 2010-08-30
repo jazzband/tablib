@@ -8,10 +8,13 @@
 
 
 import csv
+import os
 
 from helpers import *
 from packages import simplejson as json
 from packages import xlwt
+from packages import yaml
+
 
 
 __all__ = ['Dataset', 'source']
@@ -38,6 +41,10 @@ class Dataset(object):
 		except KeyError, why:
 			self.headers = None
 
+		try:
+		    self.title = kwargs['title']
+		except KeyError, why:
+			self.title = None
 			
 	def __len__(self):
 		return self.height
@@ -64,7 +71,10 @@ class Dataset(object):
 
 		
 	def __repr__(self):
-		return '<dataset object>' 
+		if self.title:
+			return '<%s dataset>' % (self.title.lower())
+		else:
+			return '<dataset object>'
 
 
 	def validate(self, row=None, safety=False):
@@ -84,7 +94,7 @@ class Dataset(object):
 	
 	def digest(self):
 		"""Retruns digest information of dataset in human-readable format."""
-		pass
+		'Height: Width: '
 
 
 	@property
