@@ -103,10 +103,14 @@ class Dataset(object):
 			return False
 
 
-	def _package(self):
+	def _package(self, dicts=True):
 		"""Packages Dataset into lists of dictionaries for transmission."""
+
 		if self.headers:
-			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+			if dicts:
+				data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+			else:
+				data = [list(self.headers)] + list(self._data)
 		else:
 			data = [list(row) for row in self._data]
 
@@ -145,10 +149,7 @@ class Dataset(object):
 		stream = cStringIO.StringIO()
 		_csv = csv.writer(stream)
 
-		if self.headers:
-		    _csv.writerow(self.headers)
-
-		for row in self._data:
+		for row in self._package(dicts=False):
 			_csv.writerow(row)
 			
 		return stream.getvalue()
@@ -157,9 +158,20 @@ class Dataset(object):
 	@property
 	def xls(self):
 		"""Returns XLS representation of Dataset."""
-		# TODO: XLS Export
-		pass
+		stream = cStringIO.StringIO()
+		
+		wb = xlwt.Workbook()
+		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
+#		for row in self._package(dicts=False):
+		for i, row in enumerate(self._package(dicts=False)):
+			for j, col in enumerate(row):
+				ws.write(i, j, col)
 
+#		wb.save('elllo')
+		doc = xlwt.CompoundDoc.XlsDoc()
+		doc.save(stream, wb.get_biff_data())
+
+		return stream.getvalue() 
 
 	def append(self, row, index=None):
 		# todo: impliment index
