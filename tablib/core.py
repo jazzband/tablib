@@ -25,8 +25,10 @@ class Dataset(object):
 	"""Amazing Tabular Dataset object. """
 
 	def __init__(self, *args, **kwargs):
+		self._data = None
+		self._filename = None
 
-		self._data = [].append(args)
+		self._data = list(args)
 
 		try:
 		    self.headers = kwargs['headers']
@@ -36,7 +38,6 @@ class Dataset(object):
 			
 	def __len__(self):
 		return self.height
-
 
 	def __getitem__(self, key):
 
@@ -94,9 +95,9 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		
 		try:
-		    len(self._data[0])
-		except Exception, why:
-		    raise why
+		    return len(self._data[0])
+		except KeyError, why:
+		    return 0
 			
 
 	@property
@@ -121,18 +122,26 @@ class Dataset(object):
 
 
 	def append(self, row, index=None):
-		pass
+		# todo: impliment index
+		self.validate(row)
+		self._data.append(row)
 
-	def del_row(self):
+	def sort_by(self, key):
+		"""Returns datastet sorted by given key"""
+		# todo: accpept string if headers, or index nubmer
 		pass
 
 	def save(self):
 		pass
 
+		# note export format
+		# open file, save the bitch
+
 class InvalidDimensions(Exception):
 	"Invalid size"
 
 
-def source():
+def source(io_string=None, filename=None):
 	"""docstring for import"""
+	#open by filename
 	pass
