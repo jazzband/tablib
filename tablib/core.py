@@ -36,7 +36,7 @@ FILE_EXTENTIONS = ('csv', 'json', 'xls', 'yaml')
 
 
 class Dataset(object):
-	"""Amazing Tabular Dataset object. """
+	"""Epic Tabular-Dataset object. """
 
 	def __init__(self, *args, **kwargs):
 		self._data = None
@@ -55,10 +55,12 @@ class Dataset(object):
 		    self.title = kwargs['title']
 		except KeyError, why:
 			self.title = None
+
 			
 	def __len__(self):
 		return self.height
 
+		
 	def __getitem__(self, key):
 
 		if is_string(key):
