@@ -72,7 +72,7 @@ class Dataset(object):
 
 
 	def __setitem__(self, key, value):
-		self.validate(value)
+		self._validate(value)
 		self._data[key] = tuple(value)
 
 
@@ -87,7 +87,7 @@ class Dataset(object):
 			return '<dataset object>'
 
 
-	def validate(self, row=None, safety=False):
+	def _validate(self, row=None, safety=False):
 		"""Assures size of every row in dataset is of proper proportions."""
 		if row:
 			is_valid = (len(row) == self.width) if self.width else True
@@ -101,22 +101,16 @@ class Dataset(object):
 			if not safety:
 				raise InvalidDimensions
 			return False
-	
-	def digest(self):
-		"""Retruns digest information of dataset in human-readable format."""
 
-		digest_text = ''
-		
-		if self.title:
-			digest_text += 'Title: %s \n' % (self.title)
+
+	def _package(self):
+		"""Packages Dataset into lists of dictionaries for transmission."""
 		if self.headers:
-			digest_text += 'Headers: %s\n' % [self.headers]
+			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+		else:
+			data = [list(row) for row in self._data]
 
-		digest_text += 'Height: %s\nWidth: %s\n' % (self.height, self.width)
-
-
-		return digest_text
-
+		return data
 
 	@property
 	def height(self):
@@ -134,35 +128,25 @@ class Dataset(object):
 		    return 0
 
 
-	def _package(self):
-		"""Packages Dataset into lists of dictionaries for transmission."""
-		if self.headers:
-			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
-		else:
-			data = [list(row) for row in self._data]
 
-		return data
 
 		
 	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
-		data = []
-
 		return json.dumps(self._package())
 
 		
 	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
-
 		return yaml.dump(self._package())
 
 
 	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
-		# TODO: CSV Export
+		
 		pass
 
 
@@ -175,12 +159,12 @@ class Dataset(object):
 
 	def append(self, row, index=None):
 		# todo: impliment index
-		self.validate(row)
+		self._validate(row)
 		self._data.append(tuple(row))
 
 		
 	def sort_by(self, key):
-		"""SORTS datastet by given key"""
+		"""Sorts datastet by given key"""
 		# todo: accpept string if headers, or index nubmer
 		pass
 
