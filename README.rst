@@ -24,7 +24,7 @@ Formats supported:
 - CSV
 .. - HTML
 
-At this time, Tabbed supports the export of it's powerful Dataset object instances into any of the above formats. Import is underway.
+At this time, Tabbed supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
 Please note that tabbed *purposefully* excludes XML support. It always will.
 
