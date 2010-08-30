@@ -14,4 +14,4 @@ print data[1]
 data.append(['kenneth' ,'reitz', 4.3])
 
 
-print data._data
+print data.digest()

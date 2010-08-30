@@ -13,9 +13,13 @@ import os
 from helpers import *
 from packages import simplejson as json
 from packages import xlwt
-from packages import yaml
 
+try:
+    import yaml
+except ImportError, why:
+    from packages import yaml
 
+	
 
 __all__ = ['Dataset', 'source']
 
@@ -26,13 +30,18 @@ __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
 
+FILE_EXTENTIONS = ('csv', 'json', 'xls', 'yaml')
+
+
 
 class Dataset(object):
 	"""Amazing Tabular Dataset object. """
 
 	def __init__(self, *args, **kwargs):
 		self._data = None
-		self._filename = None
+		self._saved_file = None
+		self._saved_format = None
+
 
 		self._data = list(args)
 
@@ -94,7 +103,18 @@ class Dataset(object):
 	
 	def digest(self):
 		"""Retruns digest information of dataset in human-readable format."""
-		'Height: Width: '
+
+		digest_text = ''
+		
+		if self.title:
+			digest_text += 'Title: %s \n' % (self.title)
+		if self.headers:
+			digest_text += 'Headers: %s\n' % [self.headers]
+
+		digest_text += 'Height: %s\nWidth: %s\n' % (self.height, self.width)
+
+
+		return digest_text
 
 
 	@property
@@ -149,16 +169,30 @@ class Dataset(object):
 		pass
 
 
-	def save(self):
-		pass
+	def save(self, filename=None, format=None):
+
+		if not format:
+			# set format from filename
+#			format = filename
+			pass
+			
+		if format not in FILE_EXTENTIONS:
+			raise UnsupportedFormat
+			
 
 		# note export format
 		# open file, save the bitch
+
 
 class InvalidDimensions(Exception):
 	"Invalid size"
 
 
+class UnsupportedFormat(NotImplemented):
+	"Format is not supported"
+
+
+	
 def source(io_string=None, filename=None):
 	"""docstring for import"""
 	#open by filename
