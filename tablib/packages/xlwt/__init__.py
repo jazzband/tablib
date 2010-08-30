@@ -14,3 +14,5 @@ from Column import Column
 from Formatting import Font, Alignment, Borders, Pattern, Protection
 from Style import XFStyle, easyxf
 from ExcelFormula import *
+
+import CompoundDoc
