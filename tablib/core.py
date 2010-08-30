@@ -132,27 +132,31 @@ class Dataset(object):
 		    return len(self._data[0])
 		except KeyError, why:
 		    return 0
-			
 
+
+	def _package(self):
+		"""Packages Dataset into lists of dictionaries for transmission."""
+		if self.headers:
+			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+		else:
+			data = [list(row) for row in self._data]
+
+		return data
+
+		
 	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
 		data = []
-		
-		if self.headers:
-#			for (i, header) in enumerate()
-			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
-		else:
-			data = self._data
 
-		return json.dumps(data)
+		return json.dumps(self._package())
 
 		
 	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
-		# TODO: YAML Export
-		pass
+
+		return yaml.dump(self._package())
 
 
 	@property
