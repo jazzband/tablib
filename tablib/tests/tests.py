@@ -16,8 +16,11 @@ data.append(['kenneth' ,'reitz', 4.3])
 
 #print data.digest()
 
-print data.json
+#print data.yaml
+#print data.json
 
 data.headers = None
-
-print data.json
+#print data.csv
+print data.xls
+#print data.yaml
+#print data.json
