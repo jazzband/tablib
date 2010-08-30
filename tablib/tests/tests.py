@@ -20,7 +20,7 @@ data.append(['kenneth' ,'reitz', 4.3])
 #print data.json
 
 data.headers = None
-#print data.csv
-print len(data.xls)
-#print data.yaml
-#print data.json
+print data.csv
+#print len(data.xls)
+print data.yaml
+print data.json

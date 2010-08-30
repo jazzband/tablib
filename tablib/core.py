@@ -171,12 +171,16 @@ class Dataset(object):
 		return stream.getvalue()
 
 		
-	def append(self, row, index=None):
-		# todo: impliment index
+	def append(self, row):
+		"""Adds a row to the end of Dataset"""
 		self._validate(row)
 		self._data.append(tuple(row))
 
-		
+	def index(self, i, row):
+		"""Inserts a row at given position in Dataset"""
+		self._validate(row)
+		self._data.insert(i, tuple(row))
+
 	def sort_by(self, key):
 		"""Sorts datastet by given key"""
 		# todo: accpept string if headers, or index nubmer
@@ -186,9 +190,7 @@ class Dataset(object):
 	def save(self, filename=None, format=None):
 		"""Saves dataset"""
 		if not format:
-			# set format from filename
-#			format = filename
-			pass
+			format = filename.split('.')[-1].lower()  # set format from filename
 			
 		if format not in FILE_EXTENSIONS:
 			raise UnsupportedFormat
