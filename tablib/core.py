@@ -167,9 +167,7 @@ class Dataset(object):
 			for j, col in enumerate(row):
 				ws.write(i, j, col)
 
-		doc = xlwt.CompoundDoc.XlsDoc()
-		doc.save(stream, wb.get_biff_data())
-
+		wb.save(stream)
 		return stream.getvalue()
 
 		
