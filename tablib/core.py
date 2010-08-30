@@ -11,8 +11,8 @@ import csv
 
 
 
-__version__ = '0.0.2'
-__build__ = '0x000002'
+__version__ = '0.0.3'
+__build__ = '0x000003'
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
