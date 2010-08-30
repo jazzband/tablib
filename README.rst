@@ -54,7 +54,7 @@ Populate fresh data files: ::
         ('Henry', 'Ford', 2.3)
     ]
     
-    data = tablib.Data(*data, headers=headers)
+    data = tablib.Dataset(*data, headers=headers)
 
     # Establish file location and save
     data.save('test.xls')
@@ -83,7 +83,7 @@ Slice columns by header: ::
 
 Manipulate rows by index: ::
 
-    data.delRow(0)
+    del data[0]
     print data[0:1]
     # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
     
