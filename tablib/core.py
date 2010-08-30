@@ -8,6 +8,7 @@
 
 
 import csv
+import itertools
 import os
 
 from helpers import *
@@ -72,7 +73,7 @@ class Dataset(object):
 
 	def __setitem__(self, key, value):
 		self.validate(value)
-		self._data[key] = value
+		self._data[key] = tuple(value)
 
 
 	def __delitem__(self, key):
@@ -135,24 +136,35 @@ class Dataset(object):
 
 	@property
 	def json(self):
+		"""Returns JSON representation of Dataset."""
+		data = []
+		
 		if self.headers:
-			pass
+#			for (i, header) in enumerate()
+			data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+		else:
+			data = self._data
+
+		return json.dumps(data)
 
 		
 	@property
 	def yaml(self):
+		"""Returns YAML representation of Dataset."""
 		# TODO: YAML Export
 		pass
 
 
 	@property
 	def csv(self):
+		"""Returns CSV representation of Dataset."""
 		# TODO: CSV Export
 		pass
 
 
 	@property
 	def xls(self):
+		"""Returns XLS representation of Dataset."""
 		# TODO: XLS Export
 		pass
 
@@ -160,7 +172,7 @@ class Dataset(object):
 	def append(self, row, index=None):
 		# todo: impliment index
 		self.validate(row)
-		self._data.append(row)
+		self._data.append(tuple(row))
 
 		
 	def sort_by(self, key):
@@ -188,7 +200,7 @@ class InvalidDimensions(Exception):
 	"Invalid size"
 
 
-class UnsupportedFormat(NotImplemented):
+class UnsupportedFormat(NotImplementedError):
 	"Format is not supported"
 
 

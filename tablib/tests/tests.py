@@ -10,8 +10,14 @@ data = [
 
 data = tablib.Dataset(*data, headers=headers)
 
-print data[1]
+#print data[1]
 data.append(['kenneth' ,'reitz', 4.3])
 
 
-print data.digest()
+#print data.digest()
+
+print data.json
+
+data.headers = None
+
+print data.json
