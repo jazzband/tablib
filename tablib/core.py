@@ -10,6 +10,9 @@
 import csv
 
 from helpers import *
+from packages import simplejson as json
+from packages import xlwt
+
 
 __all__ = ['Dataset', 'source']
 
@@ -108,16 +111,19 @@ class Dataset(object):
 		
 	@property
 	def yaml(self):
+		# TODO: YAML Export
 		pass
 
 
 	@property
 	def csv(self):
+		# TODO: CSV Export
 		pass
 
 
 	@property
 	def xls(self):
+		# TODO: XLS Export
 		pass
 
 
@@ -126,10 +132,12 @@ class Dataset(object):
 		self.validate(row)
 		self._data.append(row)
 
+		
 	def sort_by(self, key):
-		"""Returns datastet sorted by given key"""
+		"""SORTS datastet by given key"""
 		# todo: accpept string if headers, or index nubmer
 		pass
+
 
 	def save(self):
 		pass
