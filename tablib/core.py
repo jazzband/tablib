@@ -9,15 +9,15 @@
 
 import csv
 
+from helpers import *
 
+__all__ = ['Dataset', 'source']
 
 __version__ = '0.0.3'
 __build__ = '0x000003'
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
-
-__all__ = ['Dataset', 'source']
 
 
 
@@ -39,7 +39,15 @@ class Dataset(object):
 
 
 	def __getitem__(self, key):
-		return self._data[key]
+
+		if is_string(key):
+			if key in self.headers:
+				pos = self.headers.index(key) # get 'key' index from each data
+				return [row[pos] for row in self._data]
+			else:
+				raise KeyError
+		else:
+			return self._data[key]
 
 
 	def __setitem__(self, key, value):
@@ -93,7 +101,8 @@ class Dataset(object):
 
 	@property
 	def json(self):
-		pass
+		if self.headers:
+			pass
 
 		
 	@property
