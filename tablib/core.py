@@ -111,7 +111,7 @@ class Dataset(object):
 		pass
 
 
-	def add_row(self, index=None):
+	def append(self, row, index=None):
 		pass
 
 	def del_row(self):

@@ -32,7 +32,7 @@ Features
 
 Convert datafile formats via API: ::
 
-    tablib.import(filename='data.csv').export('data.json')
+    tablib.source(filename='data.csv').export('data.json')
 
 
 Convert datafile formats via CLI: ::
@@ -75,11 +75,11 @@ Slice rows:  ::
     # >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
     
 
-Slice columns by header: ::
-
-    print data['first_name']
-    # >>> ['John', 'George', 'Henry']
-    
+.. Slice columns by header: ::
+.. 
+..     print data['first_name']
+..     # >>> ['John', 'George', 'Henry']
+..     
 
 Manipulate rows by index: ::
 
