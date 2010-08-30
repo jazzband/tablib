@@ -8,7 +8,7 @@
 
 
 import csv
-import itertools
+import cStringIO
 import os
 
 from helpers import *
@@ -31,7 +31,7 @@ __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
 
-FILE_EXTENTIONS = ('csv', 'json', 'xls', 'yaml')
+FILE_EXTENSIONS = ('csv', 'json', 'xls', 'yaml')
 
 
 
@@ -62,7 +62,6 @@ class Dataset(object):
 
 		
 	def __getitem__(self, key):
-
 		if is_string(key):
 			if key in self.headers:
 				pos = self.headers.index(key) # get 'key' index from each data
@@ -98,7 +97,6 @@ class Dataset(object):
 
 		if is_valid:
 			return True
-
 		else:
 			if not safety:
 				raise InvalidDimensions
@@ -123,14 +121,10 @@ class Dataset(object):
 	@property
 	def width(self):
 		"""Returns the width of the Dataset."""
-		
 		try:
 		    return len(self._data[0])
 		except KeyError, why:
 		    return 0
-
-
-
 
 		
 	@property
@@ -148,8 +142,16 @@ class Dataset(object):
 	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
-		
-		pass
+		stream = cStringIO.StringIO()
+		_csv = csv.writer(stream)
+
+		if self.headers:
+		    _csv.writerow(self.headers)
+
+		for row in self._data:
+			_csv.writerow(row)
+			
+		return stream.getvalue()
 
 
 	@property
@@ -178,7 +180,7 @@ class Dataset(object):
 #			format = filename
 			pass
 			
-		if format not in FILE_EXTENTIONS:
+		if format not in FILE_EXTENSIONS:
 			raise UnsupportedFormat
 			
 
