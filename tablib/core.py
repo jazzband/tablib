@@ -167,12 +167,12 @@ class Dataset(object):
 			for j, col in enumerate(row):
 				ws.write(i, j, col)
 
-#		wb.save('elllo')
 		doc = xlwt.CompoundDoc.XlsDoc()
 		doc.save(stream, wb.get_biff_data())
 
-		return stream.getvalue() 
+		return stream.getvalue()
 
+		
 	def append(self, row, index=None):
 		# todo: impliment index
 		self._validate(row)
@@ -186,7 +186,7 @@ class Dataset(object):
 
 
 	def save(self, filename=None, format=None):
-
+		"""Saves dataset"""
 		if not format:
 			# set format from filename
 #			format = filename
@@ -199,6 +199,10 @@ class Dataset(object):
 		# note export format
 		# open file, save the bitch
 
+		
+	def export(self):
+		"""Exports Dataset to given filename or file-object."""
+
 
 class InvalidDimensions(Exception):
 	"Invalid size"
@@ -209,7 +213,7 @@ class UnsupportedFormat(NotImplementedError):
 
 
 	
-def source(io_string=None, filename=None):
+def source(src=None, file=None, filename=None):
 	"""docstring for import"""
 	#open by filename
 	pass
