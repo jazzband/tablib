@@ -32,7 +32,7 @@ Features
 
 Convert datafile formats via API: ::
 
-    tabbed.import(filename='data.csv').export('data.json')
+    tablib.import(filename='data.csv').export('data.json')
 
 
 Convert datafile formats via CLI: ::
@@ -54,7 +54,7 @@ Populate fresh data files: ::
         ('Henry', 'Ford', 2.3)
     ]
     
-    data = tabbed.Data(*data, headers=headers)
+    data = tablib.Data(*data, headers=headers)
 
     # Establish file location and save
     data.save('test.xls')
@@ -62,7 +62,7 @@ Populate fresh data files: ::
 
 Intelligently add new rows: ::
 
-    data.addRow('Bob', 'Dylan')
+    data.add_row('Bob', 'Dylan')
     # >>> Warning: Existing column count is 3
     
     print data.headers
