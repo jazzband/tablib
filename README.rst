@@ -9,7 +9,7 @@ Tabbed: format-agnostic tabular dataset library
     / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
     \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
 
-*Tabbed is under active documentation-driven development.*
+.. *Tabbed is under active documentation-driven development.*
 
 
 Tabbed is a format-agnostic tabular dataset library, written in Python. 
@@ -22,7 +22,9 @@ Formats supported:
 - YAML
 - Excel
 - CSV
-- HTML
+.. - HTML
+
+At this time, Tabbed supports the export of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
 Please note that tabbed *purposefully* excludes XML support. It always will.
 
@@ -30,18 +32,18 @@ Please note that tabbed *purposefully* excludes XML support. It always will.
 Features
 --------
 
-Convert datafile formats via API: ::
+.. Convert datafile formats via API: ::
+.. 
+..     tablib.source(filename='data.csv').export('data.json')
 
-    tablib.source(filename='data.csv').export('data.json')
 
-
-Convert datafile formats via CLI: ::
-
-    $ tabbed data.csv data.json
+.. Convert datafile formats via CLI: ::
+.. 
+..     $ tabbed data.csv data.json
     
-Convert data formats via CLI pipe interface: ::
-    
-    $ curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
+.. Convert data formats via CLI pipe interface: ::
+..     
+..     $ curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
     
     
 Populate fresh data files: ::
@@ -62,8 +64,7 @@ Populate fresh data files: ::
 
 Intelligently add new rows: ::
 
-    data.add_row('Bob', 'Dylan')
-    # >>> Warning: Existing column count is 3
+    data.adppend('Bob', 'Dylan', 3.2)
     
     print data.headers
     # >>> ('first_name', 'last_name', 'gpa')
@@ -87,11 +88,11 @@ Manipulate rows by index: ::
     print data[0:1]
     # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
     
-    # Update saved file
-    data.save()
+    .. # Update saved file
+    .. data.save()
     
 
-Export to various formats: ::
-
-    # Save copy as CSV
-    data.export('backup.csv')
+.. Export to various formats: ::
+.. 
+..     # Save copy as CSV
+..     data.export('backup.csv')
