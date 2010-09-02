@@ -64,7 +64,7 @@ Populate fresh data files: ::
 
 Intelligently add new rows: ::
 
-    data.adppend('Bob', 'Dylan', 3.2)
+    data.append('Bob', 'Dylan', 3.2)
     
     print data.headers
     # >>> ('first_name', 'last_name', 'gpa')
