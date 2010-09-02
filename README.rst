@@ -96,3 +96,9 @@ Manipulate rows by index: ::
 .. 
 ..     # Save copy as CSV
 ..     data.export('backup.csv')
+
+Roadmap
+-------
+- Import datasets from CSV, JSON, YAML
+- Auto-detect import format
+- Plugin support
