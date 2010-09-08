@@ -24,6 +24,7 @@ except ImportError, why:
 
 __all__ = ['Dataset', 'source']
 
+__name__ = 'tablib'
 __version__ = '0.0.4'
 __build__ = '0x000004'
 __author__ = 'Kenneth Reitz'
