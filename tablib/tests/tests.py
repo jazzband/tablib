@@ -10,17 +10,40 @@ data = [
 
 data = tablib.Dataset(*data, headers=headers)
 
-#print data[1]
-data.append(['kenneth' ,'reitz', 4.3])
+data.append(['Kenneth' ,'Reitz', 4.3])
 
+#print '***WITH HEADERS***'
 
-#print data.digest()
+#print 'First Names:\n',
+#print data['first_name']
 
+#print '\nYAML:'
 #print data.yaml
+#
+#print 'JSON:'
 #print data.json
+#
+#print '\nCSV:'
+#print data.csv
+#
+#
+#print '***AND WITHOUT HEADERS***'
+#
+#data.headers = None
+#
+#print '\nYAML:'
+#print data.yaml
+#
+#print 'JSON:'
+#print data.json
+#
+#print '\nCSV:'
+#print data.csv
 
-data.headers = None
-print data.csv
-#print len(data.xls)
-print data.yaml
-print data.json
+book = tablib.DataBook()
+book.add_book(data)
+book.add_book(data)
+
+print book.xls
+
+
