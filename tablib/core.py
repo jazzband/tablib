@@ -24,6 +24,7 @@ except ImportError, why:
 
 __all__ = ['Dataset', 'source']
 
+__name__ = 'tablib'
 __version__ = '0.0.4'
 __build__ = '0x000004'
 __author__ = 'Kenneth Reitz'
@@ -167,18 +168,20 @@ class Dataset(object):
 			for j, col in enumerate(row):
 				ws.write(i, j, col)
 
-		doc = xlwt.CompoundDoc.XlsDoc()
-		doc.save(stream, wb.get_biff_data())
-
+		wb.save(stream)
 		return stream.getvalue()
 
 		
-	def append(self, row, index=None):
-		# todo: impliment index
+	def append(self, row):
+		"""Adds a row to the end of Dataset"""
 		self._validate(row)
 		self._data.append(tuple(row))
 
-		
+	def index(self, i, row):
+		"""Inserts a row at given position in Dataset"""
+		self._validate(row)
+		self._data.insert(i, tuple(row))
+
 	def sort_by(self, key):
 		"""Sorts datastet by given key"""
 		# todo: accpept string if headers, or index nubmer
@@ -188,9 +191,7 @@ class Dataset(object):
 	def save(self, filename=None, format=None):
 		"""Saves dataset"""
 		if not format:
-			# set format from filename
-#			format = filename
-			pass
+			format = filename.split('.')[-1].lower()  # set format from filename
 			
 		if format not in FILE_EXTENSIONS:
 			raise UnsupportedFormat
