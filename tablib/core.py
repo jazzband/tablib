@@ -20,9 +20,9 @@ try:
 except ImportError, why:
     from packages import yaml
 
-	
 
-__all__ = ['Dataset', 'source']
+
+__all__ = ['Dataset', 'DataBook', 'source']
 
 __version__ = '0.0.4'
 __build__ = '0x000004'
@@ -42,8 +42,6 @@ class Dataset(object):
 		self._data = None
 		self._saved_file = None
 		self._saved_format = None
-
-
 		self._data = list(args)
 
 		try:
@@ -56,11 +54,11 @@ class Dataset(object):
 		except KeyError, why:
 			self.title = None
 
-			
+
 	def __len__(self):
 		return self.height
 
-		
+
 	def __getitem__(self, key):
 		if is_string(key):
 			if key in self.headers:
@@ -80,7 +78,7 @@ class Dataset(object):
 	def __delitem__(self, key):
 		del self._data[key]
 
-		
+
 	def __repr__(self):
 		if self.title:
 			return '<%s dataset>' % (self.title.lower())
@@ -130,13 +128,13 @@ class Dataset(object):
 		except KeyError, why:
 		    return 0
 
-		
+
 	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
 		return json.dumps(self._package())
 
-		
+
 	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
@@ -151,7 +149,7 @@ class Dataset(object):
 
 		for row in self._package(dicts=False):
 			_csv.writerow(row)
-			
+
 		return stream.getvalue()
 
 
@@ -159,7 +157,7 @@ class Dataset(object):
 	def xls(self):
 		"""Returns XLS representation of Dataset."""
 		stream = cStringIO.StringIO()
-		
+
 		wb = xlwt.Workbook()
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
 #		for row in self._package(dicts=False):
@@ -170,11 +168,12 @@ class Dataset(object):
 		wb.save(stream)
 		return stream.getvalue()
 
-		
+
 	def append(self, row):
 		"""Adds a row to the end of Dataset"""
 		self._validate(row)
 		self._data.append(tuple(row))
+
 
 	def index(self, i, row):
 		"""Inserts a row at given position in Dataset"""
@@ -186,31 +185,65 @@ class Dataset(object):
 		# todo: accpept string if headers, or index nubmer
 		pass
 
-
 	def save(self, filename=None, format=None):
 		"""Saves dataset"""
 		if not format:
 			format = filename.split('.')[-1].lower()  # set format from filename
-			
+
 		if format not in FILE_EXTENSIONS:
 			raise UnsupportedFormat
-			
+
 
 		# note export format
 		# open file, save the bitch
 
-		
+
 	def export(self):
 		"""Exports Dataset to given filename or file-object."""
+		pass
 
+
+class DataBook(object):
+	"""A book of Dataset objects.
+	   Currently, this exists only for excel workbook support.
+	"""
+
+	def __init__(self):
+		self._datasets = []
+
+
+	def add_book(self, dataset):
+		"""Add given ."""
+		if type(dataset) is Dataset:
+			self._datasets.append(dataset)
+		else:
+			raise InvalidDatasetType
+
+
+	def export(self):
+		pass
+
+
+	@property
+	def size(self):
+		"""The number of the Datasets within DataBook."""
+		return len(self._datasets)
+
+
+	@property
+	def xls(self):
+		pass
+
+
+		
+class InvalidDatasetType(Exception):
+	"Only Datasets can be added to a DataBook"
 
 class InvalidDimensions(Exception):
 	"Invalid size"
 
-
 class UnsupportedFormat(NotImplementedError):
 	"Format is not supported"
-
 
 	
 def source(src=None, file=None, filename=None):
