@@ -14,6 +14,8 @@ import os
 from helpers import *
 from packages import simplejson as json
 from packages import xlwt
+import random
+
 
 try:
     import yaml
@@ -205,7 +207,7 @@ class Dataset(object):
 
 class DataBook(object):
 	"""A book of Dataset objects.
-	   Currently, this exists only for excel workbook support.
+	   Currently, this exists only for XLS workbook support.
 	"""
 
 	def __init__(self):
@@ -219,11 +221,6 @@ class DataBook(object):
 		else:
 			raise InvalidDatasetType
 
-
-	def export(self):
-		pass
-
-
 	@property
 	def size(self):
 		"""The number of the Datasets within DataBook."""
@@ -232,7 +229,21 @@ class DataBook(object):
 
 	@property
 	def xls(self):
-		pass
+		"""Returns XLS representation of DataBook."""
+
+		stream = cStringIO.StringIO()
+		wb = xlwt.Workbook()
+
+		for dset in self._datasets:
+			ws = wb.add_sheet(dset.title if dset.title else 'Tabbed Dataset %s' % (int(random.random() * 100000000)))
+
+			#for row in self._package(dicts=False):
+			for i, row in enumerate(dset._package(dicts=False)):
+				for j, col in enumerate(row):
+					ws.write(i, j, col)
+
+		wb.save(stream)
+		return stream.getvalue()
 
 
 		
