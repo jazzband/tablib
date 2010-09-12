@@ -9,7 +9,6 @@ Tabbed: format-agnostic tabular dataset library
     / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
     \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
 
-.. *Tabbed is under active documentation-driven development.*
 
 
 Tabbed is a format-agnostic tabular dataset library, written in Python. 
@@ -22,7 +21,6 @@ Formats supported:
 - YAML
 - Excel
 - CSV
-.. - HTML
 
 At this time, Tabbed supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
@@ -75,8 +73,6 @@ Manipulate rows by index: ::
     print data[0:1]
     # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
     
-    .. # Update saved file
-    .. data.save()
     
 
 
