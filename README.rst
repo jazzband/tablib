@@ -35,8 +35,7 @@ Populate fresh data files: ::
 
     data = [
         ('John', 'Adams', 90),
-        ('George', 'Washington', 67),
-        ('Henry', 'Ford', 2.3)
+        ('George', 'Washington', 67)
     ]
     
     data = tablib.Dataset(*data, headers=headers)
