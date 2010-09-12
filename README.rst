@@ -63,7 +63,9 @@ Easily delete rows: ::
 
 Drumroll please...........
 
-JSON! ::
+JSON! 
++++++
+::
 
 	>>> print data.json
 	[
@@ -80,20 +82,26 @@ JSON! ::
 	]
 	
 
-YAML! ::
+YAML! 
++++++
+::
 
 	>>> print data.yaml
 	- {age: 90, first_name: John, last_name: Adams}
 	- {age: 83, first_name: Henry, last_name: Ford}
 	
-CSV... ::
+CSV... 
+++++++
+::
 
 	>>> print data.csv
 	first_name,last_name,age 
 	John,Adams,90 
 	Henry,Ford,83 
 	
-EXCEL!! ::
+EXCEL! 
+++++++
+::
 
 	>>> open('people.xls').write(data.xls)
 		
