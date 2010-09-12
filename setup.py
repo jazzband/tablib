@@ -2,7 +2,6 @@
 
 import os
 import sys
-import tablib
 
 from distutils.core import setup
 
@@ -18,7 +17,7 @@ if sys.argv[-1] == "publish":
 
 setup(
 	name='tablib',
-	version='0.6.0',
+	version='0.6.1',
 	description='Format agnostic tabular data library (XLS, CSV, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),

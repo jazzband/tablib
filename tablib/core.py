@@ -9,18 +9,15 @@
 
 import csv
 import cStringIO
-import os
-
-from helpers import *
-import simplejson as json
-import xlwt
 import random
 
 
-try:
-    import yaml
-except ImportError, why:
-    from packages import yaml
+from helpers import *
+import simplejson as json
+
+
+import xlwt
+import yaml
 
 
 

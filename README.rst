@@ -1,17 +1,17 @@
-Tabbed: format-agnostic tabular dataset library
+Tablib: format-agnostic tabular dataset library
 ===============================================
 
 ::
 
-    _____         ______  ______        _________
-    __  /_______ ____  /_ ___  /_ _____ ______  /
-    _  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
-    / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
-    \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
+	_____         ______  ___________ ______  
+	__  /_______ ____  /_ ___  /___(_)___  /_ 
+	_  __/_  __ `/__  __ \__  / __  / __  __ \
+	/ /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
+	\__/  \__,_/  /_.___/ /_/   /_/   /_.___/
 
 
 
-Tabbed is a format-agnostic tabular dataset library, written in Python. 
+Tablib is a format-agnostic tabular dataset library, written in Python. 
 It is a full python module which doubles as a CLI application for quick
 dataset conversions. 
 
@@ -22,9 +22,9 @@ Formats supported:
 - Excel
 - CSV
 
-At this time, Tabbed supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
+At this time, Tablib supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
-Please note that tabbed *purposefully* excludes XML support. It always will.
+Please note that tablib *purposefully* excludes XML support. It always will.
 
 
 Features
