@@ -1,6 +1,7 @@
 # application builds
 build/*
 dist/*
+MANIFEST
 
 # python skin
 .pyc
@@ -13,4 +14,4 @@ profile
 # pycharm noise
 .idea
 .idea/*
-hi
+
