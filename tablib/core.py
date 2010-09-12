@@ -12,8 +12,8 @@ import cStringIO
 import os
 
 from helpers import *
-from packages import simplejson as json
-from packages import xlwt
+import simplejson as json
+import xlwt
 import random
 
 
@@ -27,8 +27,8 @@ except ImportError, why:
 __all__ = ['Dataset', 'DataBook', 'source']
 
 __name__ = 'tablib'
-__version__ = '0.0.4'
-__build__ = '0x000004'
+__version__ = '0.6.0'
+__build__ = 0x000600
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -48,12 +48,12 @@ class Dataset(object):
 		self._data = list(args)
 
 		try:
-		    self.headers = kwargs['headers']
+			self.headers = kwargs['headers']
 		except KeyError, why:
 			self.headers = None
 
 		try:
-		    self.title = kwargs['title']
+			self.title = kwargs['title']
 		except KeyError, why:
 			self.title = None
 
@@ -83,9 +83,9 @@ class Dataset(object):
 
 
 	def __repr__(self):
-		if self.title:
+		try:
 			return '<%s dataset>' % (self.title.lower())
-		else:
+		except AttributeError:
 			return '<dataset object>'
 
 
@@ -127,21 +127,25 @@ class Dataset(object):
 	def width(self):
 		"""Returns the width of the Dataset."""
 		try:
-		    return len(self._data[0])
+			return len(self._data[0])
 		except KeyError, why:
-		    return 0
+			return 0
 
+	@property
+	def dict(self):
+		"""Returns python dict of Dataset."""
+		return self._package()
 
 	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
-		return json.dumps(self._package())
+		return json.dumps(self.dict)
 
 
 	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
-		return yaml.dump(self._package())
+		return yaml.dump(self.dict)
 
 
 	@property
@@ -166,7 +170,7 @@ class Dataset(object):
 #		for row in self._package(dicts=False):
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, col)
+				ws.write(i, j, str(col))
 
 		wb.save(stream)
 		return stream.getvalue()
@@ -211,16 +215,30 @@ class DataBook(object):
 	   Currently, this exists only for XLS workbook support.
 	"""
 
-	def __init__(self):
-		self._datasets = []
+	def __init__(self, sets=[]):
+		self._datasets = sets
 
+	def __repr__(self):
+		try:
+			return '<%s databook>' % (self.title.lower())
+		except AttributeError:
+			return '<databook object>'
 
-	def add_book(self, dataset):
-		"""Add given ."""
+	def add_sheet(self, dataset):
+		"""Add given dataset ."""
 		if type(dataset) is Dataset:
 			self._datasets.append(dataset)
 		else:
 			raise InvalidDatasetType
+
+	def _package(self):
+		collector = []
+		for dset in self._datasets:
+			collector.append(dict(
+				title = dset.title,
+				data = dset.dict
+			))
+		return collector
 
 	@property
 	def size(self):
@@ -241,11 +259,22 @@ class DataBook(object):
 			#for row in self._package(dicts=False):
 			for i, row in enumerate(dset._package(dicts=False)):
 				for j, col in enumerate(row):
-					ws.write(i, j, col)
+					ws.write(i, j, str(col))
 
 		wb.save(stream)
 		return stream.getvalue()
 
+	@property
+	def json(self):
+		"""Returns JSON representation of Databook."""
+
+		return json.dumps(self._package())
+
+	@property
+	def yaml(self):
+		"""Returns YAML representation of Databook."""
+
+		return yaml.dump(self._package())
 
 		
 class InvalidDatasetType(Exception):

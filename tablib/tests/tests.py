@@ -41,9 +41,9 @@ data.append(['Kenneth' ,'Reitz', 4.3])
 #print data.csv
 
 book = tablib.DataBook()
-book.add_book(data)
-book.add_book(data)
+book.add_sheet(data)
+book.add_sheet(data)
 
-print book.xls
+print book.json
 
 
