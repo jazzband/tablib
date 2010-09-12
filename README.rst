@@ -32,19 +32,6 @@ Please note that tabbed *purposefully* excludes XML support. It always will.
 Features
 --------
 
-.. Convert datafile formats via API: ::
-.. 
-..     tablib.source(filename='data.csv').export('data.json')
-
-
-.. Convert datafile formats via CLI: ::
-.. 
-..     $ tabbed data.csv data.json
-    
-.. Convert data formats via CLI pipe interface: ::
-..     
-..     $ curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
-    
     
 Populate fresh data files: ::
     
@@ -76,11 +63,11 @@ Slice rows:  ::
     # >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
     
 
-.. Slice columns by header: ::
-.. 
-..     print data['first_name']
-..     # >>> ['John', 'George', 'Henry']
-..     
+Slice columns by header: ::
+
+    print data['first_name']
+    # >>> ['John', 'George', 'Henry']
+
 
 Manipulate rows by index: ::
 
@@ -92,10 +79,6 @@ Manipulate rows by index: ::
     .. data.save()
     
 
-.. Export to various formats: ::
-.. 
-..     # Save copy as CSV
-..     data.export('backup.csv')
 
 Roadmap
 -------
