@@ -12,8 +12,6 @@ Tablib: format-agnostic tabular dataset library
 
 
 Tablib is a format-agnostic tabular dataset library, written in Python. 
-It is a full python module which doubles as a CLI application for quick
-dataset conversions. 
 
 Formats supported:
 
@@ -72,12 +70,34 @@ Manipulate rows by index: ::
     del data[0]
     print data[0:1]
     # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
+
     
+Installation
+------------
+
+To install tablib, simply: ::
+
+	$ pip install tablib
+	
+Or, if you absolutely must: ::
+
+	$ easy_install tablib
     
+
+Contribute
+----------
+
+If you'd like to , simply fork `the repository`_, commit your changes, and send a pull requests. Make sure you add yourself to AUTHORS_!
 
 
 Roadmap
 -------
 - Import datasets from CSV, JSON, YAML
+- Release CLI Interface
 - Auto-detect import format
+- Add possible other exports (SQL?)
+- Possibly plugin-ify format architecture
 - Plugin support
+
+.. _`the repository`: http://github.com/kennethreitz/tablib
+.. _AUTHORS: http://github.com/kennethreitz/tablib/blob/master/AUTHORS
