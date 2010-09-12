@@ -1,18 +1,17 @@
-Tabbed: format-agnostic tabular dataset library
+Tablib: format-agnostic tabular dataset library
 ===============================================
 
 ::
 
-    _____         ______  ______        _________
-    __  /_______ ____  /_ ___  /_ _____ ______  /
-    _  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
-    / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
-    \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
-
-.. *Tabbed is under active documentation-driven development.*
+	_____         ______  ___________ ______  
+	__  /_______ ____  /_ ___  /___(_)___  /_ 
+	_  __/_  __ `/__  __ \__  / __  / __  __ \
+	/ /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
+	\__/  \__,_/  /_.___/ /_/   /_/   /_.___/
 
 
-Tabbed is a format-agnostic tabular dataset library, written in Python. 
+
+Tablib is a format-agnostic tabular dataset library, written in Python. 
 It is a full python module which doubles as a CLI application for quick
 dataset conversions. 
 
@@ -22,29 +21,15 @@ Formats supported:
 - YAML
 - Excel
 - CSV
-.. - HTML
 
-At this time, Tabbed supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
+At this time, Tablib supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
-Please note that tabbed *purposefully* excludes XML support. It always will.
+Please note that tablib *purposefully* excludes XML support. It always will.
 
 
 Features
 --------
 
-.. Convert datafile formats via API: ::
-.. 
-..     tablib.source(filename='data.csv').export('data.json')
-
-
-.. Convert datafile formats via CLI: ::
-.. 
-..     $ tabbed data.csv data.json
-    
-.. Convert data formats via CLI pipe interface: ::
-..     
-..     $ curl http://domain.dev/dataset.json | tabbed --to excel | gist -p
-    
     
 Populate fresh data files: ::
     
@@ -76,11 +61,11 @@ Slice rows:  ::
     # >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
     
 
-.. Slice columns by header: ::
-.. 
-..     print data['first_name']
-..     # >>> ['John', 'George', 'Henry']
-..     
+Slice columns by header: ::
+
+    print data['first_name']
+    # >>> ['John', 'George', 'Henry']
+
 
 Manipulate rows by index: ::
 
@@ -88,14 +73,8 @@ Manipulate rows by index: ::
     print data[0:1]
     # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
     
-    .. # Update saved file
-    .. data.save()
     
 
-.. Export to various formats: ::
-.. 
-..     # Save copy as CSV
-..     data.export('backup.csv')
 
 Roadmap
 -------

@@ -2,7 +2,6 @@
 
 import os
 import sys
-import tablib
 
 from distutils.core import setup
 
@@ -18,26 +17,27 @@ if sys.argv[-1] == "publish":
 
 setup(
 	name='tablib',
-	version='0.0.4',
-	description='Python wrapper for Gist API',
+	version='0.6.1',
+	description='Format agnostic tabular data library (XLS, CSV, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
 	packages=['tablib'],
+	install_requires=['xlwt', 'simplejson', 'PyYAML'],
 	license='MIT',
 	classifiers=(
 		'Development Status :: 4 - Beta',
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python',
-		'Programming Language :: Python :: 2.5',
-		'Programming Language :: Python :: 2.6',
+        # 'Programming Language :: Python :: 2.5',
+        # 'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
 	),
-	entry_points={
-		'console_scripts': [
-			'tabbed = tablib.cli:start',
-		],
-	}
+    # entry_points={
+    #   'console_scripts': [
+    #       'tabbed = tablib.cli:start',
+    #   ],
+    # }
 )

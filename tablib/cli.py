@@ -28,7 +28,7 @@ for format in FORMATS:
 def start(in_file=None, out_file=None, **opts):
 	"""Covertly convert dataset formats"""
 	
-	opts = Object(**opts)
+	opts = Struct(**opts)
 	
 	if opts.version:
 		print('Tabbed, Ver. %s' % tabbed.core.__version__)

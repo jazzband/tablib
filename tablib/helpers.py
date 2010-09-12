@@ -3,7 +3,7 @@
 import sys
 
 
-class Object(object):
+class Struct(object):
 	"""Your attributes are belong to us."""
 	
 	def __init__(self, **entries): 
