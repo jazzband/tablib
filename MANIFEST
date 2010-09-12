@@ -1,8 +1,0 @@
-HISTORY.rst
-README.rst
-setup.py
-tabbed
-tablib/__init__.py
-tablib/cli.py
-tablib/core.py
-tablib/helpers.py

@@ -12,23 +12,21 @@ Tablib: format-agnostic tabular dataset library
 
 
 Tablib is a format-agnostic tabular dataset library, written in Python. 
-It is a full python module which doubles as a CLI application for quick
-dataset conversions. 
 
-Formats supported:
+Output formats supported:
 
+- Excel
 - JSON
 - YAML
-- Excel
 - CSV
 
 At this time, Tablib supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
 
-Please note that tablib *purposefully* excludes XML support. It always will.
+Note that tablib *purposefully* excludes XML support. It always will.
 
 
-Features
---------
+Usage
+-----
 
     
 Populate fresh data files: ::
@@ -36,48 +34,98 @@ Populate fresh data files: ::
     headers = ('first_name', 'last_name', 'gpa')
 
     data = [
-        ('John', 'Adams', 4.0),
-        ('George', 'Washington', 2.6),
+        ('John', 'Adams', 90),
+        ('George', 'Washington', 67),
         ('Henry', 'Ford', 2.3)
     ]
     
     data = tablib.Dataset(*data, headers=headers)
 
-    # Establish file location and save
-    data.save('test.xls')
-    
 
 Intelligently add new rows: ::
 
-    data.append('Bob', 'Dylan', 3.2)
+    >>> data.append(('Henry', 'Ford', 83))
     
-    print data.headers
-    # >>> ('first_name', 'last_name', 'gpa')
-    
-
 Slice rows:  ::
 
-    print data[0:1]
-    # >>> [('John', 'Adams', 4.0), ('George', 'Washington', 2.6)]
+    >>> print data[:2]
+    [('John', 'Adams', 90), ('George', 'Washington', 67)]
     
 
 Slice columns by header: ::
 
-    print data['first_name']
-    # >>> ['John', 'George', 'Henry']
+    >>> print data['first_name']
+    ['John', 'George', 'Henry']
 
+Easily delete rows: ::
 
-Manipulate rows by index: ::
+    >>> del data[1]
 
-    del data[0]
-    print data[0:1]
-    # >>> [('George', 'Washington', 2.6), ('Henry', 'Ford', 2.3)]
+Drumroll please...........
+
+JSON! ::
+
+	>>> print data.json
+	[
+	  {
+	    "last_name": "Adams",
+	    "age": 90,
+	    "first_name": "John"
+	  },
+	  {
+	    "last_name": "Ford",
+	    "age": 83,
+	    "first_name": "Henry"
+	  }
+	]
+	
+
+YAML! ::
+
+	>>> print data.yaml
+	- {age: 90, first_name: John, last_name: Adams}
+	- {age: 83, first_name: Henry, last_name: Ford}
+	
+CSV... ::
+
+	>>> print data.csv
+	first_name,last_name,age 
+	John,Adams,90 
+	Henry,Ford,83 
+	
+EXCEL!! ::
+
+	>>> open('people.xls').write(data.xls)
+		
+It's that easy.
+	
     
+Installation
+------------
+
+To install tablib, simply: ::
+
+	$ pip install tablib
+	
+Or, if you absolutely must: ::
+
+	$ easy_install tablib
     
+
+Contribute
+----------
+
+If you'd like to , simply fork `the repository`_, commit your changes, and send a pull requests. Make sure you add yourself to AUTHORS_.
 
 
 Roadmap
 -------
 - Import datasets from CSV, JSON, YAML
+- Release CLI Interface
 - Auto-detect import format
+- Add possible other exports (SQL?)
+- Possibly plugin-ify format architecture
 - Plugin support
+
+.. _`the repository`: http://github.com/kennethreitz/tablib
+.. _AUTHORS: http://github.com/kennethreitz/tablib/blob/master/AUTHORS
