@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 import sys
@@ -32,7 +33,7 @@ setup(
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python',
         # 'Programming Language :: Python :: 2.5',
-        # 'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
 	),
     # entry_points={
