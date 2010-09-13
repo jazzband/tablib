@@ -11,17 +11,14 @@ import csv
 import cStringIO
 import random
 
-
-from helpers import *
 import simplejson as json
-
-
 import xlwt
 import yaml
 
+from helpers import *
 
 
-__all__ = ['Dataset', 'DataBook', 'source']
+__all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
 __version__ = '0.6.1'
@@ -29,10 +26,6 @@ __build__ = 0x000601
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
-
-
-FILE_EXTENSIONS = ('csv', 'json', 'xls', 'yaml')
-
 
 
 class Dataset(object):
@@ -184,28 +177,6 @@ class Dataset(object):
 		self._validate(row)
 		self._data.insert(i, tuple(row))
 
-	def sort_by(self, key):
-		"""Sorts datastet by given key"""
-		# todo: accpept string if headers, or index nubmer
-		pass
-
-	def save(self, filename=None, format=None):
-		"""Saves dataset"""
-		if not format:
-			format = filename.split('.')[-1].lower()  # set format from filename
-
-		if format not in FILE_EXTENSIONS:
-			raise UnsupportedFormat
-
-
-		# note export format
-		# open file, save the bitch
-
-
-	def export(self):
-		"""Exports Dataset to given filename or file-object."""
-		pass
-
 
 class DataBook(object):
 	"""A book of Dataset objects.
@@ -282,9 +253,3 @@ class InvalidDimensions(Exception):
 
 class UnsupportedFormat(NotImplementedError):
 	"Format is not supported"
-
-	
-def source(src=None, file=None, filename=None):
-	"""docstring for import"""
-	#open by filename
-	pass
