@@ -157,7 +157,6 @@ class Dataset(object):
 
 		wb = xlwt.Workbook()
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
-#		for row in self._package(dicts=False):
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
 				ws.write(i, j, str(col))
