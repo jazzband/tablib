@@ -133,6 +133,7 @@ Roadmap
 - Auto-detect import format
 - Add possible other exports (SQL?)
 - Possibly plugin-ify format architecture
+- Ability to assign types to rows (set, regex=, &c.)
 - Plugin support
 
 .. _`the repository`: http://github.com/kennethreitz/tablib
