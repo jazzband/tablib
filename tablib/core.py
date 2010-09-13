@@ -21,8 +21,8 @@ from helpers import *
 # __all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
-__version__ = '0.6.1'
-__build__ = 0x000601
+__version__ = '0.6.2'
+__build__ = 0x000602
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
