@@ -1,1 +1,0 @@
-all = ['simplejson', 'typecheck', 'xlwt', 'opster']
