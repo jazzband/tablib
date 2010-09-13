@@ -18,7 +18,7 @@ import yaml
 from helpers import *
 
 
-__all__ = ['Dataset', 'DataBook']
+# __all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
 __version__ = '0.6.1'
@@ -36,6 +36,7 @@ class Dataset(object):
 		self._saved_file = None
 		self._saved_format = None
 		self._data = list(args)
+		self.__headers = None
 
 		try:
 			self.headers = kwargs['headers']
@@ -118,9 +119,23 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		try:
 			return len(self._data[0])
-		except KeyError, why:
-			return 0
+		except IndexError, why:
+			try:
+				return len(self.headers)
+			except TypeError, e:
+				return 0
+	
+	@property
+	def headers(self):
+		"""Headers property."""
+		return self.__headers
 
+	@headers.setter
+	def headers(self, collection):
+		"""Validating headers setter."""
+		self._validate(collection)
+		self.__headers = collection
+		
 	@property
 	def dict(self):
 		"""Returns python dict of Dataset."""
