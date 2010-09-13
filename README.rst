@@ -122,7 +122,7 @@ Or, if you absolutely must: ::
 Contribute
 ----------
 
-If you'd like to , simply fork `the repository`_, commit your changes, and send a pull requests. Make sure you add yourself to AUTHORS_.
+If you'd like to contribute, simply fork `the repository`_, commit your changes, and send a pull request. Make sure you add yourself to AUTHORS_.
 
 
 Roadmap
