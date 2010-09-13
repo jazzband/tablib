@@ -118,7 +118,7 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		try:
 			return len(self._data[0])
-		except KeyError, why:
+		except IndexError, why:
 			return 0
 
 	@property
