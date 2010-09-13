@@ -1,1 +1,0 @@
-# example: md5(csv) == md5(Data(csv).export(to='json'))
