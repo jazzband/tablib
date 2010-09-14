@@ -12,8 +12,14 @@ class TablibTestCase(unittest.TestCase):
 	"""Tablib test cases"""
 
 	def setUp(self):
-		"""setup"""
-		pass
+		"""Create simple data set with headers"""
+		headers = ('first_name', 'last_name', 'gpa')
+		self.john = ('John', 'Adams', 90)
+		self.george = ('George', 'Washington', 67)
+
+		self.founders = tablib.Dataset(headers=headers)
+		self.founders.append(self.john)
+		self.founders.append(self.george)
 
 	def tearDown(self):
 		"""teardown"""
@@ -44,19 +50,10 @@ class TablibTestCase(unittest.TestCase):
 	def test_header_slicing(self):
 		"""Verify slicing by headers"""
 
-		headers = ('first_name', 'last_name', 'gpa')
-
-		data = [
-			('John', 'Adams', 90),
-			('George', 'Washington', 67)
-		]
-
-		data = tablib.Dataset(*data, headers=headers)
-
 		# Slice by headers
-		self.assertEqual(data['first_name'], ['John', 'George'])
-		self.assertEqual(data['last_name'], ['Adams', 'Washington'])
-		self.assertEqual(data['gpa'], [90, 67])
+		self.assertEqual(self.founders['first_name'], [self.john[0], self.george[0]])
+		self.assertEqual(self.founders['last_name'], [self.john[1], self.george[1]])
+		self.assertEqual(self.founders['gpa'], [self.john[2], self.george[2]])
 
 	# def test_adding_header with (self):
 
