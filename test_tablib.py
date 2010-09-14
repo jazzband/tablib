@@ -50,10 +50,24 @@ class TablibTestCase(unittest.TestCase):
 	def test_header_slicing(self):
 		"""Verify slicing by headers"""
 
-		# Slice by headers
 		self.assertEqual(self.founders['first_name'], [self.john[0], self.george[0]])
 		self.assertEqual(self.founders['last_name'], [self.john[1], self.george[1]])
 		self.assertEqual(self.founders['gpa'], [self.john[2], self.george[2]])
+
+	def test_data_slicing(self):
+		"""Verify slicing by data"""
+
+		# Slice individual rows
+		self.assertEqual(self.founders[0], self.john)
+		self.assertEqual(self.founders[:1], [self.john])
+		self.assertEqual(self.founders[1:2], [self.george])
+		self.assertEqual(self.founders[2:], [])
+		self.assertEqual(self.founders[-1], self.george)
+
+		# Slice multiple rows
+		self.assertEqual(self.founders[:], [self.john, self.george])
+		self.assertEqual(self.founders[0:2], [self.john, self.george])
+		self.assertEqual(self.founders[2:], [])
 
 	# def test_adding_header with (self):
 
