@@ -72,6 +72,7 @@ class TablibTestCase(unittest.TestCase):
 		# Slice multiple rows
 		self.assertEqual(self.founders[:], [self.john, self.george, self.tom])
 		self.assertEqual(self.founders[0:2], [self.john, self.george])
+		self.assertEqual(self.founders[1:3], [self.george, self.tom])
 		self.assertEqual(self.founders[2:], [self.tom])
 
 	# def test_adding_header with (self):
