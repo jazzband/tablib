@@ -10,7 +10,7 @@ class Struct(object):
 		self.__dict__.update(entries)
 		
 	def __getitem__(self, key):
-		return getattr(self, key)
+		return getattr(self, key, None)
 
 
 def piped():
