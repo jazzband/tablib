@@ -21,8 +21,8 @@ from helpers import *
 # __all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
-__version__ = '0.6.2'
-__build__ = 0x000602
+__version__ = '0.6.3'
+__build__ = 0x000603
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -80,10 +80,15 @@ class Dataset(object):
 			return '<dataset object>'
 
 
-	def _validate(self, row=None, safety=False):
+	def _validate(self, row=None, col=None, safety=False):
 		"""Assures size of every row in dataset is of proper proportions."""
 		if row:
 			is_valid = (len(row) == self.width) if self.width else True
+		elif col:
+			if self.headers:
+				is_valid = (len(col) - 1) == self.height
+			else:
+				is_valid = (len(col) == self.height) if self.height else True
 		else:
 			is_valid = all((len(x)== self.width for x in self._data))
 
@@ -130,16 +135,26 @@ class Dataset(object):
 		"""Headers property."""
 		return self.__headers
 
+
 	@headers.setter
 	def headers(self, collection):
 		"""Validating headers setter."""
 		self._validate(collection)
-		self.__headers = collection
-		
+		if collection:
+			try:
+				self.__headers = list(collection)
+			except TypeError, why:
+				raise TypeError
+		else:
+			self.__headers = None
+
+
+
 	@property
 	def dict(self):
 		"""Returns python dict of Dataset."""
 		return self._package()
+
 
 	@property
 	def json(self):
@@ -180,16 +195,36 @@ class Dataset(object):
 		return stream.getvalue()
 
 
-	def append(self, row):
+	def append(self, row=None, col=None):
 		"""Adds a row to the end of Dataset"""
-		self._validate(row)
-		self._data.append(tuple(row))
+		if row:
+			self._validate(row)
+			self._data.append(tuple(row))
+		elif col:
+			self._validate(col=col)
+
+			if self.headers:
+				# pop the first item off, add to headers
+				self.headers.append(col[0])
+				col = col[1:]
+		
+			if self.height and self.width:
+
+				for i, row in enumerate(self._data):
+					_row = list(row)
+					_row.append(col[i])
+					self._data[i] = tuple(_row)
+			else:
+				self._data = [tuple([row]) for row in col]
 
 
-	def index(self, i, row):
+	def insert(self, i, row=None, col=None):
 		"""Inserts a row at given position in Dataset"""
-		self._validate(row)
-		self._data.insert(i, tuple(row))
+		if row:
+			self._validate(row)
+			self._data.insert(i, tuple(row))
+		elif col:
+			pass
 
 
 class DataBook(object):
@@ -200,11 +235,13 @@ class DataBook(object):
 	def __init__(self, sets=[]):
 		self._datasets = sets
 
+
 	def __repr__(self):
 		try:
 			return '<%s databook>' % (self.title.lower())
 		except AttributeError:
 			return '<databook object>'
+
 
 	def add_sheet(self, dataset):
 		"""Add given dataset ."""
@@ -212,6 +249,7 @@ class DataBook(object):
 			self._datasets.append(dataset)
 		else:
 			raise InvalidDatasetType
+
 
 	def _package(self):
 		collector = []
@@ -221,6 +259,7 @@ class DataBook(object):
 				data = dset.dict
 			))
 		return collector
+
 
 	@property
 	def size(self):
@@ -235,8 +274,8 @@ class DataBook(object):
 		stream = cStringIO.StringIO()
 		wb = xlwt.Workbook()
 
-		for dset in self._datasets:
-			ws = wb.add_sheet(dset.title if dset.title else 'Tabbed Dataset %s' % (int(random.random() * 100000000)))
+		for i, dset in enumerate(self._datasets):
+			ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
 
 			#for row in self._package(dicts=False):
 			for i, row in enumerate(dset._package(dicts=False)):
@@ -246,11 +285,13 @@ class DataBook(object):
 		wb.save(stream)
 		return stream.getvalue()
 
+	
 	@property
 	def json(self):
 		"""Returns JSON representation of Databook."""
 
 		return json.dumps(self._package())
+
 
 	@property
 	def yaml(self):
@@ -258,12 +299,15 @@ class DataBook(object):
 
 		return yaml.dump(self._package())
 
-		
+
+
 class InvalidDatasetType(Exception):
 	"Only Datasets can be added to a DataBook"
+
 
 class InvalidDimensions(Exception):
 	"Invalid size"
 
+	
 class UnsupportedFormat(NotImplementedError):
 	"Format is not supported"
