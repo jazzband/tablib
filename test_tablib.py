@@ -16,10 +16,12 @@ class TablibTestCase(unittest.TestCase):
 		headers = ('first_name', 'last_name', 'gpa')
 		self.john = ('John', 'Adams', 90)
 		self.george = ('George', 'Washington', 67)
+		self.tom = ('Thomas', 'Jefferson', 50)
 
 		self.founders = tablib.Dataset(headers=headers)
 		self.founders.append(self.john)
 		self.founders.append(self.george)
+		self.founders.append(self.tom)
 
 	def tearDown(self):
 		"""teardown"""
@@ -50,9 +52,12 @@ class TablibTestCase(unittest.TestCase):
 	def test_header_slicing(self):
 		"""Verify slicing by headers"""
 
-		self.assertEqual(self.founders['first_name'], [self.john[0], self.george[0]])
-		self.assertEqual(self.founders['last_name'], [self.john[1], self.george[1]])
-		self.assertEqual(self.founders['gpa'], [self.john[2], self.george[2]])
+		self.assertEqual(self.founders['first_name'],
+						[self.john[0], self.george[0], self.tom[0]])
+		self.assertEqual(self.founders['last_name'],
+						[self.john[1], self.george[1], self.tom[1]])
+		self.assertEqual(self.founders['gpa'],
+						[self.john[2], self.george[2], self.tom[2]])
 
 	def test_data_slicing(self):
 		"""Verify slicing by data"""
@@ -61,13 +66,13 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(self.founders[0], self.john)
 		self.assertEqual(self.founders[:1], [self.john])
 		self.assertEqual(self.founders[1:2], [self.george])
-		self.assertEqual(self.founders[2:], [])
-		self.assertEqual(self.founders[-1], self.george)
+		self.assertEqual(self.founders[-1], self.tom)
+		self.assertEqual(self.founders[3:], [])
 
 		# Slice multiple rows
-		self.assertEqual(self.founders[:], [self.john, self.george])
+		self.assertEqual(self.founders[:], [self.john, self.george, self.tom])
 		self.assertEqual(self.founders[0:2], [self.john, self.george])
-		self.assertEqual(self.founders[2:], [])
+		self.assertEqual(self.founders[2:], [self.tom])
 
 	# def test_adding_header with (self):
 
