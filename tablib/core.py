@@ -15,7 +15,6 @@ import simplejson as json
 import xlwt
 import yaml
 
-import showme
 from helpers import *
 
 
@@ -141,7 +140,14 @@ class Dataset(object):
 	def headers(self, collection):
 		"""Validating headers setter."""
 		self._validate(collection)
-		self.__headers = collection
+		if collection:
+			try:
+				self.__headers = list(collection)
+			except TypeError, why:
+				raise TypeError
+		else:
+			self.__headers = None
+
 
 
 	@property
@@ -188,7 +194,7 @@ class Dataset(object):
 		wb.save(stream)
 		return stream.getvalue()
 
-#	@showme.trace
+
 	def append(self, row=None, col=None):
 		"""Adds a row to the end of Dataset"""
 		if row:
