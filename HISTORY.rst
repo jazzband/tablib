@@ -1,6 +1,11 @@
 History
 =======
 
+0.6.2 (2010-09-14)
+------------------
+* Added Dataset.append() support for columns.
+
+
 0.6.2 (2010-09-13)
 ------------------
 * Fixed Dataset.append() error on empty dataset.
