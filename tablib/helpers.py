@@ -14,12 +14,7 @@ class Struct(object):
 
 
 def piped():
-	"""Returns piped input via stdin, else False"""
+	"""Returns piped input via stdin, else False."""
 	with sys.stdin as stdin:
 		return stdin.read() if not stdin.isatty() else None
 
-		
-def is_string(obj):
-	"""Tests if an object is a string"""
-
-	return True if type(obj).__name__ == 'str' else False

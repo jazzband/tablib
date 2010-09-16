@@ -54,7 +54,7 @@ class Dataset(object):
 
 
 	def __getitem__(self, key):
-		if is_string(key):
+		if isinstance(key, basestring):
 			if key in self.headers:
 				pos = self.headers.index(key) # get 'key' index from each data
 				return [row[pos] for row in self._data]
