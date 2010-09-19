@@ -123,6 +123,20 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(self.founders[1:3], [self.george, self.tom])
 		self.assertEqual(self.founders[2:], [self.tom])
 
+	def test_delete(self):
+		"""Verify deleting from dataset works"""
+
+		# Delete from front of object
+		del self.founders[0]
+		self.assertEqual(self.founders[:], [self.george, self.tom])
+
+		# Delete from back of object
+		del self.founders[1]
+		self.assertEqual(self.founders[:], [self.george])
+
+		# Delete from invalid index
+		self.assertRaises(IndexError, self.founders.__delitem__, 3)
+
 
 if __name__ == '__main__':
 	unittest.main()
