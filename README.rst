@@ -31,11 +31,11 @@ Usage
     
 Populate fresh data files: ::
     
-    headers = ('first_name', 'last_name', 'gpa')
+    headers = ('first_name', 'last_name')
 
     data = [
-        ('John', 'Adams', 90),
-        ('George', 'Washington', 67)
+        ('John', 'Adams'),
+        ('George', 'Washington')
     ]
     
     data = tablib.Dataset(*data, headers=headers)
@@ -43,7 +43,11 @@ Populate fresh data files: ::
 
 Intelligently add new rows: ::
 
-    >>> data.append(('Henry', 'Ford', 83))
+    >>> data.append(('Henry', 'Ford'))
+
+Intelligently add new columns: ::
+
+    >>> data.append(col=('age', 90, 67, 83))
     
 Slice rows:  ::
 
@@ -122,7 +126,7 @@ Or, if you absolutely must: ::
 Contribute
 ----------
 
-If you'd like to contribute, simply fork `the repository`_, commit your changes, and send a pull request. Make sure you add yourself to AUTHORS_.
+If you'd like to contribute, simply fork `the repository`_, commit your changes to the **develop** branch (or branch off of it), and send a pull request. Make sure you add yourself to AUTHORS_.
 
 
 Roadmap
@@ -133,6 +137,7 @@ Roadmap
 - Auto-detect import format
 - Add possible other exports (SQL?)
 - Possibly plugin-ify format architecture
+- Ability to assign types to rows (set, regex=, &c.)
 - Plugin support
 
 .. _`the repository`: http://github.com/kennethreitz/tablib
