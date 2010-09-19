@@ -130,9 +130,17 @@ class TablibTestCase(unittest.TestCase):
 		del self.founders[0]
 		self.assertEqual(self.founders[:], [self.george, self.tom])
 
+		# Verify dimensions, width should NOT change
+		self.assertEqual(self.founders.height, 2)
+		self.assertEqual(self.founders.width, 3)
+
 		# Delete from back of object
 		del self.founders[1]
 		self.assertEqual(self.founders[:], [self.george])
+
+		# Verify dimensions, width should NOT change
+		self.assertEqual(self.founders.height, 1)
+		self.assertEqual(self.founders.width, 3)
 
 		# Delete from invalid index
 		self.assertRaises(IndexError, self.founders.__delitem__, 3)
