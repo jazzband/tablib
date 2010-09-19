@@ -49,7 +49,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertRaises(tablib.InvalidDimensions, data.append, new_row)
 
 	def test_add_column(self):
-		# No Headers
+		"""Verify adding column works with/without headers"""
 
 		data.append(['kenneth'])
 		data.append(['bessie'])
@@ -69,8 +69,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEquals(data[new_col[0]], new_col[1:])
 
 	def test_add_column_no_data_no_headers(self):
-
-		# no headers
+		"""Verify adding new column with no headers"""
 
 		new_col = ('reitz', 'monke')
 
@@ -81,8 +80,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEquals(data.height, len(new_col))
 
 	def test_add_column_no_data_with_headers(self):
-
-		# no headers
+		"""Verify adding new column with headers"""
 
 		data.headers = ('first', 'last')
 
