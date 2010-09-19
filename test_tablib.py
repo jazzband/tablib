@@ -16,12 +16,12 @@ class TablibTestCase(unittest.TestCase):
 		global data
 		data = tablib.Dataset()
 
-		headers = ('first_name', 'last_name', 'gpa')
+		self.headers = ('first_name', 'last_name', 'gpa')
 		self.john = ('John', 'Adams', 90)
 		self.george = ('George', 'Washington', 67)
 		self.tom = ('Thomas', 'Jefferson', 50)
 
-		self.founders = tablib.Dataset(headers=headers)
+		self.founders = tablib.Dataset(headers=self.headers)
 		self.founders.append(self.john)
 		self.founders.append(self.george)
 		self.founders.append(self.tom)
@@ -144,6 +144,23 @@ class TablibTestCase(unittest.TestCase):
 
 		# Delete from invalid index
 		self.assertRaises(IndexError, self.founders.__delitem__, 3)
+
+	def test_csv_export(self):
+		"""Verify exporting dataset object as CSV"""
+
+		# Build up the csv string with headers first, followed by each row
+		csv = ""
+		for col in self.headers:
+			csv += col + ","
+
+		csv = csv.strip(",") + "\r\n"
+
+		for founder in self.founders:
+			for col in founder:
+				csv += str(col) + ","
+			csv = csv.strip(",") + "\r\n"
+
+		self.assertEqual(csv, self.founders.csv)
 
 
 if __name__ == '__main__':
