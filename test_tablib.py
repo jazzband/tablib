@@ -32,7 +32,7 @@ class TablibTestCase(unittest.TestCase):
 
 	def test_empty_append(self):
 		"""Verify append() correctly adds tuple with no headers"""
-		new_row = (1,2,3)
+		new_row = (1, 2, 3)
 		data.append(new_row)
 
 		# Verify width/data
@@ -47,7 +47,6 @@ class TablibTestCase(unittest.TestCase):
 		new_row = (1, 2, 3, 4)
 
 		self.assertRaises(tablib.InvalidDimensions, data.append, new_row)
-
 
 	def test_add_column(self):
 		# No Headers
@@ -68,7 +67,7 @@ class TablibTestCase(unittest.TestCase):
 		data.append(col=new_col)
 
 		self.assertEquals(data[new_col[0]], new_col[1:])
-		
+
 	def test_add_column_no_data_no_headers(self):
 
 		# no headers
@@ -94,11 +93,11 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEquals(data.width, 3)
 
 		new_col = ('foo', 'bar')
-		
+
 		self.assertRaises(tablib.InvalidDimensions, data.append, col=new_col)
 
 	def tuple_check(self):
-		data.append(col=(1,2,3))
+		data.append(col=(1, 2, 3))
 
 	def test_header_slicing(self):
 		"""Verify slicing by headers"""
@@ -126,6 +125,6 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(self.founders[1:3], [self.george, self.tom])
 		self.assertEqual(self.founders[2:], [self.tom])
 
-	
+
 if __name__ == '__main__':
 	unittest.main()
