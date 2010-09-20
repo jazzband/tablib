@@ -18,7 +18,7 @@ if sys.argv[-1] == "publish":
 
 setup(
 	name='tablib',
-	version='0.6.3',
+	version='0.6.4',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
