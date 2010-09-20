@@ -8,7 +8,7 @@
 
 
 import csv
-import cStringIO
+import StringIO
 import random
 
 import simplejson as json
@@ -171,7 +171,7 @@ class Dataset(object):
 	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
-		stream = cStringIO.StringIO()
+		stream = StringIO.StringIO()
 		_csv = csv.writer(stream)
 
 		for row in self._package(dicts=False):
@@ -183,13 +183,13 @@ class Dataset(object):
 	@property
 	def xls(self):
 		"""Returns XLS representation of Dataset."""
-		stream = cStringIO.StringIO()
+		stream = StringIO.StringIO()
 
-		wb = xlwt.Workbook()
+		wb = xlwt.Workbook(encoding='utf8')
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, col.decode('utf8'))
+				ws.write(i, j, col)
 
 		wb.save(stream)
 		return stream.getvalue()
@@ -272,7 +272,7 @@ class DataBook(object):
 		"""Returns XLS representation of DataBook."""
 
 		stream = cStringIO.StringIO()
-		wb = xlwt.Workbook()
+		wb = xlwt.Workbook(encoding='utf8')
 
 		for i, dset in enumerate(self._datasets):
 			ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
@@ -280,7 +280,7 @@ class DataBook(object):
 			#for row in self._package(dicts=False):
 			for i, row in enumerate(dset._package(dicts=False)):
 				for j, col in enumerate(row):
-					ws.write(i, j, str(col))
+					ws.write(i, j, col)
 
 		wb.save(stream)
 		return stream.getvalue()
