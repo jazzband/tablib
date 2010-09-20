@@ -21,8 +21,8 @@ from helpers import *
 # __all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
-__version__ = '0.6.4'
-__build__ = 0x000604
+__version__ = '0.7.0'
+__build__ = 0x000700
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -178,16 +178,21 @@ class Dataset(object):
 
 	def xls(self, path=None):
 		"""Returns XLS representation of Dataset."""
-		stream = StringIO.StringIO()
 
 		wb = xlwt.Workbook(encoding='utf8')
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
+
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
 				ws.write(i, j, col)
 
-		wb.save(stream)
-		return stream.getvalue()
+		if path:
+			wb.save(path)
+			return True
+		else:
+			stream = StringIO.StringIO()
+			wb.save(stream)
+			return stream.getvalue()
 
 
 	def append(self, row=None, col=None):
@@ -222,7 +227,7 @@ class Dataset(object):
 			pass
 
 
-class DataBook(object):
+class Databook(object):
 	"""A book of Dataset objects.
 	   Currently, this exists only for XLS workbook support.
 	"""
@@ -265,7 +270,7 @@ class DataBook(object):
 	def xls(self, path=None):
 		"""Returns XLS representation of DataBook."""
 
-		stream = cStringIO.StringIO()
+
 		wb = xlwt.Workbook(encoding='utf8')
 
 		for i, dset in enumerate(self._datasets):
@@ -276,8 +281,15 @@ class DataBook(object):
 				for j, col in enumerate(row):
 					ws.write(i, j, col)
 
-		wb.save(stream)
-		return stream.getvalue()
+
+
+		if path:
+			wb.save(path)
+			return True
+		else:
+			stream = cStringIO.StringIO()
+			wb.save(stream)
+			return stream.getvalue()
 
 
 	def json(self):
