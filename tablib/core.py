@@ -256,7 +256,7 @@ class Databook(object):
 		for dset in self._datasets:
 			collector.append(dict(
 				title = dset.title,
-				data = dset.dict()
+				data = dset.dict
 			))
 		return collector
 
