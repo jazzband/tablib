@@ -156,23 +156,31 @@ class TablibTestCase(unittest.TestCase):
 		"""Verify exporting dataset object as CSV."""
 
 		# Build up the csv string with headers first, followed by each row
-		csv = ""
+		csv = ''
 		for col in self.headers:
-			csv += col + ","
+			csv += col + ','
 
-		csv = csv.strip(",") + "\r\n"
+		csv = csv.strip(',') + '\r\n'
 
 		for founder in self.founders:
 			for col in founder:
-				csv += str(col) + ","
-			csv = csv.strip(",") + "\r\n"
+				csv += str(col) + ','
+			csv = csv.strip(',') + '\r\n'
 
 		self.assertEqual(csv, self.founders.csv)
 
 
 	def test_unicode_append(self):
 		"""Passes in a single unicode charecter and exports."""
-		pass
 
+		new_row = ('å', 'é')
+		data.append(new_row)
+
+		data.json
+		data.yaml
+		data.csv
+		data.xls
+
+	
 if __name__ == '__main__':
 	unittest.main()

@@ -189,7 +189,7 @@ class Dataset(object):
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, str(col))
+				ws.write(i, j, col.decode('utf8'))
 
 		wb.save(stream)
 		return stream.getvalue()
