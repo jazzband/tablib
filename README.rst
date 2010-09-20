@@ -70,7 +70,7 @@ JSON!
 +++++
 ::
 
-	>>> print data.json
+	>>> print data.json()
 	[
 	  {
 	    "last_name": "Adams",
@@ -89,7 +89,7 @@ YAML!
 +++++
 ::
 
-	>>> print data.yaml
+	>>> print data.yaml()
 	- {age: 90, first_name: John, last_name: Adams}
 	- {age: 83, first_name: Henry, last_name: Ford}
 	
@@ -97,7 +97,7 @@ CSV...
 ++++++
 ::
 
-	>>> print data.csv
+	>>> print data.csv()
 	first_name,last_name,age 
 	John,Adams,90 
 	Henry,Ford,83 
@@ -106,8 +106,8 @@ EXCEL!
 ++++++
 ::
 
-	>>> open('people.xls').write(data.xls)
-		
+	>>> data.xls('people.xls')
+
 It's that easy.
 	
     
