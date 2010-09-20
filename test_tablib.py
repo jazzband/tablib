@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for tablib"""
+"""Tests for tablib."""
 
 import unittest
 
@@ -9,10 +9,10 @@ import tablib
 
 
 class TablibTestCase(unittest.TestCase):
-	"""Tablib test cases"""
+	"""Tablib test cases."""
 
 	def setUp(self):
-		"""Create simple data set with headers"""
+		"""Create simple data set with headers."""
 		global data
 		data = tablib.Dataset()
 
@@ -28,12 +28,12 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def tearDown(self):
-		"""teardown"""
+		"""Teardown."""
 		pass
 
 
 	def test_empty_append(self):
-		"""Verify append() correctly adds tuple with no headers"""
+		"""Verify append() correctly adds tuple with no headers."""
 		new_row = (1, 2, 3)
 		data.append(new_row)
 
@@ -44,7 +44,7 @@ class TablibTestCase(unittest.TestCase):
 
 	def test_empty_append_with_headers(self):
 		"""Verify append() correctly detects mismatch of number of
-		headers and data
+		headers and data.
 		"""
 		data.headers = ['first', 'second']
 		new_row = (1, 2, 3, 4)
@@ -53,7 +53,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_add_column(self):
-		"""Verify adding column works with/without headers"""
+		"""Verify adding column works with/without headers."""
 
 		data.append(['kenneth'])
 		data.append(['bessie'])
@@ -74,7 +74,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_add_column_no_data_no_headers(self):
-		"""Verify adding new column with no headers"""
+		"""Verify adding new column with no headers."""
 
 		new_col = ('reitz', 'monke')
 
@@ -86,7 +86,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_add_column_no_data_with_headers(self):
-		"""Verify adding new column with headers"""
+		"""Verify adding new column with headers."""
 
 		data.headers = ('first', 'last')
 
@@ -102,11 +102,12 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def tuple_check(self):
+		#TODO: tuple check
 		data.append(col=(1, 2, 3))
 
 
 	def test_header_slicing(self):
-		"""Verify slicing by headers"""
+		"""Verify slicing by headers."""
 
 		self.assertEqual(self.founders['first_name'],
 						[self.john[0], self.george[0], self.tom[0]])
@@ -117,7 +118,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_data_slicing(self):
-		"""Verify slicing by data"""
+		"""Verify slicing by data."""
 
 		# Slice individual rows
 		self.assertEqual(self.founders[0], self.john)
@@ -134,7 +135,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_delete(self):
-		"""Verify deleting from dataset works"""
+		"""Verify deleting from dataset works."""
 
 		# Delete from front of object
 		del self.founders[0]
@@ -157,7 +158,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_csv_export(self):
-		"""Verify exporting dataset object as CSV"""
+		"""Verify exporting dataset object as CSV."""
 
 		# Build up the csv string with headers first, followed by each row
 		csv = ""
@@ -173,6 +174,10 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(csv, self.founders.csv)
 
+
+	def test_unicode_append(self):
+		"""Passes in a single unicode charecter and exports."""
+		pass
 
 if __name__ == '__main__':
 	unittest.main()
