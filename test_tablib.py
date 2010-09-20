@@ -26,9 +26,11 @@ class TablibTestCase(unittest.TestCase):
 		self.founders.append(self.george)
 		self.founders.append(self.tom)
 
+
 	def tearDown(self):
 		"""teardown"""
 		pass
+
 
 	def test_empty_append(self):
 		"""Verify append() correctly adds tuple with no headers"""
@@ -39,6 +41,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertTrue(data.width == len(new_row))
 		self.assertTrue(data[0] == new_row)
 
+
 	def test_empty_append_with_headers(self):
 		"""Verify append() correctly detects mismatch of number of
 		headers and data
@@ -47,6 +50,7 @@ class TablibTestCase(unittest.TestCase):
 		new_row = (1, 2, 3, 4)
 
 		self.assertRaises(tablib.InvalidDimensions, data.append, new_row)
+
 
 	def test_add_column(self):
 		"""Verify adding column works with/without headers"""
@@ -68,6 +72,7 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEquals(data[new_col[0]], new_col[1:])
 
+
 	def test_add_column_no_data_no_headers(self):
 		"""Verify adding new column with no headers"""
 
@@ -78,6 +83,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEquals(data[0], tuple([new_col[0]]))
 		self.assertEquals(data.width, 1)
 		self.assertEquals(data.height, len(new_col))
+
 
 	def test_add_column_no_data_with_headers(self):
 		"""Verify adding new column with headers"""
@@ -94,8 +100,10 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertRaises(tablib.InvalidDimensions, data.append, col=new_col)
 
+
 	def tuple_check(self):
 		data.append(col=(1, 2, 3))
+
 
 	def test_header_slicing(self):
 		"""Verify slicing by headers"""
@@ -106,6 +114,7 @@ class TablibTestCase(unittest.TestCase):
 						[self.john[1], self.george[1], self.tom[1]])
 		self.assertEqual(self.founders['gpa'],
 						[self.john[2], self.george[2], self.tom[2]])
+
 
 	def test_data_slicing(self):
 		"""Verify slicing by data"""
@@ -122,6 +131,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(self.founders[0:2], [self.john, self.george])
 		self.assertEqual(self.founders[1:3], [self.george, self.tom])
 		self.assertEqual(self.founders[2:], [self.tom])
+
 
 	def test_delete(self):
 		"""Verify deleting from dataset works"""
@@ -144,6 +154,7 @@ class TablibTestCase(unittest.TestCase):
 
 		# Delete from invalid index
 		self.assertRaises(IndexError, self.founders.__delitem__, 3)
+
 
 	def test_csv_export(self):
 		"""Verify exporting dataset object as CSV"""
