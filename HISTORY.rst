@@ -1,11 +1,20 @@
 History
 =======
 
-0.6.4 (2010-09-13)
+0.7.0 (2010-09-20)
 ------------------
 
-* Updated unicode export for XLS
-* More exhaustive unit tests
+* Renamed DataBook Databook for consistiency.
+* Export properties changed to methods (XLS filename / StringIO bug).
+* Optional Dataset.xls(path='filename') support (for writing on windows).
+* Added utf-8 on the worksheet level.
+
+
+0.6.4 (2010-09-19)
+------------------
+
+* Updated unicode export for XLS.
+* More exhaustive unit tests.
 
 
 0.6.3 (2010-09-14)

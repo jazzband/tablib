@@ -167,7 +167,7 @@ class TablibTestCase(unittest.TestCase):
 				csv += str(col) + ','
 			csv = csv.strip(',') + '\r\n'
 
-		self.assertEqual(csv, self.founders.csv)
+		self.assertEqual(csv, self.founders.csv())
 
 
 	def test_unicode_append(self):
@@ -176,10 +176,10 @@ class TablibTestCase(unittest.TestCase):
 		new_row = ('å', 'é')
 		data.append(new_row)
 
-		data.json
-		data.yaml
-		data.csv
-		data.xls
+		data.json()
+		data.yaml()
+		data.csv()
+		data.xls()
 
 	
 if __name__ == '__main__':

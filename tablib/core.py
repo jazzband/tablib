@@ -8,7 +8,7 @@
 
 
 import csv
-import cStringIO
+import StringIO
 import random
 
 import simplejson as json
@@ -21,8 +21,8 @@ from helpers import *
 # __all__ = ['Dataset', 'DataBook']
 
 __name__ = 'tablib'
-__version__ = '0.6.4'
-__build__ = 0x000604
+__version__ = '0.7.0'
+__build__ = 0x000700
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -149,29 +149,25 @@ class Dataset(object):
 			self.__headers = None
 
 
-
 	@property
 	def dict(self):
 		"""Returns python dict of Dataset."""
 		return self._package()
 
 
-	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
 		return json.dumps(self.dict)
 
 
-	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
 		return yaml.dump(self.dict)
 
 
-	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
-		stream = cStringIO.StringIO()
+		stream = StringIO.StringIO()
 		_csv = csv.writer(stream)
 
 		for row in self._package(dicts=False):
@@ -180,19 +176,23 @@ class Dataset(object):
 		return stream.getvalue()
 
 
-	@property
-	def xls(self):
+	def xls(self, path=None):
 		"""Returns XLS representation of Dataset."""
-		stream = cStringIO.StringIO()
 
-		wb = xlwt.Workbook()
+		wb = xlwt.Workbook(encoding='utf8')
 		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
+
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, col.decode('utf8'))
+				ws.write(i, j, col)
 
-		wb.save(stream)
-		return stream.getvalue()
+		if path:
+			wb.save(path)
+			return True
+		else:
+			stream = StringIO.StringIO()
+			wb.save(stream)
+			return stream.getvalue()
 
 
 	def append(self, row=None, col=None):
@@ -227,7 +227,7 @@ class Dataset(object):
 			pass
 
 
-class DataBook(object):
+class Databook(object):
 	"""A book of Dataset objects.
 	   Currently, this exists only for XLS workbook support.
 	"""
@@ -256,7 +256,7 @@ class DataBook(object):
 		for dset in self._datasets:
 			collector.append(dict(
 				title = dset.title,
-				data = dset.dict
+				data = dset.dict()
 			))
 		return collector
 
@@ -267,12 +267,11 @@ class DataBook(object):
 		return len(self._datasets)
 
 
-	@property
-	def xls(self):
+	def xls(self, path=None):
 		"""Returns XLS representation of DataBook."""
 
-		stream = cStringIO.StringIO()
-		wb = xlwt.Workbook()
+
+		wb = xlwt.Workbook(encoding='utf8')
 
 		for i, dset in enumerate(self._datasets):
 			ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
@@ -280,20 +279,25 @@ class DataBook(object):
 			#for row in self._package(dicts=False):
 			for i, row in enumerate(dset._package(dicts=False)):
 				for j, col in enumerate(row):
-					ws.write(i, j, str(col))
+					ws.write(i, j, col)
 
-		wb.save(stream)
-		return stream.getvalue()
 
-	
-	@property
+
+		if path:
+			wb.save(path)
+			return True
+		else:
+			stream = cStringIO.StringIO()
+			wb.save(stream)
+			return stream.getvalue()
+
+
 	def json(self):
 		"""Returns JSON representation of Databook."""
 
 		return json.dumps(self._package())
 
 
-	@property
 	def yaml(self):
 		"""Returns YAML representation of Databook."""
 
