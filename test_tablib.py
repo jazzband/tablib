@@ -101,11 +101,6 @@ class TablibTestCase(unittest.TestCase):
 		self.assertRaises(tablib.InvalidDimensions, data.append, col=new_col)
 
 
-	def tuple_check(self):
-		#TODO: tuple check
-		data.append(col=(1, 2, 3))
-
-
 	def test_header_slicing(self):
 		"""Verify slicing by headers."""
 
