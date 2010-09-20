@@ -149,26 +149,22 @@ class Dataset(object):
 			self.__headers = None
 
 
-
 	@property
 	def dict(self):
 		"""Returns python dict of Dataset."""
 		return self._package()
 
 
-	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
 		return json.dumps(self.dict)
 
 
-	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
 		return yaml.dump(self.dict)
 
 
-	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
 		stream = StringIO.StringIO()
@@ -180,8 +176,7 @@ class Dataset(object):
 		return stream.getvalue()
 
 
-	@property
-	def xls(self):
+	def xls(self, path=None):
 		"""Returns XLS representation of Dataset."""
 		stream = StringIO.StringIO()
 
@@ -256,7 +251,7 @@ class DataBook(object):
 		for dset in self._datasets:
 			collector.append(dict(
 				title = dset.title,
-				data = dset.dict
+				data = dset.dict()
 			))
 		return collector
 
@@ -267,8 +262,7 @@ class DataBook(object):
 		return len(self._datasets)
 
 
-	@property
-	def xls(self):
+	def xls(self, path=None):
 		"""Returns XLS representation of DataBook."""
 
 		stream = cStringIO.StringIO()
@@ -285,15 +279,13 @@ class DataBook(object):
 		wb.save(stream)
 		return stream.getvalue()
 
-	
-	@property
+
 	def json(self):
 		"""Returns JSON representation of Databook."""
 
 		return json.dumps(self._package())
 
 
-	@property
 	def yaml(self):
 		"""Returns YAML representation of Databook."""
 
