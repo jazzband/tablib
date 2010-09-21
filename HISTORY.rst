@@ -1,6 +1,13 @@
 History
 =======
 
+0.7.1 (2010-09-20)
+------------------
+
+* Reverting methods back to properties. 
+* Windows bug compenated in documentation.
+
+
 0.7.0 (2010-09-20)
 ------------------
 
