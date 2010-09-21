@@ -131,7 +131,7 @@ If you'd like to contribute, simply fork `the repository`_, commit your changes 
 
 Roadmap
 -------
-- Import datasets from CSV, JSON, YAML
+- Import datasets from CSV.
 - Release CLI Interface
 - Auto-detect import format
 - Add possible other exports (SQL?)
