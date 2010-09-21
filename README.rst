@@ -131,7 +131,6 @@ If you'd like to contribute, simply fork `the repository`_, commit your changes 
 
 Roadmap
 -------
-- Add ability to add/remove full columns
 - Import datasets from CSV, JSON, YAML
 - Release CLI Interface
 - Auto-detect import format
