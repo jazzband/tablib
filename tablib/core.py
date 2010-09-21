@@ -8,7 +8,7 @@
 
 
 import csv
-import StringIO
+import cStringIO
 import random
 
 import simplejson as json
@@ -155,19 +155,20 @@ class Dataset(object):
 		return self._package()
 
 
+	@property
 	def json(self):
 		"""Returns JSON representation of Dataset."""
 		return json.dumps(self.dict)
 
-
+	@property
 	def yaml(self):
 		"""Returns YAML representation of Dataset."""
 		return yaml.dump(self.dict)
 
-
+	@property
 	def csv(self):
 		"""Returns CSV representation of Dataset."""
-		stream = StringIO.StringIO()
+		stream = cStringIO.StringIO()
 		_csv = csv.writer(stream)
 
 		for row in self._package(dicts=False):
@@ -175,8 +176,8 @@ class Dataset(object):
 
 		return stream.getvalue()
 
-
-	def xls(self, path=None):
+	@property
+	def xls(self):
 		"""Returns XLS representation of Dataset."""
 
 		wb = xlwt.Workbook(encoding='utf8')
@@ -186,13 +187,9 @@ class Dataset(object):
 			for j, col in enumerate(row):
 				ws.write(i, j, col)
 
-		if path:
-			wb.save(path)
-			return True
-		else:
-			stream = StringIO.StringIO()
-			wb.save(stream)
-			return stream.getvalue()
+		stream = cStringIO.StringIO()
+		wb.save(stream)
+		return stream.getvalue()
 
 
 	def append(self, row=None, col=None):
@@ -266,8 +263,8 @@ class Databook(object):
 		"""The number of the Datasets within DataBook."""
 		return len(self._datasets)
 
-
-	def xls(self, path=None):
+	@property
+	def xls(self):
 		"""Returns XLS representation of DataBook."""
 
 
@@ -282,22 +279,19 @@ class Databook(object):
 					ws.write(i, j, col)
 
 
-
-		if path:
-			wb.save(path)
-			return True
-		else:
-			stream = cStringIO.StringIO()
-			wb.save(stream)
-			return stream.getvalue()
+		stream = cStringIO.StringIO()
+		wb.save(stream)
+		return stream.getvalue()
 
 
+	@property
 	def json(self):
 		"""Returns JSON representation of Databook."""
 
 		return json.dumps(self._package())
 
 
+	@property
 	def yaml(self):
 		"""Returns YAML representation of Databook."""
 
