@@ -224,9 +224,9 @@ class TablibTestCase(unittest.TestCase):
 		data.append(self.john)
 		data.append(self.george)
 		data.headers = self.headers
-#		new_data = tablib.formats.csv.import_set(str(data.csv))
+		new_data = tablib.formats.csv.import_set(str(data.csv))
 
-#		new_data.headers = self.headers
+		new_data.headers = self.headers
 		new_data = tablib.formats.csv.import_set(str(data.csv))
 #		print new_data
 
