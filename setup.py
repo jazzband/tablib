@@ -11,7 +11,6 @@ def publish():
 	"""Publish to PyPi"""
 	os.system("python setup.py sdist upload")
 
-
 if sys.argv[-1] == "publish":
 	publish()
 	sys.exit()
