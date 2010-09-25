@@ -17,13 +17,11 @@ def export_book(databook):
 	return json.dumps(databook._package())
 	
 
-def import_set(in_stream):
+def import_set(dset, in_stream):
 	"""Returns dataset from JSON stream."""
 	
-	data = tablib.core.Dataset()
-	data.dict = json.loads(in_stream)
-
-	return data
+	dset.wipe()
+	dset.dict = json.loads(in_stream)
 
 
 def import_book(in_stream):

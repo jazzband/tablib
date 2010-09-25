@@ -18,13 +18,11 @@ def export_book(databook):
 	return yaml.dump(databook._package())
 
 
-def import_set(in_stream):
+def import_set(dset):
 	"""Returns dataset from YAML stream."""
 
-	data = tablib.core.Dataset()
-	data.dict = yaml.load(in_stream)
-
-	return data
+	dset.wipe()
+	dset.dict = yaml.load(in_stream)
 
 
 def import_book(in_stream):

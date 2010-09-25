@@ -5,7 +5,7 @@ import cStringIO
 
 
 title = 'xls'
-extentions = ('xls')
+extentions = ('xls',)
 
 
 def export_set(dataset):

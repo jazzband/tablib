@@ -25,17 +25,15 @@ def export_set(dataset):
 	return stream.getvalue()
 
 
-def import_set(in_stream, headers=True):
+def import_set(dset, in_stream, headers=True):
 	"""Returns dataset from CSV stream."""
 
-	data = tablib.core.Dataset()
+	dset.wipe()
 
 	rows = csv.reader(in_stream.split())
 	for i, row in enumerate(rows):
 
 		if (i == 0) and (headers):
-			data.headers = row
+			dset.headers = row
 		else:
-			data.append(row)
-
-	return data
+			dset.append(row)
