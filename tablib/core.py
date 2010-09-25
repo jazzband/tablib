@@ -230,7 +230,7 @@ class Databook(object):
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
-		for fmt in formats.formats:
+		for fmt in formats:
 			try:
 				setattr(cls, fmt.title, property(fmt.export_book))
 			except Exception, why:
