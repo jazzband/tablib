@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Tablib - core.
+""" Tablib - Core Library.
 """
 
 from tablib.formats import formats

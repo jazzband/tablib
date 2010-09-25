@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+""" Tablib - JSON Support
+"""
+
 import simplejson as json
 import tablib.core
 

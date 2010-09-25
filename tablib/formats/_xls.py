@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+""" Tablib - XLS Support.
+"""
+
 import xlwt
 import cStringIO
 

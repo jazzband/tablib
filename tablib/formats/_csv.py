@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+""" Tablib - CSV Support.
+"""
+
 import cStringIO
 import csv
 import os
