@@ -129,7 +129,7 @@ class Dataset(object):
 
 
 	@headers.setter
-	def headers_set(self, collection):
+	def headers(self, collection):
 		"""Validating headers setter."""
 		self._validate(collection)
 		if collection:
