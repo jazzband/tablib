@@ -25,3 +25,16 @@ def import_set(in_stream):
 	data.dict = yaml.load(in_stream)
 
 	return data
+
+
+def import_book(in_stream):
+	"""Returns databook from YAML stream."""
+
+	book = tablib.core.Databook()
+	for sheet in yaml.load(in_stream):
+		data = tablib.core.Dataset()
+		data.title = sheet['title']
+		data.dict = sheet['data']
+		book.add_sheet(data)
+
+	return book

@@ -33,7 +33,7 @@ def import_set(in_stream, headers=True):
 	rows = csv.reader(in_stream.split())
 	for i, row in enumerate(rows):
 
-		if (i == 1) and (headers):
+		if (i == 0) and (headers):
 			data.headers = row
 		else:
 			data.append(row)

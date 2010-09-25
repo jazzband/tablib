@@ -200,6 +200,11 @@ class TablibTestCase(unittest.TestCase):
 
 		new_data.headers = self.headers
 		new_data = tablib.formats.json.import_set(str(new_data.json))
+		
+		book = tablib.Databook()
+		book.add_sheet(new_data)
+		new_book = tablib.formats.json.import_book(str(book.json))
+		
 
 	def test_yaml_import(self):
 		"""Generate and import YAML serialization."""
@@ -208,6 +213,11 @@ class TablibTestCase(unittest.TestCase):
 
 		new_data.headers = self.headers
 		new_data = tablib.formats.yaml.import_set(str(new_data.json))
+		
+		book = tablib.Databook()
+		book.add_sheet(new_data)
+		new_book = tablib.formats.yaml.import_book(str(book.yaml))
+		
 
 	def test_csv_import(self):
 		"""Generate and import CSV serialization."""
