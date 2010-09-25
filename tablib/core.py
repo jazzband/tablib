@@ -76,8 +76,12 @@ class Dataset(object):
 		"""Adds format properties."""
 		for fmt in formats:
 			try:
-				setattr(cls, fmt.title, property(fmt.export_set))
-			except Exception:
+				try:
+					setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
+				except AttributeError:
+					setattr(cls, fmt.title, property(fmt.export_set))
+					
+			except AttributeError:
 				pass
 
 
@@ -234,8 +238,12 @@ class Databook(object):
 		"""Adds format properties."""
 		for fmt in formats:
 			try:
-				setattr(cls, fmt.title, property(fmt.export_book))
-			except Exception:
+				try:
+					setattr(cls, fmt.title, property(fmt.export_book, fmt.import_book))
+				except AttributeError:
+					setattr(cls, fmt.title, property(fmt.export_book))
+					
+			except AttributeError:
 				pass
 
 
