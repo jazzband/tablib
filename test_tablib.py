@@ -13,8 +13,10 @@ class TablibTestCase(unittest.TestCase):
 
 	def setUp(self):
 		"""Create simple data set with headers."""
-		global data
+
+		global data, book
 		data = tablib.Dataset()
+		book = tablib.Databook()
 
 		self.headers = ('first_name', 'last_name', 'gpa')
 		self.john = ('John', 'Adams', 90)
@@ -181,6 +183,101 @@ class TablibTestCase(unittest.TestCase):
 		data.csv
 		data.xls
 
+ 
+	def test_book_export_no_exceptions(self):
+		"""Test that varoius exports don't error out."""
+
+		book = tablib.Databook()
+		book.add_sheet(data)
+
+		book.json
+		book.yaml
+		book.xls
+
+
+	def test_json_import_set(self):
+		"""Generate and import JSON set serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		_json = data.json
+
+		data.json = _json
+
+		self.assertEqual(_json, data.json)
+
+
+	def test_json_import_book(self):
+		"""Generate and import JSON book serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		book.add_sheet(data)
+		_json = book.json
+
+		book.json = _json
+
+		self.assertEqual(_json, book.json)
+
+
+	def test_yaml_import_set(self):
+		"""Generate and import YAML set serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		_yaml = data.yaml
+
+		data.yaml = _yaml
+
+		self.assertEqual(_yaml, data.yaml)
+
+		
+	def test_yaml_import_book(self):
+		"""Generate and import YAML book serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		book.add_sheet(data)
+		_yaml = book.yaml
+
+		book.yaml = _yaml
+
+		self.assertEqual(_yaml, book.yaml)
+		
+
+	def test_csv_import_set(self):
+		"""Generate and import CSV set serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		_csv = data.csv
+
+		data.csv = _csv
+
+		self.assertEqual(_csv, data.csv)
+
+
+	def test_wipe(self):
+		"""Purge a dataset."""
+		
+		new_row = (1, 2, 3)
+		data.append(new_row)
+
+		# Verify width/data
+		self.assertTrue(data.width == len(new_row))
+		self.assertTrue(data[0] == new_row)
+		
+		data.wipe()
+		new_row = (1, 2, 3, 4)
+		data.append(new_row)
+		self.assertTrue(data.width == len(new_row))
+		self.assertTrue(data[0] == new_row)
 	
+		
 if __name__ == '__main__':
 	unittest.main()
