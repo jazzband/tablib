@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-""" Tablib - Core Library
-"""
+# _____         ______  ______        _________
+# __  /_______ ____  /_ ___  /_ _____ ______  /
+# _  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
+# / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
+# \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
 
 
 import csv
@@ -10,6 +13,8 @@ import cStringIO
 import simplejson as json
 import xlwt
 import yaml
+
+from tablib.formats import formats
 
 
 __title__ = 'tablib'
@@ -24,22 +29,20 @@ class Dataset(object):
 	"""Epic Tabular-Dataset object. """
 
 	def __init__(self, *args, **kwargs):
-		self._data = None
-		self._saved_file = None
-		self._saved_format = None
 		self._data = list(args)
 		self.__headers = None
 
 		try:
 			self.headers = kwargs['headers']
-		except KeyError:
+		except KeyError, why:
 			self.headers = None
 
 		try:
 			self.title = kwargs['title']
-		except KeyError:
+		except KeyError, why:
 			self.title = None
 
+		self._register_formats()
 
 	def __len__(self):
 		return self.height
@@ -70,6 +73,16 @@ class Dataset(object):
 			return '<%s dataset>' % (self.title.lower())
 		except AttributeError:
 			return '<dataset object>'
+
+	
+	@classmethod
+	def _register_formats(cls):
+		"""Adds format properties."""
+		for fmt in formats:
+			try:
+				setattr(cls, fmt.title, property(fmt.export_set))
+			except Exception, why:
+				pass
 
 
 	def _validate(self, row=None, col=None, safety=False):
@@ -105,6 +118,7 @@ class Dataset(object):
 
 		return data
 
+	
 	@property
 	def height(self):
 		"""Returns the height of the Dataset."""
@@ -116,12 +130,13 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		try:
 			return len(self._data[0])
-		except IndexError:
+		except IndexError, why:
 			try:
 				return len(self.headers)
-			except TypeError:
+			except TypeError, e:
 				return 0
-	
+
+
 	@property
 	def headers(self):
 		"""Headers property."""
@@ -135,7 +150,7 @@ class Dataset(object):
 		if collection:
 			try:
 				self.__headers = list(collection)
-			except TypeError:
+			except TypeError, why:
 				raise TypeError
 		else:
 			self.__headers = None
@@ -146,42 +161,21 @@ class Dataset(object):
 		"""Returns python dict of Dataset."""
 		return self._package()
 
-
-	@property
-	def json(self):
-		"""Returns JSON representation of Dataset."""
-		return json.dumps(self.dict)
-
-	@property
-	def yaml(self):
-		"""Returns YAML representation of Dataset."""
-		return yaml.dump(self.dict)
-
-	@property
-	def csv(self):
-		"""Returns CSV representation of Dataset."""
-		stream = cStringIO.StringIO()
-		_csv = csv.writer(stream)
-
-		for row in self._package(dicts=False):
-			_csv.writerow(row)
-
-		return stream.getvalue()
-
-	@property
-	def xls(self):
-		"""Returns XLS representation of Dataset."""
-
-		workb = xlwt.Workbook(encoding='utf8')
-		works = workb.add_sheet(self.title if self.title else 'Tabbed Dataset')
-
-		for i, row in enumerate(self._package(dicts=False)):
-			for j, col in enumerate(row):
-				works.write(i, j, col)
-
-		stream = cStringIO.StringIO()
-		workb.save(stream)
-		return stream.getvalue()
+	
+	@dict.setter
+	def dict(self, pickle):
+		"""Returns python dict of Dataset."""
+		if not len(pickle):
+			return
+		if isinstance(pickle[0], list):
+			for row in pickle:
+				self.append(row)
+		elif isinstance(pickle[0], dict):
+			self.headers = pickle[0].keys()
+			for row in pickle:
+				self.append(row.values())
+		else:
+			raise UnsupportedFormat
 
 
 	def append(self, row=None, col=None):
@@ -223,10 +217,24 @@ class Databook(object):
 
 	def __init__(self, sets=[]):
 		self._datasets = sets
+		self._register_formats()
 
 
 	def __repr__(self):
-		return '<databook object>'
+		try:
+			return '<%s databook>' % (self.title.lower())
+		except AttributeError:
+			return '<databook object>'
+
+
+	@classmethod
+	def _register_formats(cls):
+		"""Adds format properties."""
+		for fmt in formats.formats:
+			try:
+				setattr(cls, fmt.title, property(fmt.export_book))
+			except Exception, why:
+				pass
 
 
 	def add_sheet(self, dataset):
@@ -251,40 +259,6 @@ class Databook(object):
 	def size(self):
 		"""The number of the Datasets within DataBook."""
 		return len(self._datasets)
-
-	@property
-	def xls(self):
-		"""Returns XLS representation of DataBook."""
-
-
-		workb = xlwt.Workbook(encoding='utf8')
-
-		for i, dset in enumerate(self._datasets):
-			works = workb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
-
-			#for row in self._package(dicts=False):
-			for i, row in enumerate(dset._package(dicts=False)):
-				for j, col in enumerate(row):
-					works.write(i, j, col)
-
-
-		stream = cStringIO.StringIO()
-		workb.save(stream)
-		return stream.getvalue()
-
-
-	@property
-	def json(self):
-		"""Returns JSON representation of Databook."""
-
-		return json.dumps(self._package())
-
-
-	@property
-	def yaml(self):
-		"""Returns YAML representation of Databook."""
-
-		return yaml.dump(self._package())
 
 
 
