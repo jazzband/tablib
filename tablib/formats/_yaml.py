@@ -18,7 +18,7 @@ def export_book(databook):
 	return yaml.dump(databook._package())
 
 
-def import_set(dset):
+def import_set(dset, in_stream):
 	"""Returns dataset from YAML stream."""
 
 	dset.wipe()
