@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 
-# _____         ______  ______        _________
-# __  /_______ ____  /_ ___  /_ _____ ______  /
-# _  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
-# / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
-# \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
+""" Tablib - Core Library
+"""
 
 
 import csv
 import cStringIO
-import random
 
 import simplejson as json
 import xlwt
 import yaml
 
-from helpers import *
+from helpers import Struct
 
 
 # __all__ = ['Dataset', 'DataBook']
