@@ -228,7 +228,7 @@ class TablibTestCase(unittest.TestCase):
 
 		new_data.headers = self.headers
 		new_data = tablib.formats.csv.import_set(str(data.csv))
-#		print new_data
+
 
 	def test_wipe(self):
 		"""Purge a dataset."""
@@ -245,6 +245,7 @@ class TablibTestCase(unittest.TestCase):
 		data.append(new_row)
 		self.assertTrue(data.width == len(new_row))
 		self.assertTrue(data[0] == new_row)
+	
 		
 if __name__ == '__main__':
 	unittest.main()
