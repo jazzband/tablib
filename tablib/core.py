@@ -238,6 +238,7 @@ class Databook(object):
 
 
 	def _package(self):
+		"""Packages Databook for delivery."""
 		collector = []
 		for dset in self._datasets:
 			collector.append(dict(
