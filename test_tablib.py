@@ -13,8 +13,10 @@ class TablibTestCase(unittest.TestCase):
 
 	def setUp(self):
 		"""Create simple data set with headers."""
-		global data
+
+		global data, book
 		data = tablib.Dataset()
+		book = tablib.Databook()
 
 		self.headers = ('first_name', 'last_name', 'gpa')
 		self.john = ('John', 'Adams', 90)
@@ -194,7 +196,7 @@ class TablibTestCase(unittest.TestCase):
 
 
 	def test_json_import_set(self):
-		"""Generate and import JSON serialization."""
+		"""Generate and import JSON set serialization."""
 		data.append(self.john)
 		data.append(self.george)
 		data.headers = self.headers
@@ -204,10 +206,24 @@ class TablibTestCase(unittest.TestCase):
 		data.json = _json
 
 		self.assertEqual(_json, data.json)
-		
+
+
+	def test_json_import_book(self):
+		"""Generate and import JSON book serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		book.add_sheet(data)
+		_json = book.json
+
+		book.json = _json
+
+		self.assertEqual(_json, book.json)
+
 
 	def test_yaml_import_set(self):
-		"""Generate and import YAML serialization."""
+		"""Generate and import YAML set serialization."""
 		data.append(self.john)
 		data.append(self.george)
 		data.headers = self.headers
@@ -217,10 +233,24 @@ class TablibTestCase(unittest.TestCase):
 		data.yaml = _yaml
 
 		self.assertEqual(_yaml, data.yaml)
+
+		
+	def test_yaml_import_book(self):
+		"""Generate and import YAML book serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		book.add_sheet(data)
+		_yaml = book.yaml
+
+		book.yaml = _yaml
+
+		self.assertEqual(_yaml, book.yaml)
 		
 
 	def test_csv_import_set(self):
-		"""Generate and import CSV serialization."""
+		"""Generate and import CSV set serialization."""
 		data.append(self.john)
 		data.append(self.george)
 		data.headers = self.headers
