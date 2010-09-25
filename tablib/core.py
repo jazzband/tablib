@@ -277,6 +277,16 @@ class Databook(object):
 		return len(self._datasets)
 
 
+def detect(stream):
+	"""Return (format, stream) of given stream."""
+	for fmt in formats:
+		try:
+			if fmt.detect(stream):
+				return (fmt, stream) 
+		except AttributeError:
+			pass 
+	return (None, stream)
+		
 
 class InvalidDatasetType(Exception):
 	"Only Datasets can be added to a DataBook"
