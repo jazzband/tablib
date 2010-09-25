@@ -277,7 +277,20 @@ def detect(stream):
 		except AttributeError:
 			pass 
 	return (None, stream)
+	
+	
+def import_set(stream):
+	"""Return dataset of given stream."""
+	(format, stream) = detect(stream)
+
+	try:
+		data = Dataset()
+		format.import_set(data, stream)
+		return data
 		
+	except AttributeError, e:
+		return None
+
 
 class InvalidDatasetType(Exception):
 	"Only Datasets can be added to a DataBook"

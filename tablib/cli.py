@@ -14,7 +14,7 @@ from helpers import Struct, piped
 
 
 
-FORMATS = ('json', 'yaml', 'xls', 'csv')
+FORMATS = [fmt.title for fmt in tablib.formats.FORMATS]
 
 opts = []
 
@@ -32,13 +32,16 @@ def start(in_file=None, out_file=None, **opts):
 	opts = Struct(**opts)
 	
 	if opts.version:
-		print('Tabbed, Ver. %s' % tabbed.core.__version__)
-		sys.sys.exit(0)
+		print('Tabbed, Ver. %s' % tablib.core.__version__)
+		sys.exit(0)
 	
 	stdin = piped()
 	
 	if stdin:
-		print stdin
+		data = tablib.import_set(stdin)
+		print data.json
+		# test = tablib.Dataset()
+		# print test.yaml
 	
 	elif in_file:
 		
@@ -81,6 +84,6 @@ def start(in_file=None, out_file=None, **opts):
 	
 	# look for filename
 	
-	print opts.__dict__
-	print in_file
-	print out_file
+	# print opts.__dict__
+	# print in_file
+	# print out_file
