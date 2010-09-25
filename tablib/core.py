@@ -234,7 +234,7 @@ class Databook(object):
 
 
 	def add_sheet(self, dataset):
-		"""Add given dataset ."""
+		"""Adds given dataset."""
 		if type(dataset) is Dataset:
 			self._datasets.append(dataset)
 		else:
