@@ -321,7 +321,6 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(tablib.detect(_bunk)[0], None)
 
 
-
 	def test_wipe(self):
 		"""Purge a dataset."""
 		
