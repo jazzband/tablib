@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+""" Tablib - General Helpers.
+"""
+
 import sys
 
 
