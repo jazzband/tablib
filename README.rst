@@ -15,12 +15,17 @@ Tablib is a format-agnostic tabular dataset library, written in Python.
 
 Output formats supported:
 
-- Excel
-- JSON
-- YAML
-- CSV
+- Excel (Sets + Books)
+- JSON (Sets + Books)
+- YAML (Sets + Books)
+- CSV (Sets)
 
-At this time, Tablib supports the **export** of it's powerful Dataset object instances into any of the above formats. Import is underway.
+Import formats supported:
+
+- JSON (Sets + Books)
+- YAML (Sets + Books)
+- CSV (Sets)
+
 
 Note that tablib *purposefully* excludes XML support. It always will.
 
