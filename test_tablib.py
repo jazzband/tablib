@@ -193,41 +193,43 @@ class TablibTestCase(unittest.TestCase):
 		book.xls
 
 
-	def test_json_import(self):
+	def test_json_import_set(self):
 		"""Generate and import JSON serialization."""
 		data.append(self.john)
-		new_data = tablib.formats.json.import_set(str(data.json))
+		data.append(self.george)
+		data.headers = self.headers
 
-		new_data.headers = self.headers
-		new_data = tablib.formats.json.import_set(str(new_data.json))
-		
-		book = tablib.Databook()
-		book.add_sheet(new_data)
-		new_book = tablib.formats.json.import_book(str(book.json))
+		_json = data.json
+
+		data.json = _json
+
+		self.assertEqual(_json, data.json)
 		
 
-	def test_yaml_import(self):
+	def test_yaml_import_set(self):
 		"""Generate and import YAML serialization."""
 		data.append(self.john)
-		new_data = tablib.formats.yaml.import_set(str(data.json))
+		data.append(self.george)
+		data.headers = self.headers
 
-		new_data.headers = self.headers
-		new_data = tablib.formats.yaml.import_set(str(new_data.json))
-		
-		book = tablib.Databook()
-		book.add_sheet(new_data)
-		new_book = tablib.formats.yaml.import_book(str(book.yaml))
+		_yaml = data.yaml
+
+		data.yaml = _yaml
+
+		self.assertEqual(_yaml, data.yaml)
 		
 
-	def test_csv_import(self):
+	def test_csv_import_set(self):
 		"""Generate and import CSV serialization."""
 		data.append(self.john)
 		data.append(self.george)
 		data.headers = self.headers
-		new_data = tablib.formats.csv.import_set(str(data.csv))
 
-		new_data.headers = self.headers
-		new_data = tablib.formats.csv.import_set(str(data.csv))
+		_csv = data.csv
+
+		data.csv = _csv
+
+		self.assertEqual(_csv, data.csv)
 
 
 	def test_wipe(self):
