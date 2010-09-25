@@ -261,6 +261,11 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(_csv, data.csv)
 
+	def test_csv_format_detect(self):
+		"""Test format detection."""
+		
+		pass
+
 
 	def test_wipe(self):
 		"""Purge a dataset."""
