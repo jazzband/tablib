@@ -172,15 +172,15 @@ class Dataset(object):
 	def xls(self):
 		"""Returns XLS representation of Dataset."""
 
-		wb = xlwt.Workbook(encoding='utf8')
-		ws = wb.add_sheet(self.title if self.title else 'Tabbed Dataset')
+		workb = xlwt.Workbook(encoding='utf8')
+		works = workb.add_sheet(self.title if self.title else 'Tabbed Dataset')
 
 		for i, row in enumerate(self._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, col)
+				works.write(i, j, col)
 
 		stream = cStringIO.StringIO()
-		wb.save(stream)
+		workb.save(stream)
 		return stream.getvalue()
 
 
