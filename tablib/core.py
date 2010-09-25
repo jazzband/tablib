@@ -204,6 +204,12 @@ class Dataset(object):
 			self._data.insert(i, tuple(row))
 		elif col:
 			pass
+			
+	
+	def wipe(self):
+		"""Erases all data from Dataset."""
+		self._data = list()
+		self.__headers = None
 
 
 class Databook(object):
