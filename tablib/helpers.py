@@ -19,6 +19,15 @@ class Struct(object):
 		"""Returns dictionary representation of object."""
 		return self.__dict__
 
+	def items(self):
+		"""Returns items within object."""
+		return self.__dict__.items()
+
+	def keys(self):
+		"""Returns keys within object."""
+		return self.__dict__.keys()
+
+
 
 def piped():
 	"""Returns piped input via stdin, else False."""
