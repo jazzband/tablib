@@ -262,9 +262,42 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(_csv, data.csv)
 
 	def test_csv_format_detect(self):
-		"""Test format detection."""
+		"""Test CSV format detection."""
 		
-		pass
+		_csv = (
+			'1,2,3\n'
+			'4,5,6\n'
+			'7,8,9\n'
+		)
+		_bunk = (
+			'¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+		)
+		
+		self.assertTrue(tablib.formats.csv.detect(_csv))
+		self.assertFalse(tablib.formats.csv.detect(_bunk))
+
+	def test_json_format_detect(self):
+		"""Test JSON format detection."""
+
+		_json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+		_bunk = (
+			'¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+		)
+
+		self.assertTrue(tablib.formats.json.detect(_json))
+		self.assertFalse(tablib.formats.json.detect(_bunk))
+
+
+	def test_yaml_format_detect(self):
+		"""Test YAML format detection."""
+
+		_yaml = '- {age: 90, first_name: John, last_name: Adams}'
+		_bunk = (
+			'¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+		)
+
+		self.assertTrue(tablib.formats.yaml.detect(_yaml))
+		self.assertFalse(tablib.formats.yaml.detect(_bunk))
 
 
 	def test_wipe(self):
