@@ -300,6 +300,21 @@ class TablibTestCase(unittest.TestCase):
 		self.assertFalse(tablib.formats.yaml.detect(_bunk))
 
 
+	def test_auto_format_detect(self):
+		"""Test auto format detection."""
+
+		_yaml = '- {age: 90, first_name: John, last_name: Adams}'
+		_json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+		_csv = '1,2,3\n4,5,6\n7,8,9\n'
+		_bunk = '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+
+		self.assertEqual(tablib.detect(_yaml)[0], tablib.formats.yaml)
+		self.assertEqual(tablib.detect(_csv)[0], tablib.formats.csv)
+		self.assertEqual(tablib.detect(_json)[0], tablib.formats.json)
+		self.assertEqual(tablib.detect(_bunk)[0], None)
+
+
+
 	def test_wipe(self):
 		"""Purge a dataset."""
 		
