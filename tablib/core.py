@@ -11,12 +11,8 @@ import simplejson as json
 import xlwt
 import yaml
 
-from helpers import Struct
 
-
-# __all__ = ['Dataset', 'DataBook']
-
-__name__ = 'tablib'
+__title__ = 'tablib'
 __version__ = '0.7.1'
 __build__ = 0x000701
 __author__ = 'Kenneth Reitz'
@@ -36,12 +32,12 @@ class Dataset(object):
 
 		try:
 			self.headers = kwargs['headers']
-		except KeyError, why:
+		except KeyError:
 			self.headers = None
 
 		try:
 			self.title = kwargs['title']
-		except KeyError, why:
+		except KeyError:
 			self.title = None
 
 
@@ -120,10 +116,10 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		try:
 			return len(self._data[0])
-		except IndexError, why:
+		except IndexError:
 			try:
 				return len(self.headers)
-			except TypeError, e:
+			except TypeError:
 				return 0
 	
 	@property
