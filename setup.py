@@ -24,8 +24,8 @@ setup(
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
-	packages=['tablib', 'tablib.formats'],
-	install_requires=['xlwt', 'simplejson', 'PyYAML'],
+	packages=['tablib'],
+	install_requires=['xlwt', 'simplejson', 'PyYAML', 'argue'],
 	license='MIT',
 	classifiers=(
 		'Development Status :: 4 - Beta',
@@ -35,9 +35,9 @@ setup(
         'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
 	),
-    # entry_points={
-    #   'console_scripts': [
-    #       'tabbed = tablib.cli:start',
-    #   ],
-    # }
+    entry_points={
+      'console_scripts': [
+          'tabbed = tablib.cli:start',
+      ],
+    }
 )
