@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# _____         ______  ______        _________
-# __  /_______ ____  /_ ___  /_ _____ ______  /
-# _  __/_  __ `/__  __ \__  __ \_  _ \_  __  / 
-# / /_  / /_/ / _  /_/ /_  /_/ //  __// /_/ /  
-# \__/  \__,_/  /_.___/ /_.___/ \___/ \__,_/   
-
+""" Tablib - core.
+"""
 
 import csv
 import cStringIO
@@ -34,12 +30,12 @@ class Dataset(object):
 
 		try:
 			self.headers = kwargs['headers']
-		except KeyError, why:
+		except KeyError:
 			self.headers = None
 
 		try:
 			self.title = kwargs['title']
-		except KeyError, why:
+		except KeyError:
 			self.title = None
 
 		self._register_formats()
@@ -81,7 +77,7 @@ class Dataset(object):
 		for fmt in formats:
 			try:
 				setattr(cls, fmt.title, property(fmt.export_set))
-			except Exception, why:
+			except Exception:
 				pass
 
 
@@ -130,10 +126,10 @@ class Dataset(object):
 		"""Returns the width of the Dataset."""
 		try:
 			return len(self._data[0])
-		except IndexError, why:
+		except IndexError:
 			try:
 				return len(self.headers)
-			except TypeError, e:
+			except TypeError:
 				return 0
 
 
@@ -150,7 +146,7 @@ class Dataset(object):
 		if collection:
 			try:
 				self.__headers = list(collection)
-			except TypeError, why:
+			except TypeError:
 				raise TypeError
 		else:
 			self.__headers = None
@@ -233,7 +229,7 @@ class Databook(object):
 		for fmt in formats:
 			try:
 				setattr(cls, fmt.title, property(fmt.export_book))
-			except Exception, why:
+			except Exception:
 				pass
 
 
