@@ -181,6 +181,45 @@ class TablibTestCase(unittest.TestCase):
 		data.csv
 		data.xls
 
-	
+ 
+	def test_book_export_no_exceptions(self):
+		"""Test that varoius exports don't error out."""
+
+		book = tablib.Databook()
+		book.add_sheet(data)
+
+		book.json
+		book.yaml
+		book.xls
+
+
+	def test_json_import(self):
+		"""Generate and import JSON serialization."""
+		data.append(self.john)
+		new_data = tablib.formats.json.import_set(str(data.json))
+
+		new_data.headers = self.headers
+		new_data = tablib.formats.json.import_set(str(new_data.json))
+
+	def test_yaml_import(self):
+		"""Generate and import YAML serialization."""
+		data.append(self.john)
+		new_data = tablib.formats.yaml.import_set(str(data.json))
+
+		new_data.headers = self.headers
+		new_data = tablib.formats.yaml.import_set(str(new_data.json))
+
+	def test_csv_import(self):
+		"""Generate and import CSV serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+#		new_data = tablib.formats.csv.import_set(str(data.csv))
+
+#		new_data.headers = self.headers
+		new_data = tablib.formats.csv.import_set(str(data.csv))
+#		print new_data
+
+		
 if __name__ == '__main__':
 	unittest.main()
