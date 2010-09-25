@@ -232,7 +232,10 @@ class Databook(object):
 		except AttributeError:
 			return '<databook object>'
 
-
+	def wipe(self):
+		"""Wipe book clean."""
+		self._datasets = []
+		
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
