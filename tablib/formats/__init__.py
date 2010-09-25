@@ -3,9 +3,9 @@
 """ Tablib - formats
 """
 
-import _csv as csv
-import _json as json
-import _xls as xls
-import _yaml as yaml
+import tablib.formats._csv as csv
+import tablib.formats._json as json
+import tablib.formats._xls as xls
+import tablib.formats._yaml as yaml
 
-formats = (csv, json, xls, yaml)
+FORMATS = (csv, json, xls, yaml)

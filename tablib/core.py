@@ -3,7 +3,7 @@
 """ Tablib - Core Library.
 """
 
-from tablib.formats import formats
+from tablib.formats import FORMATS as formats
 
 
 __title__ = 'tablib'
