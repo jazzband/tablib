@@ -1,6 +1,13 @@
 History
 =======
 
+0.8.0 (2010-09-25)
+------------------
+* New format plugin system!
+* Imports! ELEGANT Imports!
+* Tests. Lots of tests.
+
+
 0.7.1 (2010-09-20)
 ------------------
 
