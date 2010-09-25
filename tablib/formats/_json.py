@@ -24,14 +24,12 @@ def import_set(dset, in_stream):
 	dset.dict = json.loads(in_stream)
 
 
-def import_book(in_stream):
+def import_book(dbook, in_stream):
 	"""Returns databook from JSON stream."""
 
-	book = tablib.core.Databook()
+	dbook.wipe()
 	for sheet in json.loads(in_stream):
 		data = tablib.core.Dataset()
 		data.title = sheet['title']
 		data.dict = sheet['data']
-		book.add_sheet(data)
-	
-	return book
+		dbook.add_sheet(data)
