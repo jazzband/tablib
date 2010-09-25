@@ -226,10 +226,7 @@ class Databook(object):
 
 
 	def __repr__(self):
-		try:
-			return '<%s databook>' % (self.title.lower())
-		except AttributeError:
-			return '<databook object>'
+		return '<databook object>'
 
 
 	def add_sheet(self, dataset):
