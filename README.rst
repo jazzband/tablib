@@ -26,9 +26,16 @@ Import formats supported:
 - YAML (Sets + Books)
 - CSV (Sets)
 
-
 Note that tablib *purposefully* excludes XML support. It always will.
 
+Overview
+--------
+
+`tablib.Dataset()`
+	A Dataset is a table of tabular data. It may or may not have a header row. They can be build and maniuplated as raw Python datatypes (Lists of tuples|dictonaries). Datasets can be imported from JSON, YAML, and CSV; they can be exported to Excel (XLS), JSON, YAML, and CSV.
+	
+`tablib.Databook()`
+	A Databook is a set of Datasets. The most common form of a Databook is an Excel file with multiple spreadsheets. Databooks can be imported from JSON and YAML; they can be exported to Excel (XLS), JSON, and YAML.
 
 Usage
 -----
@@ -68,6 +75,9 @@ Slice columns by header: ::
 Easily delete rows: ::
 
     >>> del data[1]
+
+Exports
+-------
 
 Drumroll please...........
 
@@ -114,8 +124,41 @@ EXCEL!
 	>>> open('people.xls', 'wb').write(data.xls)
 
 It's that easy.
+
+Imports!
+--------
+
+JSON
+++++
+
+::
+
+	>>> data.json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+	>>> print data[0]
+	('John', 'Adams', 90)
+
+
+YAML
+++++
+::
+
+	>>> data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
+	>>> print data[0]
+	('John', 'Adams', 90)
+
+CSV
++++
+::
+
+	>>> data.yaml = 'age, first_name, last_name\n90, John, Adams'
+	>>> print data[0]
+	('John', 'Adams', 90)
 	
-    
+	>>> print data.yaml
+	- {age: 90, first_name: John, last_name: Adams}
+	
+
+
 Installation
 ------------
 
@@ -136,13 +179,10 @@ If you'd like to contribute, simply fork `the repository`_, commit your changes 
 
 Roadmap
 -------
-- Import datasets from CSV.
 - Release CLI Interface
 - Auto-detect import format
 - Add possible other exports (SQL?)
-- Possibly plugin-ify format architecture
 - Ability to assign types to rows (set, regex=, &c.)
-- Plugin support
 
 .. _`the repository`: http://github.com/kennethreitz/tablib
 .. _AUTHORS: http://github.com/kennethreitz/tablib/blob/master/AUTHORS
