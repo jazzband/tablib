@@ -3,13 +3,6 @@
 """ Tablib - core.
 """
 
-import csv
-import cStringIO
-
-import simplejson as json
-import xlwt
-import yaml
-
 from tablib.formats import formats
 
 
