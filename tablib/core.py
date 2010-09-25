@@ -129,13 +129,13 @@ class Dataset(object):
 
 
 	@headers.setter
-	def headers(self, collection):
+	def headers_set(self, collection):
 		"""Validating headers setter."""
 		self._validate(collection)
 		if collection:
 			try:
 				self.__headers = list(collection)
-			except TypeError, why:
+			except TypeError:
 				raise TypeError
 		else:
 			self.__headers = None
@@ -260,19 +260,19 @@ class Databook(object):
 		"""Returns XLS representation of DataBook."""
 
 
-		wb = xlwt.Workbook(encoding='utf8')
+		workb = xlwt.Workbook(encoding='utf8')
 
 		for i, dset in enumerate(self._datasets):
-			ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
+			works = workb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
 
 			#for row in self._package(dicts=False):
 			for i, row in enumerate(dset._package(dicts=False)):
 				for j, col in enumerate(row):
-					ws.write(i, j, col)
+					works.write(i, j, col)
 
 
 		stream = cStringIO.StringIO()
-		wb.save(stream)
+		workb.save(stream)
 		return stream.getvalue()
 
 
