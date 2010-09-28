@@ -24,7 +24,7 @@ setup(
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
-	packages=['tablib'm 'tablib.formats'],
+	packages=['tablib', 'tablib.formats'],
 	install_requires=['xlwt', 'simplejson', 'PyYAML'],
 	license='MIT',
 	classifiers=(
