@@ -17,14 +17,14 @@ if sys.argv[-1] == "publish":
 
 setup(
 	name='tablib',
-	version='0.8.0',
+	version='0.8.1',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
-	packages=['tablib'],
+	packages=['tablib'm 'tablib.formats'],
 	install_requires=['xlwt', 'simplejson', 'PyYAML'],
 	license='MIT',
 	classifiers=(

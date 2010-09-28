@@ -7,8 +7,8 @@ from tablib.formats import FORMATS as formats
 
 
 __title__ = 'tablib'
-__version__ = '0.8.0'
-__build__ = 0x000800
+__version__ = '0.8.1'
+__build__ = 0x000801
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
