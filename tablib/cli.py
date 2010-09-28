@@ -39,23 +39,19 @@ def start(in_file=None, out_file=None, **opts):
 	
 	if stdin:
 		data = tablib.import_set(stdin)
-		print data.json
-		# test = tablib.Dataset()
-		# print test.yaml
 	
 	elif in_file:
 		
 		try:
-			in_file = io.open(in_file, 'r')
+			in_stream =- io.open(in_file, 'r').read()
 		except Exception, e:
 			print(' %s cannot be read.' % in_file)
 			sys.exit(65)
 		
-		file_ext = in_file.name.split('.')[-1]
-		
-		if file_ext.lower() in FORMATS:
-			setattr(opts, file_ext, True)
-		else:
+		try:
+			tablib.import_set(in_stream)
+		except Exception, e:
+			raise e
 			print('Import format not supported.')
 			sys.exit(65)
 	else:
@@ -63,7 +59,6 @@ def start(in_file=None, out_file=None, **opts):
 		sys.exit(65)
 		
 
-	
 	_formats_sum = sum(opts[f] for f in FORMATS)
 	
 	# Multiple output formats given
