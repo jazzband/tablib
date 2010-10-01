@@ -1,7 +1,42 @@
 History
 =======
 
-0.6.2 (2010-09-14)
+0.8.1 (2010-09-28)
+------------------
+* Packaging Fix
+
+
+0.8.0 (2010-09-25)
+------------------
+* New format plugin system!
+* Imports! ELEGANT Imports!
+* Tests. Lots of tests.
+
+
+0.7.1 (2010-09-20)
+------------------
+
+* Reverting methods back to properties. 
+* Windows bug compenated in documentation.
+
+
+0.7.0 (2010-09-20)
+------------------
+
+* Renamed DataBook Databook for consistiency.
+* Export properties changed to methods (XLS filename / StringIO bug).
+* Optional Dataset.xls(path='filename') support (for writing on windows).
+* Added utf-8 on the worksheet level.
+
+
+0.6.4 (2010-09-19)
+------------------
+
+* Updated unicode export for XLS.
+* More exhaustive unit tests.
+
+
+0.6.3 (2010-09-14)
 ------------------
 * Added Dataset.append() support for columns.
 

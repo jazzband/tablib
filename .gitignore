@@ -5,7 +5,7 @@ MANIFEST
 
 # python skin
 *.pyc
-.pyo
+*.pyo
 
 # osx noise
 .DS_Store
@@ -15,3 +15,5 @@ profile
 .idea
 .idea/*
 
+# vi noise
+*.swp
