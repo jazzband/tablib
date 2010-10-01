@@ -177,6 +177,15 @@ class Dataset(object):
 			self._validate(row)
 			self._data.append(tuple(row))
 		elif col is not None:
+			col = list(col)
+			if self.headers:
+				header = [col.pop(0)]
+			else:
+				header = []
+			if len(col) == 1 and callable(col[0]):
+				col = map(col[0], self._data)
+			col = tuple(header + col)
+				
 			self._validate(col=col)
 
 			if self.headers:
