@@ -4,7 +4,7 @@ dist/*
 MANIFEST
 
 # python skin
-.pyc
+*.pyc
 .pyo
 
 # osx noise
