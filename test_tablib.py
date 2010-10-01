@@ -102,6 +102,13 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertRaises(tablib.InvalidDimensions, data.append, col=new_col)
 
+	def test_add_callable_column(self):
+		"""Verify adding column with values specified as callable."""
+		new_col = ['first_again', lambda x: x[0]]
+		self.founders.append(col=new_col)
+
+		self.assertTrue(map(lambda x: x[0] == x[-1], self.founders))
+
 
 	def test_header_slicing(self):
 		"""Verify slicing by headers."""
