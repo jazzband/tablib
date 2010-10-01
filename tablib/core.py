@@ -173,10 +173,10 @@ class Dataset(object):
 
 	def append(self, row=None, col=None):
 		"""Adds a row to the end of Dataset"""
-		if row:
+		if row is not None:
 			self._validate(row)
 			self._data.append(tuple(row))
-		elif col:
+		elif col is not None:
 			self._validate(col=col)
 
 			if self.headers:
