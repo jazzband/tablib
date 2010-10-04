@@ -17,7 +17,7 @@ if sys.argv[-1] == "publish":
 
 setup(
 	name='tablib',
-	version='0.8.2',
+	version='0.8.3',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
@@ -35,9 +35,9 @@ setup(
         'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
 	),
-    entry_points={
-      'console_scripts': [
-          'tabbed = tablib.cli:start',
-      ],
-    }
+    # entry_points={
+    #   'console_scripts': [
+    #       'tabbed = tablib.cli:start',
+    #   ],
+    # }
 )

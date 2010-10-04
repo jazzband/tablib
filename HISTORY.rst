@@ -1,7 +1,14 @@
 History
 =======
 
-0.8.2 (2010-09-28)
+0.8.3 (2010-10-04)
+------------------
+
+* Ability to append new column passing a callable 
+  as the value that will be applied to every row.
+
+
+0.8.2 (2010-10-04)
 ------------------
 * Added alignment wrapping to written cells.
 * Added separator support to XLS.
