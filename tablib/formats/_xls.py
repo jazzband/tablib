@@ -66,12 +66,11 @@ def dset_sheet(dataset, ws):
 			# wrap the rest
 			else:
 				try:
-					pass
-				except Exception, e:
-					raise e
-				if (col is None) or ('\n' in col):
-					ws.write(i, j, col, wrap)
-				else:
+					if '\n' in col:
+						ws.write(i, j, col, wrap)
+					else:
+						ws.write(i, j, col)
+				except TypeError:
 					ws.write(i, j, col)
 
 	
