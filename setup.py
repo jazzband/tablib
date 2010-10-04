@@ -28,12 +28,16 @@ setup(
 	install_requires=['xlwt', 'simplejson', 'PyYAML'],
 	license='MIT',
 	classifiers=(
-		'Development Status :: 4 - Beta',
+		'Development Status :: 5 - Production/Stable',
+		'Intended Audience :: Developers',
+		'Natural Language :: English',
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python',
         # 'Programming Language :: Python :: 2.5',
         'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
+		# 'Programming Language :: Python :: 3.0',
+		# 'Programming Language :: Python :: 3.1',
 	),
     # entry_points={
     #   'console_scripts': [
