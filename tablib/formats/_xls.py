@@ -9,8 +9,11 @@ import cStringIO
 
 title = 'xls'
 extentions = ('xls',)
+
+# special styles
 wrap = xlwt.easyxf("alignment: wrap on")
 bold = xlwt.easyxf("font: bold on")
+
 
 def export_set(dataset):
 	"""Returns XLS representation of Dataset."""
@@ -62,6 +65,9 @@ def dset_sheet(dataset, ws):
 
 			# wrap the rest
 			else:
-				ws.write(i, j, col, wrap)
+				if '\n' in col:
+					ws.write(i, j, col, wrap)
+				else:
+					ws.write(i, j, col)
 
 	
