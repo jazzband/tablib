@@ -33,7 +33,7 @@ def export_book(databook):
 	for i, dset in enumerate(databook._datasets):
 		ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
 
-		dset_sheet(dataset, ws)
+		dset_sheet(dset, ws)
 
 
 	stream = cStringIO.StringIO()
