@@ -7,8 +7,8 @@ from tablib.formats import FORMATS as formats
 
 
 __title__ = 'tablib'
-__version__ = '0.8.1'
-__build__ = 0x000801
+__version__ = '0.8.3'
+__build__ = 0x000803
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -177,10 +177,19 @@ class Dataset(object):
 
 	def append(self, row=None, col=None):
 		"""Adds a row to the end of Dataset"""
-		if row:
+		if row is not None:
 			self._validate(row)
 			self._data.append(tuple(row))
-		elif col:
+		elif col is not None:
+			col = list(col)
+			if self.headers:
+				header = [col.pop(0)]
+			else:
+				header = []
+			if len(col) == 1 and callable(col[0]):
+				col = map(col[0], self._data)
+			col = tuple(header + col)
+				
 			self._validate(col=col)
 
 			if self.headers:

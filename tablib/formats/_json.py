@@ -36,3 +36,12 @@ def import_book(dbook, in_stream):
 		data.title = sheet['title']
 		data.dict = sheet['data']
 		dbook.add_sheet(data)
+
+
+def detect(stream):
+	"""Returns True if given stream is valid JSON."""
+	try:
+		json.loads(stream)
+		return True
+	except json.decoder.JSONDecodeError:
+		return False

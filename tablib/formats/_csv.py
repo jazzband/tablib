@@ -40,3 +40,12 @@ def import_set(dset, in_stream, headers=True):
 			dset.headers = row
 		else:
 			dset.append(row)
+
+
+def detect(stream):
+	"""Returns True if given stream is valid CSV."""
+	try:
+		rows = dialect = csv.Sniffer().sniff(stream)
+		return True
+	except csv.Error:
+		return False

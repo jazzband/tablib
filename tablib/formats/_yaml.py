@@ -40,3 +40,14 @@ def import_book(dbook, in_stream):
 		data.title = sheet['title']
 		data.dict = sheet['data']
 		dbook.add_sheet(data)
+		
+def detect(stream):
+	"""Returns True if given stream is valid YAML."""
+	try:
+		_yaml = yaml.load(stream)
+		if isinstance(_yaml, (list, tuple, dict)):
+			return True
+		else:
+			return False
+	except yaml.parser.ParserError:
+		return False

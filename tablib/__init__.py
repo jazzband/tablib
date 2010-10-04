@@ -2,7 +2,7 @@
 """
 
 from tablib.core import (
-	Databook, Dataset, InvalidDatasetType,
-	InvalidDimensions, UnsupportedFormat
+	Databook, Dataset, detect, import_set, 
+	InvalidDatasetType, InvalidDimensions, UnsupportedFormat
 )
 

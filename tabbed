@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Tabbed -- CLI for Tablib
+Copyright (c) 2010 Kenneth Reitz. MIT License.
+"""
+
+import tablib.cli
+
+
+if __name__ == '__main__':
+	
+	tablib.cli.start()
