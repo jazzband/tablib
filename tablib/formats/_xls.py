@@ -19,12 +19,11 @@ def export_set(dataset):
 	ws = wb.add_sheet(dataset.title if dataset.title else 'Tabbed Dataset')
 
 	_package = dataset._package(dicts=False)
-	print dataset._seperators
-
-	for sep in dataset._seperators:
-		_package.insert(sep[0], (sep[1],))
 	
-
+	for i, sep in enumerate(dataset._separators):
+		_offset = i
+		_package.insert((sep[0] + _offset), (sep[1],))
+	
 	for i, row in enumerate(_package):
 		for j, col in enumerate(row):
 
@@ -32,11 +31,11 @@ def export_set(dataset):
 			if (i == 0) and dataset.headers:
 				ws.write(i, j, col, bold)
 
-			# bold seperators
-			elif i in [sep[0] for sep in dataset._seperators]:
+			# bold separators
+			elif len(row) < dataset.width:
 				ws.write(i, j, col, bold)
 
-			# write the rest
+			# wrap the rest
 			else:
 				ws.write(i, j, col, wrap)
 
