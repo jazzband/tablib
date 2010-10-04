@@ -20,6 +20,9 @@ class Dataset(object):
 	def __init__(self, *args, **kwargs):
 		self._data = list(args)
 		self.__headers = None
+		
+		# ('title', index) tuples
+		self._seperators = []
 
 		try:
 			self.headers = kwargs['headers']
@@ -194,6 +197,23 @@ class Dataset(object):
 				self._data = [tuple([row]) for row in col]
 
 
+	def insert_seperator(self, index, text='-'):
+		"""Adds a seperator to Dataset at given index."""
+
+		if self.height >= index:
+			sep = (index, text)
+			self._seperators.append(sep)
+		else:
+			raise InvalidDimensions
+
+
+	def append_seperator(self, text='-'):
+		"""Adds a seperator to Dataset."""
+		
+		index = self.height if self.headers else (self.height - 1)
+		self.insert_seperator(index, text)
+
+
 	def insert(self, i, row=None, col=None):
 		"""Inserts a row at given position in Dataset"""
 		if row:
@@ -225,9 +245,11 @@ class Databook(object):
 		except AttributeError:
 			return '<databook object>'
 
+
 	def wipe(self):
 		"""Wipe book clean."""
 		self._datasets = []
+
 		
 	@classmethod
 	def _register_formats(cls):
@@ -249,7 +271,7 @@ class Databook(object):
 			self._datasets.append(dataset)
 		else:
 			raise InvalidDatasetType
-
+		
 
 	def _package(self):
 		"""Packages Databook for delivery."""
@@ -267,6 +289,29 @@ class Databook(object):
 		"""The number of the Datasets within DataBook."""
 		return len(self._datasets)
 
+
+def detect(stream):
+	"""Return (format, stream) of given stream."""
+	for fmt in formats:
+		try:
+			if fmt.detect(stream):
+				return (fmt, stream) 
+		except AttributeError:
+			pass 
+	return (None, stream)
+	
+	
+def import_set(stream):
+	"""Return dataset of given stream."""
+	(format, stream) = detect(stream)
+
+	try:
+		data = Dataset()
+		format.import_set(data, stream)
+		return data
+		
+	except AttributeError, e:
+		return None
 
 
 class InvalidDatasetType(Exception):
