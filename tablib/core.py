@@ -20,6 +20,9 @@ class Dataset(object):
 	def __init__(self, *args, **kwargs):
 		self._data = list(args)
 		self.__headers = None
+		
+		# ('title', index) tuples
+		self._separators = []
 
 		try:
 			self.headers = kwargs['headers']
@@ -33,6 +36,7 @@ class Dataset(object):
 
 		self._register_formats()
 
+		
 	def __len__(self):
 		return self.height
 
@@ -194,7 +198,26 @@ class Dataset(object):
 				self._data = [tuple([row]) for row in col]
 
 
-	def insert(self, i, row=None, col=None):
+	def insert_separator(self, index, text='-'):
+		"""Adds a separator to Dataset at given index."""
+
+		sep = (index, text)
+		self._separators.append(sep)
+
+
+	def append_separator(self, text='-'):
+		"""Adds a separator to Dataset."""
+
+		# change offsets if headers are or aren't defined
+		if not self.headers:
+			index = self.height if self.height else 0
+		else:
+			index = (self.height + 1) if self.height else 1
+
+		self.insert_separator(index, text)
+
+
+	def insert(self, i, row=None):
 		"""Inserts a row at given position in Dataset"""
 		if row:
 			self._validate(row)
@@ -225,9 +248,11 @@ class Databook(object):
 		except AttributeError:
 			return '<databook object>'
 
+
 	def wipe(self):
 		"""Wipe book clean."""
 		self._datasets = []
+
 		
 	@classmethod
 	def _register_formats(cls):
@@ -249,7 +274,7 @@ class Databook(object):
 			self._datasets.append(dataset)
 		else:
 			raise InvalidDatasetType
-
+		
 
 	def _package(self):
 		"""Packages Databook for delivery."""
@@ -267,6 +292,29 @@ class Databook(object):
 		"""The number of the Datasets within DataBook."""
 		return len(self._datasets)
 
+
+def detect(stream):
+	"""Return (format, stream) of given stream."""
+	for fmt in formats:
+		try:
+			if fmt.detect(stream):
+				return (fmt, stream) 
+		except AttributeError:
+			pass 
+	return (None, stream)
+	
+	
+def import_set(stream):
+	"""Return dataset of given stream."""
+	(format, stream) = detect(stream)
+
+	try:
+		data = Dataset()
+		format.import_set(data, stream)
+		return data
+		
+	except AttributeError, e:
+		return None
 
 
 class InvalidDatasetType(Exception):
