@@ -10,6 +10,7 @@ import cStringIO
 title = 'xls'
 extentions = ('xls',)
 wrap = xlwt.easyxf("alignment: wrap on")
+bold = xlwt.easyxf("font: bold on")
 
 def export_set(dataset):
 	"""Returns XLS representation of Dataset."""
@@ -17,9 +18,27 @@ def export_set(dataset):
 	wb = xlwt.Workbook(encoding='utf8')
 	ws = wb.add_sheet(dataset.title if dataset.title else 'Tabbed Dataset')
 
-	for i, row in enumerate(dataset._package(dicts=False)):
+	_package = dataset._package(dicts=False)
+	print dataset._seperators
+
+	for sep in dataset._seperators:
+		_package.insert(sep[0], (sep[1],))
+	
+
+	for i, row in enumerate(_package):
 		for j, col in enumerate(row):
-			ws.write(i, j, col, wrap)
+
+			# bold headers
+			if (i == 0) and dataset.headers:
+				ws.write(i, j, col, bold)
+
+			# bold seperators
+			elif i in [sep[0] for sep in dataset._seperators]:
+				ws.write(i, j, col, bold)
+
+			# write the rest
+			else:
+				ws.write(i, j, col, wrap)
 
 	stream = cStringIO.StringIO()
 	wb.save(stream)
