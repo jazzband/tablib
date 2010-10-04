@@ -9,7 +9,7 @@ import cStringIO
 
 title = 'xls'
 extentions = ('xls',)
-
+wrap = xlwt.easyxf("alignment: wrap on")
 
 def export_set(dataset):
 	"""Returns XLS representation of Dataset."""
@@ -19,7 +19,7 @@ def export_set(dataset):
 
 	for i, row in enumerate(dataset._package(dicts=False)):
 		for j, col in enumerate(row):
-			ws.write(i, j, col)
+			ws.write(i, j, col, wrap)
 
 	stream = cStringIO.StringIO()
 	wb.save(stream)
@@ -37,7 +37,7 @@ def export_book(databook):
 		#for row in self._package(dicts=False):
 		for i, row in enumerate(dset._package(dicts=False)):
 			for j, col in enumerate(row):
-				ws.write(i, j, col)
+				ws.write(i, j, col, wrap)
 
 
 	stream = cStringIO.StringIO()
