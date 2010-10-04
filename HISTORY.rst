@@ -1,5 +1,10 @@
 History
 =======
+0.8.4 (2010-10-04)
+------------------
+
+* Upated XLS output: Only wrap if '\n' in cell.
+
 
 0.8.3 (2010-10-04)
 ------------------
@@ -10,8 +15,10 @@ History
 
 0.8.2 (2010-10-04)
 ------------------
+
 * Added alignment wrapping to written cells.
 * Added separator support to XLS.
+
 
 0.8.1 (2010-09-28)
 ------------------
