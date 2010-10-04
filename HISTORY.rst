@@ -1,6 +1,11 @@
 History
 =======
 
+0.8.2 (2010-09-28)
+------------------
+* Added alignment wrapping to written cells.
+
+
 0.8.1 (2010-09-28)
 ------------------
 * Packaging Fix
