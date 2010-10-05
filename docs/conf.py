@@ -214,3 +214,7 @@ man_pages = [
     ('index', 'tablib', u'Tablib Documentation',
      [u'Kenneth Reitz'], 1)
 ]
+
+sys.path.append(os.path.abspath('_themes'))
+html_theme_path = ['_themes']
+html_theme = 'kr'
