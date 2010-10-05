@@ -17,3 +17,4 @@ profile
 
 # vi noise
 *.swp
+docs/_build/*
