@@ -150,7 +150,7 @@ CSV
 +++
 ::
 
-	>>> data.yaml = 'age, first_name, last_name\n90, John, Adams'
+	>>> data.csv = 'age, first_name, last_name\n90, John, Adams'
 	>>> print data[0]
 	('John', 'Adams', 90)
 	
