@@ -4,9 +4,9 @@
 """
 
 try:
-  import json
+	import json
 except ImportError:
-  import simplejson as json
+	import simplejson as json
 
 import tablib.core
 

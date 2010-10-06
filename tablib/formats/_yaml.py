@@ -4,9 +4,9 @@
 """
 
 try:
-  import yaml
+	import yaml
 except ImportError:
-  import tablib.packages.yaml as yaml
+	import tablib.packages.yaml as yaml
 
 import tablib
 

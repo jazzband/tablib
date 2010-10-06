@@ -15,6 +15,11 @@ if sys.argv[-1] == "publish":
 	publish()
 	sys.exit()
 
+required = []
+
+if sys.version_info < (2, 6):
+	required.append('simplejson')
+
 setup(
 	name='tablib',
 	version='0.8.4',
@@ -24,8 +29,8 @@ setup(
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
-	packages=['tablib', 'tablib.formats'],
-	install_requires=['xlwt', 'simplejson', 'PyYAML'],
+	packages=['tablib', 'tablib.formats', 'tablib.packages.yaml', 'tablib.packages.xlwt'],
+	install_requires=required,
 	license='MIT',
 	classifiers=(
 		'Development Status :: 5 - Production/Stable',
