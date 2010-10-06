@@ -4,9 +4,12 @@
 """
 
 try:
-	import json
+	import json  # load system JSON (Python >= 2.6)
 except ImportError:
-	import simplejson as json
+	try:
+		import simplejson as json
+	except ImportError:
+		import tablib.packages.simplejson as json # use the vendorized copy
 
 import tablib.core
 
