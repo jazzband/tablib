@@ -15,17 +15,27 @@ if sys.argv[-1] == "publish":
 	publish()
 	sys.exit()
 
+required = []
+
+# if sys.version_info < (2, 6):
+# 	required.append('simplejson')
+
 setup(
 	name='tablib',
-	version='0.8.4',
+	version='0.8.5',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
 	author='Kenneth Reitz',
 	author_email='me@kennethreitz.com',
 	url='http://github.com/kennethreitz/tablib',
-	packages=['tablib', 'tablib.formats'],
-	install_requires=['xlwt', 'simplejson', 'PyYAML'],
+	packages= [
+		'tablib', 'tablib.formats', 
+		'tablib.packages.simplejson'
+		'tablib.packages.xlwt',
+		'tablib.packages.yaml', 
+	],
+	install_requires=required,
 	license='MIT',
 	classifiers=(
 		'Development Status :: 5 - Production/Stable',

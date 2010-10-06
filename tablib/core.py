@@ -1,21 +1,108 @@
 # -*- coding: utf-8 -*-
+"""
+    tablib.core
+    ~~~~~~~~~~~
 
-""" Tablib - Core Library.
+    This module implements the central tablib objects.
+
+    :copyright: (c) 2010 by Kenneth Reitz.
+    :license: MIT, see LICENSE for more details.
 """
 
 from tablib.formats import FORMATS as formats
 
 
 __title__ = 'tablib'
-__version__ = '0.8.4'
-__build__ = 0x000804
+__version__ = '0.8.5'
+__build__ = 0x000805
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
 
 class Dataset(object):
-	"""Epic Tabular-Dataset object. """
+	"""The tablib Dataset object is the heart of tablib. It provides all core 
+    functionality.
+    
+    Usually you create a :class:`Dataset` instance in your main module, and append
+    rows and columns as you collect data. ::
+    
+        data = tablib.Dataset()
+        data.headers = ('name', 'age')
+        
+        for (name, age) in some_collector():
+            data.append((name, age))
+    
+    You can also set rows and headers upon instantiation. This is useful if dealing
+    with dozens or hundres of :class:`Dataset` objects. ::
+            
+        headers = ('first_name', 'last_name')
+        data = [('John', 'Adams'), ('George', 'Washington')]
+        
+        data = tablib.Dataset(*data, headers=headers)
+                
+    
+    :param \*args: (optional) list of rows to populate Dataset
+    :param headers: (optional) list strings for Dataset header row
+    
+    
+    .. admonition:: About the Format Attributes
+    
+        If you look at the code, the various output/import formats are not 
+        defined within the itself. To add support for a new format, see 
+        :ref:`Adding New Formats`.
+
+    .. attribute:: csv
+
+        A CSV representation of the Dataset object. The top row will contain 
+        headers, if they have been set. Otherwise, the top row will contain 
+        the first row of the dataset.
+    
+        A dataset object can also be imported by setting the `Dataset.csv` attribute: ::
+    
+            data = tablib.Dataset()
+            data.csv = 'age, first_name, last_name\\n90, John, Adams'
+    
+        Import assumes (for now) that headers exist.
+
+
+    .. attribute:: dict
+
+        An native Python representation of the Dataset object. If headers have been 
+        set, a list of Python dictionaries will be returned. If no headers have been
+        set, a list of tuples (rows) will be returned instead.
+
+        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
+    
+            data = tablib.Dataset()
+            data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
+ 
+    
+    .. attribute:: xls
+
+        An Excel Spreadsheet representation of the Dataset object, including 
+        :ref:`seperators`. 
+
+        *Note:* `Dataset.xls` contains binary data, so make sure to write in binary 
+        mode::
+        
+            with open('output.xls', 'wb') as f:
+                f.write(data.xls)
+
+
+    .. attribute:: yaml
+
+        A YAML representation of the Dataset object. If headers have been 
+        set, a YAML list of objects will be returned. If no headers have 
+        been set, a YAML list of lists (rows) will be returned instead.  
+
+        A dataset object can also be imported by setting the `Dataset.json` attribute: ::
+
+            data = tablib.Dataset()
+            data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
+
+        Import assumes (for now) that headers exist.
+	"""
 
 	def __init__(self, *args, **kwargs):
 		self._data = list(args)
@@ -155,19 +242,34 @@ class Dataset(object):
 
 	@property
 	def dict(self):
-		"""Returns python dict of Dataset."""
+		"""A JSON representation of the Dataset object. If headers have been 
+        set, a JSON list of objects will be returned. If no headers have 
+        been set, a JSON list of lists (rows) will be returned instead.  
+
+        A dataset object can also be imported by setting the `Dataset.json` attribute: ::
+
+            data = tablib.Dataset()
+            data.json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+
+		"""
 		return self._package()
 
 	
 	@dict.setter
 	def dict(self, pickle):
-		"""Returns python dict of Dataset."""
+	    
 		if not len(pickle):
 			return
+
+		# if list of rows
 		if isinstance(pickle[0], list):
+			self.wipe()
 			for row in pickle:
 				self.append(row)
+		
+		# if list of objects
 		elif isinstance(pickle[0], dict):
+			self.wipe()
 			self.headers = pickle[0].keys()
 			for row in pickle:
 				self.append(row.values())

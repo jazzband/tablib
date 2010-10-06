@@ -3,8 +3,12 @@
 """ Tablib - XLS Support.
 """
 
-import xlwt
 import cStringIO
+
+try:
+	import xlwt
+except ImportError:
+	import tablib.packages.xlwt as xlwt
 
 
 title = 'xls'

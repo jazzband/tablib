@@ -1,6 +1,13 @@
 History
 =======
 
+0.8.5 (2010-10-06)
+------------------
+
+* New import system. All dependencies attempt to load from site-packages,
+  then fallback on vendorized modules.
+
+
 0.8.4 (2010-10-04)
 ------------------
 

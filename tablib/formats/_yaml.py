@@ -3,7 +3,11 @@
 """ Tablib - YAML Support.
 """
 
-import yaml
+try:
+	import yaml
+except ImportError:
+	import tablib.packages.yaml as yaml
+
 import tablib
 
 
