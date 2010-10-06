@@ -10,6 +10,7 @@ except ImportError:
 
 import tablib.core
 
+
 title = 'json'
 extentions = ('json', 'jsn')
 
@@ -47,5 +48,5 @@ def detect(stream):
 	try:
 		json.loads(stream)
 		return True
-	except json.decoder.JSONDecodeError:
+	except ValueError:
 		return False
