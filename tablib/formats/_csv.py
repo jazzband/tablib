@@ -7,8 +7,6 @@ import cStringIO
 import csv
 import os
 
-import simplejson as json
-
 import tablib
 
 
