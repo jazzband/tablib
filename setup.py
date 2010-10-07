@@ -31,7 +31,7 @@ setup(
 	url='http://github.com/kennethreitz/tablib',
 	packages= [
 		'tablib', 'tablib.formats', 
-		'tablib.packages.simplejson'
+		'tablib.packages.simplejson',
 		'tablib.packages.xlwt',
 		'tablib.packages.yaml', 
 	],
