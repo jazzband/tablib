@@ -49,7 +49,7 @@ class Dataset(object):
     .. admonition:: About the Format Attributes
     
         If you look at the code, the various output/import formats are not 
-        defined within the itself. To add support for a new format, see 
+        defined within the :class:`Dataset` object. To add support for a new format, see 
         :ref:`Adding New Formats`.
 
     .. attribute:: csv
@@ -58,7 +58,7 @@ class Dataset(object):
         headers, if they have been set. Otherwise, the top row will contain 
         the first row of the dataset.
     
-        A dataset object can also be imported by setting the `Dataset.csv` attribute: ::
+        A dataset object can also be imported by setting the:class:`Dataset.csv` attribute. ::
     
             data = tablib.Dataset()
             data.csv = 'age, first_name, last_name\\n90, John, Adams'
@@ -72,7 +72,7 @@ class Dataset(object):
         set, a list of Python dictionaries will be returned. If no headers have been
         set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.dict` attribute. ::
     
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -83,11 +83,12 @@ class Dataset(object):
         An Excel Spreadsheet representation of the Dataset object, including 
         :ref:`seperators`. 
 
-        *Note:* `Dataset.xls` contains binary data, so make sure to write in binary 
-        mode::
+         .. admonition:: Binary Warning
+
+             :class:`Dataset.xls` contains binary data, so make sure to write in binary mode::
         
-            with open('output.xls', 'wb') as f:
-                f.write(data.xls)
+                with open('output.xls', 'wb') as f:
+                    f.write(data.xls)
 
 
     .. attribute:: yaml
@@ -96,7 +97,7 @@ class Dataset(object):
         set, a YAML list of objects will be returned. If no headers have 
         been set, a YAML list of lists (rows) will be returned instead.  
 
-        A dataset object can also be imported by setting the `Dataset.json` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
 
             data = tablib.Dataset()
             data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
