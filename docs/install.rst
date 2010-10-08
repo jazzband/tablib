@@ -1,10 +1,11 @@
 .. _install:
-
 Installation
 ============
 
-This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancments <speed>`..
+This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancments <speed>`.
 
+
+.. _installing:
 Installing Tablib
 -----------------
 
@@ -18,8 +19,8 @@ Or, if you must: ::
 	
 But, you really shouldn't do that. 
 
-.. _speed:
 
+.. _speed:
 Speed Extentions
 ----------------
 
@@ -37,7 +38,7 @@ If you're using Python 2.5 (currently unsupported), you should also install the 
 
 
 
-
+.. _pythonsupport:
 Pythons Supported
 -----------------
 
@@ -49,7 +50,7 @@ At this time, the following Python platforms are officially supported:
 Support for other Pythons will be rolled out soon.
 
 
-
+.. _updates:
 Staying Updated
 ---------------
 
@@ -62,3 +63,5 @@ When a new version is available, upgrading is simple. ::
 
 	$ pip install tablib --upgrade
 
+
+Now, go get a :ref:`Quick Start <quickstart>`.

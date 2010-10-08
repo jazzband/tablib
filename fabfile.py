@@ -10,6 +10,8 @@ def scrub():
 def docs():
 	"""Build docs."""
 	os.system('make html')
-	os.system('cd _build/html')
-	os.system('git commit -am \'documentation update\'')
+	os.chdir('_build/html')
+	os.system('sphinxtogithub .')
+	os.system('git add -A')
+	os.system('git commit -m \'documentation update\'')
 	os.system('git push origin gh-pages')
