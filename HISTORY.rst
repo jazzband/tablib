@@ -1,6 +1,12 @@
 History
 =======
 
+??
+--
+* Massive documentation update
+* Added column insert/delete support
+* Added 
+
 0.8.5 (2010-10-06)
 ------------------
 
