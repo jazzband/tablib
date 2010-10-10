@@ -108,19 +108,40 @@ Let's find the average age. ::
 Dynamic Columns
 ---------------
 
-.. newversion: 0.8.0
+.. versionadded:: 0.8.3
 
-Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. 
+Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. For now, this is only supported on :class:`Dataset` objects that have no defined :class:`headers <Dataset.headers>`.
 
+Let's save our headers for later. ::
 
+    _headers = list(data.headers)
+    data.headers = None
 
-::
+test ::
 
     import random
     
-    data.append(col=random.randint)
+    def random_grade(*args):
+        """Returns a random integer for entry."""
+        return (random.randint(60,100)/100.0)
     
+    data.append(col=[random_grade])
+
+
+::
+    >>> data.yaml
+    - [Reitz, Kenneth, 22, 0.83]
+    - [Monke, Bessie, 21, 0.73]
+
+Now we can add our headers back.
+::
+    >>> data.headers = _headers + ['Random']
+
 Let's delete that column. 
+
+::
+    >>> del data['Grade']
+
 
 .. _seperators:
 
