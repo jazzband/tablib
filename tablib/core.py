@@ -372,10 +372,10 @@ class Dataset(object):
 
 		sep = (index, text)
 		self._separators.append(sep)
-
+		
 
 	def append_separator(self, text='-'):
-		"""Adds a separator to the :class:`Dataset`."""
+		"""Adds a :ref:`seperator <seperators>` to the :class:`Dataset`."""
 
 		# change offsets if headers are or aren't defined
 		if not self.headers:
