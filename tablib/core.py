@@ -9,7 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from tablib.formats import FORMATS as formats
+from tablib import formats
 
 
 __title__ = 'tablib'
@@ -95,7 +95,19 @@ class Dataset(object):
 
 
 	def __delitem__(self, key):
-		del self._data[key]
+		if isinstance(key, basestring):
+			if key in self.headers:
+				pos = self.headers.index(key)
+				del self.headers[pos]
+				
+				for i, row in enumerate(self._data):
+					_row = list(row)
+					del _row[pos]
+					self._data[i] = tuple(_row)
+			else:
+				raise KeyError
+		else:
+			del self._data[key]
 
 
 	def __repr__(self):
@@ -108,7 +120,7 @@ class Dataset(object):
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
-		for fmt in formats:
+		for fmt in formats.available:
 			try:
 				try:
 					setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
@@ -453,7 +465,7 @@ class Databook(object):
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
-		for fmt in formats:
+		for fmt in formats.available:
 			try:
 				try:
 					setattr(cls, fmt.title, property(fmt.export_book, fmt.import_book))
@@ -491,7 +503,7 @@ class Databook(object):
 
 def detect(stream):
 	"""Return (format, stream) of given stream."""
-	for fmt in formats:
+	for fmt in formats.available:
 		try:
 			if fmt.detect(stream):
 				return (fmt, stream) 
