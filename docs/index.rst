@@ -24,12 +24,12 @@ Welcome to Tablib's documentation.
 
 Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Oh, and it's :ref:`MIT Lisenced <mit>`.
 
-I recommend you start off with :ref:`Installation <install>`.
+I recommend you start with :ref:`Installation <install>`.
 
 User's Guide
 ------------
 
-This part of the documentation, which is mostly prose, begins with some background information about Tablib, then focuses on step-by-step instructions for web development with Flask.
+This part of the documentation, which is mostly prose, begins with some background information about Tablib, then focuses on step-by-step instructions for getting the most out of your datasets.
 
 .. toctree::
    :maxdepth: 2

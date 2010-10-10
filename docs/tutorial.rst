@@ -92,7 +92,7 @@ Now that we have a basic :class:`Dataset` in place, let's add a column of **ages
 Let's view the data now. ::
 
     >>> data.dict
-    [{'Last Name': 'Reitz', 'First Name': 'Kenneth', 'Age': 22}, {'Last Name': 'Monke', 'First Name': 'Bessie', 'Age': 21}]
+    [{'Last Name': 'Reitz', 'First Name': 'Kenneth', 'Age': 22}, {'Last Name': 'Monke', 'First Name': 'Bessie', 'Age': 20}]
 
 It's that easy.
 
@@ -108,19 +108,19 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
     >>> data.csv
     Last Name,First Name,Age 
     Reitz,Kenneth,22 
-    Monke,Bessie,21
+    Monke,Bessie,20
 
 **JavaScript Object Notation** ::
 
     >>> data.json
-    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
+    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 20}]
 
 
 **YAML Ain't Markup Language** ::
 
     >>> data.yaml
     - {Age: 22, First Name: Kenneth, Last Name: Reitz}
-    - {Age: 21, First Name: Bessie, Last Name: Monke}
+    - {Age: 20, First Name: Bessie, Last Name: Monke}
     
 
 **Microsoft Excel** ::
@@ -214,7 +214,7 @@ Let's have a look at our data. ::
 
     >>> data.yaml
     - {Age: 22, First Name: Kenneth, Grade: 0.6, Last Name: Reitz}
-    - {Age: 21, First Name: Bessie, Grade: 0.75, Last Name: Monke}
+    - {Age: 20, First Name: Bessie, Grade: 0.75, Last Name: Monke}
 
 
 Let's remove that column.  ::
@@ -244,7 +244,7 @@ Adding this function to our dataset as a dynamic column would result in: ::
 
     >>> data.yaml
     - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
-    - {Age: 21, First Name: Bessie, Gender: Female, Last Name: Monke}
+    - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
 
 

@@ -3,11 +3,17 @@
 Development
 ===========
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Tablib is under active development, and contributors are welcome.
 
-There's a todo list.
+If you have a feature request, suggestion, or bug report, please open a new issue on GitHub_. To submit patches, please send a pull request on GitHub_.
 
-.. include:: ../TODO.rst
+If you'd like to contribute, there's plenty to do. Here's a short todo list.
+
+    .. include:: ../TODO.rst
+
+
+.. _GitHub: http://github.com/kennethreitz/tablib/
+
 
 
 .. _design:
@@ -24,8 +30,10 @@ Tablib was developed with a few :pep:`20` idioms in mind.
 #. Complex is better than complicated.
 #. Readability counts.
 
-It strives to be as simple to use as possible.
+A few other things to keep in mind:
 
+#. Keep your code DRY.
+#. Strive to be as simple (to use) as possible.
 
 .. _scm:
 
@@ -36,30 +44,100 @@ Source Control
 
 Tablib source is controlled with Git_, the lean, mean, distributed source control machine.
 
-**Branch Structure**
+The repository is publicly accessable.
 
-    ``develop``
-        The "next release" branch. Likely unstable.
-    ``master``
-        Current production release (|version|) on PyPi.
+    ``git clone git://github.com/kennethreitz/tablib.git``
+    
+The project is hosted both on **GitHub** and **git.kennethreitz.com**.
+    
+    
+    GitHub: 
+        http://github.com/kennethreitz/tablib
+    "Mirror": 
+        http://git.kennethreitz.com/projects/tablib  
 
-Git. 
-GitHub.
-git.kennethreitz.com
 
-Git Flow
+Git Branch Structure
+++++++++++++++++++++
+
+Feature / Hotfix / Release branches follow a `Successful Git Branching Model`_ . Git-flow_ is a great tool for managing the repository. I highly recommend it.
+
+``develop``
+    The "next release" branch. Likely unstable.
+``master``
+    Current production release (|version|) on PyPi.
+``gh-pages``
+    Current release of http://tablib.org.
+
+Each release is tagged.
+
+When submitting patches, please place your feature/change in its own branch prior to opening a pull reqeust on GitHub_.
+
 
 .. _Git: http://git-scm.org
+.. _`Successful Git Branching Model`: http://nvie.com/posts/a-successful-git-branching-model/
+.. _git-flow: http://github.com/nvie/gitflow
+
 
 .. _newformats:
-
 
 ------------------
 Adding New Formats
 ------------------
 
-Don't. 
+Tablib welcomes new format additions! Format suggestions include:
 
+* Tab Seperated Values
+* MySQL Dump
+* HTML Table
+
+
+Coding by Convention
+++++++++++++++++++++
+
+Tablib features a micro-framework for adding format support. The easiest way to understand it is to use it. So, let's define our own format, named *xxx*.
+
+1. Write a new format interface.
+
+    :class:`tablib.core` follows a simple pattern for automatically utilizing your format throughout Tablib. Function names are crucial.
+    
+    Example **tablib/formats/_xxx.py**: ::
+
+        title = 'xxx'
+    
+        def export_set(dset):
+            ....
+            # returns string representation of given dataset
+    
+        def export_book(dbook):
+            ....
+            # returns string representation of given databook
+        
+        def import_set(dset, in_stream):
+            ...
+            # populates given Dataset with given datastream
+    
+        def import_book(dbook, in_stream):
+            ...
+            # returns Databook instance
+    
+        def detect(stream):
+            ...
+            # returns True if given stream is parsable as xxx
+
+.. admonition:: Excluding Support
+
+
+    If the format excludes support for an import/export mechanism (*eg.* :class:`csv <tablib.Dataset.csv>` excludes :class:`Databook <tablib.Databook>` support), simply don't define the respecive functions. Appropriate errors will be raised.
+
+2. 
+
+    Add your new format module to the :class:`tablib.formats.avalable` tuple.
+
+3.
+    Add a mock property to the :class:`Dataset <tablib.Dataset>` class with verbose `reStructured Text`_ docstring. This alleviates IDE confusion, and allows for pretty auto-generated Sphinx_ documentation.
+
+4. Write respective :ref:`tests <testing>`.
 
 .. _testing:
 
@@ -68,12 +146,6 @@ Testing Tablib
 --------------
 
 Testing is crucial to Tablib's stability. This stable project is used in production by many companies and developers, so it is important to be certian that every version released is fully operational. When developing a new feature for Tablib, be sure to write proper tests for it as well.
-
-
-++++++++++++++++++++++
-Running the Test Suite
-++++++++++++++++++++++
-
 
 When developing a feature for Tablib, the easiest way to test your changes for potential issues is to simply run the test suite directly. ::
 
@@ -95,17 +167,10 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 .. _Nose: http://somethingaboutorange.com/mrl/projects/nose/
 
 
-++++++++++++++++++++++++
-Extending the Test Suite
-++++++++++++++++++++++++
-
-
-Example: ::
-
-	import tablib.formats.sql.test_sql
-
 
 .. _hudson:
+
+----------------------
 Continuous Integration
 ----------------------
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for tablib."""
+"""Tests for Tablib."""
 
 import unittest
 
