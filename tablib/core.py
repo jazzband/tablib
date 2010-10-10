@@ -96,7 +96,9 @@ class Dataset(object):
 
 	def __delitem__(self, key):
 		if isinstance(key, basestring):
+
 			if key in self.headers:
+				
 				pos = self.headers.index(key)
 				del self.headers[pos]
 				
@@ -352,9 +354,11 @@ class Dataset(object):
 
         You can also add a column of a single callable object, which will
         add a new column with the return values of the callable each as an 
-        item in the column. ::
+        item in the column. The callable can be written to perform calculations
+        on the current row. The callable receives a tuple representation of
+        the current data row as the first parameter. ::
         
-            data.append(col=random.randint)
+            data.append(col=[random.choice])
         """
 		if row is not None:
 			self._validate(row)

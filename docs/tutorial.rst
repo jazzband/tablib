@@ -1,6 +1,9 @@
 .. _quickstart:
+
+==========
 Quickstart
 ==========
+
 
 .. module:: tablib
 
@@ -15,8 +18,12 @@ First, make sure that:
 
 Lets gets started with some simple use cases and examples.
 
+
+
+------------------
 Creating a Dataset
 ------------------
+
 
 A :class:`Dataset <tablib.Dataset>` is nothing more than what its name implies—a set of data.
 
@@ -31,8 +38,11 @@ You can now start filling this :class:`Dataset <tablib.Dataset>` object with dat
      From here on out, if you see ``data``, assume that it's a fresh :class:`Dataset <tablib.Dataset>` object.
 
 
+
+-----------
 Adding Rows
 -----------
+
 
 Let's say you want to collect a simple list of names. ::
 
@@ -52,8 +62,11 @@ You can get a nice, Pythonic view of the dataset at any time with :class:`Datase
     [('Kenneth', 'Reitz'), ('Bessie', 'Monke')]
 
 
+
+--------------
 Adding Headers
 --------------
+
 
 It's time enhance our :class:`Dataset` by giving our columns some titles. To do so, set :class:`Dataset.headers`. ::
 
@@ -66,8 +79,13 @@ Let's view the data in YAML this time. ::
     - {First Name: Bessie, Last Name: Monke}
     
 
+
+
+
+--------------
 Adding Columns 
 --------------
+
 
 Now that we have a basic :class:`Dataset` in place, let's add a column of **ages** to it. ::
 
@@ -82,8 +100,12 @@ Let's view the data in CSV this time. ::
 
 It's that easy.
 
+
+
+------------------------
 Selecting Rows & Columns
 ------------------------
+
 
 You can slice and dice your data, just like a standard Python list. ::
 
@@ -105,64 +127,97 @@ Let's find the average age. ::
 
 
 
+-----------------------
+Removing Rows & Columns
+-----------------------
+
+data.insert('MI', )
+
+>>> del data['Row Name']
+Fucking easy.
+
+
+
+==============
+Advanced Usage
+==============
+
+And now for something completely different.
+
+---------------
 Dynamic Columns
 ---------------
 
 .. versionadded:: 0.8.3
 
-Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. For now, this is only supported on :class:`Dataset` objects that have no defined :class:`headers <Dataset.headers>`.
+Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. A dynamic column is a single callable object (*ie.* a function).
+For now, this is only supported on :class:`Dataset` objects that have no defined :class:`headers <Dataset.headers>`.
 
-Let's save our headers for later. ::
+So, let's save our headers for later, then remove them. ::
 
     _headers = list(data.headers)
     data.headers = None
 
-test ::
+
+We can now add a dynamic column to our :class:`Dataset` object. In this example, we have a function that generates a random grade for our students. ::
 
     import random
     
-    def random_grade(*args):
+    def random_grade(row):
         """Returns a random integer for entry."""
         return (random.randint(60,100)/100.0)
     
     data.append(col=[random_grade])
 
 
-::
-    >>> data.yaml
-    - [Reitz, Kenneth, 22, 0.83]
-    - [Monke, Bessie, 21, 0.73]
+Now add the headers back, with our new column. ::
 
-Now we can add our headers back.
-::
     >>> data.headers = _headers + ['Random']
 
-Let's delete that column. 
+Let's have a look at our data. ::
 
-::
+    >>> data.yaml
+    - {Age: 22, First Name: Kenneth, Grade: 0.6, Last Name: Reitz}
+    - {Age: 21, First Name: Bessie, Grade: 0.75, Last Name: Monke}
+
+
+Let's remove that column.  ::
+
     >>> del data['Grade']
+
+
+When you add a dynamic column, the first argument that is passed in to the given callable is the current data row. You can use this to perform calculations against your data row. 
+
+For example, we can use the data available in the row to guess the gender of a student. ::
+
+    def guess_gender(row):
+        """Calculates gender of given student data row."""
+        m_names = ('Kenneth', 'Mike', 'Yuri')
+        f_names = ('Bessie', 'Samantha', 'Heather')
+        
+        name = row[0]
+        
+        if name in m_names:
+            return 'Male'
+        elif name in f_names:
+            return 'Female'
+        else:
+            return 'Unknown'
+
+Adding this function to our dataset as a dynamic column would result in: ::
+
+    >>> data.yaml
+    - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
+    - {Age: 21, First Name: Bessie, Gender: Female, Last Name: Monke}
+
 
 
 .. _seperators:
 
+----------
 Seperators
 ----------
-
-
-
-Transposition
--------------
-
-Thanks to Luca Beltrame, :class:`Dataset` objects 
-::
-
-    data.transpose()
-
-
-Shortcuts
----------
-
-Population upon instantiation.
+.. versionadded:: 0.8.2
 
 
 Now, go check out the :ref:`API Documentation <api>` or begin :ref:`Tablib Development <development>`.
