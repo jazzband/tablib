@@ -72,13 +72,11 @@ It's time enhance our :class:`Dataset` by giving our columns some titles. To do 
 
     data.headers = ['First Name', 'Last Name']
 
-Let's view the data in YAML this time. ::
+Now our data looks a little different. ::
 
-    >>> data.yaml
-    - {First Name: Kenneth, Last Name: Reitz}
-    - {First Name: Bessie, Last Name: Monke}
+    >>> data.dict
+    [{'Last Name': 'Reitz', 'First Name': 'Kenneth'}, {'Last Name': 'Monke', 'First Name': 'Bessie'}]
     
-
 
 
 
@@ -91,15 +89,44 @@ Now that we have a basic :class:`Dataset` in place, let's add a column of **ages
 
     data.append(col=['Age', 22, 20])
     
-Let's view the data in CSV this time. ::
+Let's view the data now. ::
+
+    >>> data.dict
+    [{'Last Name': 'Reitz', 'First Name': 'Kenneth', 'Age': 22}, {'Last Name': 'Monke', 'First Name': 'Bessie', 'Age': 21}]
+
+It's that easy.
+
+
+--------------
+Exporting Data
+--------------
+
+Tablib's killer feature is the ability to export your :class:`Dataset` objects into a number of formats.
+
+**Comma-Seperated Values** ::
 
     >>> data.csv
     Last Name,First Name,Age 
     Reitz,Kenneth,22 
-    Monke,Bessie,20
+    Monke,Bessie,21
 
-It's that easy.
+**JavaScript Object Notation** ::
 
+    >>> data.json
+    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
+
+
+**YAML Ain't Markup Language** ::
+
+    >>> data.yaml
+    - {Age: 22, First Name: Kenneth, Last Name: Reitz}
+    - {Age: 21, First Name: Bessie, Last Name: Monke}
+    
+
+**Microsoft Excel** ::
+
+    >>> data.xls
+    <censored binary data>
 
 
 ------------------------
@@ -131,9 +158,14 @@ Let's find the average age. ::
 Removing Rows & Columns
 -----------------------
 
-data.insert('MI', )
+::
 
->>> del data['Row Name']
+    >>> del data['Col Name']
+
+::
+
+    >>> del data[0:12]
+
 Fucking easy.
 
 
@@ -142,7 +174,11 @@ Fucking easy.
 Advanced Usage
 ==============
 
+
+This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`
+
 And now for something completely different.
+
 
 ---------------
 Dynamic Columns
@@ -212,12 +248,90 @@ Adding this function to our dataset as a dynamic column would result in: ::
 
 
 
+
+
+Excel Workbook With Multiple Sheets
+------------------------------------ 
+
+:class:`Databook` 
+
+::
+
+    book = tablib.Databook([data, data, data])
+
+::
+
+    with open('students.xls', 'wb') as f:
+        f.write(book.xls)
+
+The resulting **students.xls** file will contain a seperate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
+
+.. admonition:: Binary Warning
+
+    Make sure to open the output file in binary mode.
+
+
 .. _seperators:
 
 ----------
 Seperators
 ----------
+
 .. versionadded:: 0.8.2
 
+When, it's often useful to create a blank row containing information on the upcomming data. So, 
+
+
+
+::
+
+    daniel_tests = [
+        ('11/24/09', 'Math 101 Mid-term Exam', 56.),
+        ('05/24/10', 'Math 101 Final Exam', 62.)
+    ]
+    
+    suzie_tests = [
+        ('11/24/09', 'Math 101 Mid-term Exam', 56.),
+        ('05/24/10', 'Math 101 Final Exam', 62.)
+    ]
+    
+    # Create new dataset
+    tests = tablib.Dataset()
+    tests.headers = ['Date', 'Test Name', 'Grade']
+
+    # Daniel's Tests
+    tests.append_seperator('Daniel\'s Scores')
+
+    for test_row in daniel_tests:
+       tests.append(test_row)
+
+    # Susie's Tests
+    tests.append_seperator('Susie\'s Scores')
+
+    for test_row in suzie_tests:
+       tests.append(test_row)
+
+    # Write spreadsheet to disk
+    with open('grades.xls', 'wb') as f:
+        f.write(tests.xls)
+
+The resulting **tests.xls** will have the following layout: 
+
+
+    Daniel's Scores:
+        * '11/24/09', 'Math 101 Mid-term Exam', 56.
+        * '05/24/10', 'Math 101 Final Exam', 62.
+
+    Suzie's Scores:
+        * '11/24/09', 'Math 101 Mid-term Exam', 56.
+        * '05/24/10', 'Math 101 Final Exam', 62.
+
+
+
+.. admonition:: Format Support
+
+    At this time, only :class:`Excel <Dataset.xls>` output supports seperators.
+    
+----
 
 Now, go check out the :ref:`API Documentation <api>` or begin :ref:`Tablib Development <development>`.

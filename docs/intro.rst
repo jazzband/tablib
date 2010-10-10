@@ -41,7 +41,7 @@ MIT License
 
 A large number of open source projects you find today are `GPL Licensed`_. While the GPL certianly has essential applications, it should most certianly not be your go-to license for your next open source project. 
 
-A project that was released as GPL cannot be usd in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are fantastic alternatives to this *major* problem. 
+A project that is released as GPL cannot be usd in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software. 
 
 Tablib is released under terms of `The MIT License`_.
 

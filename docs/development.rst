@@ -5,18 +5,18 @@ Development
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-.. _future:
-Future of Tablib
-----------------
+There's a todo list.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+.. include:: ../TODO.rst
 
 
 .. _design:
+
+---------------------
 Design Considerations
 ---------------------
 
-Tablib was developed with a few `The Zen of Python`_ idioms in mind.
+Tablib was developed with a few :pep:`20` idioms in mind.
 
 #. Beautiful is better than ugly.
 #. Explicit is better than implicit.
@@ -26,9 +26,22 @@ Tablib was developed with a few `The Zen of Python`_ idioms in mind.
 
 It strives to be as simple to use as possible.
 
-.. _git:
+
+.. _scm:
+
+--------------
 Source Control
 --------------
+
+
+Tablib source is controlled with Git_, the lean, mean, distributed source control machine.
+
+**Branch Structure**
+
+    ``develop``
+        The "next release" branch. Likely unstable.
+    ``master``
+        Current production release (|version|) on PyPi.
 
 Git. 
 GitHub.
@@ -36,7 +49,12 @@ git.kennethreitz.com
 
 Git Flow
 
+.. _Git: http://git-scm.org
+
 .. _newformats:
+
+
+------------------
 Adding New Formats
 ------------------
 
@@ -44,13 +62,18 @@ Don't.
 
 
 .. _testing:
+
+--------------
 Testing Tablib
 --------------
+
 Testing is crucial to Tablib's stability. This stable project is used in production by many companies and developers, so it is important to be certian that every version released is fully operational. When developing a new feature for Tablib, be sure to write proper tests for it as well.
 
 
+++++++++++++++++++++++
 Running the Test Suite
 ++++++++++++++++++++++
+
 
 When developing a feature for Tablib, the easiest way to test your changes for potential issues is to simply run the test suite directly. ::
 
@@ -71,8 +94,11 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 
 .. _Nose: http://somethingaboutorange.com/mrl/projects/nose/
 
+
+++++++++++++++++++++++++
 Extending the Test Suite
 ++++++++++++++++++++++++
+
 
 Example: ::
 
@@ -93,18 +119,20 @@ Anyone may view the build status and history at any time.
 If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Hudson Server. 
 
 
-Additional reports will also be included here in the future, including PEP 8 checks and stress reports for extremely large datasets.
+Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
 .. _`Hudson CI`: http://hudson.dev.java.net
 .. _`Kenneth Reitz`: http://kennethreitz.com/contact-me/
 
 
 .. _docs:
+
+-----------------
 Building the Docs
 -----------------
 
 Documentation is written in the powerful, flexible, and standard Python documentation format, `reStructured Text`_. 
-Documentation builds are powered by powerful Pocoo project, Sphinx_. The :ref:`API Documentation <api>` is mostly documented inline throught the module.
+Documentation builds are powered by the powerful Pocoo project, Sphinx_. The :ref:`API Documentation <api>` is mostly documented inline throught the module.
 
 The Docs live in ``tablib/docs``. In order to build them, you will first need to install Sphinx. ::
 
@@ -147,5 +175,7 @@ You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* 
 .. _`GitHub Pages`: http://pages.github.com
 .. _Jeckyl: http://github.com/mojombo/jekyll
 .. _`sphinx-to-github`: http://github.com/michaeljones/sphinx-to-github
+
+----------
 
 Make sure to check out the :ref:`API Documentation <api>`.

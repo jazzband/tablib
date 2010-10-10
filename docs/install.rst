@@ -6,6 +6,8 @@ This part of the documentation covers the installation of Tablib. The first step
 
 
 .. _installing:
+
+-----------------
 Installing Tablib
 -----------------
 
@@ -19,7 +21,7 @@ Or, if you must: ::
 	
 But, you really shouldn't do that. 
 
-
+-------------------
 Download the Source
 -------------------
 
@@ -34,7 +36,7 @@ Once you have a copy of the source, you can embed it in your Python package, or 
     $ python setup.py install
 
 
-To download the full source history from Git, see :ref:`Source Control <git>`.
+To download the full source history from Git, see :ref:`Source Control <scm>`.
 
 .. _tarball: http://github.com/kennethreitz/tablib/tarball/master
 .. _zipball: http://github.com/kennethreitz/tablib/zipball/master

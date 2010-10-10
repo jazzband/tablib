@@ -6,7 +6,7 @@
 Tablib: Pythonic Tabular Data 
 =============================
 
-Welcome to Tablib's docuemtation. 
+Welcome to Tablib's documentation. 
 
 .. Contents:
 .. 
