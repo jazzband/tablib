@@ -2,7 +2,7 @@
 Installation
 ============
 
-This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancments <speed>`.
+This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancments <peed-extentions>`.
 
 
 .. _installing:
@@ -20,7 +20,27 @@ Or, if you must: ::
 But, you really shouldn't do that. 
 
 
-.. _speed:
+Download the Source
+-------------------
+
+You can also install tablib from source. The latest release (|version|) is available from GitHub.
+
+* tarball_
+* zipball_
+
+.. _
+Once you have a copy of the source, you can embed it in your Python package, or install it into your site-packages easily. ::
+
+    $ python setup.py install
+
+
+To download the full source history from Git, see :ref:`Source Control <git>`.
+
+.. _tarball: http://github.com/kennethreitz/tablib/tarball/master
+.. _zipball: http://github.com/kennethreitz/tablib/zipball/master
+
+
+.. _speed-extentions:
 Speed Extentions
 ----------------
 
@@ -36,18 +56,6 @@ If you're using Python 2.5 (currently unsupported), you should also install the 
 
 	$ pip install simplejson
 
-
-
-.. _pythonsupport:
-Pythons Supported
------------------
-
-At this time, the following Python platforms are officially supported: 
-
-* Python 2.6
-* Python 2.7
-
-Support for other Pythons will be rolled out soon.
 
 
 .. _updates:

@@ -16,15 +16,25 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 Design Considerations
 ---------------------
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Tablib was developed with a few `The Zen of Python`_ idioms in mind.
 
+#. Beautiful is better than ugly.
+#. Explicit is better than implicit.
+#. Simple is better than complex.
+#. Complex is better than complicated.
+#. Readability counts.
 
-.. _scm:
+It strives to be as simple to use as possible.
+
+.. _git:
 Source Control
 --------------
 
-Git.
+Git. 
+GitHub.
+git.kennethreitz.com
 
+Git Flow
 
 .. _newformats:
 Adding New Formats

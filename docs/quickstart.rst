@@ -1,22 +1,147 @@
 .. _quickstart:
-
 Quickstart
 ==========
 
-This part of the documentation covers all the interfaces of Tablib.  For
-parts where Tablib depends on external libraries, we document the most
-important right here and provide links to the canonical documentation.
+.. module:: tablib
 
 
-Basic Usage
+Eager to get started? This page gives a good introduction in how to get started with Tablib. This assumes you already have Tablib installed. If you do not, head over to the :ref:`Installation <install>` section.
+
+First, make sure that:
+
+* Tablib is :ref:`installed <install>`
+* Tablib is :ref:`up-to-date <updates>`
+
+
+Lets gets started with some simple use cases and examples.
+
+Creating a Dataset
+------------------
+
+A :class:`Dataset <tablib.Dataset>` is nothing more than what its name implies—a set of data.
+
+Creating your own instance of the :class:`tablib.Dataset` object is simple. ::
+
+    data = tablib.Dataset()
+    
+You can now start filling this :class:`Dataset <tablib.Dataset>` object with data.
+
+.. admonition:: Example Context
+     
+     From here on out, if you see ``data``, assume that it's a fresh :class:`Dataset <tablib.Dataset>` object.
+
+
+Adding Rows
 -----------
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Let's say you want to collect a simple list of names. ::
+
+    # collection of names
+    names = ['Kenneth Reitz', 'Bessie Monke']
+
+    for name in names:
+        # split name appropriately
+        fname, lname = name.split()
+        
+        # add names to Dataset
+        data.append([fname, lname])
+
+You can get a nice, Pythonic view of the dataset at any time with :class:`Dataset.dict`.
+
+    >>> data.dict
+    [('Kenneth', 'Reitz'), ('Bessie', 'Monke')]
 
 
-Advanced Usage
+Adding Headers
 --------------
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+It's time enhance our :class:`Dataset` by giving our columns some titles. To do so, set :class:`Dataset.headers`. ::
+
+    data.headers = ['First Name', 'Last Name']
+
+Let's view the data in YAML this time. ::
+
+    >>> data.yaml
+    - {First Name: Kenneth, Last Name: Reitz}
+    - {First Name: Bessie, Last Name: Monke}
+    
+
+Adding Columns 
+--------------
+
+Now that we have a basic :class:`Dataset` in place, let's add a column of **ages** to it. ::
+
+    data.append(col=['Age', 22, 20])
+    
+Let's view the data in CSV this time. ::
+
+    >>> data.csv
+    Last Name,First Name,Age 
+    Reitz,Kenneth,22 
+    Monke,Bessie,20
+
+It's that easy.
+
+Selecting Rows & Columns
+------------------------
+
+You can slice and dice your data, just like a standard Python list. ::
+
+    >>> data[0]
+    ('Kenneth', 'Reitz', 22)
+
+
+If we had a set of data consisting of thousands of rows, it could be useful to get a list of values in a column.
+To do so, we access the :class:`Dataset` as if it were a standard Python dictionary.  ::
+
+    >>> data['First Name']
+    ['Kenneth', 'Bessie']
+
+Let's find the average age. ::
+
+    >>> ages = data['Age']
+    >>> float(sum(ages)) / len(ages)
+    21.0
+
+
+
+Dynamic Columns
+---------------
+
+.. newversion: 0.8.0
+
+Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. 
+
+
+
+::
+
+    import random
+    
+    data.append(col=random.randint)
+    
+Let's delete that column. 
+
+.. _seperators:
+
+Seperators
+----------
+
+
+
+Transposition
+-------------
+
+Thanks to Luca Beltrame, :class:`Dataset` objects 
+::
+
+    data.transpose()
+
+
+Shortcuts
+---------
+
+Population upon instantiation.
+
 
 Now, go check out the :ref:`API Documentation <api>` or begin :ref:`Tablib Development <development>`.
