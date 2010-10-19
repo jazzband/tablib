@@ -307,6 +307,20 @@ class Dataset(object):
 		pass
 
 	@property
+	def tsv():
+		"""A TSV representation of the :class:`Dataset` object. The top row will contain 
+	    headers, if they have been set. Otherwise, the top row will contain 
+	    the first row of the dataset.
+
+	    A dataset object can also be imported by setting the :class:`Dataset.csv` attribute. ::
+
+	        data = tablib.Dataset()
+	        data.tsv = 'age\tfirst_name\tlast_name\\n90\tJohn\tAdams'
+
+	    Import assumes (for now) that headers exist.
+		"""
+
+	@property
 	def yaml():
 		"""A YAML representation of the :class:`Dataset` object. If headers have been 
 	    set, a YAML list of objects will be returned. If no headers have 

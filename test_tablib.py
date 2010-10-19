@@ -178,6 +178,22 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(csv, self.founders.csv)
 
+	def test_tsv_export(self):
+		"""Verify exporting dataset object as CSV."""
+
+		# Build up the csv string with headers first, followed by each row
+		tsv = ''
+		for col in self.headers:
+			tsv += col + '\t'
+
+		tsv = tsv.strip('\t') + '\r\n'
+
+		for founder in self.founders:
+			for col in founder:
+				tsv += str(col) + '\t'
+			tsv = tsv.strip('\t') + '\r\n'
+
+		self.assertEqual(tsv, self.founders.tsv)
 
 	def test_unicode_append(self):
 		"""Passes in a single unicode charecter and exports."""
@@ -188,6 +204,7 @@ class TablibTestCase(unittest.TestCase):
 		data.json
 		data.yaml
 		data.csv
+		data.tsv
 		data.xls
 
  
@@ -268,6 +285,18 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(_csv, data.csv)
 
+	def test_tsv_import_set(self):
+		"""Generate and import TSV set serialization."""
+		data.append(self.john)
+		data.append(self.george)
+		data.headers = self.headers
+
+		_tsv = data.tsv
+
+		data.tsv = _tsv
+
+		self.assertEqual(_tsv, data.tsv)
+
 	def test_csv_format_detect(self):
 		"""Test CSV format detection."""
 		
@@ -282,6 +311,21 @@ class TablibTestCase(unittest.TestCase):
 		
 		self.assertTrue(tablib.formats.csv.detect(_csv))
 		self.assertFalse(tablib.formats.csv.detect(_bunk))
+
+	def test_tsv_format_detect(self):
+		"""Test TSV format detection."""
+		
+		_tsv = (
+			'1\t2\t3\n'
+			'4\t5\t6\n'
+			'7\t8\t9\n'
+		)
+		_bunk = (
+			'¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+		)
+		
+		self.assertTrue(tablib.formats.tsv.detect(_tsv))
+		self.assertFalse(tablib.formats.tsv.detect(_bunk))
 
 	def test_json_format_detect(self):
 		"""Test JSON format detection."""
