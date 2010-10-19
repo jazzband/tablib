@@ -9,7 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from tablib.formats import FORMATS as formats
+from tablib import formats
 
 
 __title__ = 'tablib'
@@ -21,7 +21,7 @@ __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
 
 class Dataset(object):
-	"""The tablib Dataset object is the heart of tablib. It provides all core 
+	"""The :class:`Dataset` object is the heart of Tablib. It provides all core 
     functionality.
     
     Usually you create a :class:`Dataset` instance in your main module, and append
@@ -44,64 +44,14 @@ class Dataset(object):
     
     :param \*args: (optional) list of rows to populate Dataset
     :param headers: (optional) list strings for Dataset header row
-    
-    
-    .. admonition:: About the Format Attributes
-    
-        If you look at the code, the various output/import formats are not 
-        defined within the itself. To add support for a new format, see 
-        :ref:`Adding New Formats`.
-
-    .. attribute:: csv
-
-        A CSV representation of the Dataset object. The top row will contain 
-        headers, if they have been set. Otherwise, the top row will contain 
-        the first row of the dataset.
-    
-        A dataset object can also be imported by setting the `Dataset.csv` attribute: ::
-    
-            data = tablib.Dataset()
-            data.csv = 'age, first_name, last_name\\n90, John, Adams'
-    
-        Import assumes (for now) that headers exist.
 
 
-    .. attribute:: dict
+    .. admonition:: Format Attributes Definition
 
-        An native Python representation of the Dataset object. If headers have been 
-        set, a list of Python dictionaries will be returned. If no headers have been
-        set, a list of tuples (rows) will be returned instead.
+     If you look at the code, the various output/import formats are not 
+     defined within the :class:`Dataset` object. To add support for a new format, see 
+     :ref:`Adding New Formats <newformats>`.
 
-        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
-    
-            data = tablib.Dataset()
-            data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
- 
-    
-    .. attribute:: xls
-
-        An Excel Spreadsheet representation of the Dataset object, including 
-        :ref:`seperators`. 
-
-        *Note:* `Dataset.xls` contains binary data, so make sure to write in binary 
-        mode::
-        
-            with open('output.xls', 'wb') as f:
-                f.write(data.xls)
-
-
-    .. attribute:: yaml
-
-        A YAML representation of the Dataset object. If headers have been 
-        set, a YAML list of objects will be returned. If no headers have 
-        been set, a YAML list of lists (rows) will be returned instead.  
-
-        A dataset object can also be imported by setting the `Dataset.json` attribute: ::
-
-            data = tablib.Dataset()
-            data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
-
-        Import assumes (for now) that headers exist.
 	"""
 
 	def __init__(self, *args, **kwargs):
@@ -145,7 +95,21 @@ class Dataset(object):
 
 
 	def __delitem__(self, key):
-		del self._data[key]
+		if isinstance(key, basestring):
+
+			if key in self.headers:
+				
+				pos = self.headers.index(key)
+				del self.headers[pos]
+				
+				for i, row in enumerate(self._data):
+					_row = list(row)
+					del _row[pos]
+					self._data[i] = tuple(_row)
+			else:
+				raise KeyError
+		else:
+			del self._data[key]
 
 
 	def __repr__(self):
@@ -158,7 +122,7 @@ class Dataset(object):
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
-		for fmt in formats:
+		for fmt in formats.available:
 			try:
 				try:
 					setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
@@ -202,16 +166,38 @@ class Dataset(object):
 
 		return data
 
+
+	def _clean_col(self, col):
+		"""Prepares the given column for insert/append."""
+		
+		col = list(col)
+		
+		if self.headers:
+			header = [col.pop(0)]
+		else:
+			header = []
+		
+		if len(col) == 1 and callable(col[0]):
+			col = map(col[0], self._data)
+		col = tuple(header + col)
+		
+		return col
+
 	
 	@property
 	def height(self):
-		"""Returns the height of the Dataset."""
+		"""The number of rows currently in the :class:`Dataset`.
+		   Cannot be directly modified.
+		"""
 		return len(self._data)
 
 
 	@property
 	def width(self):
-		"""Returns the width of the Dataset."""
+		"""The number of columns currently in the :class:`Dataset`.
+		   Cannot be directly modified.
+		"""
+		
 		try:
 			return len(self._data[0])
 		except IndexError:
@@ -223,7 +209,11 @@ class Dataset(object):
 
 	@property
 	def headers(self):
-		"""Headers property."""
+		"""An *optional* list of strings to be used for header rows and attribute names.
+        
+        This must be set manually. The given list length must equal :class:`Dataset.width`.
+
+		"""
 		return self.__headers
 
 
@@ -242,7 +232,7 @@ class Dataset(object):
 
 	@property
 	def dict(self):
-		"""A JSON representation of the Dataset object. If headers have been 
+		"""A JSON representation of the :class:`Dataset` object. If headers have been 
         set, a JSON list of objects will be returned. If no headers have 
         been set, a JSON list of lists (rows) will be returned instead.  
 
@@ -257,7 +247,16 @@ class Dataset(object):
 	
 	@dict.setter
 	def dict(self, pickle):
-	    
+		"""A native Python representation of the Dataset object. If headers have been 
+	    set, a list of Python dictionaries will be returned. If no headers have been
+	    set, a list of tuples (rows) will be returned instead.
+
+	    A dataset object can also be imported by setting the :class:`Dataset.dict` attribute. ::
+
+	        data = tablib.Dataset()
+	        data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
+	
+		"""
 		if not len(pickle):
 			return
 
@@ -276,21 +275,110 @@ class Dataset(object):
 		else:
 			raise UnsupportedFormat
 
+	@property
+	def xls():
+		"""An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`seperators`. Cannot be set.
+
+	     .. admonition:: Binary Warning
+
+	         :class:`Dataset.xls` contains binary data, so make sure to write in binary mode::
+
+	            with open('output.xls', 'wb') as f:
+	                f.write(data.xls)'
+         
+		
+		"""
+		pass
+
+	
+	@property
+	def csv():
+		"""A CSV representation of the :class:`Dataset` object. The top row will contain 
+	    headers, if they have been set. Otherwise, the top row will contain 
+	    the first row of the dataset.
+
+	    A dataset object can also be imported by setting the :class:`Dataset.csv` attribute. ::
+
+	        data = tablib.Dataset()
+	        data.csv = 'age, first_name, last_name\\n90, John, Adams'
+
+	    Import assumes (for now) that headers exist.
+		"""
+		pass
+
+	@property
+	def tsv():
+		"""A TSV representation of the :class:`Dataset` object. The top row will contain 
+	    headers, if they have been set. Otherwise, the top row will contain 
+	    the first row of the dataset.
+
+	    A dataset object can also be imported by setting the :class:`Dataset.csv` attribute. ::
+
+	        data = tablib.Dataset()
+	        data.tsv = 'age\tfirst_name\tlast_name\\n90\tJohn\tAdams'
+
+	    Import assumes (for now) that headers exist.
+		"""
+
+	@property
+	def yaml():
+		"""A YAML representation of the :class:`Dataset` object. If headers have been 
+	    set, a YAML list of objects will be returned. If no headers have 
+	    been set, a YAML list of lists (rows) will be returned instead.  
+
+	    A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
+
+	        data = tablib.Dataset()
+	        data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
+
+	    Import assumes (for now) that headers exist.
+		"""
+		pass
+
+	
+	@property
+	def json():
+		"""A JSON representation of the :class:`Dataset` object. If headers have been 
+	    set, a JSON list of objects will be returned. If no headers have 
+	    been set, a JSON list of lists (rows) will be returned instead.  
+
+	    A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
+
+	        data = tablib.Dataset()
+	        data.json = '[{age: 90, first_name: "John", liast_name: "Adams"}]'
+
+	    Import assumes (for now) that headers exist.
+		"""
+        
 
 	def append(self, row=None, col=None):
-		"""Adds a row to the end of Dataset"""
+		"""Adds a row or column to the :class:`Dataset`. 
+        
+        Rows and Columns appended must be the correct size (height or width). 
+        
+        The default behaviour is to append the given row to the :class:`Dataset` object. If the ``col`` parameter is given, however, a new column will be added to the :class:`Dataset` object. If appending a column, and :class:`Dataset.headers` is set, the first item in list will be considered the header for that row. ::
+        
+        Append a new row to the dataset: ::
+            
+            data.append(('Kenneth', 'Reitz'))
+            
+        Append a new column to the dataset: ::
+        
+            data.append(col=('Age', 90, 67, 22))
+
+        You can also add a column of a single callable object, which will
+        add a new column with the return values of the callable each as an 
+        item in the column. The callable can be written to perform calculations
+        on the current row. The callable receives a tuple representation of
+        the current data row as the first parameter. ::
+        
+            data.append(col=[random.choice])
+        """
 		if row is not None:
 			self._validate(row)
 			self._data.append(tuple(row))
 		elif col is not None:
-			col = list(col)
-			if self.headers:
-				header = [col.pop(0)]
-			else:
-				header = []
-			if len(col) == 1 and callable(col[0]):
-				col = map(col[0], self._data)
-			col = tuple(header + col)
+			col = self._clean_col(col)
 				
 			self._validate(col=col)
 
@@ -310,14 +398,14 @@ class Dataset(object):
 
 
 	def insert_separator(self, index, text='-'):
-		"""Adds a separator to Dataset at given index."""
+		"""Adds a separator to :class:`Dataset` at given index."""
 
 		sep = (index, text)
 		self._separators.append(sep)
-
+		
 
 	def append_separator(self, text='-'):
-		"""Adds a separator to Dataset."""
+		"""Adds a :ref:`seperator <seperators>` to the :class:`Dataset`."""
 
 		# change offsets if headers are or aren't defined
 		if not self.headers:
@@ -328,24 +416,51 @@ class Dataset(object):
 		self.insert_separator(index, text)
 
 
-	def insert(self, i, row=None):
-		"""Inserts a row at given position in Dataset"""
+	def insert(self, index, row=None, col=None):
+		"""Inserts a row or column to the :class:`Dataset` at the given index. 
+        
+        Rows and columns inserted must be the correct size (height or width). 
+        
+        The default behaviour is to insert the given row to the :class:`Dataset` object at the given index. If the ``col`` parameter is given, however, a new column will be insert to the :class:`Dataset` object instead. If inserting a column, and :class:`Dataset.headers` is set, the first item in list will be considered the header for the inserted row. ::
+        
+        You can also insert a column of a single callable object, which will
+        add a new column with the return values of the callable each as an 
+        item in the column. ::
+        
+            data.append(col=random.randint)
+		"""
 		if row:
 			self._validate(row)
 			self._data.insert(i, tuple(row))
 		elif col:
-			pass
+			col = self._clean_col(col)
+				
+			self._validate(col=col)
+
+			if self.headers:
+				# pop the first item off, add to headers
+				self.headers.insert(index, col[0])
+				col = col[1:]
+		
+			if self.height and self.width:
+
+				for i, row in enumerate(self._data):
+					_row = list(row)
+					_row.insert(index, col[i])
+					self._data[i] = tuple(_row)
+			else:
+				self._data = [tuple([row]) for row in col]
 			
 	
 	def wipe(self):
-		"""Erases all data from Dataset."""
+		"""Removes all content and headers from the :class:`Dataset` object."""
 		self._data = list()
 		self.__headers = None
 
 
 class Databook(object):
-	"""A book of Dataset objects.
-	   Currently, this exists only for XLS workbook support.
+	"""A book of :class:`Dataset` objects.
+	   
 	"""
 
 	def __init__(self, sets=[]):
@@ -361,14 +476,14 @@ class Databook(object):
 
 
 	def wipe(self):
-		"""Wipe book clean."""
+		"""Removes all :class:`Dataset` objects from the :class:`Databook`."""
 		self._datasets = []
 
 		
 	@classmethod
 	def _register_formats(cls):
 		"""Adds format properties."""
-		for fmt in formats:
+		for fmt in formats.available:
 			try:
 				try:
 					setattr(cls, fmt.title, property(fmt.export_book, fmt.import_book))
@@ -380,7 +495,7 @@ class Databook(object):
 
 
 	def add_sheet(self, dataset):
-		"""Adds given dataset."""
+		"""Adds given :class:`Dataset` to the :class:`Databook`."""
 		if type(dataset) is Dataset:
 			self._datasets.append(dataset)
 		else:
@@ -388,7 +503,7 @@ class Databook(object):
 		
 
 	def _package(self):
-		"""Packages Databook for delivery."""
+		"""Packages :class:`Databook` for delivery."""
 		collector = []
 		for dset in self._datasets:
 			collector.append(dict(
@@ -400,13 +515,13 @@ class Databook(object):
 
 	@property
 	def size(self):
-		"""The number of the Datasets within DataBook."""
+		"""The number of the :class:`Dataset` objects within :class:`Databook`."""
 		return len(self._datasets)
 
 
 def detect(stream):
 	"""Return (format, stream) of given stream."""
-	for fmt in formats:
+	for fmt in formats.available:
 		try:
 			if fmt.detect(stream):
 				return (fmt, stream) 

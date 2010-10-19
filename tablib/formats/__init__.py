@@ -7,5 +7,6 @@ import _csv as csv
 import _json as json
 import _xls as xls
 import _yaml as yaml
+import _tsv as tsv
 
-FORMATS = (json, xls, yaml, csv)
+available = (json, xls, yaml, csv, tsv)
