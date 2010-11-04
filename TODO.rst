@@ -1,3 +1,4 @@
+* Add Dataset Tags.
 * Polish *&* announce http://tablib.org.
 * Add required header parameter for columular ``Dataset.append()``.
 * Write more exhausive unit-tests.
