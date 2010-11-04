@@ -208,7 +208,7 @@ We can now add a dynamic column to our :class:`Dataset` object. In this example,
 
 Now add the headers back, with our new column. ::
 
-    >>> data.headers = _headers + ['Random']
+    >>> data.headers = _headers + ['Grade']
 
 Let's have a look at our data. ::
 
