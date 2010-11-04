@@ -415,30 +415,11 @@ class Dataset(object):
 
 	    Import assumes (for now) that headers exist.
 		"""
-        
+
 
 	def append(self, row=None, col=None, header=None, tags=list()):
-		"""Adds a row or column to the :class:`Dataset`. 
-        
-        Rows and Columns appended must be the correct size (height or width). 
-        
-        The default behaviour is to append the given row to the :class:`Dataset` object. If the ``col`` parameter is given, however, a new column will be added to the :class:`Dataset` object. If appending a column, and :class:`Dataset.headers` is set, the first item in list will be considered the header for that row. ::
-        
-        Append a new row to the dataset: ::
-            
-            data.append(('Kenneth', 'Reitz'))
-            
-        Append a new column to the dataset: ::
-        
-            data.append(col=('Age', 90, 67, 22))
-
-        You can also add a column of a single callable object, which will
-        add a new column with the return values of the callable each as an 
-        item in the column. The callable can be written to perform calculations
-        on the current row. The callable receives a tuple representation of
-        the current data row as the first parameter. ::
-        
-            data.append(col=[random.choice])
+		"""Adds a row or column to the :class:`Dataset`.
+		Usage is  :class:`Dataset.insert` for documentation.
         """
 
 		if row is not None:
@@ -451,7 +432,7 @@ class Dataset(object):
 
 		sep = (index, text)
 		self._separators.append(sep)
-		
+
 
 	def append_separator(self, text='-'):
 		"""Adds a :ref:`seperator <seperators>` to the :class:`Dataset`."""
@@ -472,15 +453,26 @@ class Dataset(object):
         
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index. If the ``col`` parameter is given, however,
-        a new column will be insert to the :class:`Dataset` object instead. If
-        inserting a column, and :class:`Dataset.headers` is set, the first item
-        in list will be considered the header for the inserted row. ::
-        
+        a new column will be insert to the :class:`Dataset` object instead.
+
         You can also insert a column of a single callable object, which will
         add a new column with the return values of the callable each as an 
         item in the column. ::
         
             data.append(col=random.randint)
+
+        See :ref:`dyncols` for an in-depth example.
+
+        .. versionchanged:: 0.9.0
+           If inserting a column, and :class:`Dataset.headers` is set, the
+           header attribute must be set, and will be considered the header for
+           that row.
+
+        .. versionadded:: 0.9.0
+           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
+           This gives you the ability to :class:`filter <Dataset.filter>` your
+           :class:`Dataset` later.
+    	
 		"""
 		if row:
 			self._validate(row)
@@ -512,7 +504,7 @@ class Dataset(object):
 
 	def filter(self, tag):
 		"""Returns a new instance of the :class:`Dataset`, excluding any rows
-		that do not contain the given tags.
+		that do not contain the given :ref:`tags <tags>`. 
 		"""
 		_dset = copy(self)
 		_dset._data[:] = [row for row in self._data if row.has_tag(tag)]
