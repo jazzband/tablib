@@ -507,7 +507,7 @@ class Dataset(object):
 		that do not contain the given :ref:`tags <tags>`. 
 		"""
 		_dset = copy(self)
-		_dset._data[:] = [row for row in self._data if row.has_tag(tag)]
+		_dset._data = [row for row in _dset._data if row.has_tag(tag)]
 		
 		return _dset
 	
