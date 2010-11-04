@@ -206,12 +206,12 @@ class Dataset(object):
 		if row:
 			is_valid = (len(row) == self.width) if self.width else True
 		elif col:
-			if self.headers:
-				is_valid = (len(col) - 1) == self.height
+			if len(col) < 1:
+				is_valid = True
 			else:
 				is_valid = (len(col) == self.height) if self.height else True
 		else:
-			is_valid = all((len(x)== self.width for x in self._data))
+			is_valid = all((len(x) == self.width for x in self._data))
 
 		if is_valid:
 			return True
@@ -486,15 +486,20 @@ class Dataset(object):
 			self._validate(row)
 			self._data.insert(index, Row(row, tags=tags))
 		elif col:
+			col = list(col)
+
+			# Callable Columns... 
+			if len(col) == 1 and callable(col[0]):
+				col = map(col[0], self._data)
+
 			col = self._clean_col(col)
-				
 			self._validate(col=col)
 
 			if self.headers:
 				# pop the first item off, add to headers
 				if not header:
 					raise HeadersNeeded()
-				self.headers.insert(header)
+				self.headers.insert(index, header)
 		
 			if self.height and self.width:
 
