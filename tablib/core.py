@@ -442,26 +442,9 @@ class Dataset(object):
         """
 
 		if row is not None:
-			self._validate(row)
-			self._data.append(Row(row, tags=tags))
+			self.insert(self.height, row=row, tags=tags)
 		elif col is not None:
-			col = self._clean_col(col)
-				
-			self._validate(col=col)
-
-			if self.headers:
-				# pop the first item off, add to headers
-				self.headers.append(col[0])
-				col = col[1:]
-		
-			if self.height and self.width:
-
-				for i, row in enumerate(self._data):
-					row.append(col[i])
-					self._data[i] = row
-			else:
-				self._data = [Row([row]) for row in col]
-
+			self.insert(self.width, col=col)
 
 	def insert_separator(self, index, text='-'):
 		"""Adds a separator to :class:`Dataset` at given index."""
@@ -501,7 +484,7 @@ class Dataset(object):
 		"""
 		if row:
 			self._validate(row)
-			self._data.insert(i, Row(row, tags=tags))
+			self._data.insert(index, Row(row, tags=tags))
 		elif col:
 			col = self._clean_col(col)
 				
