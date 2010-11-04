@@ -15,8 +15,8 @@ from tablib import formats
 
 
 __title__ = 'tablib'
-__version__ = '0.9.0'
-__build__ = 0x000900
+__version__ = '0.9.1'
+__build__ = 0x000901
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
@@ -507,7 +507,7 @@ class Dataset(object):
 		that do not contain the given :ref:`tags <tags>`. 
 		"""
 		_dset = copy(self)
-		_dset._data[:] = [row for row in self._data if row.has_tag(tag)]
+		_dset._data = [row for row in _dset._data if row.has_tag(tag)]
 		
 		return _dset
 	
