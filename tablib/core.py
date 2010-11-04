@@ -378,7 +378,7 @@ class Dataset(object):
 	    headers, if they have been set. Otherwise, the top row will contain 
 	    the first row of the dataset.
 
-	    A dataset object can also be imported by setting the :class:`Dataset.csv` attribute. ::
+	    A dataset object can also be imported by setting the :class:`Dataset.tsv` attribute. ::
 
 	        data = tablib.Dataset()
 	        data.tsv = 'age\tfirst_name\tlast_name\\n90\tJohn\tAdams'
