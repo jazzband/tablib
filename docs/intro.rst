@@ -4,17 +4,7 @@ Introduction
 ============
 
 This part of the documentation covers all the interfaces of Tablib. 
-Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets.
-
-
-Inception
----------
-
-Tablib was build by `Kenneth Reitz`_ to fufill a specfic need.
-
-Tablib was born.
-
-.. _`Kenneth Reitz`: http://kennethreitz.com
+Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/exmport.
 
 
 Philosphy
@@ -29,10 +19,7 @@ Tablib was developed with a few :pep:`20` idioms in mind.
 #. Complex is better than complicated.
 #. Readability counts.
 
-Besides, Why not?
-
-:ref:`seperators`
-
+All contributions to Tablib should keep these important rules in mind.
 
 .. _mit:
 

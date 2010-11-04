@@ -158,16 +158,13 @@ Let's find the average age. ::
 Removing Rows & Columns
 -----------------------
 
-::
+It's easier than you could imagine. ::
 
     >>> del data['Col Name']
 
 ::
 
     >>> del data[0:12]
-
-Fucking easy.
-
 
 
 ==============
@@ -180,6 +177,8 @@ This part of the documentation services to give you an idea that are otherwise h
 And now for something completely different.
 
 
+.. _dyncols:
+
 ---------------
 Dynamic Columns
 ---------------
@@ -187,15 +186,8 @@ Dynamic Columns
 .. versionadded:: 0.8.3
 
 Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. A dynamic column is a single callable object (*ie.* a function).
-For now, this is only supported on :class:`Dataset` objects that have no defined :class:`headers <Dataset.headers>`.
 
-So, let's save our headers for later, then remove them. ::
-
-    _headers = list(data.headers)
-    data.headers = None
-
-
-We can now add a dynamic column to our :class:`Dataset` object. In this example, we have a function that generates a random grade for our students. ::
+Let's add a dynamic column to our :class:`Dataset` object. In this example, we have a function that generates a random grade for our students. ::
 
     import random
     
@@ -203,12 +195,7 @@ We can now add a dynamic column to our :class:`Dataset` object. In this example,
         """Returns a random integer for entry."""
         return (random.randint(60,100)/100.0)
     
-    data.append(col=[random_grade])
-
-
-Now add the headers back, with our new column. ::
-
-    >>> data.headers = _headers + ['Grade']
+    data.append(col=[random_grade], header='Grade')
 
 Let's have a look at our data. ::
 
@@ -247,19 +234,48 @@ Adding this function to our dataset as a dynamic column would result in: ::
     - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
 
+.. _tags:
 
+----------------------------
+Filtering Datasets with Tags
+----------------------------
+
+.. versionadded:: 0.9.0
+
+
+When constructing a :class:`Dataset` object, you can add tags to rows by speficying the ``tags`` parameter. 
+This allows you to filter your :class:`Dataset` later. This can be useful so seperate rows of data based on 
+arbitrary criteria (*e.g.* origin) that you don't want to include in your :class:`Dataset`.
+
+Let's tag some students. ::
+
+    students = tablib.Dataset()
+
+    students.headers = ['first', 'last']
+
+    students.append(['Kenneth', 'Reitz'], tags=['male', 'technical'])
+    students.append(['Bessie', 'Monke'], tags=['female', 'creative'])
+
+Now that we have extra meta-data on our rows, we can use easily filter our :class:`Dataset`. Let's just see Male students. ::
+
+
+    >>> data.filter(['male']).yaml
+    - {first: Kenneth, Last: Reitz}
+
+It's that simple. The original :class:`Dataset` is untouched.
 
 
 Excel Workbook With Multiple Sheets
 ------------------------------------ 
 
-:class:`Databook` 
+When dealine with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group mulitple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build webooks with the handy, :class:`Databook` class.
+ 
 
-::
+Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is add then to a :class:`Databook` object... ::
 
-    book = tablib.Databook([data, data, data])
+    book = tablib.Databook([data1, data2, data3])
 
-::
+... and export to Excel just like :class:`Datasets <Dataset>`. ::
 
     with open('students.xls', 'wb') as f:
         f.write(book.xls)
