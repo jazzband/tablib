@@ -48,17 +48,17 @@ Exceptions
 
 .. class:: InvalidDatasetType
 
-    Raised when shit goes down.
+    You're trying to add something that doesn't quite look right.
 
 
 .. class:: InvalidDimensions
 
-    Raised when shit goes down.
+    You're trying to add something that doesn't quite fit right.
 
 
 .. class:: UnsupportedFormat
 
-    Raised when shit goes down.
+    You're trying to add something that doesn't quite taste right.
 
 
 Now, go start some :ref:`Tablib Development <development>`.
