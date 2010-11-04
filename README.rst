@@ -18,12 +18,14 @@ Output formats supported:
 - Excel (Sets + Books)
 - JSON (Sets + Books)
 - YAML (Sets + Books)
+- TSV (Sets)
 - CSV (Sets)
 
 Import formats supported:
 
 - JSON (Sets + Books)
 - YAML (Sets + Books)
+- TSV (Sets)
 - CSV (Sets)
 
 Note that tablib *purposefully* excludes XML support. It always will.
