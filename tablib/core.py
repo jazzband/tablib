@@ -156,8 +156,7 @@ class Dataset(object):
 			else:
 				return [result.tuple for result in _results]
 
-
-
+			
 	def __setitem__(self, key, value):
 		self._validate(value)
 		self._data[key] = Row(value)
