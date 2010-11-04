@@ -69,10 +69,10 @@ class TablibTestCase(unittest.TestCase):
 
 		# With Headers
 		data.headers = ('fname', 'lname')
-		new_col = ['age', 21, 22]
-		data.append(col=new_col)
+		new_col = [21, 22]
+		data.append(col=new_col, header='age')
 
-		self.assertEquals(data[new_col[0]], new_col[1:])
+		self.assertEquals(data['age'], new_col)
 
 
 	def test_add_column_no_data_no_headers(self):
@@ -87,27 +87,12 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEquals(data.height, len(new_col))
 
 
-	def test_add_column_no_data_with_headers(self):
-		"""Verify adding new column with headers."""
-
-		data.headers = ('first', 'last')
-
-		new_col = ('age',)
-		data.append(col=new_col)
-
-		self.assertEquals(len(data.headers), 3)
-		self.assertEquals(data.width, 3)
-
-		new_col = ('foo', 'bar')
-
-		self.assertRaises(tablib.InvalidDimensions, data.append, col=new_col)
-
 	def test_add_callable_column(self):
 		"""Verify adding column with values specified as callable."""
-		new_col = ['first_again', lambda x: x[0]]
-		self.founders.append(col=new_col)
-
-		self.assertTrue(map(lambda x: x[0] == x[-1], self.founders))
+		new_col = [lambda x: x[0]]
+		self.founders.append(col=new_col, header='first_again')
+#
+#		self.assertTrue(map(lambda x: x[0] == x[-1], self.founders))
 
 
 	def test_header_slicing(self):
