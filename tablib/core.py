@@ -505,13 +505,12 @@ class Dataset(object):
 				self._data = [Row([row]) for row in col]
 
 	def filter(self, tag):
-		"""Returns a new instance of the :class:`Dataset` containing only rows
-		with given tags.
+		"""Returns a new instance of the :class:`Dataset`, excluding any rows
+		that do not contain the given tags.
 		"""
 		_dset = copy(self)
 		_dset._data[:] = [row for row in self._data if row.has_tag(tag)]
-
-
+		
 		return _dset
 	
 	def wipe(self):
