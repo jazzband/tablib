@@ -2,12 +2,15 @@ History
 -------
 
 
-??
-++
+0.9.0 (2010-11-04)
+++++++++++++++++++
 
-* Massive documentation update
-* Added column insert/delete support
-* Added 
+* Massive documentation update!
+* Tablib.org!
+* Row taggins and Dataset filtering!
+* Column insert/delete support
+* Column append API change (header required)
+* Internal Changes (Row object and use thereof)
 
 
 0.8.5 (2010-10-06)
