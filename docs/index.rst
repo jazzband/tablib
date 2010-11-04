@@ -6,8 +6,6 @@
 Tablib: Pythonic Tabular Data 
 =============================
 
-Welcome to Tablib's documentation. 
-
 .. Contents:
 .. 
 .. .. toctree::
@@ -22,7 +20,7 @@ Welcome to Tablib's documentation.
 .. * :ref:`search`
 
 
-Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Oh, and it's :ref:`MIT Lisenced <mit>`.
+Tablib is an :ref:`MIT Lisenced <mit>` format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags & filtering, and seamless format import & exmport.
 
 I recommend you start with :ref:`Installation <install>`.
 

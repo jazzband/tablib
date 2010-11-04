@@ -17,12 +17,9 @@ if sys.argv[-1] == "publish":
 
 required = []
 
-# if sys.version_info < (2, 6):
-# 	required.append('simplejson')
-
 setup(
 	name='tablib',
-	version='0.8.5',
+	version='0.9.0',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
@@ -50,9 +47,4 @@ setup(
 		# 'Programming Language :: Python :: 3.0',
 		# 'Programming Language :: Python :: 3.1',
 	),
-    # entry_points={
-    #   'console_scripts': [
-    #       'tabbed = tablib.cli:start',
-    #   ],
-    # }
 )
