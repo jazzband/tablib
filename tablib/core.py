@@ -150,7 +150,12 @@ class Dataset(object):
 			else:
 				raise KeyError
 		else:
-			return tuple(self._data[key])
+			_results = self._data[key]
+			if isinstance(_results, Row):
+				return _results.tuple
+			else:
+				return [result.tuple for result in _results]
+
 
 
 	def __setitem__(self, key, value):
@@ -453,11 +458,10 @@ class Dataset(object):
 			if self.height and self.width:
 
 				for i, row in enumerate(self._data):
-					_row = list(row)
-					_row.append(col[i])
-					self._data[i] = tuple(_row)
+					row.append(col[i])
+					self._data[i] = row
 			else:
-				self._data = [tuple([row]) for row in col]
+				self._data = [Row([row]) for row in col]
 
 
 	def insert_separator(self, index, text='-'):
@@ -479,7 +483,7 @@ class Dataset(object):
 		self.insert_separator(index, text)
 
 
-	def insert(self, index, row=None, col=None):
+	def insert(self, index, row=None, col=None, tags=list()):
 		"""Inserts a row or column to the :class:`Dataset` at the given index. 
         
         Rows and columns inserted must be the correct size (height or width). 
@@ -498,7 +502,7 @@ class Dataset(object):
 		"""
 		if row:
 			self._validate(row)
-			self._data.insert(i, Row(row))
+			self._data.insert(i, Row(row, tags=tags))
 		elif col:
 			col = self._clean_col(col)
 				
@@ -512,11 +516,11 @@ class Dataset(object):
 			if self.height and self.width:
 
 				for i, row in enumerate(self._data):
-					_row = list(row)
-					_row.insert(index, col[i])
-					self._data[i] = tuple(_row)
+
+					row.insert(index, col[i])
+					self._data[i] = row
 			else:
-				self._data = [tuple([row]) for row in col]
+				self._data = [Row([row]) for row in col]
 
 	def filter(self, tag):
 		"""Returns a new instance of the :class:`Dataset` containing only rows
