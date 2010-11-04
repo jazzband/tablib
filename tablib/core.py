@@ -9,6 +9,8 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from copy import copy
+
 from tablib import formats
 
 
@@ -18,6 +20,68 @@ __build__ = 0x000805
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
+
+class Row(object):
+	"""Internal Row object. Mainly used for filtering."""
+
+	__slots__ = ['tuple', '_row', 'tags']
+
+	def __init__(self, row=list(), tags=list()):
+		self._row = list(row)
+		self.tags = list(tags)
+
+	def __iter__(self):
+		return (col for col in self._row)
+
+	def __len__(self):
+		return len(self._row)
+
+	def __repr__(self):
+		return repr(self._row)
+
+	def __getslice__(self, i, j):
+		return self._row[i,j]
+
+	def __getitem__(self, i):
+		return self._row[i]
+
+	def __setitem__(self, i, value):
+		self._row[i] = value
+
+	def __delitem__(self, i):
+		del self._row[i]
+
+	def append(self, value):
+		self._row.append(value)
+
+	def insert(self, index, value):
+		self._row.insert(index, value)
+
+	def __contains__(self, item):
+		return (item in self._row)
+
+	@property
+	def tuple(self):
+		'''Tuple representation of :class:`Row`.'''
+		return tuple(self._row)
+
+	@property
+	def list(self):
+		'''List representation of :class:`Row`.'''
+		return list(self._row)
+
+	def has_tag(self, tag):
+		"""Returns true if current row contains tag."""
+
+		if tag == None:
+			return False
+		elif isinstance(tag, basestring):
+			return tag in self.tags
+		else:
+			for t in tag:
+				if t in self.tags:
+					return True
+			return False
 
 
 class Dataset(object):
@@ -55,7 +119,7 @@ class Dataset(object):
 	"""
 
 	def __init__(self, *args, **kwargs):
-		self._data = list(args)
+		self._data = list(Row(arg) for arg in args)
 		self.__headers = None
 		
 		# ('title', index) tuples
@@ -86,12 +150,12 @@ class Dataset(object):
 			else:
 				raise KeyError
 		else:
-			return self._data[key]
+			return tuple(self._data[key])
 
 
 	def __setitem__(self, key, value):
 		self._validate(value)
-		self._data[key] = tuple(value)
+		self._data[key] = Row(value)
 
 
 	def __delitem__(self, key):
@@ -103,9 +167,9 @@ class Dataset(object):
 				del self.headers[pos]
 				
 				for i, row in enumerate(self._data):
-					_row = list(row)
-					del _row[pos]
-					self._data[i] = tuple(_row)
+
+					del row[pos]
+					self._data[i] = row
 			else:
 				raise KeyError
 		else:
@@ -264,14 +328,14 @@ class Dataset(object):
 		if isinstance(pickle[0], list):
 			self.wipe()
 			for row in pickle:
-				self.append(row)
+				self.append(Row(row))
 		
 		# if list of objects
 		elif isinstance(pickle[0], dict):
 			self.wipe()
 			self.headers = pickle[0].keys()
 			for row in pickle:
-				self.append(row.values())
+				self.append(Row(row.values()))
 		else:
 			raise UnsupportedFormat
 
@@ -285,8 +349,6 @@ class Dataset(object):
 
 	            with open('output.xls', 'wb') as f:
 	                f.write(data.xls)'
-         
-		
 		"""
 		pass
 
@@ -351,7 +413,7 @@ class Dataset(object):
 		"""
         
 
-	def append(self, row=None, col=None):
+	def append(self, row=None, col=None, tags=list()):
 		"""Adds a row or column to the :class:`Dataset`. 
         
         Rows and Columns appended must be the correct size (height or width). 
@@ -374,9 +436,10 @@ class Dataset(object):
         
             data.append(col=[random.choice])
         """
+
 		if row is not None:
 			self._validate(row)
-			self._data.append(tuple(row))
+			self._data.append(Row(row, tags=tags))
 		elif col is not None:
 			col = self._clean_col(col)
 				
@@ -421,7 +484,11 @@ class Dataset(object):
         
         Rows and columns inserted must be the correct size (height or width). 
         
-        The default behaviour is to insert the given row to the :class:`Dataset` object at the given index. If the ``col`` parameter is given, however, a new column will be insert to the :class:`Dataset` object instead. If inserting a column, and :class:`Dataset.headers` is set, the first item in list will be considered the header for the inserted row. ::
+        The default behaviour is to insert the given row to the :class:`Dataset`
+        object at the given index. If the ``col`` parameter is given, however,
+        a new column will be insert to the :class:`Dataset` object instead. If
+        inserting a column, and :class:`Dataset.headers` is set, the first item
+        in list will be considered the header for the inserted row. ::
         
         You can also insert a column of a single callable object, which will
         add a new column with the return values of the callable each as an 
@@ -431,7 +498,7 @@ class Dataset(object):
 		"""
 		if row:
 			self._validate(row)
-			self._data.insert(i, tuple(row))
+			self._data.insert(i, Row(row))
 		elif col:
 			col = self._clean_col(col)
 				
@@ -450,7 +517,16 @@ class Dataset(object):
 					self._data[i] = tuple(_row)
 			else:
 				self._data = [tuple([row]) for row in col]
-			
+
+	def filter(self, tag):
+		"""Returns a new instance of the :class:`Dataset` containing only rows
+		with given tags.
+		"""
+		_dset = copy(self)
+		_dset._data[:] = [row for row in self._data if row.has_tag(tag)]
+
+
+		return _dset
 	
 	def wipe(self):
 		"""Removes all content and headers from the :class:`Dataset` object."""
@@ -460,7 +536,6 @@ class Dataset(object):
 
 class Databook(object):
 	"""A book of :class:`Dataset` objects.
-	   
 	"""
 
 	def __init__(self, sets=[]):
