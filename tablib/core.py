@@ -417,7 +417,7 @@ class Dataset(object):
 		"""
         
 
-	def append(self, row=None, col=None, tags=list()):
+	def append(self, row=None, col=None, header=None, tags=list()):
 		"""Adds a row or column to the :class:`Dataset`. 
         
         Rows and Columns appended must be the correct size (height or width). 
@@ -444,7 +444,7 @@ class Dataset(object):
 		if row is not None:
 			self.insert(self.height, row=row, tags=tags)
 		elif col is not None:
-			self.insert(self.width, col=col)
+			self.insert(self.width, col=col, header=header)
 
 	def insert_separator(self, index, text='-'):
 		"""Adds a separator to :class:`Dataset` at given index."""
@@ -465,7 +465,7 @@ class Dataset(object):
 		self.insert_separator(index, text)
 
 
-	def insert(self, index, row=None, col=None, tags=list()):
+	def insert(self, index, row=None, col=None, header=None, tags=list()):
 		"""Inserts a row or column to the :class:`Dataset` at the given index. 
         
         Rows and columns inserted must be the correct size (height or width). 
@@ -492,8 +492,9 @@ class Dataset(object):
 
 			if self.headers:
 				# pop the first item off, add to headers
-				self.headers.insert(index, col[0])
-				col = col[1:]
+				if not header:
+					raise HeadersNeeded()
+				self.headers.insert(header)
 		
 			if self.height and self.width:
 
@@ -610,6 +611,8 @@ class InvalidDatasetType(Exception):
 class InvalidDimensions(Exception):
 	"Invalid size"
 
-	
+class HeadersNeeded(Exception):
+	"Header parameter must be given when appending a column in this Dataset."
+
 class UnsupportedFormat(NotImplementedError):
 	"Format is not supported"
