@@ -3,9 +3,6 @@
 * Write stress tests.
 * Make CSV write customizable.
 * HTML Table exports. 
-
-* Continuous Integration scripts in repo.
-
 * ``Dataset.traspose()`` support?
 
 
