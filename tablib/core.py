@@ -76,12 +76,9 @@ class Row(object):
 		if tag == None:
 			return False
 		elif isinstance(tag, basestring):
-			return tag in self.tags
-		else:
-			for t in tag:
-				if t in self.tags:
-					return True
-			return False
+			return (tag in self.tags)
+		else:			
+			return True if len(set(tag) & set(self.tags)) else False
 
 
 class Dataset(object):
