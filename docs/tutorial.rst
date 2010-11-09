@@ -87,7 +87,7 @@ Adding Columns
 
 Now that we have a basic :class:`Dataset` in place, let's add a column of **ages** to it. ::
 
-    data.append(col=['Age', 22, 20])
+    data.append(col=[22, 20], header='Age')
     
 Let's view the data now. ::
 
