@@ -8,6 +8,7 @@ import unittest
 import tablib
 
 
+
 class TablibTestCase(unittest.TestCase):
 	"""Tablib test cases."""
 
@@ -15,6 +16,7 @@ class TablibTestCase(unittest.TestCase):
 		"""Create simple data set with headers."""
 
 		global data, book
+
 		data = tablib.Dataset()
 		book = tablib.Databook()
 
@@ -352,20 +354,20 @@ class TablibTestCase(unittest.TestCase):
 
 	def test_wipe(self):
 		"""Purge a dataset."""
-		
+
 		new_row = (1, 2, 3)
 		data.append(new_row)
 
 		# Verify width/data
 		self.assertTrue(data.width == len(new_row))
 		self.assertTrue(data[0] == new_row)
-		
+
 		data.wipe()
 		new_row = (1, 2, 3, 4)
 		data.append(new_row)
 		self.assertTrue(data.width == len(new_row))
 		self.assertTrue(data[0] == new_row)
-	
-		
+
+
 if __name__ == '__main__':
 	unittest.main()
