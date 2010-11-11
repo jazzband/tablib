@@ -1,6 +1,12 @@
 History
 -------
 
+0.9.2 (?)
++++++++++
+
+* Added transpose method to Datasets
+* Backwards-compatible OrderedDict support.
+
 0.9.1 (2010-11-04)
 ++++++++++++++++++
 
