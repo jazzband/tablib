@@ -507,7 +507,35 @@ class Dataset(object):
 		_dset._data = [row for row in _dset._data if row.has_tag(tag)]
 		
 		return _dset
-	
+
+	def transpose(self):
+		"""Transpose a :class:`Dataset`, turning rows into columns and vice
+		versa, returning a new ``Dataset`` instance. The first row of the
+		original instance becomes the new header row."""
+
+		# Don't transpose if there is no data
+		if not self:
+			return
+
+		_dset = Dataset()
+		# The first element of the headers stays in the headers,
+		# it is our "hinge" on which we rotate the data
+		new_headers = [self.headers[0]] + self[self.headers[0]]
+		
+		_dset.headers = new_headers
+		for column in self.headers:
+
+			if column == self.headers[0]:
+				# It's in the headers, so skip it
+				continue
+
+			# Adding the column name as now they're a regular column
+			row_data = [column] + self[column]
+			row_data = Row(row_data)
+			_dset.append(row=row_data)
+
+		return _dset
+
 	def wipe(self):
 		"""Removes all content and headers from the :class:`Dataset` object."""
 		self._data = list()
