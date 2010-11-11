@@ -349,6 +349,19 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(tablib.detect(_json)[0], tablib.formats.json)
 		self.assertEqual(tablib.detect(_bunk)[0], None)
 
+	def test_transpose(self):
+		"""Transpose a dataset."""
+
+		transposed_founders = self.founders.transpose()
+		first_row = transposed_founders[0]
+		second_row = transposed_founders[1]
+		
+		self.assertEqual(transposed_founders.headers,
+				  ["first_name","John", "George", "Thomas"])
+		self.assertEqual(first_row,
+				   ("last_name","Adams", "Washington", "Jefferson"))
+		self.assertEqual(second_row,
+				   ("gpa",90, 67, 50))
 
 	def test_wipe(self):
 		"""Purge a dataset."""
