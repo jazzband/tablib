@@ -3,6 +3,7 @@
 
 """Tests for Tablib."""
 
+from copy import copy
 import unittest
 
 import tablib
@@ -364,7 +365,44 @@ class TablibTestCase(unittest.TestCase):
 				   ("last_name","Adams", "Washington", "Jefferson"))
 		self.assertEqual(second_row,
 				   ("gpa",90, 67, 50))
+	
+	def test_row_stacking(self):
 
+		"""Row stacking."""
+
+		to_join = tablib.Dataset(headers=self.founders.headers)
+		
+		for row in self.founders:
+			to_join.append(row=row)
+		
+		row_stacked = self.founders.row_stack(to_join)
+
+		for column in row_stacked.headers:
+
+			original_data = self.founders[column]
+			expected_data = original_data + original_data
+			self.assertEqual(row_stacked[column], expected_data)
+
+	def test_column_stacking(self):
+
+		"""Column stacking"""
+
+		to_join = tablib.Dataset(headers=self.founders.headers)
+		
+		for row in self.founders:
+			to_join.append(row=row)
+
+		column_stacked = self.founders.column_stack(to_join)
+
+		for index, row in enumerate(column_stacked):
+
+			original_data = self.founders[index]
+			expected_data = original_data + original_data
+			self.assertEqual(row, expected_data)
+
+		self.assertEqual(column_stacked[0],
+				   ("John", "Adams", 90, "John", "Adams", 90))
+	
 	def test_wipe(self):
 		"""Purge a dataset."""
 
