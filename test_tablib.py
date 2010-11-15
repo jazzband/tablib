@@ -3,7 +3,6 @@
 
 """Tests for Tablib."""
 
-from copy import copy
 import unittest
 
 import tablib
