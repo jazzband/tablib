@@ -61,7 +61,7 @@ Intelligently add new rows: ::
 
 Intelligently add new columns: ::
 
-    >>> data.append(col=('age', 90, 67, 83))
+    >>> data.append(col=(90, 67, 83), header='age')
     
 Slice rows:  ::
 
@@ -171,8 +171,7 @@ To install tablib, simply: ::
 Or, if you absolutely must: ::
 
 	$ easy_install tablib
-    
-
+   
 Contribute
 ----------
 

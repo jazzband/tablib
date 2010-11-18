@@ -87,7 +87,7 @@ Adding Columns
 
 Now that we have a basic :class:`Dataset` in place, let's add a column of **ages** to it. ::
 
-    data.append(col=['Age', 22, 20])
+    data.append(col=[22, 20], header='Age')
     
 Let's view the data now. ::
 
@@ -243,7 +243,7 @@ Filtering Datasets with Tags
 .. versionadded:: 0.9.0
 
 
-When constructing a :class:`Dataset` object, you can add tags to rows by speficying the ``tags`` parameter. 
+When constructing a :class:`Dataset` object, you can add tags to rows by specifying the ``tags`` parameter. 
 This allows you to filter your :class:`Dataset` later. This can be useful so seperate rows of data based on 
 arbitrary criteria (*e.g.* origin) that you don't want to include in your :class:`Dataset`.
 

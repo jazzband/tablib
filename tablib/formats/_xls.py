@@ -26,7 +26,7 @@ def export_set(dataset):
 	ws = wb.add_sheet(dataset.title if dataset.title else 'Tabbed Dataset')
 
 	dset_sheet(dataset, ws)
-	
+
 	stream = cStringIO.StringIO()
 	wb.save(stream)
 	return stream.getvalue()
@@ -63,6 +63,11 @@ def dset_sheet(dataset, ws):
 			if (i == 0) and dataset.headers:
 				ws.write(i, j, col, bold)
 
+				# frozen header row
+				ws.panes_frozen = True
+				ws.horz_split_pos = 1
+
+
 			# bold separators
 			elif len(row) < dataset.width:
 				ws.write(i, j, col, bold)
@@ -77,4 +82,4 @@ def dset_sheet(dataset, ws):
 				except TypeError:
 					ws.write(i, j, col)
 
-	
+
