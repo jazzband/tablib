@@ -52,17 +52,15 @@ class Row(object):
 		del self._row[i]
 
 	def __getstate__(self):
-
 		result = dict()
-		result["_row"] = self._row
-		result["tags"] = self.tags
+		result['_row'] = self._row
+		result['tags'] = self.tags
 
 		return result
 
 	def __setstate__(self, state):
-
-		self._row = state["_row"]
-		self.tags = state["tags"]
+		self._row = state['_row']
+		self.tags = state['tags']
 
 	def append(self, value):
 		self._row.append(value)
