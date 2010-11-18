@@ -548,11 +548,11 @@ class Dataset(object):
 
 		return _dset
 
-	def stack_rows(self, other):
 
+	def stack_rows(self, other):
 		"""Stack two :class:`Dataset` instances together by
-		joining them at the row level, and return a new
-		combined ``Dataset`` instance."""
+		joining at the row level, and return new combined
+		``Dataset`` instance."""
 
 		if not isinstance(other, Dataset):
 			return
@@ -571,23 +571,27 @@ class Dataset(object):
 
 		return _dset
 
-	def stack_columns(self, other):
 
+	def stack_columns(self, other):
 		"""Stack two :class:`Dataset` instances together by
 		joining at the column level, and return a new
-		combined ``Dataset`` instance. Requires headers
-		to be set."""
+		combined ``Dataset`` instance. If either ``Dataset``
+		has headers set, than the other must as well."""
 
 		if not isinstance(other, Dataset):
 			return
 
-		if not self.headers or not other.headers:
-			raise HeadersNeeded
+		if self.headers or other.headers:
+			if not self.headers or not other.headers:
+				raise HeadersNeeded
 
 		if self.height != other.height:
 			raise InvalidDimensions
 
-		new_headers = self.headers + other.headers
+		try:
+			new_headers = self.headers + other.headers
+		except TypeError:
+			new_headers = None
 
 		_dset = Dataset()
 
