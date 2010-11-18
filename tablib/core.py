@@ -548,6 +548,63 @@ class Dataset(object):
 
 		return _dset
 
+
+	def stack_rows(self, other):
+		"""Stack two :class:`Dataset` instances together by
+		joining at the row level, and return new combined
+		``Dataset`` instance."""
+
+		if not isinstance(other, Dataset):
+			return
+
+		if self.width != other.width:
+			raise InvalidDimensions
+
+		# Copy the source data
+		_dset = copy(self)
+
+		rows_to_stack = [row for row in _dset._data]
+		other_rows = [row for row in other._data]
+
+		rows_to_stack.extend(other_rows)
+		_dset._data = rows_to_stack
+
+		return _dset
+
+
+	def stack_columns(self, other):
+		"""Stack two :class:`Dataset` instances together by
+		joining at the column level, and return a new
+		combined ``Dataset`` instance. If either ``Dataset``
+		has headers set, than the other must as well."""
+
+		if not isinstance(other, Dataset):
+			return
+
+		if self.headers or other.headers:
+			if not self.headers or not other.headers:
+				raise HeadersNeeded
+
+		if self.height != other.height:
+			raise InvalidDimensions
+
+		try:
+			new_headers = self.headers + other.headers
+		except TypeError:
+			new_headers = None
+
+		_dset = Dataset()
+
+		for column in self.headers:
+			_dset.append(col=self[column])
+
+		for column in other.headers:
+			_dset.append(col=other[column])
+
+		_dset.headers = new_headers
+
+		return _dset
+
 	def wipe(self):
 		"""Removes all content and headers from the :class:`Dataset` object."""
 		self._data = list()

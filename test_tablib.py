@@ -194,7 +194,7 @@ class TablibTestCase(unittest.TestCase):
 		data.tsv
 		data.xls
 
- 
+
 	def test_book_export_no_exceptions(self):
 		"""Test that varoius exports don't error out."""
 
@@ -245,7 +245,7 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(_yaml, data.yaml)
 
-		
+
 	def test_yaml_import_book(self):
 		"""Generate and import YAML book serialization."""
 		data.append(self.john)
@@ -258,7 +258,7 @@ class TablibTestCase(unittest.TestCase):
 		book.yaml = _yaml
 
 		self.assertEqual(_yaml, book.yaml)
-		
+
 
 	def test_csv_import_set(self):
 		"""Generate and import CSV set serialization."""
@@ -286,7 +286,7 @@ class TablibTestCase(unittest.TestCase):
 
 	def test_csv_format_detect(self):
 		"""Test CSV format detection."""
-		
+
 		_csv = (
 			'1,2,3\n'
 			'4,5,6\n'
@@ -295,13 +295,13 @@ class TablibTestCase(unittest.TestCase):
 		_bunk = (
 			'¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
 		)
-		
+
 		self.assertTrue(tablib.formats.csv.detect(_csv))
 		self.assertFalse(tablib.formats.csv.detect(_bunk))
 
 	def test_tsv_format_detect(self):
 		"""Test TSV format detection."""
-		
+
 		_tsv = (
 			'1\t2\t3\n'
 			'4\t5\t6\n'
@@ -310,7 +310,7 @@ class TablibTestCase(unittest.TestCase):
 		_bunk = (
 			'¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
 		)
-		
+
 		self.assertTrue(tablib.formats.tsv.detect(_tsv))
 		self.assertFalse(tablib.formats.tsv.detect(_bunk))
 
@@ -357,13 +357,51 @@ class TablibTestCase(unittest.TestCase):
 		transposed_founders = self.founders.transpose()
 		first_row = transposed_founders[0]
 		second_row = transposed_founders[1]
-		
+
 		self.assertEqual(transposed_founders.headers,
 				  ["first_name","John", "George", "Thomas"])
 		self.assertEqual(first_row,
 				   ("last_name","Adams", "Washington", "Jefferson"))
 		self.assertEqual(second_row,
 				   ("gpa",90, 67, 50))
+
+	def test_row_stacking(self):
+
+		"""Row stacking."""
+
+		to_join = tablib.Dataset(headers=self.founders.headers)
+
+		for row in self.founders:
+			to_join.append(row=row)
+
+		row_stacked = self.founders.stack_rows(to_join)
+
+		for column in row_stacked.headers:
+
+			original_data = self.founders[column]
+			expected_data = original_data + original_data
+			self.assertEqual(row_stacked[column], expected_data)
+
+	def test_column_stacking(self):
+
+		"""Column stacking"""
+
+		to_join = tablib.Dataset(headers=self.founders.headers)
+
+		for row in self.founders:
+			to_join.append(row=row)
+
+		column_stacked = self.founders.stack_columns(to_join)
+
+		for index, row in enumerate(column_stacked):
+
+			original_data = self.founders[index]
+			expected_data = original_data + original_data
+			self.assertEqual(row, expected_data)
+
+		self.assertEqual(column_stacked[0],
+				   ("John", "Adams", 90, "John", "Adams", 90))
+
 
 	def test_wipe(self):
 		"""Purge a dataset."""
