@@ -374,7 +374,7 @@ class TablibTestCase(unittest.TestCase):
 		for row in self.founders:
 			to_join.append(row=row)
 		
-		row_stacked = self.founders.row_stack(to_join)
+		row_stacked = self.founders.stack_rows(to_join)
 
 		for column in row_stacked.headers:
 
@@ -391,7 +391,7 @@ class TablibTestCase(unittest.TestCase):
 		for row in self.founders:
 			to_join.append(row=row)
 
-		column_stacked = self.founders.column_stack(to_join)
+		column_stacked = self.founders.stack_columns(to_join)
 
 		for index, row in enumerate(column_stacked):
 
@@ -402,6 +402,7 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(column_stacked[0],
 				   ("John", "Adams", 90, "John", "Adams", 90))
 	
+
 	def test_wipe(self):
 		"""Purge a dataset."""
 

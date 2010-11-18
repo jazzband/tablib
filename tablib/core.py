@@ -547,8 +547,8 @@ class Dataset(object):
 			_dset.append(row=row_data)
 
 		return _dset
-	
-	def row_stack(self, other):
+
+	def stack_rows(self, other):
 
 		"""Stack two :class:`Dataset` instances together by
 		joining them at the row level, and return a new
@@ -562,16 +562,16 @@ class Dataset(object):
 
 		# Copy the source data
 		_dset = copy(self)
-		
+
 		rows_to_stack = [row for row in _dset._data]
 		other_rows = [row for row in other._data]
 
 		rows_to_stack.extend(other_rows)
 		_dset._data = rows_to_stack
-	
+
 		return _dset
 
-	def column_stack(self, other):
+	def stack_columns(self, other):
 
 		"""Stack two :class:`Dataset` instances together by
 		joining at the column level, and return a new
