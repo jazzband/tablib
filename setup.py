@@ -19,7 +19,7 @@ required = []
 
 setup(
 	name='tablib',
-	version='0.9.1',
+	version='0.9.2',
 	description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
 	long_description=open('README.rst').read() + '\n\n' +
 	                 open('HISTORY.rst').read(),
