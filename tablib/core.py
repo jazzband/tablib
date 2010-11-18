@@ -21,6 +21,7 @@ __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2010 Kenneth Reitz'
 
+
 class Row(object):
 	"""Internal Row object. Mainly used for filtering."""
 
