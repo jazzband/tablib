@@ -1,4 +1,4 @@
-* Polish *&* announce http://tablib.org.
+* Backwards-compatible OrderedDict support
 * Write more exhausive unit-tests.
 * Write stress tests.
 * Make CSV write customizable.
