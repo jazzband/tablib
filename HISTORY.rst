@@ -1,14 +1,14 @@
 History
 -------
 
-0.9.2 (?)
-+++++++++
+0.9.2 (2010-11-17)
+++++++++++++++++++
 
 * Tanspose method added to Datasets
 * New frozen top row in Excel output
-* Backwards-compatible OrderedDict support.
 * Pickling support for Datasets and Rows
-* ? Support for row/column stacking
+* Support for row/column stacking
+
 
 0.9.1 (2010-11-04)
 ++++++++++++++++++
