@@ -615,10 +615,15 @@ class Databook(object):
 	"""A book of :class:`Dataset` objects.
 	"""
 
-	def __init__(self, sets=[]):
+	def __init__(self, sets=None):
+
+		if sets is None:
+			self._datasets = list()
+		else:
+			self._datasets = sets
+
 		self._datasets = sets
 		self._register_formats()
-
 
 	def __repr__(self):
 		try:
