@@ -425,6 +425,14 @@ class Dataset(object):
 	    Import assumes (for now) that headers exist.
 		"""
 
+	@property
+	def html():
+		"""A HTML table representation of the :class:`Dataset` object. If
+		headers have been set, they will be used as table headers.
+
+		..notice:: This method can be used for export only.
+		"""
+		pass
 
 	def append(self, row=None, col=None, header=None, tags=list()):
 		"""Adds a row or column to the :class:`Dataset`.

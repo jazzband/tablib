@@ -5,6 +5,8 @@
 
 import unittest
 
+from tablib.packages import markup
+
 import tablib
 
 
@@ -181,6 +183,27 @@ class TablibTestCase(unittest.TestCase):
 			tsv = tsv.strip('\t') + '\r\n'
 
 		self.assertEqual(tsv, self.founders.tsv)
+
+	def test_html_export(self):
+
+		"""HTML export"""
+
+		html = markup.page()
+		html.table.open()
+		html.thead.open()
+
+		html.tr(markup.oneliner.th(self.founders.headers))
+		html.thead.close()
+
+		for founder in self.founders:
+
+			html.tr(markup.oneliner.td(founder))
+
+		html.table.close()
+		html = str(html)
+
+		self.assertEqual(html, self.founders.html)
+
 
 	def test_unicode_append(self):
 		"""Passes in a single unicode charecter and exports."""
@@ -401,6 +424,7 @@ class TablibTestCase(unittest.TestCase):
 
 		self.assertEqual(column_stacked[0],
 				   ("John", "Adams", 90, "John", "Adams", 90))
+
 
 
 	def test_wipe(self):
