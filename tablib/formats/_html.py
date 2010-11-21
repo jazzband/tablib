@@ -3,7 +3,7 @@
 """ Tablib - HTML export support.
 """
 
-import cStringIO
+from StringIO import StringIO
 
 from tablib.packages import markup
 import tablib
@@ -12,10 +12,9 @@ title = 'html'
 extentions = ('html', )
 
 def export_set(dataset):
-
 	"""HTML representation of a Dataset."""
 
-	stream = cStringIO.StringIO()
+	stream = StringIO()
 
 	page = markup.page()
 	page.table.open()
