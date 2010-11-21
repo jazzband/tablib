@@ -5,7 +5,7 @@
 
 import cStringIO
 
-import markup
+from tablib.packages import markup
 import tablib
 
 title = 'html'

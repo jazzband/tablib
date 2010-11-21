@@ -5,7 +5,8 @@
 
 import unittest
 
-import markup
+from tablib.packages import markup
+
 import tablib
 
 
