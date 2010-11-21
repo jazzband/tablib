@@ -622,7 +622,6 @@ class Databook(object):
 		else:
 			self._datasets = sets
 
-		self._datasets = sets
 		self._register_formats()
 
 	def __repr__(self):
