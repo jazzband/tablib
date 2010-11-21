@@ -1,19 +1,26 @@
 History
 -------
 
+0.9.3 (2010-11-2?)
+++++++++++++++++++
+
+* Databook duplication leak fix.
+* HTML Table output.
+
+
 0.9.2 (2010-11-17)
 ++++++++++++++++++
 
-* Tanspose method added to Datasets
-* New frozen top row in Excel output
-* Pickling support for Datasets and Rows
-* Support for row/column stacking
+* Tanspose method added to Datasets.
+* New frozen top row in Excel output.
+* Pickling support for Datasets and Rows.
+* Support for row/column stacking.
 
 
 0.9.1 (2010-11-04)
 ++++++++++++++++++
 
-* Minor reference shadowing bugfix 
+* Minor reference shadowing bugfix.
 
 
 0.9.0 (2010-11-04)
