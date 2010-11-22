@@ -26,11 +26,11 @@ def export_set(dataset):
 def export_book(databook):
 	"""Returns JSON representation of Databook."""
 	return json.dumps(databook._package())
-	
+
 
 def import_set(dset, in_stream):
 	"""Returns dataset from JSON stream."""
-	
+
 	dset.wipe()
 	dset.dict = json.loads(in_stream)
 
