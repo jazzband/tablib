@@ -1,4 +1,9 @@
 * Add seperator support to HTML out
+* Hooks System
+  - pre/post-append
+  - pre/post-import
+  - pre/post-export
+* Big Data
 * Backwards-compatible OrderedDict support
 * Write more exhausive unit-tests.
 * Write stress tests.
