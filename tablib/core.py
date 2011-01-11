@@ -5,7 +5,7 @@
 
     This module implements the central tablib objects.
 
-    :copyright: (c) 2010 by Kenneth Reitz.
+    :copyright: (c) 2011 by Kenneth Reitz.
     :license: MIT, see LICENSE for more details.
 """
 
@@ -19,7 +19,7 @@ __version__ = '0.9.2'
 __build__ = 0x000902
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2010 Kenneth Reitz'
+__copyright__ = 'Copyright 2011 Kenneth Reitz'
 
 
 class Row(object):
