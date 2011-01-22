@@ -425,7 +425,22 @@ class TablibTestCase(unittest.TestCase):
 		self.assertEqual(column_stacked[0],
 				   ("John", "Adams", 90, "John", "Adams", 90))
 
+	def test_sorting(self):
 
+		"""Sort columns."""
+
+		sorted_data = self.founders.sort(col="first_name")
+
+		first_row = sorted_data[0]
+		second_row = sorted_data[2]
+		third_row = sorted_data[1]
+		expected_first = self.founders[1]
+		expected_second = self.founders[2]
+		expected_third = self.founders[0]
+
+		self.assertEqual(first_row, expected_first)
+		self.assertEqual(second_row, expected_second)
+		self.assertEqual(third_row, expected_third)
 
 	def test_wipe(self):
 		"""Purge a dataset."""
