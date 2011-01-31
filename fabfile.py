@@ -1,7 +1,7 @@
 import os
 from fabric.api import *
 
-os.f
+
 def scrub():
 	""" Death to the bytecode! """
 	local('rm -fr dist build')
