@@ -5,21 +5,22 @@
 
     This module implements the central tablib objects.
 
-    :copyright: (c) 2010 by Kenneth Reitz.
+    :copyright: (c) 2011 by Kenneth Reitz.
     :license: MIT, see LICENSE for more details.
 """
 
 from copy import copy
+from operator import itemgetter
 
 from tablib import formats
 
 
 __title__ = 'tablib'
-__version__ = '0.9.2'
-__build__ = 0x000902
+__version__ = '0.9.3'
+__build__ = 0x000903
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2010 Kenneth Reitz'
+__copyright__ = 'Copyright 2011 Kenneth Reitz'
 
 
 class Row(object):
@@ -425,6 +426,14 @@ class Dataset(object):
 	    Import assumes (for now) that headers exist.
 		"""
 
+	@property
+	def html():
+		"""A HTML table representation of the :class:`Dataset` object. If
+		headers have been set, they will be used as table headers.
+
+		..notice:: This method can be used for export only.
+		"""
+		pass
 
 	def append(self, row=None, col=None, header=None, tags=list()):
 		"""Adds a row or column to the :class:`Dataset`.
@@ -511,12 +520,50 @@ class Dataset(object):
 			else:
 				self._data = [Row([row]) for row in col]
 
+
 	def filter(self, tag):
 		"""Returns a new instance of the :class:`Dataset`, excluding any rows
 		that do not contain the given :ref:`tags <tags>`.
 		"""
 		_dset = copy(self)
 		_dset._data = [row for row in _dset._data if row.has_tag(tag)]
+
+		return _dset
+
+
+	def sort(self, col, reverse=False):
+		"""Sort a :class:`Dataset` by a specific column, given string (for
+		header) or integer (for column index). The order can be reversed by
+		setting ``reverse`` to ``True``. 
+		Returns a new :class:`Dataset` instance where columns have been
+		sorted."""
+		
+		if isinstance(col, basestring):
+
+			if not self.headers:
+				raise HeadersNeeded
+
+			_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+			_dset = Dataset(headers=self.headers)
+
+			for item in _sorted:
+				row = [item[key] for key in self.headers]
+				_dset.append(row=row)
+
+		else:
+			if self.headers:
+				col = self.headers[col]
+
+			_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+			_dset = Dataset(headers=self.headers)
+
+			for item in _sorted:
+				if self.headers:
+					row = [item[key] for key in self.headers]
+				else:
+					row = item
+				_dset.append(row=row)
+
 
 		return _dset
 
@@ -615,10 +662,14 @@ class Databook(object):
 	"""A book of :class:`Dataset` objects.
 	"""
 
-	def __init__(self, sets=[]):
-		self._datasets = sets
-		self._register_formats()
+	def __init__(self, sets=None):
 
+		if sets is None:
+			self._datasets = list()
+		else:
+			self._datasets = sets
+
+		self._register_formats()
 
 	def __repr__(self):
 		try:
