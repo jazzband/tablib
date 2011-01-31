@@ -15,8 +15,8 @@ from tablib import formats
 
 
 __title__ = 'tablib'
-__version__ = '0.9.2'
-__build__ = 0x000902
+__version__ = '0.9.3'
+__build__ = 0x000903
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
