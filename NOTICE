@@ -1,6 +1,12 @@
 Tablib includes some vendorized python libraries: ordereddict, pyyaml,
 simplejson, and xlwt.
 
+Markup License
+==============
+
+Markup is in the public domain.
+
+
 
 OrderedDict License
 ===================
