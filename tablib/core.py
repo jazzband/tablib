@@ -535,16 +535,32 @@ class Dataset(object):
 		reversed by setting ``reverse`` to ``True``. Requires headers to be
 		set. Returns a new :class:`Dataset` instance where columns have been
 		sorted."""
+		if isinstance(col, basestring):
 
-		if not self.headers:
-			raise HeadersNeeded
+			if not self.headers:
+				raise HeadersNeeded
 
-		_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-		_dset = Dataset(headers=self.headers)
+			_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+			_dset = Dataset(headers=self.headers)
 
-		for item in _sorted:
-			row = [item[key] for key in self.headers]
-			_dset.append(row=row)
+			for item in _sorted:
+				row = [item[key] for key in self.headers]
+				_dset.append(row=row)
+
+		else:
+			if self.headers:
+				col = self.headers[col]
+
+			_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+			_dset = Dataset(headers=self.headers)
+
+			for item in _sorted:
+				if self.headers:
+					row = [item[key] for key in self.headers]
+				else:
+					row = item
+				_dset.append(row=row)
+
 
 		return _dset
 
