@@ -10,6 +10,7 @@
 """
 
 from copy import copy
+from operator import itemgetter
 
 from tablib import formats
 
@@ -525,6 +526,25 @@ class Dataset(object):
 		"""
 		_dset = copy(self)
 		_dset._data = [row for row in _dset._data if row.has_tag(tag)]
+
+		return _dset
+
+	def sort(self, col, reverse=False):
+
+		"""Sort a :class:`Dataset` by a specific column. The order can be
+		reversed by setting ``reverse`` to ``True``. Requires headers to be
+		set. Returns a new :class:`Dataset` instance where columns have been
+		sorted."""
+
+		if not self.headers:
+			raise HeadersNeeded
+
+		_sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+		_dset = Dataset(headers=self.headers)
+
+		for item in _sorted:
+			row = [item[key] for key in self.headers]
+			_dset.append(row=row)
 
 		return _dset
 
