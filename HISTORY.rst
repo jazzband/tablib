@@ -1,11 +1,12 @@
 History
 -------
 
-0.9.3 (2010-11-2?)
+0.9.3 (2011-01-31)
 ++++++++++++++++++
 
 * Databook duplication leak fix.
 * HTML Table output.
+* Added column sorting.
 
 
 0.9.2 (2010-11-17)

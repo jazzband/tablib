@@ -18,6 +18,7 @@ Output formats supported:
 - Excel (Sets + Books)
 - JSON (Sets + Books)
 - YAML (Sets + Books)
+- HTML (Sets)
 - TSV (Sets)
 - CSV (Sets)
 
