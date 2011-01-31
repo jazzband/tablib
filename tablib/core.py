@@ -520,6 +520,7 @@ class Dataset(object):
 			else:
 				self._data = [Row([row]) for row in col]
 
+
 	def filter(self, tag):
 		"""Returns a new instance of the :class:`Dataset`, excluding any rows
 		that do not contain the given :ref:`tags <tags>`.
@@ -529,12 +530,14 @@ class Dataset(object):
 
 		return _dset
 
-	def sort(self, col, reverse=False):
 
-		"""Sort a :class:`Dataset` by a specific column. The order can be
-		reversed by setting ``reverse`` to ``True``. Requires headers to be
-		set. Returns a new :class:`Dataset` instance where columns have been
+	def sort(self, col, reverse=False):
+		"""Sort a :class:`Dataset` by a specific column, given string (for
+		header) or integer (for column index). The order can be reversed by
+		setting ``reverse`` to ``True``. 
+		Returns a new :class:`Dataset` instance where columns have been
 		sorted."""
+		
 		if isinstance(col, basestring):
 
 			if not self.headers:
