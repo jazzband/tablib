@@ -54,15 +54,10 @@ class Row(object):
 		del self._row[i]
 
 	def __getstate__(self):
-		result = dict()
-		result['_row'] = self._row
-		result['tags'] = self.tags
-
-		return result
+		return {slot: getattr(self, slot) for slot in self.__slots__}
 
 	def __setstate__(self, state):
-		self._row = state['_row']
-		self.tags = state['tags']
+		for (k, v) in state.items(): setattr(self, k, v)
 
 	def append(self, value):
 		self._row.append(value)
