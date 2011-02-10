@@ -9,8 +9,8 @@ def scrub():
 
 def docs():
 	"""Build docs."""
-	os.system('make html')
-	os.chdir('_build/html')
+	os.system('make dirhtml')
+	os.chdir('_build/dirhtml')
 	os.system('sphinxtogithub .')
 	os.system('git add -A')
 	os.system('git commit -m \'documentation update\'')
