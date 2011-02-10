@@ -128,7 +128,7 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 .. admonition:: Excluding Support
 
 
-    If the format excludes support for an import/export mechanism (*eg.* :class:`csv <tablib.Dataset.csv>` excludes :class:`Databook <tablib.Databook>` support), simply don't define the respecive functions. Appropriate errors will be raised.
+    If the format excludes support for an import/export mechanism (*eg.* :class:`csv <tablib.Dataset.csv>` excludes :class:`Databook <tablib.Databook>` support), simply don't define the respective functions. Appropriate errors will be raised.
 
 2. 
 
@@ -145,7 +145,7 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 Testing Tablib
 --------------
 
-Testing is crucial to Tablib's stability. This stable project is used in production by many companies and developers, so it is important to be certian that every version released is fully operational. When developing a new feature for Tablib, be sure to write proper tests for it as well.
+Testing is crucial to Tablib's stability. This stable project is used in production by many companies and developers, so it is important to be certain that every version released is fully operational. When developing a new feature for Tablib, be sure to write proper tests for it as well.
 
 When developing a feature for Tablib, the easiest way to test your changes for potential issues is to simply run the test suite directly. ::
 
@@ -174,7 +174,7 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 Continuous Integration
 ----------------------
 
-Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Hudson CI`_. If you have access to the main respository and broke the build, you will receive an email accordingly. 
+Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Hudson CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly. 
 
 Anyone may view the build status and history at any time.
 
@@ -197,7 +197,7 @@ Building the Docs
 -----------------
 
 Documentation is written in the powerful, flexible, and standard Python documentation format, `reStructured Text`_. 
-Documentation builds are powered by the powerful Pocoo project, Sphinx_. The :ref:`API Documentation <api>` is mostly documented inline throught the module.
+Documentation builds are powered by the powerful Pocoo project, Sphinx_. The :ref:`API Documentation <api>` is mostly documented inline throughout the module.
 
 The Docs live in ``tablib/docs``. In order to build them, you will first need to install Sphinx. ::
 

@@ -103,7 +103,7 @@ Exporting Data
 
 Tablib's killer feature is the ability to export your :class:`Dataset` objects into a number of formats.
 
-**Comma-Seperated Values** ::
+**Comma-Separated Values** ::
 
     >>> data.csv
     Last Name,First Name,Age 
@@ -244,7 +244,7 @@ Filtering Datasets with Tags
 
 
 When constructing a :class:`Dataset` object, you can add tags to rows by specifying the ``tags`` parameter. 
-This allows you to filter your :class:`Dataset` later. This can be useful so seperate rows of data based on 
+This allows you to filter your :class:`Dataset` later. This can be useful so separate rows of data based on 
 arbitrary criteria (*e.g.* origin) that you don't want to include in your :class:`Dataset`.
 
 Let's tag some students. ::
@@ -268,7 +268,7 @@ It's that simple. The original :class:`Dataset` is untouched.
 Excel Workbook With Multiple Sheets
 ------------------------------------ 
 
-When dealine with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group mulitple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build webooks with the handy, :class:`Databook` class.
+When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group multiple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build webooks with the handy, :class:`Databook` class.
  
 
 Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is add then to a :class:`Databook` object... ::
@@ -280,7 +280,7 @@ Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is 
     with open('students.xls', 'wb') as f:
         f.write(book.xls)
 
-The resulting **students.xls** file will contain a seperate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
+The resulting **students.xls** file will contain a separate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
 
 .. admonition:: Binary Warning
 
@@ -295,7 +295,7 @@ Seperators
 
 .. versionadded:: 0.8.2
 
-When, it's often useful to create a blank row containing information on the upcomming data. So, 
+When, it's often useful to create a blank row containing information on the upcoming data. So, 
 
 
 
@@ -346,7 +346,7 @@ The resulting **tests.xls** will have the following layout:
 
 .. admonition:: Format Support
 
-    At this time, only :class:`Excel <Dataset.xls>` output supports seperators.
+    At this time, only :class:`Excel <Dataset.xls>` output supports separators.
     
 ----
 

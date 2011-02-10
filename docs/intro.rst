@@ -4,7 +4,7 @@ Introduction
 ============
 
 This part of the documentation covers all the interfaces of Tablib. 
-Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/exmport.
+Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/export.
 
 
 Philosphy
@@ -26,9 +26,9 @@ All contributions to Tablib should keep these important rules in mind.
 MIT License
 -----------
 
-A large number of open source projects you find today are `GPL Licensed`_. While the GPL certianly has essential applications, it should most certianly not be your go-to license for your next open source project. 
+A large number of open source projects you find today are `GPL Licensed`_. While the GPL has its time and place, it should most certainly not be your go-to license for your next open source project. 
 
-A project that is released as GPL cannot be usd in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software. 
+A project that is released as GPL cannot be used in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software. 
 
 Tablib is released under terms of `The MIT License`_.
 
