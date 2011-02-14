@@ -54,7 +54,7 @@ class Row(object):
 		del self._row[i]
 
 	def __getstate__(self):
-		return {slot: getattr(self, slot) for slot in self.__slots__}
+		return {slot: [getattr(self, slot) for slot in self.__slots__]}
 
 	def __setstate__(self, state):
 		for (k, v) in state.items(): setattr(self, k, v)
@@ -280,8 +280,7 @@ class Dataset(object):
 				return 0
 
 
-	@property
-	def headers(self):
+	def _get_headers(self):
 		"""An *optional* list of strings to be used for header rows and attribute names.
 
         This must be set manually. The given list length must equal :class:`Dataset.width`.
@@ -290,8 +289,7 @@ class Dataset(object):
 		return self.__headers
 
 
-	@headers.setter
-	def headers(self, collection):
+	def _set_headers(self, collection):
 		"""Validating headers setter."""
 		self._validate(collection)
 		if collection:
@@ -302,9 +300,9 @@ class Dataset(object):
 		else:
 			self.__headers = None
 
+	headers = property(_get_headers, _set_headers)
 
-	@property
-	def dict(self):
+	def _get_dict(self):
 		"""A JSON representation of the :class:`Dataset` object. If headers have been
         set, a JSON list of objects will be returned. If no headers have
         been set, a JSON list of lists (rows) will be returned instead.
@@ -318,8 +316,7 @@ class Dataset(object):
 		return self._package()
 
 
-	@dict.setter
-	def dict(self, pickle):
+	def _set_dict(self, pickle):
 		"""A native Python representation of the Dataset object. If headers have been
 	    set, a list of Python dictionaries will be returned. If no headers have been
 	    set, a list of tuples (rows) will be returned instead.
@@ -347,6 +344,9 @@ class Dataset(object):
 				self.append(Row(row.values()))
 		else:
 			raise UnsupportedFormat
+
+	dict = property(_get_dict, _set_dict)
+
 
 	@property
 	def xls():
