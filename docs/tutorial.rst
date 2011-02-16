@@ -268,7 +268,7 @@ It's that simple. The original :class:`Dataset` is untouched.
 Excel Workbook With Multiple Sheets
 ------------------------------------ 
 
-When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group multiple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build webooks with the handy, :class:`Databook` class.
+When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group multiple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build workbooks with the handy, :class:`Databook` class.
  
 
 Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is add then to a :class:`Databook` object... ::
