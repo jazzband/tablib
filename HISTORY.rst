@@ -1,6 +1,16 @@
 History
 -------
 
+0.9.4 (2011-02-18)
+++++++++++++++++++
+
+* Python 2.5 Support!
+* Tox Testing for 2.5, 2.6, 2.7
+* AnyJSON Integrated
+* OrderedDict support ?
+* Caved to community pressure (spaces)
+
+
 0.9.3 (2011-01-31)
 ++++++++++++++++++
 
