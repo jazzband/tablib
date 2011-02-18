@@ -29,7 +29,6 @@ setup(
     packages= [
         'tablib', 'tablib.formats',
         'tablib.packages',
-	'tablib.packages.anyjson',
         'tablib.packages.xlwt',
         'tablib.packages.yaml', 
     ],
