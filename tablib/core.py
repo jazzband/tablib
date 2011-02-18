@@ -305,11 +305,11 @@ class Dataset(object):
     headers = property(_get_headers, _set_headers)
 
     def _get_dict(self):
-        """A JSON representation of the :class:`Dataset` object. If headers have been
-        set, a JSON list of objects will be returned. If no headers have
-        been set, a JSON list of lists (rows) will be returned instead.
+        """A native Python representation of the :class:`Dataset` object. If headers have 
+        been set, a list of Python dictionaries will be returned. If no headers have been set, 
+        a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the `Dataset.json` attribute: ::
+        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
 
             data = tablib.Dataset()
             data.json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
