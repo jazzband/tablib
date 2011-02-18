@@ -1,3 +1,4 @@
+rm -fr nosetests.xml
 tox
 # coverage xml
 rm -fr pylint.txt
