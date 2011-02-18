@@ -9,7 +9,7 @@ except ImportError:
     try:
         import simplejson as json
     except ImportError:
-        import tablib.packages.simplejson as json # use the vendorized copy
+        from tablib.packages import simplejson as json # use the vendorized copy
 
 import tablib.core
 
