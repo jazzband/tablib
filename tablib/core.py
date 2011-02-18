@@ -86,7 +86,9 @@ class Row(object):
         elif isinstance(tag, basestring):
             return (tag in self.tags)
         else:
-            return True if len(set(tag) and set(self.tags)) else False
+            return bool(len(set(tag) & set(self.tags)))
+                
+
 
 
 class Dataset(object):
