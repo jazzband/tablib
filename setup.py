@@ -27,9 +27,9 @@ setup(
     author_email='me@kennethreitz.com',
     url='http://tablib.org',
     packages= [
-        'tablib', 'tablib.formats', 
+        'tablib', 'tablib.formats',
         'tablib.packages',
-        'tablib.packages.simplejson',
+	'tablib.packages.anyjson',
         'tablib.packages.xlwt',
         'tablib.packages.yaml', 
     ],
