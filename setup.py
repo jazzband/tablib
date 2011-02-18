@@ -17,6 +17,9 @@ if sys.argv[-1] == "publish":
 
 required = []
 
+if sys.version_info < (2,6):
+    required.append('simplejson')
+
 setup(
     name='tablib',
     version='0.9.3',
