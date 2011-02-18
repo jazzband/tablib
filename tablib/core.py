@@ -14,6 +14,11 @@ from operator import itemgetter
 
 from tablib import formats
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    from tablib.packages.ordereddict import OrderedDict
+
 
 __title__ = 'tablib'
 __version__ = '0.9.3'
@@ -233,7 +238,7 @@ class Dataset(object):
 
         if self.headers:
             if dicts:
-                data = [dict(zip(self.headers, data_row)) for data_row in self ._data]
+                data = [OrderedDict(zip(self.headers, data_row)) for data_row in self ._data]
             else:
                 data = [list(self.headers)] + list(self._data)
         else:
@@ -329,6 +334,7 @@ class Dataset(object):
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
         """
+
         if not len(pickle):
             return
 
@@ -432,6 +438,7 @@ class Dataset(object):
         """
         pass
 
+
     def append(self, row=None, col=None, header=None, tags=list()):
         """Adds a row or column to the :class:`Dataset`.
         Usage is  :class:`Dataset.insert` for documentation.
@@ -441,6 +448,7 @@ class Dataset(object):
             self.insert(self.height, row=row, tags=tags)
         elif col is not None:
             self.insert(self.width, col=col, header=header)
+
 
     def insert_separator(self, index, text='-'):
         """Adds a separator to :class:`Dataset` at given index."""
@@ -563,6 +571,7 @@ class Dataset(object):
 
 
         return _dset
+
 
     def transpose(self):
         """Transpose a :class:`Dataset`, turning rows into columns and vice
@@ -706,7 +715,7 @@ class Databook(object):
         """Packages :class:`Databook` for delivery."""
         collector = []
         for dset in self._datasets:
-            collector.append(dict(
+            collector.append(OrderedDict(
                 title = dset.title,
                 data = dset.dict
             ))
