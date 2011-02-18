@@ -22,7 +22,7 @@ History
 0.9.2 (2010-11-17)
 ++++++++++++++++++
 
-* Tanspose method added to Datasets.
+* Transpose method added to Datasets.
 * New frozen top row in Excel output.
 * Pickling support for Datasets and Rows.
 * Support for row/column stacking.
@@ -39,7 +39,7 @@ History
 
 * Massive documentation update!
 * Tablib.org!
-* Row taggins and Dataset filtering!
+* Row tagging and Dataset filtering!
 * Column insert/delete support
 * Column append API change (header required)
 * Internal Changes (Row object and use thereof)
@@ -49,13 +49,13 @@ History
 ++++++++++++++++++
 
 * New import system. All dependencies attempt to load from site-packages,
-  then fallback on vendorized modules.
+  then fallback on tenderized modules.
 
 
 0.8.4 (2010-10-04)
 ++++++++++++++++++
 
-* Upated XLS output: Only wrap if '\\n' in cell.
+* Updated XLS output: Only wrap if '\\n' in cell.
 
 
 0.8.3 (2010-10-04)
@@ -90,13 +90,13 @@ History
 ++++++++++++++++++
 
 * Reverting methods back to properties. 
-* Windows bug compenated in documentation.
+* Windows bug compensated in documentation.
 
 
 0.7.0 (2010-09-20)
 ++++++++++++++++++
 
-* Renamed DataBook Databook for consistiency.
+* Renamed DataBook Databook for consistency.
 * Export properties changed to methods (XLS filename / StringIO bug).
 * Optional Dataset.xls(path='filename') support (for writing on windows).
 * Added utf-8 on the worksheet level.
