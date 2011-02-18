@@ -20,3 +20,6 @@ profile
 docs/_build/*
 coverage.xml
 nosetests.xml
+junit-py25.xml
+junit-py26.xml
+junit-py27.xml
