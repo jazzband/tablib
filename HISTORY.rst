@@ -7,7 +7,7 @@ History
 * Python 2.5 Support!
 * Tox Testing for 2.5, 2.6, 2.7
 * AnyJSON Integrated
-* OrderedDict support ?
+* OrderedDict support
 * Caved to community pressure (spaces)
 
 

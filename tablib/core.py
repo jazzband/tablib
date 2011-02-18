@@ -3,7 +3,7 @@
     tablib.core
     ~~~~~~~~~~~
 
-    This module implements the central tablib objects.
+    This module implements the central Tablib objects.
 
     :copyright: (c) 2011 by Kenneth Reitz.
     :license: MIT, see LICENSE for more details.
