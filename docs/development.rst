@@ -87,7 +87,7 @@ Adding New Formats
 
 Tablib welcomes new format additions! Format suggestions include:
 
-* Tab Seperated Values
+* Tab Separated Values
 * MySQL Dump
 * HTML Table
 
@@ -178,7 +178,7 @@ Every commit made to the **develop** branch is automatically tested and inspecte
 
 Anyone may view the build status and history at any time.
 
-    http://git.kennethreitz.com/ci/
+    http://ci.kennethreitz.com/
 
 
 If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Hudson Server. 
