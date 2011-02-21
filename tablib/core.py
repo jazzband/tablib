@@ -26,6 +26,7 @@ __build__ = 0x000904
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
+__docformat__ = 'restructuredtext'
 
 
 class Row(object):
