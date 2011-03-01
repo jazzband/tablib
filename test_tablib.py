@@ -295,6 +295,19 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_csv, data.csv)
 
+    def test_csv_import_set_with_spaces(self):
+        """Generate and import CSV set serialization when row values have
+        spaces."""
+        data.append(('Bill Gates', 'Microsoft'))
+        data.append(('Steve Jobs', 'Apple'))
+        data.headers = ('Name', 'Company')
+
+        _csv = data.csv
+
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
         data.append(self.john)
