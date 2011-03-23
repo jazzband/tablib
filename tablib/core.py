@@ -240,13 +240,26 @@ class Dataset(object):
     def _package(self, dicts=True):
         """Packages Dataset into lists of dictionaries for transmission."""
 
+        _data = list(self._data)
+        
+        # Execute formatters
+        if self._formatters:
+            for row_i, row in enumerate(_data):
+                for col, callback in self._formatters:
+                    if col is None:
+                        for j, c in enumerate(row):
+                            _data[row_i][j] = callback(c)
+                    else:
+                        _data[row_i][col] = callback(row[col])
+
+
         if self.headers:
             if dicts:
-                data = [OrderedDict(zip(self.headers, data_row)) for data_row in self ._data]
+                data = [OrderedDict(zip(self.headers, data_row)) for data_row in _data]
             else:
-                data = [list(self.headers)] + list(self._data)
+                data = [list(self.headers)] + list(_data)
         else:
-            data = [list(row) for row in self._data]
+            data = [list(row) for row in _data]
 
         return data
 
@@ -474,7 +487,7 @@ class Dataset(object):
         self.insert_separator(index, text)
 
 
-    def add_formatter(col, handler):
+    def add_formatter(self, col, handler):
         """Adds a :ref:`formatter` to the :class:`Dataset`.
         
         .. versionadded:: 0.9.5
