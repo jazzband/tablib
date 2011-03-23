@@ -3,8 +3,13 @@
 """ Tablib - JSON Support
 """
 
-import tablib.core
-from tablib.packages import anyjson
+import tablib
+
+import sys
+if sys.version_info[:2] > (2, 5):
+    from tablib.packages import anyjson
+else:
+    from tablib.packages import anyjson25 as anyjson
 
 
 
@@ -34,7 +39,7 @@ def import_book(dbook, in_stream):
 
     dbook.wipe()
     for sheet in anyjson.deserialize(in_stream):
-        data = tablib.core.Dataset()
+        data = tablib.Dataset()
         data.title = sheet['title']
         data.dict = sheet['data']
         dbook.add_sheet(data)
