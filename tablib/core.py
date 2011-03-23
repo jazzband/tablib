@@ -137,6 +137,9 @@ class Dataset(object):
 
         # ('title', index) tuples
         self._separators = []
+        
+        # (column, callback) tuples
+        self._formatters = []
 
         try:
             self.headers = kwargs['headers']
@@ -386,6 +389,7 @@ class Dataset(object):
         """
         pass
 
+
     @property
     def tsv():
         """A TSV representation of the :class:`Dataset` object. The top row will contain
@@ -469,6 +473,26 @@ class Dataset(object):
 
         self.insert_separator(index, text)
 
+
+    def add_formatter(col, handler):
+        """Adds a :ref:`formatter` to the :class:`Dataset`.
+        
+        .. versionadded:: 0.9.5
+           :param col: column to. Accepts index int or header str.
+           :param handler: reference to callback function to execute 
+           against each cell value.
+        """
+        
+        if isinstance(col, basestring):
+            if col in self.headers:
+                col = self.headers.index(key) # get 'key' index from each data
+            else:
+                raise KeyError
+
+        self._formatters.append((col, handler))
+        
+        return True
+        
 
     def insert(self, index, row=None, col=None, header=None, tags=list()):
         """Inserts a row or column to the :class:`Dataset` at the given index.
@@ -659,10 +683,12 @@ class Dataset(object):
 
         return _dset
 
+
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
+
 
 
 class Databook(object):
