@@ -44,7 +44,7 @@ class SharedStringTable(object):
         self._sst_record = b''
         self._continues = [None, None]
         self._current_piece = pack('<II', 0, 0)
-        data = [(idx, s) for s, idx in self._str_indexes.items()]
+        data = [(idx, s) for s, idx in list(self._str_indexes.items())]
         data.sort() # in index order
         for idx, s in data:
             if self._tally[idx] == 0:
@@ -229,8 +229,8 @@ class WriteAccessRecord(BiffRecord):
     def __init__(self, owner):
         uowner = owner[0:0x30]
         uowner_len = len(uowner)
-        self._rec_data = pack('%ds%ds' % (uowner_len, 0x70 - uowner_len),
-                              uowner, b' '*(0x70 - uowner_len)) # (to_py3): added b'...'
+        self._rec_data = pack(bytes('%ds%ds' % (uowner_len, 0x70 - uowner_len), encoding='utf8'), bytes(uowner, encoding='utf8'), b' '*(0x70 - uowner_len)) # (to_py3): added b'...'
+        # self._rec_data = (b'%ds%ds' % (uowner_len, 0x70 - uowner_len), uowner, b' '*(0x70 - uowner_len)) # (to_py3): added b'...'
 
 
 class DSFRecord(BiffRecord):
