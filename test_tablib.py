@@ -470,6 +470,17 @@ class TablibTestCase(unittest.TestCase):
         data.append(new_row)
         self.assertTrue(data.width == len(new_row))
         self.assertTrue(data[0] == new_row)
+        
+    def test_formatters(self):
+        """Confirm formatters are being triggered."""
+        
+        def _formatter(cell_value):
+            return str(cell_value).upper()
+            
+        self.founders.add_formatter('last_name', _formatter)
+        
+        for name in [r['last_name'] for r in self.founders.dict]:
+            self.assertTrue(name.isupper())
 
 
 if __name__ == '__main__':
