@@ -501,7 +501,7 @@ class Dataset(object):
         
         if isinstance(col, basestring):
             if col in self.headers:
-                col = self.headers.index(key) # get 'key' index from each data
+                col = self.headers.index(col) # get 'key' index from each data
             else:
                 raise KeyError
         
