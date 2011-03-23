@@ -27,8 +27,8 @@ def export_set(dataset):
 
     dset_sheet(dataset, ws)
 
-    stream = io.StringIO()
-    wb.save(str(stream))
+    stream = io.BytesIO()
+    wb.save(stream)
     return stream.getvalue()
 
 
@@ -43,7 +43,7 @@ def export_book(databook):
         dset_sheet(dset, ws)
 
 
-    stream = io.StringIO()
+    stream = io.BytesIO()
     wb.save(stream)
     return stream.getvalue()
 
