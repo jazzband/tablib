@@ -17,7 +17,7 @@ if sys.argv[-1] == "publish":
 
 required = []
 
-if sys.version_info[0] < (2,6):
+if sys.version_info[:2] < (2,6):
     required.append('simplejson')
 
 setup(
