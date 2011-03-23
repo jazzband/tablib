@@ -31,7 +31,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    rows = csv.reader(in_stream.split())
+    rows = csv.reader(in_stream.splitlines())
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):

@@ -26,6 +26,7 @@ __build__ = 0x000904
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
+__docformat__ = 'restructuredtext'
 
 
 class Row(object):
@@ -136,6 +137,9 @@ class Dataset(object):
 
         # ('title', index) tuples
         self._separators = []
+        
+        # (column, callback) tuples
+        self._formatters = []
 
         try:
             self.headers = kwargs['headers']
@@ -236,13 +240,29 @@ class Dataset(object):
     def _package(self, dicts=True):
         """Packages Dataset into lists of dictionaries for transmission."""
 
+        _data = list(self._data)
+        
+        # Execute formatters
+        if self._formatters:
+            for row_i, row in enumerate(_data):
+                for col, callback in self._formatters:
+                    try:                        
+                        if col is None:
+                            for j, c in enumerate(row):
+                                _data[row_i][j] = callback(c)
+                        else:
+                            _data[row_i][col] = callback(row[col])
+                    except IndexError:
+                        raise InvalidDatasetIndex
+                        
+
         if self.headers:
             if dicts:
-                data = [OrderedDict(zip(self.headers, data_row)) for data_row in self ._data]
+                data = [OrderedDict(zip(self.headers, data_row)) for data_row in _data]
             else:
-                data = [list(self.headers)] + list(self._data)
+                data = [list(self.headers)] + list(_data)
         else:
-            data = [list(row) for row in self._data]
+            data = [list(row) for row in _data]
 
         return data
 
@@ -385,6 +405,7 @@ class Dataset(object):
         """
         pass
 
+
     @property
     def tsv():
         """A TSV representation of the :class:`Dataset` object. The top row will contain
@@ -468,6 +489,29 @@ class Dataset(object):
 
         self.insert_separator(index, text)
 
+
+    def add_formatter(self, col, handler):
+        """Adds a :ref:`formatter` to the :class:`Dataset`.
+        
+        .. versionadded:: 0.9.5
+           :param col: column to. Accepts index int or header str.
+           :param handler: reference to callback function to execute 
+           against each cell value.
+        """
+        
+        if isinstance(col, basestring):
+            if col in self.headers:
+                col = self.headers.index(key) # get 'key' index from each data
+            else:
+                raise KeyError
+        
+        if not col > self.width:
+            self._formatters.append((col, handler))
+        else:
+            raise InvalidDatasetIndex
+        
+        return True
+        
 
     def insert(self, index, row=None, col=None, header=None, tags=list()):
         """Inserts a row or column to the :class:`Dataset` at the given index.
@@ -658,10 +702,12 @@ class Dataset(object):
 
         return _dset
 
+
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
+
 
 
 class Databook(object):
@@ -758,6 +804,9 @@ class InvalidDatasetType(Exception):
 
 class InvalidDimensions(Exception):
     "Invalid size"
+    
+class InvalidDatasetIndex(Exception):
+    "Outside of Dataset size"
 
 class HeadersNeeded(Exception):
     "Header parameter must be given when appending a column in this Dataset."
