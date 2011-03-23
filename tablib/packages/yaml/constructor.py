@@ -2,15 +2,22 @@
 __all__ = ['BaseConstructor', 'SafeConstructor', 'Constructor',
     'ConstructorError']
 
-from .error import *
-from .nodes import *
+from error import *
+from nodes import *
 
-import collections, datetime, base64, binascii, re, sys, types
+import datetime
+
+try:
+    set
+except NameError:
+    from sets import Set as set
+
+import binascii, re, sys, types
 
 class ConstructorError(MarkedYAMLError):
     pass
 
-class BaseConstructor:
+class BaseConstructor(object):
 
     yaml_constructors = {}
     yaml_multi_constructors = {}
@@ -88,7 +95,7 @@ class BaseConstructor:
             data = constructor(self, tag_suffix, node)
         if isinstance(data, types.GeneratorType):
             generator = data
-            data = next(generator)
+            data = generator.next()
             if self.deep_construct:
                 for dummy in generator:
                     pass
@@ -123,9 +130,11 @@ class BaseConstructor:
         mapping = {}
         for key_node, value_node in node.value:
             key = self.construct_object(key_node, deep=deep)
-            if not isinstance(key, collections.Hashable):
+            try:
+                hash(key)
+            except TypeError, exc:
                 raise ConstructorError("while constructing a mapping", node.start_mark,
-                        "found unhashable key", key_node.start_mark)
+                        "found unacceptable key (%s)" % exc, key_node.start_mark)
             value = self.construct_object(value_node, deep=deep)
             mapping[key] = value
         return mapping
@@ -142,33 +151,33 @@ class BaseConstructor:
             pairs.append((key, value))
         return pairs
 
-    @classmethod
     def add_constructor(cls, tag, constructor):
         if not 'yaml_constructors' in cls.__dict__:
             cls.yaml_constructors = cls.yaml_constructors.copy()
         cls.yaml_constructors[tag] = constructor
+    add_constructor = classmethod(add_constructor)
 
-    @classmethod
     def add_multi_constructor(cls, tag_prefix, multi_constructor):
         if not 'yaml_multi_constructors' in cls.__dict__:
             cls.yaml_multi_constructors = cls.yaml_multi_constructors.copy()
         cls.yaml_multi_constructors[tag_prefix] = multi_constructor
+    add_multi_constructor = classmethod(add_multi_constructor)
 
 class SafeConstructor(BaseConstructor):
 
     def construct_scalar(self, node):
         if isinstance(node, MappingNode):
             for key_node, value_node in node.value:
-                if key_node.tag == 'tag:yaml.org,2002:value':
+                if key_node.tag == u'tag:yaml.org,2002:value':
                     return self.construct_scalar(value_node)
-        return super().construct_scalar(node)
+        return BaseConstructor.construct_scalar(self, node)
 
     def flatten_mapping(self, node):
         merge = []
         index = 0
         while index < len(node.value):
             key_node, value_node = node.value[index]
-            if key_node.tag == 'tag:yaml.org,2002:merge':
+            if key_node.tag == u'tag:yaml.org,2002:merge':
                 del node.value[index]
                 if isinstance(value_node, MappingNode):
                     self.flatten_mapping(value_node)
@@ -190,8 +199,8 @@ class SafeConstructor(BaseConstructor):
                     raise ConstructorError("while constructing a mapping", node.start_mark,
                             "expected a mapping or list of mappings for merging, but found %s"
                             % value_node.id, value_node.start_mark)
-            elif key_node.tag == 'tag:yaml.org,2002:value':
-                key_node.tag = 'tag:yaml.org,2002:str'
+            elif key_node.tag == u'tag:yaml.org,2002:value':
+                key_node.tag = u'tag:yaml.org,2002:str'
                 index += 1
             else:
                 index += 1
@@ -201,19 +210,19 @@ class SafeConstructor(BaseConstructor):
     def construct_mapping(self, node, deep=False):
         if isinstance(node, MappingNode):
             self.flatten_mapping(node)
-        return super().construct_mapping(node, deep=deep)
+        return BaseConstructor.construct_mapping(self, node, deep=deep)
 
     def construct_yaml_null(self, node):
         self.construct_scalar(node)
         return None
 
     bool_values = {
-        'yes':      True,
-        'no':       False,
-        'true':     True,
-        'false':    False,
-        'on':       True,
-        'off':      False,
+        u'yes':     True,
+        u'no':      False,
+        u'true':    True,
+        u'false':   False,
+        u'on':      True,
+        u'off':     False,
     }
 
     def construct_yaml_bool(self, node):
@@ -221,7 +230,7 @@ class SafeConstructor(BaseConstructor):
         return self.bool_values[value.lower()]
 
     def construct_yaml_int(self, node):
-        value = self.construct_scalar(node)
+        value = str(self.construct_scalar(node))
         value = value.replace('_', '')
         sign = +1
         if value[0] == '-':
@@ -254,7 +263,7 @@ class SafeConstructor(BaseConstructor):
     nan_value = -inf_value/inf_value   # Trying to make a quiet NaN (like C99).
 
     def construct_yaml_float(self, node):
-        value = self.construct_scalar(node)
+        value = str(self.construct_scalar(node))
         value = value.replace('_', '').lower()
         sign = +1
         if value[0] == '-':
@@ -278,23 +287,15 @@ class SafeConstructor(BaseConstructor):
             return sign*float(value)
 
     def construct_yaml_binary(self, node):
+        value = self.construct_scalar(node)
         try:
-            value = self.construct_scalar(node).encode('ascii')
-        except UnicodeEncodeError as exc:
+            return str(value).decode('base64')
+        except (binascii.Error, UnicodeEncodeError), exc:
             raise ConstructorError(None, None,
-                    "failed to convert base64 data into ascii: %s" % exc,
-                    node.start_mark)
-        try:
-            if hasattr(base64, 'decodebytes'):
-                return base64.decodebytes(value)
-            else:
-                return base64.decodestring(value)
-        except binascii.Error as exc:
-            raise ConstructorError(None, None,
-                    "failed to decode base64 data: %s" % exc, node.start_mark)
+                    "failed to decode base64 data: %s" % exc, node.start_mark) 
 
     timestamp_regexp = re.compile(
-            r'''^(?P<year>[0-9][0-9][0-9][0-9])
+            ur'''^(?P<year>[0-9][0-9][0-9][0-9])
                 -(?P<month>[0-9][0-9]?)
                 -(?P<day>[0-9][0-9]?)
                 (?:(?:[Tt]|[ \t]+)
@@ -385,7 +386,11 @@ class SafeConstructor(BaseConstructor):
         data.update(value)
 
     def construct_yaml_str(self, node):
-        return self.construct_scalar(node)
+        value = self.construct_scalar(node)
+        try:
+            return value.encode('ascii')
+        except UnicodeEncodeError:
+            return value
 
     def construct_yaml_seq(self, node):
         data = []
@@ -410,55 +415,55 @@ class SafeConstructor(BaseConstructor):
 
     def construct_undefined(self, node):
         raise ConstructorError(None, None,
-                "could not determine a constructor for the tag %r" % node.tag,
+                "could not determine a constructor for the tag %r" % node.tag.encode('utf-8'),
                 node.start_mark)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:null',
+        u'tag:yaml.org,2002:null',
         SafeConstructor.construct_yaml_null)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:bool',
+        u'tag:yaml.org,2002:bool',
         SafeConstructor.construct_yaml_bool)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:int',
+        u'tag:yaml.org,2002:int',
         SafeConstructor.construct_yaml_int)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:float',
+        u'tag:yaml.org,2002:float',
         SafeConstructor.construct_yaml_float)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:binary',
+        u'tag:yaml.org,2002:binary',
         SafeConstructor.construct_yaml_binary)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:timestamp',
+        u'tag:yaml.org,2002:timestamp',
         SafeConstructor.construct_yaml_timestamp)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:omap',
+        u'tag:yaml.org,2002:omap',
         SafeConstructor.construct_yaml_omap)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:pairs',
+        u'tag:yaml.org,2002:pairs',
         SafeConstructor.construct_yaml_pairs)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:set',
+        u'tag:yaml.org,2002:set',
         SafeConstructor.construct_yaml_set)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:str',
+        u'tag:yaml.org,2002:str',
         SafeConstructor.construct_yaml_str)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:seq',
+        u'tag:yaml.org,2002:seq',
         SafeConstructor.construct_yaml_seq)
 
 SafeConstructor.add_constructor(
-        'tag:yaml.org,2002:map',
+        u'tag:yaml.org,2002:map',
         SafeConstructor.construct_yaml_map)
 
 SafeConstructor.add_constructor(None,
@@ -467,29 +472,13 @@ SafeConstructor.add_constructor(None,
 class Constructor(SafeConstructor):
 
     def construct_python_str(self, node):
-        return self.construct_scalar(node)
+        return self.construct_scalar(node).encode('utf-8')
 
     def construct_python_unicode(self, node):
         return self.construct_scalar(node)
 
-    def construct_python_bytes(self, node):
-        try:
-            value = self.construct_scalar(node).encode('ascii')
-        except UnicodeEncodeError as exc:
-            raise ConstructorError(None, None,
-                    "failed to convert base64 data into ascii: %s" % exc,
-                    node.start_mark)
-        try:
-            if hasattr(base64, 'decodebytes'):
-                return base64.decodebytes(value)
-            else:
-                return base64.decodestring(value)
-        except binascii.Error as exc:
-            raise ConstructorError(None, None,
-                    "failed to decode base64 data: %s" % exc, node.start_mark)
-
     def construct_python_long(self, node):
-        return self.construct_yaml_int(node)
+        return long(self.construct_yaml_int(node))
 
     def construct_python_complex(self, node):
        return complex(self.construct_scalar(node))
@@ -503,45 +492,53 @@ class Constructor(SafeConstructor):
                     "expected non-empty name appended to the tag", mark)
         try:
             __import__(name)
-        except ImportError as exc:
+        except ImportError, exc:
             raise ConstructorError("while constructing a Python module", mark,
-                    "cannot find module %r (%s)" % (name, exc), mark)
+                    "cannot find module %r (%s)" % (name.encode('utf-8'), exc), mark)
         return sys.modules[name]
 
     def find_python_name(self, name, mark):
         if not name:
             raise ConstructorError("while constructing a Python object", mark,
                     "expected non-empty name appended to the tag", mark)
-        if '.' in name:
-            module_name, object_name = name.rsplit('.', 1)
+        if u'.' in name:
+            # Python 2.4 only
+            #module_name, object_name = name.rsplit('.', 1)
+            items = name.split('.')
+            object_name = items.pop()
+            module_name = '.'.join(items)
         else:
-            module_name = 'builtins'
+            module_name = '__builtin__'
             object_name = name
         try:
             __import__(module_name)
-        except ImportError as exc:
+        except ImportError, exc:
             raise ConstructorError("while constructing a Python object", mark,
-                    "cannot find module %r (%s)" % (module_name, exc), mark)
+                    "cannot find module %r (%s)" % (module_name.encode('utf-8'), exc), mark)
         module = sys.modules[module_name]
         if not hasattr(module, object_name):
             raise ConstructorError("while constructing a Python object", mark,
-                    "cannot find %r in the module %r"
-                    % (object_name, module.__name__), mark)
+                    "cannot find %r in the module %r" % (object_name.encode('utf-8'),
+                        module.__name__), mark)
         return getattr(module, object_name)
 
     def construct_python_name(self, suffix, node):
         value = self.construct_scalar(node)
         if value:
             raise ConstructorError("while constructing a Python name", node.start_mark,
-                    "expected the empty value, but found %r" % value, node.start_mark)
+                    "expected the empty value, but found %r" % value.encode('utf-8'),
+                    node.start_mark)
         return self.find_python_name(suffix, node.start_mark)
 
     def construct_python_module(self, suffix, node):
         value = self.construct_scalar(node)
         if value:
             raise ConstructorError("while constructing a Python module", node.start_mark,
-                    "expected the empty value, but found %r" % value, node.start_mark)
+                    "expected the empty value, but found %r" % value.encode('utf-8'),
+                    node.start_mark)
         return self.find_python_module(suffix, node.start_mark)
+
+    class classobj: pass
 
     def make_python_instance(self, suffix, node,
             args=None, kwds=None, newobj=False):
@@ -550,7 +547,12 @@ class Constructor(SafeConstructor):
         if not kwds:
             kwds = {}
         cls = self.find_python_name(suffix, node.start_mark)
-        if newobj and isinstance(cls, type):
+        if newobj and isinstance(cls, type(self.classobj))  \
+                and not args and not kwds:
+            instance = self.classobj()
+            instance.__class__ = cls
+            return instance
+        elif newobj and isinstance(cls, type):
             return cls.__new__(cls, *args, **kwds)
         else:
             return cls(*args, **kwds)
@@ -617,70 +619,66 @@ class Constructor(SafeConstructor):
         return self.construct_python_object_apply(suffix, node, newobj=True)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/none',
+    u'tag:yaml.org,2002:python/none',
     Constructor.construct_yaml_null)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/bool',
+    u'tag:yaml.org,2002:python/bool',
     Constructor.construct_yaml_bool)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/str',
+    u'tag:yaml.org,2002:python/str',
     Constructor.construct_python_str)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/unicode',
+    u'tag:yaml.org,2002:python/unicode',
     Constructor.construct_python_unicode)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/bytes',
-    Constructor.construct_python_bytes)
-
-Constructor.add_constructor(
-    'tag:yaml.org,2002:python/int',
+    u'tag:yaml.org,2002:python/int',
     Constructor.construct_yaml_int)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/long',
+    u'tag:yaml.org,2002:python/long',
     Constructor.construct_python_long)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/float',
+    u'tag:yaml.org,2002:python/float',
     Constructor.construct_yaml_float)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/complex',
+    u'tag:yaml.org,2002:python/complex',
     Constructor.construct_python_complex)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/list',
+    u'tag:yaml.org,2002:python/list',
     Constructor.construct_yaml_seq)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/tuple',
+    u'tag:yaml.org,2002:python/tuple',
     Constructor.construct_python_tuple)
 
 Constructor.add_constructor(
-    'tag:yaml.org,2002:python/dict',
+    u'tag:yaml.org,2002:python/dict',
     Constructor.construct_yaml_map)
 
 Constructor.add_multi_constructor(
-    'tag:yaml.org,2002:python/name:',
+    u'tag:yaml.org,2002:python/name:',
     Constructor.construct_python_name)
 
 Constructor.add_multi_constructor(
-    'tag:yaml.org,2002:python/module:',
+    u'tag:yaml.org,2002:python/module:',
     Constructor.construct_python_module)
 
 Constructor.add_multi_constructor(
-    'tag:yaml.org,2002:python/object:',
+    u'tag:yaml.org,2002:python/object:',
     Constructor.construct_python_object)
 
 Constructor.add_multi_constructor(
-    'tag:yaml.org,2002:python/object/apply:',
+    u'tag:yaml.org,2002:python/object/apply:',
     Constructor.construct_python_object_apply)
 
 Constructor.add_multi_constructor(
-    'tag:yaml.org,2002:python/object/new:',
+    u'tag:yaml.org,2002:python/object/new:',
     Constructor.construct_python_object_new)
 

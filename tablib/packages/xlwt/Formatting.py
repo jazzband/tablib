@@ -28,7 +28,7 @@ is not set), it repeats the attributes of its style XF record.
 
 '''
 
-from . import BIFFRecords
+import BIFFRecords
 
 class Font(object):
 
@@ -86,7 +86,7 @@ class Font(object):
         self.underline = self.UNDERLINE_NONE
         self.family = self.FAMILY_NONE
         self.charset = self.CHARSET_SYS_DEFAULT
-        self.name = b'Arial'
+        self.name = 'Arial'
 
     def get_biff_record(self):
         height = self.height

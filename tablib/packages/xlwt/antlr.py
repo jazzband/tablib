@@ -43,6 +43,12 @@
 ## get sys module
 import sys
 
+version = sys.version.split()[0]
+if version < '2.2.1':
+    False = 0
+if version < '2.3':
+    True = not False
+
 ###xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx###
 ###                     global symbols                             ###
 ###xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx###
@@ -78,7 +84,7 @@ def version():
 
 def error(fmt,*args):
     if fmt:
-        print("error: ", fmt % tuple(args))
+        print "error: ", fmt % tuple(args)
 
 def ifelse(cond,_then,_else):
     if cond :
@@ -90,7 +96,7 @@ def ifelse(cond,_then,_else):
 def is_string_type(x):
     # return  (isinstance(x,str) or isinstance(x,unicode))
     # Simplify; xlwt doesn't support Python < 2.3
-    return isinstance(str)
+    return isinstance(basestring)
 
 def assert_string_type(x):
     assert is_string_type(x)
@@ -584,9 +590,9 @@ class Token(object):
 Token.badToken = Token( type=INVALID_TYPE, text="<no text>")
 
 if __name__ == "__main__":
-    print("testing ..")
+    print "testing .."
     T = Token.badToken
-    print(T)
+    print T
 
 ###xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx###
 ###                       CommonToken                              ###
@@ -657,16 +663,16 @@ class CommonToken(Token):
 
 if __name__ == '__main__' :
     T = CommonToken()
-    print(T)
+    print T
     T = CommonToken(col=15,line=1,text="some text", type=5)
-    print(T)
+    print T
     T = CommonToken()
     T.setLine(1).setColumn(15).setText("some text").setType(5)
-    print(T)
-    print(T.getLine())
-    print(T.getColumn())
-    print(T.getText())
-    print(T.getType())
+    print T
+    print T.getLine()
+    print T.getColumn()
+    print T.getText()
+    print T.getType()
 
 ###xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx###
 ###                    CommonHiddenStreamToken                     ###
@@ -846,7 +852,7 @@ class CharBuffer(InputBuffer):
 
                 ### use unicode chars instead of ASCII ..
                 self.queue.append(c)
-        except Exception as e:
+        except Exception,e:
             raise CharStreamIOException(e)
         ##except: # (mk) Cannot happen ...
             ##error ("unexpected exception caught ..")
@@ -901,7 +907,7 @@ class TokenStreamIterator(object):
             return
         raise TypeError("TokenStreamIterator requires TokenStream object")
 
-    def __next__(self):
+    def next(self):
         assert self.inst
         item = self.inst.nextToken()
         if not item or item.isEOF():
@@ -936,7 +942,7 @@ class TokenStreamSelector(TokenStream):
         while 1:
             try:
                 return self._input.nextToken()
-            except TokenStreamRetryException as r:
+            except TokenStreamRetryException,r:
                 ### just retry "forever"
                 pass
 
@@ -1377,23 +1383,23 @@ class CharScanner(TokenStream):
         self.setColumn(nc)
 
     def panic(self,s='') :
-        print("CharScanner: panic: " + s)
+        print "CharScanner: panic: " + s
         sys.exit(1)
 
     def reportError(self,ex) :
-        print(ex)
+        print ex
 
     def reportError(self,s) :
         if not self.getFilename():
-            print("error: " + str(s))
+            print "error: " + str(s)
         else:
-            print(self.getFilename() + ": error: " + str(s))
+            print self.getFilename() + ": error: " + str(s)
 
     def reportWarning(self,s) :
         if not self.getFilename():
-            print("warning: " + str(s))
+            print "warning: " + str(s)
         else:
-            print(self.getFilename() + ": warning: " + str(s))
+            print self.getFilename() + ": warning: " + str(s)
 
     def resetText(self) :
         self.text.setLength(0)
@@ -1453,16 +1459,16 @@ class CharScanner(TokenStream):
         return c.__class__.lower()
 
     def traceIndent(self):
-        print(' ' * self.traceDepth)
+        print ' ' * self.traceDepth
 
     def traceIn(self,rname):
         self.traceDepth += 1
         self.traceIndent()
-        print("> lexer %s c== %s" % (rname,self.LA(1)))
+        print "> lexer %s c== %s" % (rname,self.LA(1))
 
     def traceOut(self,rname):
         self.traceIndent()
-        print("< lexer %s c== %s" % (rname,self.LA(1)))
+        print "< lexer %s c== %s" % (rname,self.LA(1))
         self.traceDepth -= 1
 
     def uponEOF(self):
@@ -1526,8 +1532,8 @@ class CharScanner(TokenStream):
             try:
                 func=args[0]
                 args=args[1:]
-                func(*args)
-            except RecognitionException as e:
+                apply(func,args)
+            except RecognitionException, e:
                 ## catastrophic failure
                 self.reportError(e);
                 self.consume();
@@ -1560,7 +1566,7 @@ class CharScannerIterator:
             return
         raise TypeError("CharScannerIterator requires CharScanner object")
 
-    def __next__(self):
+    def next(self):
         assert self.inst
         item = self.inst.nextToken()
         if not item or item.isEOF():
@@ -1583,19 +1589,19 @@ class BitSet(object):
 
     def __init__(self,data=None):
         if not data:
-            BitSet.__init__(self,[int(0)])
+            BitSet.__init__(self,[long(0)])
             return
         if isinstance(data,int):
-            BitSet.__init__(self,[int(data)])
+            BitSet.__init__(self,[long(data)])
             return
-        if isinstance(data,int):
+        if isinstance(data,long):
             BitSet.__init__(self,[data])
             return
         if not isinstance(data,list):
             raise TypeError("BitSet requires integer, long, or " +
                             "list argument")
         for x in data:
-            if not isinstance(x,int):
+            if not isinstance(x,long):
                 raise TypeError(self,"List argument item is " +
                                 "not a long: %s" % (x))
         self.data = data
@@ -1603,7 +1609,7 @@ class BitSet(object):
     def __str__(self):
         bits = len(self.data) * BitSet.BITS
         s = ""
-        for i in range(0,bits):
+        for i in xrange(0,bits):
             if self.at(i):
                 s += "1"
             else:
@@ -1642,7 +1648,7 @@ class BitSet(object):
 
     def bitMask(self,bit):
         pos = bit & BitSet.MOD_MASK  ## bit mod BITS
-        return (1 << pos)
+        return (1L << pos)
 
     def set(self,bit,on=True):
         # grow bitset as required (use with care!)
@@ -1650,8 +1656,8 @@ class BitSet(object):
         mask = self.bitMask(bit)
         if i>=len(self.data):
             d = i - len(self.data) + 1
-            for x in range(0,d):
-                self.data.append(0)
+            for x in xrange(0,d):
+                self.data.append(0L)
             assert len(self.data) == i+1
         if on:
             self.data[i] |=  mask
@@ -1678,12 +1684,12 @@ class BitSet(object):
 def illegalarg_ex(func):
     raise ValueError(
        "%s is only valid if parser is built for debugging" %
-       (func.__name__))
+       (func.func_name))
 
 def runtime_ex(func):
     raise RuntimeException(
        "%s is only valid if parser is built for debugging" %
-       (func.__name__))
+       (func.func_name))
 
 ###xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx###
 ###                       TokenBuffer                              ###
@@ -1943,17 +1949,16 @@ class Parser(object):
             col  = x.getLine()
             text = x.getText()
             fmt  = fmt + 'unexpected symbol at line %s (column %s) : "%s"'
-            # print(fmt % (line,col,text), file=sys.stderr)
+            print >>sys.stderr, fmt % (line,col,text)
         else:
-            # print(fmt,str(x), file=sys.stderr)
-            pass
+            print >>sys.stderr, fmt,str(x)
 
     def reportWarning(self,s):
         f = self.getFilename()
         if f:
-            print("%s:warning: %s" % (f,str(x)))
+            print "%s:warning: %s" % (f,str(x))
         else:
-            print("warning: %s" % (str(x)))
+            print "warning: %s" % (str(x))
 
     def rewind(self, pos) :
         self.inputState.input.rewind(pos)
@@ -1981,7 +1986,7 @@ class Parser(object):
         self.inputState.input = t
 
     def traceIndent(self):
-        print(" " * self.traceDepth)
+        print " " * self.traceDepth
 
     def traceIn(self,rname):
         self.traceDepth += 1
@@ -2070,20 +2075,20 @@ class LLkParser(Parser):
             self.k = 1
 
     def trace(self,ee,rname):
-        print(type(self))
+        print type(self)
         self.traceIndent()
         guess = ""
         if self.inputState.guessing > 0:
             guess = " [guessing]"
-        print((ee + rname + guess))
-        for i in range(1,self.k+1):
+        print(ee + rname + guess)
+        for i in xrange(1,self.k+1):
             if i != 1:
                 print(", ")
             if self.LT(i) :
                 v = self.LT(i).getText()
             else:
                 v = "null"
-            print("LA(%s) == %s" % (i,v))
+            print "LA(%s) == %s" % (i,v)
         print("\n")
 
     def traceIn(self,rname):
@@ -2144,10 +2149,10 @@ class TreeParser(object):
             raise MismatchedTokenException(getTokenNames(), t, ttype, True)
 
     def reportError(self,ex):
-        print("error:".format(ex, file=sys.stderr))
+        print >>sys.stderr,"error:",ex
 
     def  reportWarning(self, s):
-        print("warning:".format(s))
+        print "warning:",s
 
     def setASTFactory(self,f):
         self.astFactory = f
@@ -2159,20 +2164,20 @@ class TreeParser(object):
         self.astFactory.setASTNodeType(nodeType)
 
     def traceIndent(self):
-        print(" " * self.traceDepth)
+        print " " * self.traceDepth
 
     def traceIn(self,rname,t):
         self.traceDepth += 1
         self.traceIndent()
-        print(("> " + rname + "(" +
+        print("> " + rname + "(" +
               ifelse(t,str(t),"null") + ")" +
-              ifelse(self.inputState.guessing>0,"[guessing]","")))
+              ifelse(self.inputState.guessing>0,"[guessing]",""))
 
     def traceOut(self,rname,t):
         self.traceIndent()
-        print(("< " + rname + "(" +
+        print("< " + rname + "(" +
               ifelse(t,str(t),"null") + ")" +
-              ifelse(self.inputState.guessing>0,"[guessing]","")))
+              ifelse(self.inputState.guessing>0,"[guessing]",""))
         self.traceDepth -= 1
 
     ### wh: moved from ASTFactory to TreeParser
@@ -2719,7 +2724,7 @@ class ASTFactory(object):
 
     def error(self, e):
         import sys
-        print(e.format(file=sys.stderr))
+        print >> sys.stderr, e
 
     def setTokenTypeASTNodeType(self, tokenType, className):
         """
@@ -2806,7 +2811,7 @@ def make(*nodes):
     if not nodes:
         return None
 
-    for i in range(0,len(nodes)):
+    for i in xrange(0,len(nodes)):
         node = nodes[i]
         if node:
             assert isinstance(node,AST)
@@ -2816,7 +2821,7 @@ def make(*nodes):
     if root:
         root.setFirstChild(None)
 
-    for i in range(1,len(nodes)):
+    for i in xrange(1,len(nodes)):
         if not nodes[i]:
             continue
         if not root:

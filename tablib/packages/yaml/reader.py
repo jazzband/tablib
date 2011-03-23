@@ -17,9 +17,44 @@
 
 __all__ = ['Reader', 'ReaderError']
 
-from .error import YAMLError, Mark
+from error import YAMLError, Mark
 
 import codecs, re
+
+# Unfortunately, codec functions in Python 2.3 does not support the `finish`
+# arguments, so we have to write our own wrappers.
+
+try:
+    codecs.utf_8_decode('', 'strict', False)
+    from codecs import utf_8_decode, utf_16_le_decode, utf_16_be_decode
+
+except TypeError:
+
+    def utf_16_le_decode(data, errors, finish=False):
+        if not finish and len(data) % 2 == 1:
+            data = data[:-1]
+        return codecs.utf_16_le_decode(data, errors)
+
+    def utf_16_be_decode(data, errors, finish=False):
+        if not finish and len(data) % 2 == 1:
+            data = data[:-1]
+        return codecs.utf_16_be_decode(data, errors)
+
+    def utf_8_decode(data, errors, finish=False):
+        if not finish:
+            # We are trying to remove a possible incomplete multibyte character
+            # from the suffix of the data.
+            # The first byte of a multi-byte sequence is in the range 0xc0 to 0xfd.
+            # All further bytes are in the range 0x80 to 0xbf.
+            # UTF-8 encoded UCS characters may be up to six bytes long.
+            count = 0
+            while count < 5 and count < len(data)   \
+                    and '\x80' <= data[-count-1] <= '\xBF':
+                count -= 1
+            if count < 5 and count < len(data)  \
+                    and '\xC0' <= data[-count-1] <= '\xFD':
+                data = data[:-count-1]
+        return codecs.utf_8_decode(data, errors)
 
 class ReaderError(YAMLError):
 
@@ -31,7 +66,7 @@ class ReaderError(YAMLError):
         self.reason = reason
 
     def __str__(self):
-        if isinstance(self.character, bytes):
+        if isinstance(self.character, str):
             return "'%s' codec can't decode byte #x%02x: %s\n"  \
                     "  in \"%s\", position %d"    \
                     % (self.encoding, ord(self.character), self.reason,
@@ -44,13 +79,13 @@ class ReaderError(YAMLError):
 
 class Reader(object):
     # Reader:
-    # - determines the data encoding and converts it to a unicode string,
+    # - determines the data encoding and converts it to unicode,
     # - checks if characters are in allowed range,
     # - adds '\0' to the end.
 
     # Reader accepts
-    #  - a `bytes` object,
     #  - a `str` object,
+    #  - a `unicode` object,
     #  - a file-like object with its `read` method returning `str`,
     #  - a file-like object with its `read` method returning `unicode`.
 
@@ -61,7 +96,7 @@ class Reader(object):
         self.stream = None
         self.stream_pointer = 0
         self.eof = True
-        self.buffer = ''
+        self.buffer = u''
         self.pointer = 0
         self.raw_buffer = None
         self.raw_decode = None
@@ -69,19 +104,19 @@ class Reader(object):
         self.index = 0
         self.line = 0
         self.column = 0
-        if isinstance(stream, str):
+        if isinstance(stream, unicode):
             self.name = "<unicode string>"
             self.check_printable(stream)
-            self.buffer = stream+'\0'
-        elif isinstance(stream, bytes):
-            self.name = "<byte string>"
+            self.buffer = stream+u'\0'
+        elif isinstance(stream, str):
+            self.name = "<string>"
             self.raw_buffer = stream
             self.determine_encoding()
         else:
             self.stream = stream
             self.name = getattr(stream, 'name', "<file>")
             self.eof = False
-            self.raw_buffer = None
+            self.raw_buffer = ''
             self.determine_encoding()
 
     def peek(self, index=0):
@@ -103,11 +138,11 @@ class Reader(object):
             ch = self.buffer[self.pointer]
             self.pointer += 1
             self.index += 1
-            if ch in '\n\x85\u2028\u2029'  \
-                    or (ch == '\r' and self.buffer[self.pointer] != '\n'):
+            if ch in u'\n\x85\u2028\u2029'  \
+                    or (ch == u'\r' and self.buffer[self.pointer] != u'\n'):
                 self.line += 1
                 self.column = 0
-            elif ch != '\uFEFF':
+            elif ch != u'\uFEFF':
                 self.column += 1
             length -= 1
 
@@ -120,21 +155,21 @@ class Reader(object):
                     None, None)
 
     def determine_encoding(self):
-        while not self.eof and (self.raw_buffer is None or len(self.raw_buffer) < 2):
+        while not self.eof and len(self.raw_buffer) < 2:
             self.update_raw()
-        if isinstance(self.raw_buffer, bytes):
+        if not isinstance(self.raw_buffer, unicode):
             if self.raw_buffer.startswith(codecs.BOM_UTF16_LE):
-                self.raw_decode = codecs.utf_16_le_decode
+                self.raw_decode = utf_16_le_decode
                 self.encoding = 'utf-16-le'
             elif self.raw_buffer.startswith(codecs.BOM_UTF16_BE):
-                self.raw_decode = codecs.utf_16_be_decode
+                self.raw_decode = utf_16_be_decode
                 self.encoding = 'utf-16-be'
             else:
-                self.raw_decode = codecs.utf_8_decode
+                self.raw_decode = utf_8_decode
                 self.encoding = 'utf-8'
         self.update(1)
 
-    NON_PRINTABLE = re.compile('[^\x09\x0A\x0D\x20-\x7E\x85\xA0-\uD7FF\uE000-\uFFFD]')
+    NON_PRINTABLE = re.compile(u'[^\x09\x0A\x0D\x20-\x7E\x85\xA0-\uD7FF\uE000-\uFFFD]')
     def check_printable(self, data):
         match = self.NON_PRINTABLE.search(data)
         if match:
@@ -155,8 +190,8 @@ class Reader(object):
                 try:
                     data, converted = self.raw_decode(self.raw_buffer,
                             'strict', self.eof)
-                except UnicodeDecodeError as exc:
-                    character = self.raw_buffer[exc.start]
+                except UnicodeDecodeError, exc:
+                    character = exc.object[exc.start]
                     if self.stream is not None:
                         position = self.stream_pointer-len(self.raw_buffer)+exc.start
                     else:
@@ -170,18 +205,16 @@ class Reader(object):
             self.buffer += data
             self.raw_buffer = self.raw_buffer[converted:]
             if self.eof:
-                self.buffer += '\0'
+                self.buffer += u'\0'
                 self.raw_buffer = None
                 break
 
-    def update_raw(self, size=4096):
+    def update_raw(self, size=1024):
         data = self.stream.read(size)
-        if self.raw_buffer is None:
-            self.raw_buffer = data
-        else:
+        if data:
             self.raw_buffer += data
-        self.stream_pointer += len(data)
-        if not data:
+            self.stream_pointer += len(data)
+        else:
             self.eof = True
 
 #try:

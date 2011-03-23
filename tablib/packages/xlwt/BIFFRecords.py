@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
+# -*- coding: cp1252 -*-
 from struct import pack
-from .UnicodeUtils import upack1, upack2
+from UnicodeUtils import upack1, upack2
 import sys
 
 class SharedStringTable(object):
@@ -21,8 +20,8 @@ class SharedStringTable(object):
         self._current_piece = None
 
     def add_str(self, s):
-        if self.encoding != 'ascii' and not isinstance(s, str):
-            s = str(s, self.encoding)
+        if self.encoding != 'ascii' and not isinstance(s, unicode):
+            s = unicode(s, self.encoding)
         self._add_calls += 1
         if s not in self._str_indexes:
             idx = len(self._str_indexes)
@@ -43,14 +42,14 @@ class SharedStringTable(object):
         return self._str_indexes[s]
 
     def get_biff_record(self):
-        self._sst_record = b''
+        self._sst_record = ''
         self._continues = [None, None]
         self._current_piece = pack('<II', 0, 0)
-        data = [(idx, s) for s, idx in self._str_indexes.items()]
+        data = [(idx, s) for s, idx in self._str_indexes.iteritems()]
         data.sort() # in index order
         for idx, s in data:
             if self._tally[idx] == 0:
-                s = b''
+                s = u''
             self._add_to_sst(s)
         del data
         self._new_piece()
@@ -58,15 +57,15 @@ class SharedStringTable(object):
         self._continues[1] = self._sst_record[8:]
         self._sst_record = None
         self._current_piece = None
-        result = b''.join(self._continues)
+        result = ''.join(self._continues)
         self._continues = None
         return result
 
 
     def _add_to_sst(self, s):
         u_str = upack2(s, self.encoding)
-        # (to_py3): added b'...'
-        is_unicode_str = u_str[2] == b'\x01'
+
+        is_unicode_str = u_str[2] == '\x01'
         if is_unicode_str:
             atom_len = 5 # 2 byte -- len,
                          # 1 byte -- options,
@@ -80,12 +79,12 @@ class SharedStringTable(object):
         self._save_splitted(u_str[atom_len:], is_unicode_str)
 
     def _new_piece(self):
-        if self._sst_record == b'':
+        if self._sst_record == '':
             self._sst_record = self._current_piece
         else:
             curr_piece_len = len(self._current_piece)
             self._continues.append(pack('<2H%ds'%curr_piece_len, self._CONTINUE_ID, curr_piece_len, self._current_piece))
-        self._current_piece = b''
+        self._current_piece = ''
 
     def _save_atom(self, s):
         atom_len = len(s)
@@ -116,16 +115,16 @@ class SharedStringTable(object):
             if need_more_space:
                 self._new_piece()
                 if is_unicode_str:
-                    self._current_piece += b'\x01' # (to_py3): added b'...'
+                    self._current_piece += '\x01'
                 else:
-                    self._current_piece += b'\x00' # (to_py3): added b'...'
+                    self._current_piece += '\x00'
 
             i += atom_len
 
 
 class BiffRecord(object):
 
-    _rec_data = b'' # class attribute; child classes need to set this.
+    _rec_data = '' # class attribute; child classes need to set this.
 
     # Sheer waste.
     # def __init__(self):
@@ -191,8 +190,8 @@ class Biff8BOFRecord(BiffRecord):
         version  = 0x0600
         build    = 0x0DBB
         year     = 0x07CC
-        file_hist_flags = 0x00
-        ver_can_read    = 0x06
+        file_hist_flags = 0x00L
+        ver_can_read    = 0x06L
 
         self._rec_data = pack('<4H2I', version, rec_type, build, year, file_hist_flags, ver_can_read)
 
@@ -208,7 +207,7 @@ class InteraceEndRecord(BiffRecord):
     _REC_ID = 0x00E2
 
     def __init__(self):
-        self._rec_data = b''
+        self._rec_data = ''
 
 
 class MMSRecord(BiffRecord):
@@ -231,8 +230,7 @@ class WriteAccessRecord(BiffRecord):
     def __init__(self, owner):
         uowner = owner[0:0x30]
         uowner_len = len(uowner)
-        self._rec_data = pack('%ds%ds' % (uowner_len, 0x70 - uowner_len),
-                              uowner, b' '*(0x70 - uowner_len)) # (to_py3): added b'...'
+        self._rec_data = pack('%ds%ds' % (uowner_len, 0x70 - uowner_len), uowner, ' '*(0x70 - uowner_len))
 
 
 class DSFRecord(BiffRecord):
@@ -330,7 +328,7 @@ class PasswordRecord(BiffRecord):
         """
         Based on the algorithm provided by Daniel Rentz of OpenOffice.
         """
-        if plaintext == b"":
+        if plaintext == "":
             return 0
 
         passwd_hash = 0x0000
@@ -345,7 +343,7 @@ class PasswordRecord(BiffRecord):
         passwd_hash ^= 0xCE4B
         return passwd_hash
 
-    def __init__(self, passwd = b""):
+    def __init__(self, passwd = ""):
         self._rec_data = pack('<H', self.passwd_hash(passwd))
 
 
@@ -472,7 +470,7 @@ class EOFRecord(BiffRecord):
     _REC_ID = 0x000A
 
     def __init__(self):
-        self._rec_data = b''
+        self._rec_data = ''
 
 
 class DateModeRecord(BiffRecord):
@@ -1150,7 +1148,7 @@ class ExtSSTRecord(BiffRecord):
         portion_counter = 0
         while str_counter < len(str_placement):
             str_chunk_num, pos_in_chunk = str_placement[str_counter]
-            if str_chunk_num != portion_counter:
+            if str_chunk_num <> portion_counter:
                 portion_counter = str_chunk_num
                 abs_stream_pos += portions_len[portion_counter-1]
                 #print hex(abs_stream_pos)
@@ -1251,11 +1249,11 @@ class Window2Record(BiffRecord):
                                     grid_colour,
                                     0x00,
                                     preview_magn, normal_magn,
-                                    0x00)
+                                    0x00L)
         if scl_magn:
             self._scl_rec = pack('<4H', 0x00A0, 4, scl_magn, 100)
         else:
-            self._scl_rec = b''
+            self._scl_rec = ''
 
     def get(self):
         return self.get_rec_header() + self._rec_data + self._scl_rec
@@ -1293,7 +1291,7 @@ class PanesRecord(BiffRecord):
     [9]         1           Not used (BIFF5-BIFF8 only, not written
                             in BIFF2-BIFF4)
 
-    If the panes are frozen, paneÂ 0 is always active, regardless
+    If the panes are frozen, pane 0 is always active, regardless
     of the cursor position. The correct identifiers for all possible
     combinations of visible panes are shown in the following pictures.
 
@@ -1321,8 +1319,10 @@ class PanesRecord(BiffRecord):
     """
     _REC_ID = 0x0041
     def __init__(self, px, py, first_row_bottom, first_col_right, active_pane):
-        self._rec_data = pack('<5H', int(px), int(py), int(first_row_bottom),
-                              int(first_col_right), int(active_pane))
+        self._rec_data = pack('<5H',
+                                            px, py,
+                                            first_row_bottom, first_col_right,
+                                            active_pane)
 
 
 class RowRecord(BiffRecord):
@@ -1423,7 +1423,7 @@ class MergedCellsRecord(BiffRecord):
         i = len(merged_list) - 1
         while i >= 0:
             j = 0
-            merged = b''
+            merged = ''
             while (i >= 0) and (j < 0x403):
                 r1, r2, c1, c2 = merged_list[i]
                 merged += pack('<4H', r1, r2, c1, c2)
@@ -1664,10 +1664,10 @@ class RefModeRecord(BiffRecord):
     """
     This record is part of the Calculation Settings Block.
     It stores which method is used to show cell addresses in formulas.
-    The â€œRCâ€ mode uses numeric indexes for rows and columns,
-    i.e. â€œR(1)C(-1)â€, or â€œR1C1:R2C2â€.
-    The â€œA1â€ mode uses characters for columns and numbers for rows,
-    i.e. â€œB1â€, or â€œ$A$1:$B$2â€.
+    The “RC” mode uses numeric indexes for rows and columns,
+    i.e. “R(1)C(-1)”, or “R1C1:R2C2”.
+    The “A1” mode uses characters for columns and numbers for rows,
+    i.e. “B1”, or “$A$1:$B$2”.
 
     Record REFMODE, BIFF2-BIFF8:
 
@@ -1715,7 +1715,7 @@ class DeltaRecord(BiffRecord):
 class SaveRecalcRecord(BiffRecord):
     """
     This record is part of the Calculation Settings Block.
-    It contains the â€œRecalculate before saveâ€ option in
+    It contains the “Recalculate before save” option in
     Excel's calculation settings dialogue.
 
     Record SAVERECALC, BIFF3-BIFF8:
@@ -2262,8 +2262,7 @@ class NameRecord(BiffRecord):
     """
     _REC_ID = 0x0018
 
-    def __init__(self, options, keyboard_shortcut, name, sheet_index, rpn,
-                 menu_text=b'', desc_text=b'', help_text=b'', status_text=b''):
+    def __init__(self, options, keyboard_shortcut, name, sheet_index, rpn, menu_text='', desc_text='', help_text='', status_text=''):
         if type(name) == int:
             uname = chr(name)
         else:
@@ -2311,7 +2310,7 @@ class ExternSheetRecord(BiffRecord):
     def get(self):
         res = []
         nrefs = len(self.refs)
-        for idx in range(0, nrefs, _maxRefPerRecord):
+        for idx in xrange(0, nrefs, _maxRefPerRecord):
             chunk = self.refs[idx:idx+_maxRefPerRecord]
             krefs = len(chunk)
             if idx: # CONTINUE record
@@ -2320,7 +2319,7 @@ class ExternSheetRecord(BiffRecord):
                 header = pack("<HHH", self._REC_ID, 6 * krefs + 2, nrefs)
             res.append(header)
             res.extend([pack("<HHH", *r) for r in chunk])
-        return b''.join(res)
+        return ''.join(res)
 
 class SupBookRecord(BiffRecord):
     """
@@ -2382,7 +2381,7 @@ class ExternnameRecord(BiffRecord):
     0       0001H   0 = Standard name; 1 = Built-in name
     1       0002H   0 = Manual link; 1 = Automatic link (DDE links and OLE links only)
     2       0004H   1 = Picture link (DDE links and OLE links only)
-    3       0008H   1 = This is the â€œStdDocumentNameâ€ identifier (DDE links only)
+    3       0008H   1 = This is the “StdDocumentName” identifier (DDE links only)
     4       0010H   1 = OLE link
     14-5    7FE0H   Clipboard format of last successful update (DDE links and OLE links only)
     15      8000H   1 = Iconified picture link (BIFF8 OLE links only)
@@ -2390,5 +2389,5 @@ class ExternnameRecord(BiffRecord):
     _REC_ID = 0x0023
 
     def __init__(self, options=0, index=0, name=None, fmla=None):
-        self._rec_data = pack('<HHH', options, index, 0) + upack1(name) + fmla.encode()
+        self._rec_data = pack('<HHH', options, index, 0) + upack1(name) + fmla
 
