@@ -46,7 +46,7 @@ def import_book(dbook, in_stream):
     dbook.wipe()
 
     for sheet in yaml.load(in_stream):
-        data = tablib.core.Dataset()
+        data = tablib.Dataset()
         data.title = sheet['title']
         data.dict = sheet['data']
         dbook.add_sheet(data)
