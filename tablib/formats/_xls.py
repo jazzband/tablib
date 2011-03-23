@@ -3,19 +3,17 @@
 """ Tablib - XLS Support.
 """
 
-import io
 import sys
 
-try:
-    if sys.version_info[0] > 2:
-        import xlwt3 as xlwt
-    else:
-        import xlwt
-except ImportError:
-    if sys.version_info[0] > 2:
-        import tablib.packages.xlwt3 as xlwt
-    else:
-        import tablib.packages.xlwt as xlwt
+
+if sys.version_info[0] > 2:
+    from io import BytesIO
+    import tablib.packages.xlwt3 as xlwt
+    
+else:
+    from cStringIO import StringIO as BytesIO
+    import tablib.packages.xlwt as xlwt
+
 
 
 title = 'xls'
@@ -34,7 +32,7 @@ def export_set(dataset):
 
     dset_sheet(dataset, ws)
 
-    stream = io.BytesIO()
+    stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()
 
@@ -50,7 +48,7 @@ def export_book(databook):
         dset_sheet(dset, ws)
 
 
-    stream = io.BytesIO()
+    stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()
 
