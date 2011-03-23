@@ -1,4 +1,3 @@
-# -*- coding: windows-1252 -*-
 '''
             BOF
             UNCALCED
@@ -34,25 +33,25 @@
             EOF
 '''
 
-import BIFFRecords
-import Bitmap
-import Formatting
-import Style
+from . import BIFFRecords
+from . import Bitmap
+from . import Formatting
+from . import Style
 import tempfile
 
 
 class Worksheet(object):
-    from Workbook import Workbook
+    from .Workbook import Workbook
 
     #################################################################
     ## Constructor
     #################################################################
     def __init__(self, sheetname, parent_book, cell_overwrite_ok=False):
-        import Row
-        self.Row = Row.Row
+        from . import Row
+        self.Row = Row #(to_py3): Row.Row -> Row
 
-        import Column
-        self.Column = Column.Column
+        from . import Column
+        self.Column = Column #(to_py3): Column.Column -> Column
 
         self.__name = sheetname
         self.__parent = parent_book
@@ -61,7 +60,7 @@ class Worksheet(object):
         self.__rows = {}
         self.__cols = {}
         self.__merged_ranges = []
-        self.__bmp_rec = ''
+        self.__bmp_rec = b''
 
         self.__show_formulas = 0
         self.__show_grid = 1
@@ -161,7 +160,7 @@ class Worksheet(object):
         self.__obj_protect = 0
         self.__protect = 0
         self.__scen_protect = 0
-        self.__password = ''
+        self.__password = b''
 
         self.last_used_row = 0
         self.first_used_row = 65535
@@ -692,7 +691,7 @@ class Worksheet(object):
 
     def set_header_str(self, value):
         if isinstance(value, str):
-            value = unicode(value, self.__parent.encoding)
+            value = str(value, self.__parent.encoding)
         self.__header_str = value
 
     def get_header_str(self):
@@ -704,7 +703,7 @@ class Worksheet(object):
 
     def set_footer_str(self, value):
         if isinstance(value, str):
-            value = unicode(value, self.__parent.encoding)
+            value = str(value, self.__parent.encoding)
         self.__footer_str = value
 
     def get_footer_str(self):
@@ -999,7 +998,7 @@ class Worksheet(object):
     def get_parent(self):
         return self.__parent
 
-    def write(self, r, c, label="", style=Style.default_style):
+    def write(self, r, c, label=b"", style=Style.default_style):
         self.row(r).write(c, label, style)
 
     def merge(self, r1, r2, c1, c2, style=Style.default_style):
@@ -1020,7 +1019,7 @@ class Worksheet(object):
             self.row(r).write_blanks(c1, c2,  style)
         self.__merged_ranges.append((r1, r2, c1, c2))
 
-    def write_merge(self, r1, r2, c1, c2, label="", style=Style.default_style):
+    def write_merge(self, r1, r2, c1, c2, label=b"", style=Style.default_style):
         assert 0 <= c1 <= c2 <= 255
         assert 0 <= r1 <= r2 <= 65535
         self.write(r1, c1, label, style)
@@ -1113,7 +1112,7 @@ class Worksheet(object):
         return BIFFRecords.EOFRecord().get()
 
     def __colinfo_rec(self):
-        result = ''
+        result = b''
         for col in self.__cols:
             result += self.__cols[col].get_biff_record()
         return result
@@ -1150,7 +1149,7 @@ class Worksheet(object):
 
     def __panes_rec(self):
         if self.__vert_split_pos is None and self.__horz_split_pos is None:
-            return ""
+            return b""
 
         if self.__vert_split_pos is None:
             self.__vert_split_pos = 0
@@ -1169,7 +1168,7 @@ class Worksheet(object):
                 self.__horz_split_first_visible = 0
             # inspired by pyXLWriter
             self.__horz_split_pos = 20*self.__horz_split_pos + 255
-            self.__vert_split_pos = 113.879*self.__vert_split_pos + 390
+            self.__vert_split_pos = int(113.879*self.__vert_split_pos + 390)
 
         if self.__vert_split_pos > 0 and self.__horz_split_pos > 0:
             self.__split_active_pane = 0
@@ -1189,10 +1188,10 @@ class Worksheet(object):
 
     def __row_blocks_rec(self):
         result = []
-        for row in self.__rows.itervalues():
+        for row in self.__rows.values():
             result.append(row.get_row_biff_data())
             result.append(row.get_cells_biff_data())
-        return ''.join(result)
+        return b''.join(result)
 
     def __merged_rec(self):
         return BIFFRecords.MergedCellsRecord(self.__merged_ranges).get()
@@ -1201,7 +1200,7 @@ class Worksheet(object):
         return self.__bmp_rec
 
     def __calc_settings_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.CalcModeRecord(self.__calc_mode & 0x01).get()
         result += BIFFRecords.CalcCountRecord(self.__calc_count & 0xFFFF).get()
         result += BIFFRecords.RefModeRecord(self.__RC_ref_mode & 0x01).get()
@@ -1211,7 +1210,7 @@ class Worksheet(object):
         return result
 
     def __print_settings_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.PrintHeadersRecord(self.__print_headers).get()
         result += BIFFRecords.PrintGridLinesRecord(self.__print_grid).get()
         result += BIFFRecords.GridSetRecord(self.__grid_set).get()
@@ -1251,7 +1250,7 @@ class Worksheet(object):
         return result
 
     def __protection_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.ProtectRecord(self.__protect).get()
         result += BIFFRecords.ScenProtectRecord(self.__scen_protect).get()
         result += BIFFRecords.WindowProtectRecord(self.__wnd_protect).get()
@@ -1283,7 +1282,7 @@ class Worksheet(object):
             self.__panes_rec(),
             self.__eof_rec(),
             ])
-        return ''.join(result)
+        return b''.join(result)
 
     def flush_row_data(self):
         if self.row_tempfile is None:

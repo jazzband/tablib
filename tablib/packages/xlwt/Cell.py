@@ -1,7 +1,5 @@
-# -*- coding: windows-1252 -*-
-
 from struct import unpack, pack
-import BIFFRecords
+from . import BIFFRecords
 
 class StrCell(object):
     __slots__ = ["rowx", "colx", "xf_idx", "sst_idx"]
@@ -13,7 +11,6 @@ class StrCell(object):
         self.sst_idx = sst_idx
 
     def get_biff_data(self):
-        # return BIFFRecords.LabelSSTRecord(self.rowx, self.colx, self.xf_idx, self.sst_idx).get()
         return pack('<5HL', 0x00FD, 10, self.rowx, self.colx, self.xf_idx, self.sst_idx)
 
 class BlankCell(object):
@@ -25,7 +22,6 @@ class BlankCell(object):
         self.xf_idx = xf_idx
 
     def get_biff_data(self):
-        # return BIFFRecords.BlankRecord(self.rowx, self.colx, self.xf_idx).get()
         return pack('<5H', 0x0201, 6, self.rowx, self.colx, self.xf_idx)
 
 class MulBlankCell(object):
@@ -63,7 +59,6 @@ class NumberCell(object):
         if -0x20000000 <= num < 0x20000000: # fits in 30-bit *signed* int
             inum = int(num)
             if inum == num: # survives round-trip
-                # print "30-bit integer RK", inum, hex(inum)
                 rk_encoded = 2 | (inum << 2)
                 return 1, rk_encoded
 
@@ -77,7 +72,6 @@ class NumberCell(object):
             # Now for step 3: simulate the decoding,
             # to check for round-trip correctness.
             if itemp / 100.0 == num:
-                # print "30-bit integer RK*100", itemp, hex(itemp)
                 rk_encoded = 3 | (itemp << 2)
                 return 1, rk_encoded
 
@@ -85,19 +79,13 @@ class NumberCell(object):
             packed = pack('<d', num)
             w01, w23 = unpack('<2i', packed)
             if not w01 and not(w23 & 3):
-                # 34 lsb are 0
-                # print "float RK", w23, hex(w23)
                 return 1, w23
 
             packed100 = pack('<d', temp)
             w01, w23 = unpack('<2i', packed100)
             if not w01 and not(w23 & 3):
-                # 34 lsb are 0
-                # print "float RK*100", w23, hex(w23)
                 return 1, w23 | 1
 
-        #print "Number"
-        #print
         return 0, pack('<5Hd', 0x0203, 14, self.rowx, self.colx, self.xf_idx, num)
 
     def get_biff_data(self):
@@ -193,8 +181,9 @@ def _get_cells_biff_data_mul(rowx, cell_items):
             continue
         lastcolx = icolx
         j = i
-        packed_record = ''
-        for j in xrange(i+1, nitems):
+
+        packed_record = b'' # (to_py3): 'b' binary data
+        for j in range(i+1, nitems):
             jcolx, jcell = cell_items[j]
             if jcolx != lastcolx + 1:
                 nexti = j
@@ -223,7 +212,8 @@ def _get_cells_biff_data_mul(rowx, cell_items):
                 # MULRK record
                 nc = lastcolx - icolx + 1
                 pieces.append(pack('<4H', 0x00BD, 6 * nc + 6, rowx, icolx))
-                pieces.append(''.join([pack('<Hi', xf_idx, value) for value, xf_idx in muldata]))
+                # (to_py3): 'b' binary data
+                pieces.append(b''.join([pack('<Hi', xf_idx, value) for value, xf_idx in muldata]))
                 pieces.append(pack('<H', lastcolx))
         else:
             if lastcolx == icolx:
@@ -234,10 +224,10 @@ def _get_cells_biff_data_mul(rowx, cell_items):
                 # MULBLANK record
                 nc = lastcolx - icolx + 1
                 pieces.append(pack('<4H', 0x00BE, 2 * nc + 6, rowx, icolx))
-                pieces.append(''.join([pack('<H', xf_idx) for xf_idx in muldata]))
+                # (to_py3): 'b' binary data
+                pieces.append(b''.join([pack('<H', xf_idx) for xf_idx in muldata]))
                 pieces.append(pack('<H', lastcolx))
         if packed_record:
             pieces.append(packed_record)
         i = nexti
-    return ''.join(pieces)
-
+    return b''.join(pieces) # (to_py3): 'b' binary data

@@ -1,7 +1,8 @@
 # -*- coding: windows-1252 -*-
 
-import Formatting
-from BIFFRecords import *
+from . import Formatting
+from .BIFFRecords import *
+import collections
 
 FIRST_USER_DEFINED_NUM_FORMAT_IDX = 164
 
@@ -76,9 +77,9 @@ class StyleCollection(object):
         self._xf_val2x = {}
 
         self._num_formats = {}
-        for fmtidx, fmtstr in zip(range(0, 23), StyleCollection._std_num_fmt_list[0:23]):
+        for fmtidx, fmtstr in zip(list(range(0, 23)), StyleCollection._std_num_fmt_list[0:23]):
             self._num_formats[fmtstr] = fmtidx
-        for fmtidx, fmtstr in zip(range(37, 50), StyleCollection._std_num_fmt_list[23:]):
+        for fmtidx, fmtstr in zip(list(range(37, 50)), StyleCollection._std_num_fmt_list[23:]):
             self._num_formats[fmtstr] = fmtidx
 
         self.default_style = XFStyle()
@@ -151,7 +152,7 @@ class StyleCollection(object):
         return xf, xf_index
 
     def get_biff_data(self):
-        result = ''
+        result = b''
         result += self._all_fonts()
         result += self._all_num_formats()
         result += self._all_cell_styles()
@@ -159,21 +160,21 @@ class StyleCollection(object):
         return result
 
     def _all_fonts(self):
-        result = ''
+        result = b''
         if self.style_compression:
-            alist = self._font_x2id.items()
+            alist = list(self._font_x2id.items())
         else:
-            alist = [(x, o) for o, x in self._font_id2x.items()]
+            alist = [(x, o) for o, x in list(self._font_id2x.items())]
         alist.sort()
         for font_idx, font in alist:
             result += font.get_biff_record().get()
         return result
 
     def _all_num_formats(self):
-        result = ''
+        result = b''
         alist = [
             (v, k)
-            for k, v in self._num_formats.items()
+            for k, v in list(self._num_formats.items())
             if v >= FIRST_USER_DEFINED_NUM_FORMAT_IDX
             ]
         alist.sort()
@@ -182,13 +183,13 @@ class StyleCollection(object):
         return result
 
     def _all_cell_styles(self):
-        result = ''
+        result = b''
         for i in range(0, 16):
             result += XFRecord(self._default_xf, 'style').get()
         if self.style_compression == 2:
-            alist = self._xf_x2id.items()
+            alist = list(self._xf_x2id.items())
         else:
-            alist = [(x, o) for o, x in self._xf_id2x.items()]
+            alist = [(x, o) for o, x in list(self._xf_id2x.items())]
         alist.sort()
         for xf_idx, xf in alist:
             result += XFRecord(xf).get()
@@ -545,11 +546,11 @@ def _parse_strg_to_obj(strg, obj, parse_dict,
             v = ' '.join(guff[1:])
             if not v:
                 raise EasyXFCallerError("no value supplied for %s.%s" % (section, k))
-            for counter in xrange(2):
+            for counter in range(2):
                 result = section_dict.get(k)
                 if result is None:
                     raise EasyXFCallerError('%s.%s is not a known attribute' % (section, k))
-                if not isinstance(result, basestring):
+                if not isinstance(result, str):
                     break
                 # synonym
                 old_k = k
@@ -566,7 +567,7 @@ def _parse_strg_to_obj(strg, obj, parse_dict,
                     if vl in value_rule:
                         value = value_rule[vl]
                         break
-                elif callable(value_rule):
+                elif isinstance(value_rule, collections.Callable):
                     value = value_rule(v)
                     if value is not None:
                         break
@@ -578,7 +579,7 @@ def _parse_strg_to_obj(strg, obj, parse_dict,
                 orig = getattr(section_obj, k)
             except AttributeError:
                 raise EasyXFAuthorError('%s.%s in dictionary but not in supplied object' % (section, k))
-            if debug: print "+++ %s.%s = %r # %s; was %r" % (section, k, value, v, orig)
+            if debug: print("+++ %s.%s = %r # %s; was %r" % (section, k, value, v, orig))
             setattr(section_obj, k, value)
 
 def easyxf(strg_to_parse="", num_format_str=None,

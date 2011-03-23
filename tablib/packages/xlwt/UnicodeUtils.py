@@ -1,5 +1,3 @@
-# -*- coding: windows-1252 -*-
-
 '''
 From BIFF8 on, strings are always stored using UTF-16LE  text encoding. The
 character  array  is  a  sequence  of  16-bit  values4.  Additionally it is
@@ -33,10 +31,10 @@ Offset  Size    Contents
                                1 = Contains Rich-Text settings
 [2 or 3] 2      (optional, only if richtext=1) Number of Rich-Text formatting runs (rt)
 [var.]   4      (optional, only if phonetic=1) Size of Asian phonetic settings block (in bytes, sz)
-var.     ln or 
-         2·ln   Character array (8-bit characters or 16-bit characters, dependent on ccompr)
-[var.]   4·rt   (optional, only if richtext=1) List of rt formatting runs 
-[var.]   sz     (optional, only if phonetic=1) Asian Phonetic Settings Block 
+var.     ln or
+         2Â·ln   Character array (8-bit characters or 16-bit characters, dependent on ccompr)
+[var.]   4Â·rt   (optional, only if richtext=1) List of rt formatting runs
+[var.]   sz     (optional, only if phonetic=1) Asian Phonetic Settings Block
 '''
 
 
@@ -44,10 +42,10 @@ from struct import pack
 
 def upack2(s, encoding='ascii'):
     # If not unicode, make it so.
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         us = s
     else:
-        us = unicode(s, encoding)
+        us = str(s, encoding)
     # Limit is based on number of content characters
     # (not on number of bytes in packed result)
     len_us = len(us)
@@ -65,10 +63,10 @@ def upack2(s, encoding='ascii'):
 
 def upack1(s, encoding='ascii'):
     # Same as upack2(), but with a one-byte length field.
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         us = s
     else:
-        us = unicode(s, encoding)
+        us = str(s, encoding)
     len_us = len(us)
     if len_us > 255:
         raise Exception('String longer than 255 characters')

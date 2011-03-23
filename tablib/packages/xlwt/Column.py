@@ -1,6 +1,6 @@
 # -*- coding: windows-1252 -*-
 
-from BIFFRecords import ColInfoRecord
+from .BIFFRecords import ColInfoRecord
 
 class Column(object):
     def __init__(self, colx, parent_sheet):
