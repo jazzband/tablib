@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from struct import pack
 from .UnicodeUtils import upack1, upack2
 import sys

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 From BIFF8 on, strings are always stored using UTF-16LE  text encoding. The
 character  array  is  a  sequence  of  16-bit  values4.  Additionally it is
