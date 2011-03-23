@@ -156,17 +156,17 @@ class page:
 
         if mode == 'strict_html' or mode == 'html':
             self.onetags = valid_onetags
-            self.onetags += list(map( string.lower, self.onetags ))
+            self.onetags += list(map( str.lower, self.onetags ))
             self.twotags = valid_twotags
-            self.twotags += list(map( string.lower, self.twotags ))
+            self.twotags += list(map( str.lower, self.twotags ))
             self.deptags = deprecated_onetags + deprecated_twotags
-            self.deptags += list(map( string.lower, self.deptags ))
+            self.deptags += list(map( str.lower, self.deptags ))
             self.mode = 'strict_html'
         elif mode == 'loose_html':
             self.onetags = valid_onetags + deprecated_onetags 
-            self.onetags += list(map( string.lower, self.onetags ))
+            self.onetags += list(map( str.lower, self.onetags ))
             self.twotags = valid_twotags + deprecated_twotags
-            self.twotags += list(map( string.lower, self.twotags ))
+            self.twotags += list(map( str.lower, self.twotags ))
             self.mode = mode
         elif mode == 'xml':
             if onetags and twotags:
