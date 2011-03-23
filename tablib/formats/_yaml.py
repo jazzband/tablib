@@ -3,10 +3,16 @@
 """ Tablib - YAML Support.
 """
 
+import sys
+
 try:
     import yaml
 except ImportError:
-    import tablib.packages.yaml as yaml
+    if sys.version_info.major > 2:
+        import tablib.packages.yaml3 as yaml
+    else:
+        import tablib.packages.yaml as yaml
+    
 
 import tablib
 

@@ -4,8 +4,14 @@
 """Tests for Tablib."""
 
 import unittest
+import sys
 
-from tablib.packages import markup
+if sys.version_info.major > 2:
+    from tablib.packages import markup3 as markup
+else:
+    from tablib.packages import markup
+
+
 
 import tablib
 
