@@ -246,12 +246,15 @@ class Dataset(object):
         if self._formatters:
             for row_i, row in enumerate(_data):
                 for col, callback in self._formatters:
-                    if col is None:
-                        for j, c in enumerate(row):
-                            _data[row_i][j] = callback(c)
-                    else:
-                        _data[row_i][col] = callback(row[col])
-
+                    try:                        
+                        if col is None:
+                            for j, c in enumerate(row):
+                                _data[row_i][j] = callback(c)
+                        else:
+                            _data[row_i][col] = callback(row[col])
+                    except IndexError:
+                        raise InvalidDatasetIndex
+                        
 
         if self.headers:
             if dicts:
@@ -501,8 +504,11 @@ class Dataset(object):
                 col = self.headers.index(key) # get 'key' index from each data
             else:
                 raise KeyError
-
-        self._formatters.append((col, handler))
+        
+        if not col > self.width:
+            self._formatters.append((col, handler))
+        else:
+            raise InvalidDatasetIndex
         
         return True
         
@@ -798,6 +804,9 @@ class InvalidDatasetType(Exception):
 
 class InvalidDimensions(Exception):
     "Invalid size"
+    
+class InvalidDatasetIndex(Exception):
+    "Outside of Dataset size"
 
 class HeadersNeeded(Exception):
     "Header parameter must be given when appending a column in this Dataset."
