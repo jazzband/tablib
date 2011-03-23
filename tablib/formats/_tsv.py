@@ -3,7 +3,7 @@
 """ Tablib - TSV (Tab Separated Values) Support.
 """
 
-import cStringIO
+import io
 import csv
 import os
 
@@ -17,7 +17,7 @@ extentions = ('tsv',)
 
 def export_set(dataset):
     """Returns a TSV representation of Dataset."""
-    stream = cStringIO.StringIO()
+    stream = io.StringIO()
     _tsv = csv.writer(stream, delimiter='\t')
 
     for row in dataset._package(dicts=False):

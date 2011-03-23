@@ -68,7 +68,7 @@ class element:
         """Append the actual tags to content."""
 
         out = "<%s" % tag
-        for key, value in kwargs.iteritems( ):
+        for key, value in kwargs.items( ):
             if value is not None:               # when value is None that means stuff like <... checked>
                 key = key.strip('_')            # strip this so class_ will mean class, etc.
                 if key == 'http_equiv':         # special cases, maybe change _ to - overall?
@@ -156,17 +156,17 @@ class page:
 
         if mode == 'strict_html' or mode == 'html':
             self.onetags = valid_onetags
-            self.onetags += map( string.lower, self.onetags )
+            self.onetags += list(map( string.lower, self.onetags ))
             self.twotags = valid_twotags
-            self.twotags += map( string.lower, self.twotags )
+            self.twotags += list(map( string.lower, self.twotags ))
             self.deptags = deprecated_onetags + deprecated_twotags
-            self.deptags += map( string.lower, self.deptags )
+            self.deptags += list(map( string.lower, self.deptags ))
             self.mode = 'strict_html'
         elif mode == 'loose_html':
             self.onetags = valid_onetags + deprecated_onetags 
-            self.onetags += map( string.lower, self.onetags )
+            self.onetags += list(map( string.lower, self.onetags ))
             self.twotags = valid_twotags + deprecated_twotags
-            self.twotags += map( string.lower, self.twotags )
+            self.twotags += list(map( string.lower, self.twotags ))
             self.mode = mode
         elif mode == 'xml':
             if onetags and twotags:
@@ -183,7 +183,7 @@ class page:
 
     def __getattr__( self, attr ):
         if attr.startswith("__") and attr.endswith("__"):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         return element( attr, case=self.case, parent=self )
 
     def __str__( self ):
@@ -307,7 +307,7 @@ class page:
         """This convenience function is only useful for html.
         It adds css stylesheet(s) to the document via the <link> element."""
       
-        if isinstance( filelist, basestring ):
+        if isinstance( filelist, str ):
             self.link( href=filelist, rel='stylesheet', type='text/css', media='all' )
         else:
             for file in filelist:
@@ -319,20 +319,20 @@ class page:
         a dictionary of the form { 'name':'content' }."""
 
         if isinstance( mydict, dict ):
-            for name, content in mydict.iteritems( ):
+            for name, content in mydict.items( ):
                 self.meta( name=name, content=content )
         else:
-            raise TypeError, "Metainfo should be called with a dictionary argument of name:content pairs."
+            raise TypeError("Metainfo should be called with a dictionary argument of name:content pairs.")
 
     def scripts( self, mydict ):
         """Only useful in html, mydict is dictionary of src:type pairs will
         be rendered as <script type='text/type' src=src></script>"""
 
         if isinstance( mydict, dict ):
-            for src, type in mydict.iteritems( ):
+            for src, type in mydict.items( ):
                 self.script( '', src=src, type='text/%s' % type )
         else:
-            raise TypeError, "Script should be given a dictionary of src:type pairs."
+            raise TypeError("Script should be given a dictionary of src:type pairs.")
 
 
 class _oneliner:
@@ -345,7 +345,7 @@ class _oneliner:
     
     def __getattr__( self, attr ):
         if attr.startswith("__") and attr.endswith("__"):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         return element( attr, case=self.case, parent=None )
 
 oneliner = _oneliner( case='lower' )
@@ -359,14 +359,14 @@ def _argsdicts( args, mydict ):
     elif len( args ) == 1:
         args = _totuple( args[0] )
     else:
-        raise Exception, "We should have never gotten here."
+        raise Exception("We should have never gotten here.")
 
-    mykeys = mydict.keys( )
-    myvalues = map( _totuple, mydict.values( ) )
+    mykeys = list(mydict.keys( ))
+    myvalues = list(map( _totuple, list(mydict.values( )) ))
 
-    maxlength = max( map( len, [ args ] + myvalues ) )
+    maxlength = max( list(map( len, [ args ] + myvalues )) )
 
-    for i in xrange( maxlength ):
+    for i in range( maxlength ):
         thisdict = { }
         for key, value in zip( mykeys, myvalues ):
             try:
@@ -383,7 +383,7 @@ def _argsdicts( args, mydict ):
 def _totuple( x ):
     """Utility stuff to convert string, int, float, None or anything to a usable tuple."""
 
-    if isinstance( x, basestring ):
+    if isinstance( x, str ):
         out = x,
     elif isinstance( x, ( int, float ) ):
         out = str( x ),
@@ -397,7 +397,7 @@ def _totuple( x ):
 def escape( text, newline=False ):
     """Escape special html characters."""
 
-    if isinstance( text, basestring ):
+    if isinstance( text, str ):
         if '&' in text:
             text = text.replace( '&', '&amp;' )
         if '>' in text:
@@ -419,7 +419,7 @@ _escape = escape
 def unescape( text ):
     """Inverse of escape."""
     
-    if isinstance( text, basestring ):
+    if isinstance( text, str ):
         if '&amp;' in text:
             text = text.replace( '&amp;', '&' )
         if '&gt;' in text:
@@ -481,4 +481,4 @@ class CustomizationError( MarkupError ):
         self.message = "If you customize the allowed elements, you must define both types 'onetags' and 'twotags'."
 
 if __name__ == '__main__':
-    print __doc__
+    print(__doc__)

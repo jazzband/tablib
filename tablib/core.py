@@ -13,6 +13,7 @@ from copy import copy
 from operator import itemgetter
 
 from tablib import formats
+import collections
 
 try:
     from collections import OrderedDict
@@ -63,7 +64,7 @@ class Row(object):
         return {slot: [getattr(self, slot) for slot in self.__slots__]}
 
     def __setstate__(self, state):
-        for (k, v) in state.items(): setattr(self, k, v)
+        for (k, v) in list(state.items()): setattr(self, k, v)
 
     def append(self, value):
         self._row.append(value)
@@ -89,7 +90,7 @@ class Row(object):
 
         if tag == None:
             return False
-        elif isinstance(tag, basestring):
+        elif isinstance(tag, str):
             return (tag in self.tags)
         else:
             return bool(len(set(tag) & set(self.tags)))
@@ -159,7 +160,7 @@ class Dataset(object):
 
 
     def __getitem__(self, key):
-        if isinstance(key, basestring):
+        if isinstance(key, str):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -179,7 +180,7 @@ class Dataset(object):
 
 
     def __delitem__(self, key):
-        if isinstance(key, basestring):
+        if isinstance(key, str):
 
             if key in self.headers:
 
@@ -258,7 +259,7 @@ class Dataset(object):
 
         if self.headers:
             if dicts:
-                data = [OrderedDict(zip(self.headers, data_row)) for data_row in _data]
+                data = [OrderedDict(list(zip(self.headers, data_row))) for data_row in _data]
             else:
                 data = [list(self.headers)] + list(_data)
         else:
@@ -277,8 +278,8 @@ class Dataset(object):
         else:
             header = []
 
-        if len(col) == 1 and callable(col[0]):
-            col = map(col[0], self._data)
+        if len(col) == 1 and isinstance(col[0], collections.Callable):
+            col = list(map(col[0], self._data))
         col = tuple(header + col)
 
         return col
@@ -367,9 +368,9 @@ class Dataset(object):
         # if list of objects
         elif isinstance(pickle[0], dict):
             self.wipe()
-            self.headers = pickle[0].keys()
+            self.headers = list(pickle[0].keys())
             for row in pickle:
-                self.append(Row(row.values()))
+                self.append(Row(list(row.values())))
         else:
             raise UnsupportedFormat
 
@@ -499,7 +500,7 @@ class Dataset(object):
            against each cell value.
         """
         
-        if isinstance(col, basestring):
+        if isinstance(col, str):
             if col in self.headers:
                 col = self.headers.index(col) # get 'key' index from each data
             else:
@@ -548,8 +549,8 @@ class Dataset(object):
             col = list(col)
 
             # Callable Columns...
-            if len(col) == 1 and callable(col[0]):
-                col = map(col[0], self._data)
+            if len(col) == 1 and isinstance(col[0], collections.Callable):
+                col = list(map(col[0], self._data))
 
             col = self._clean_col(col)
             self._validate(col=col)
@@ -587,7 +588,7 @@ class Dataset(object):
         Returns a new :class:`Dataset` instance where columns have been
         sorted."""
         
-        if isinstance(col, basestring):
+        if isinstance(col, str):
 
             if not self.headers:
                 raise HeadersNeeded
@@ -794,7 +795,7 @@ def import_set(stream):
         format.import_set(data, stream)
         return data
 
-    except AttributeError, e:
+    except AttributeError as e:
         return None
 
 

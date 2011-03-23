@@ -3,7 +3,7 @@
 """ Tablib - XLS Support.
 """
 
-import cStringIO
+import io
 
 try:
     import xlwt
@@ -27,8 +27,8 @@ def export_set(dataset):
 
     dset_sheet(dataset, ws)
 
-    stream = cStringIO.StringIO()
-    wb.save(stream)
+    stream = io.StringIO()
+    wb.save(str(stream))
     return stream.getvalue()
 
 
@@ -43,7 +43,7 @@ def export_book(databook):
         dset_sheet(dset, ws)
 
 
-    stream = cStringIO.StringIO()
+    stream = io.StringIO()
     wb.save(stream)
     return stream.getvalue()
 

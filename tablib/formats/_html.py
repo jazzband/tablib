@@ -3,7 +3,7 @@
 """ Tablib - HTML export support.
 """
 
-from StringIO import StringIO
+from io import StringIO
 
 from tablib.packages import markup
 import tablib
