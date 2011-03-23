@@ -4,12 +4,13 @@
 """
 
 import sys
-from io import StringIO
 
 
 if sys.version_info.major > 2:
+    from io import StringIO
     from tablib.packages import markup3 as markup
 else:
+    from cStringIO import StringIO
     from tablib.packages import markup
 
 import tablib
