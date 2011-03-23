@@ -7,12 +7,12 @@ import io
 import sys
 
 try:
-    if sys.version_info.major > 2:
+    if sys.version_info[0] > 2:
         import xlwt3 as xlwt
     else:
         import xlwt
 except ImportError:
-    if sys.version_info.major > 2:
+    if sys.version_info[0] > 2:
         import tablib.packages.xlwt3 as xlwt
     else:
         import tablib.packages.xlwt as xlwt

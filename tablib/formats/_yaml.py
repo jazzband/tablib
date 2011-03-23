@@ -8,7 +8,7 @@ import sys
 try:
     import yaml
 except ImportError:
-    if sys.version_info.major > 2:
+    if sys.version_info[0] > 2:
         import tablib.packages.yaml3 as yaml
     else:
         import tablib.packages.yaml as yaml
