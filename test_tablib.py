@@ -4,8 +4,14 @@
 """Tests for Tablib."""
 
 import unittest
+import sys
 
-from tablib.packages import markup
+if sys.version_info.major > 2:
+    from tablib.packages import markup3 as markup
+else:
+    from tablib.packages import markup
+
+
 
 import tablib
 
@@ -295,6 +301,21 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_csv, data.csv)
 
+
+    def test_csv_import_set_with_spaces(self):
+        """Generate and import CSV set serialization when row values have
+        spaces."""
+        data.append(('Bill Gates', 'Microsoft'))
+        data.append(('Steve Jobs', 'Apple'))
+        data.headers = ('Name', 'Company')
+
+        _csv = data.csv
+
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
+
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
         data.append(self.john)
@@ -306,6 +327,7 @@ class TablibTestCase(unittest.TestCase):
         data.tsv = _tsv
 
         self.assertEqual(_tsv, data.tsv)
+
 
     def test_csv_format_detect(self):
         """Test CSV format detection."""
@@ -322,6 +344,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(tablib.formats.csv.detect(_csv))
         self.assertFalse(tablib.formats.csv.detect(_bunk))
 
+
     def test_tsv_format_detect(self):
         """Test TSV format detection."""
 
@@ -336,6 +359,7 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertTrue(tablib.formats.tsv.detect(_tsv))
         self.assertFalse(tablib.formats.tsv.detect(_bunk))
+
 
     def test_json_format_detect(self):
         """Test JSON format detection."""
@@ -374,6 +398,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(tablib.detect(_json)[0], tablib.formats.json)
         self.assertEqual(tablib.detect(_bunk)[0], None)
 
+
     def test_transpose(self):
         """Transpose a dataset."""
 
@@ -387,6 +412,7 @@ class TablibTestCase(unittest.TestCase):
                    ("last_name","Adams", "Washington", "Jefferson"))
         self.assertEqual(second_row,
                    ("gpa",90, 67, 50))
+
 
     def test_row_stacking(self):
 
@@ -404,6 +430,7 @@ class TablibTestCase(unittest.TestCase):
             original_data = self.founders[column]
             expected_data = original_data + original_data
             self.assertEqual(row_stacked[column], expected_data)
+
 
     def test_column_stacking(self):
 
@@ -425,6 +452,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(column_stacked[0],
                    ("John", "Adams", 90, "John", "Adams", 90))
 
+
     def test_sorting(self):
 
         """Sort columns."""
@@ -442,6 +470,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
 
+
     def test_wipe(self):
         """Purge a dataset."""
 
@@ -457,6 +486,18 @@ class TablibTestCase(unittest.TestCase):
         data.append(new_row)
         self.assertTrue(data.width == len(new_row))
         self.assertTrue(data[0] == new_row)
+
+
+    def test_formatters(self):
+        """Confirm formatters are being triggered."""
+        
+        def _formatter(cell_value):
+            return str(cell_value).upper()
+            
+        self.founders.add_formatter('last_name', _formatter)
+        
+        for name in [r['last_name'] for r in self.founders.dict]:
+            self.assertTrue(name.isupper())
 
 
 if __name__ == '__main__':

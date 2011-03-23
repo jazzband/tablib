@@ -3,7 +3,13 @@
 """ Tablib - CSV Support.
 """
 
-import cStringIO
+import sys
+if sys.version_info.major > 2:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
+
+
 import csv
 import os
 
@@ -17,7 +23,7 @@ extentions = ('csv',)
 
 def export_set(dataset):
     """Returns CSV representation of Dataset."""
-    stream = cStringIO.StringIO()
+    stream = StringIO()
     _csv = csv.writer(stream)
 
     for row in dataset._package(dicts=False):
@@ -31,7 +37,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    rows = csv.reader(in_stream.split())
+    rows = csv.reader(in_stream.splitlines())
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):

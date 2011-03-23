@@ -3,9 +3,16 @@
 """ Tablib - HTML export support.
 """
 
-from StringIO import StringIO
+import sys
 
-from tablib.packages import markup
+
+if sys.version_info.major > 2:
+    from io import StringIO
+    from tablib.packages import markup3 as markup
+else:
+    from cStringIO import StringIO
+    from tablib.packages import markup
+
 import tablib
 
 BOOK_ENDINGS = 'h3'
