@@ -55,7 +55,7 @@ However, if performance is important to you (and it should be), you can install 
 
 	$ pip install PyYAML
 
-If you're using Python 2.5 (currently unsupported), you should also install the **simplejson** module. If you're using Python 2.6+, the built-in **json** module is already optimized and in use. ::
+If you're using Python 2.5, you should also install the **simplejson** module (pip will do this for you). If you're using Python 2.6+, the built-in **json** module is already optimized and in use. ::
 
 	$ pip install simplejson
 
