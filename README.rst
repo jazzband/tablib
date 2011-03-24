@@ -141,8 +141,11 @@ If you'd like to contribute, simply fork `the repository`_, commit your changes 
 
 Roadmap
 -------
-- Python 2.4, 3.0, 3.1, 3.2 Support
-- Tablib.ext namespace
+
+v1.0.0:
+   - Add hooks system
+   - Tablib.ext namespace
+
 
 .. _`the repository`: http://github.com/kennethreitz/tablib
 .. _AUTHORS: http://github.com/kennethreitz/tablib/blob/master/AUTHORS
