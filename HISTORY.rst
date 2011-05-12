@@ -5,6 +5,7 @@ History
 +++++
 
 * `seperators` renamed to `separators`
+* Full unicode CSV support
 
 
 0.9.5 (2011-03-24)
