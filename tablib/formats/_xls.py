@@ -5,15 +5,7 @@
 
 import sys
 
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-    import tablib.packages.xlwt3 as xlwt
-    
-else:
-    from cStringIO import StringIO as BytesIO
-    import tablib.packages.xlwt as xlwt
-
+from tablib.compat import BytesIO, xlwt
 
 
 title = 'xls'
