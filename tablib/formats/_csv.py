@@ -10,7 +10,7 @@ else:
     from cStringIO import StringIO
 
 
-import csv
+import tablib.packages.unicodecsv as csv
 import os
 
 import tablib
@@ -20,11 +20,14 @@ title = 'csv'
 extentions = ('csv',)
 
 
+DEFAULT_ENCODING = 'utf-8'
+
+
 
 def export_set(dataset):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
-    _csv = csv.writer(stream)
+    _csv = csv.writer(stream, encoding=DEFAULT_ENCODING)
 
     for row in dataset._package(dicts=False):
         _csv.writerow(row)
@@ -37,7 +40,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    rows = csv.reader(in_stream.splitlines())
+    rows = csv.reader(in_stream.splitlines(), encoding=DEFAULT_ENCODING)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):
