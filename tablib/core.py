@@ -13,7 +13,6 @@ from copy import copy
 from operator import itemgetter
 
 from tablib import formats
-import collections
 
 
 from tablib.compat import OrderedDict
@@ -276,7 +275,8 @@ class Dataset(object):
         else:
             header = []
 
-        if len(col) == 1 and isinstance(col[0], collections.Callable):
+        if len(col) == 1 and hasattr(col[0], '__call__'):
+
             col = list(map(col[0], self._data))
         col = tuple(header + col)
 
@@ -547,7 +547,7 @@ class Dataset(object):
             col = list(col)
 
             # Callable Columns...
-            if len(col) == 1 and isinstance(col[0], collections.Callable):
+            if len(col) == 1 and hasattr(col[0], '__call__'):
                 col = list(map(col[0], self._data))
 
             col = self._clean_col(col)
@@ -793,7 +793,7 @@ def import_set(stream):
         format.import_set(data, stream)
         return data
 
-    except AttributeError as e:
+    except AttributeError:
         return None
 
 
