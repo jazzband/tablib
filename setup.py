@@ -33,6 +33,7 @@ setup(
         'tablib', 'tablib.formats',
         'tablib.packages',
         'tablib.packages.xlwt',
+        'tablib.packages.openpyxl',
         'tablib.packages.yaml',
         'tablib.packages.unicodecsv'
     ],
