@@ -392,6 +392,15 @@ class Dataset(object):
 
     @property
     def xlsx():
+        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+         .. admonition:: Binary Warning
+
+             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+
+                with open('output.xlsx', 'wb') as f:
+                    f.write(data.xlsx)'
+        """
         pass
 
 

@@ -7,30 +7,20 @@ import sys
 
 
 if sys.version_info[0] > 2:
-    from io import BytesIO
-    import tablib.packages.xlwt3 as xlwt
-    
+    from io import BytesIO    
 else:
     from cStringIO import StringIO as BytesIO
-    import tablib.packages.xlwt as xlwt
 
 from tablib.packages.openpyxl.workbook import Workbook
 from tablib.packages.openpyxl.writer.excel import ExcelWriter
 
 from tablib.packages.openpyxl.cell import get_column_letter    
 
-
-
 title = 'xlsx'
 extentions = ('xlsx',)
 
-# special styles
-#wrap = xlwt.easyxf("alignment: wrap on")
-#bold = xlwt.easyxf("font: bold on")
-
-
 def export_set(dataset):
-    """Returns XLS representation of Dataset."""
+    """Returns XLSX representation of Dataset."""
 
     wb = Workbook()
     ws = wb.worksheets[0]
@@ -44,19 +34,19 @@ def export_set(dataset):
 
 
 def export_book(databook):
-    """Returns XLS representation of DataBook."""
+    """Returns XLSX representation of DataBook."""
 
     wb = Workbook()
     ew = ExcelWriter(workbook = wb)
     for i, dset in enumerate(databook._datasets):
-        ws = wb.add_sheet()
+        ws = wb.create_sheet()
         ws.title = dset.title if dset.title else 'Sheet%s' % (i)
 
         dset_sheet(dset, ws)
 
 
     stream = BytesIO()
-    ew.save(filename='test.xlsx')
+    ew.save(stream)
     return stream.getvalue()
 
 
@@ -75,30 +65,33 @@ def dset_sheet(dataset, ws):
 
             # bold headers
             if (row_number == 1) and dataset.headers:
-                ws.cell('%s%s'%(col_idx, row_number)).value = '%s' % col
-                #ws.write(i, j, col, bold)
-
-                # frozen header row
-                #ws.panes_frozen = True
-                #ws.horz_split_pos = 1
+                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                    '%s' % col, errors='ignore')
+                style = ws.get_style('%s%s' % (col_idx, row_number))
+                style.font.bold = True
+                ws.freeze_panes = '%s%s' % (col_idx, row_number)
 
 
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = '%s' % col
-                #ws.write(i, j, col, bold)
+                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                    '%s' % col, errors='ignore')
+                style = ws.get_style('%s%s' % (col_idx, row_number))
+                style.font.bold = True
 
             # wrap the rest
             else:
                 try:
                     if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = '%s' % col
-                        #ws.write(i, j, col, wrap)
+                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                            '%s' % col, errors='ignore')
+                        style = ws.get_style('%s%s' % (col_idx, row_number))
+                        style.alignment.wrap_text
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = '%s' % col
-                        #ws.write(i, j, col)
+                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                            '%s' % col, errors='ignore')
                 except TypeError:
-                    ws.cell('%s%s'%(col_idx, row_number)).value = '%s' % col
-                    #ws.write(i, j, col)
+                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                        '%s' % col, errors='ignore')
 
 
