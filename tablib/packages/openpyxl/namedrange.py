@@ -29,7 +29,7 @@
 import re
 
 # package imports
-from openpyxl.shared.exc import NamedRangeException
+from .shared.exc import NamedRangeException
 
 # constants
 NAMED_RANGE_RE = re.compile("'?([^']*)'?!((\$([A-Za-z]+))?\$([0-9]+)(:(\$([A-Za-z]+))?(\$([0-9]+)))?)$")

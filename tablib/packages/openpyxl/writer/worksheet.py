@@ -29,8 +29,8 @@
 from StringIO import StringIO  # cStringIO doesn't handle unicode
 
 # package imports
-from openpyxl.cell import coordinate_from_string, column_index_from_string
-from openpyxl.shared.xmltools import Element, SubElement, XMLGenerator, \
+from ..cell import coordinate_from_string, column_index_from_string
+from ..shared.xmltools import Element, SubElement, XMLGenerator, \
         get_document_content, start_tag, end_tag, tag
 
 
@@ -100,7 +100,7 @@ def write_worksheet_sheetviews(doc, worksheet):
     tag(doc, 'selection', selectionAttrs)
     end_tag(doc, 'sheetView')
     end_tag(doc, 'sheetViews')
-    
+
 
 def write_worksheet_cols(doc, worksheet):
     """Write worksheet columns to xml."""

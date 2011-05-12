@@ -26,17 +26,17 @@
 """Write the shared style table."""
 
 # package imports
-from openpyxl.shared.xmltools import Element, SubElement
-from openpyxl.shared.xmltools import get_document_content
-from openpyxl import style
+from ..shared.xmltools import Element, SubElement
+from ..shared.xmltools import get_document_content
+from .. import style
 
 class StyleWriter(object):
-    
+
     def __init__(self, workbook):
         self._style_list = self._get_style_list(workbook)
-        self._root = Element('styleSheet', 
+        self._root = Element('styleSheet',
             {'xmlns':'http://schemas.openxmlformats.org/spreadsheetml/2006/main'})
-    
+
     def _get_style_list(self, workbook):
         crc = {}
         for worksheet in workbook.worksheets:
@@ -51,7 +51,7 @@ class StyleWriter(object):
     def get_style_by_hash(self):
         return dict([(hash(style), id) \
             for style, id in self.style_table.iteritems()])
-        
+
     def write_table(self):
         number_format_table = self._write_number_formats()
         fonts_table = self._write_fonts()
@@ -71,7 +71,7 @@ class StyleWriter(object):
         """
 
         fonts = SubElement(self._root, 'fonts')
-        
+
         # default
         font_node = SubElement(fonts, 'font')
         SubElement(font_node, 'sz', {'val':'11'})
@@ -79,7 +79,7 @@ class StyleWriter(object):
         SubElement(font_node, 'name', {'val':'Calibri'})
         SubElement(font_node, 'family', {'val':'2'})
         SubElement(font_node, 'scheme', {'val':'minor'})
-        
+
         # others
         table = {}
         index = 1
@@ -97,7 +97,7 @@ class StyleWriter(object):
                 if st.font.italic:
                     SubElement(font_node, 'i')
                 index += 1
-                
+
         fonts.attrib["count"] = str(index)
         return table
 
@@ -122,7 +122,7 @@ class StyleWriter(object):
                     if hash(st.fill.end_color) != hash(style.DEFAULTS.fill.end_color):
                         SubElement(node, 'bgColor', {'rgb':str(st.fill.start_color.index)})
                 index += 1
-        
+
         fills.attrib["count"] = str(index)
         return table
 
@@ -136,7 +136,7 @@ class StyleWriter(object):
         SubElement(border, 'top')
         SubElement(border, 'bottom')
         SubElement(border, 'diagonal')
-        
+
         # others
         table = {}
         index = 1
@@ -150,40 +150,40 @@ class StyleWriter(object):
                     node = SubElement(border, side, {'style':obj.border_style})
                     SubElement(node, 'color', {'rgb':str(obj.color.index)})
                 index += 1
-        
+
         borders.attrib["count"] = str(index)
         return table
 
     def _write_cell_style_xfs(self):
         cell_style_xfs = SubElement(self._root, 'cellStyleXfs', {'count':'1'})
-        xf = SubElement(cell_style_xfs, 'xf', 
+        xf = SubElement(cell_style_xfs, 'xf',
             {'numFmtId':"0", 'fontId':"0", 'fillId':"0", 'borderId':"0"})
-    
+
     def _write_cell_xfs(self, number_format_table, fonts_table, fills_table, borders_table):
         """ write styles combinations based on ids found in tables """
-        
+
         # writing the cellXfs
-        cell_xfs = SubElement(self._root, 'cellXfs', 
+        cell_xfs = SubElement(self._root, 'cellXfs',
             {'count':'%d' % (len(self._style_list) + 1)})
-        
+
         # default
         def _get_default_vals():
-            return dict(numFmtId='0', fontId='0', fillId='0', 
+            return dict(numFmtId='0', fontId='0', fillId='0',
                 xfId='0', borderId='0')
-        
+
         SubElement(cell_xfs, 'xf', _get_default_vals())
-        
+
         for st in self._style_list:
             vals = _get_default_vals()
-            
+
             if hash(st.font) != hash(style.DEFAULTS.font):
                 vals['fontId'] = fonts_table[hash(st.font)]
                 vals['applyFont'] = '1'
-                
+
             if hash(st.borders) != hash(style.DEFAULTS.borders):
                 vals['borderId'] = borders_table[hash(st.borders)]
                 vals['applyBorder'] = '1'
-                
+
             if hash(st.fill) != hash(style.DEFAULTS.fill):
                 vals['fillId'] = fills_table[hash(st.fill)]
                 vals['applyFillId'] = '1'
@@ -191,7 +191,7 @@ class StyleWriter(object):
             if st.number_format != style.DEFAULTS.number_format:
                 vals['numFmtId'] = '%d' % number_format_table[st.number_format]
                 vals['applyNumberFormat'] = '1'
-                
+
             if hash(st.alignment) != hash(style.DEFAULTS.alignment):
                 vals['applyAlignment'] = '1'
 
@@ -209,7 +209,7 @@ class StyleWriter(object):
 
     def _write_cell_style(self):
         cell_styles = SubElement(self._root, 'cellStyles', {'count':'1'})
-        cell_style = SubElement(cell_styles, 'cellStyle', 
+        cell_style = SubElement(cell_styles, 'cellStyle',
             {'name':"Normal", 'xfId':"0", 'builtinId':"0"})
 
     def _write_dxfs(self):
@@ -217,7 +217,7 @@ class StyleWriter(object):
 
     def _write_table_styles(self):
 
-        table_styles = SubElement(self._root, 'tableStyles', 
+        table_styles = SubElement(self._root, 'tableStyles',
             {'count':'0', 'defaultTableStyle':'TableStyleMedium9',
             'defaultPivotStyle':'PivotStyleLight16'})
 
@@ -245,12 +245,12 @@ class StyleWriter(object):
                 num_fmt_offset += 1
                 exceptions_list.append(number_format)
 
-        num_fmts = SubElement(self._root, 'numFmts', 
+        num_fmts = SubElement(self._root, 'numFmts',
             {'count':'%d' % len(exceptions_list)})
 
         for number_format in exceptions_list :
-            SubElement(num_fmts, 'numFmt', 
+            SubElement(num_fmts, 'numFmt',
                 {'numFmtId':'%d' % number_format_table[number_format],
-                'formatCode':'%s' % number_format.format_code}) 
-        
+                'formatCode':'%s' % number_format.format_code})
+
         return number_format_table

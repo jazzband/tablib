@@ -32,13 +32,13 @@ import datetime
 import os
 
 # package imports
-from openpyxl.worksheet import Worksheet
-from openpyxl.writer.dump_worksheet import DumpWorksheet, save_dump
-from openpyxl.writer.strings import StringTableBuilder
-from openpyxl.namedrange import NamedRange
-from openpyxl.style import Style
-from openpyxl.writer.excel import save_workbook
-from openpyxl.shared.exc import ReadOnlyWorkbookException
+from .worksheet import Worksheet
+from .writer.dump_worksheet import DumpWorksheet, save_dump
+from .writer.strings import StringTableBuilder
+from .namedrange import NamedRange
+from .style import Style
+from .writer.excel import save_workbook
+from .shared.exc import ReadOnlyWorkbookException
 
 
 class DocumentProperties(object):

@@ -29,15 +29,15 @@
 import re
 
 # package imports
-import openpyxl.cell
-from openpyxl.cell import coordinate_from_string, \
+from . import cell
+from .cell import coordinate_from_string, \
     column_index_from_string, get_column_letter
-from openpyxl.shared.exc import SheetTitleException, \
+from .shared.exc import SheetTitleException, \
     InsufficientCoordinatesException, CellCoordinatesException, \
     NamedRangeException
-from openpyxl.shared.password_hasher import hash_password
-from openpyxl.style import Style, DEFAULTS as DEFAULTS_STYLE
-from openpyxl.drawing import Drawing
+from .shared.password_hasher import hash_password
+from .style import Style, DEFAULTS as DEFAULTS_STYLE
+from .drawing import Drawing
 
 _DEFAULTS_STYLE_HASH = hash(DEFAULTS_STYLE)
 
@@ -344,7 +344,7 @@ class Worksheet(object):
 
         if not coordinate in self._cells:
             column, row = coordinate_from_string(coordinate)
-            new_cell = openpyxl.cell.Cell(self, column, row)
+            new_cell = cell.Cell(self, column, row)
             self._cells[coordinate] = new_cell
             if column not in self.column_dimensions:
                 self.column_dimensions[column] = ColumnDimension(column)
@@ -354,7 +354,7 @@ class Worksheet(object):
 
     def get_highest_row(self):
         """Returns the maximum row index containing data
-        
+
         :rtype: int
         """
         if self.row_dimensions:
@@ -364,7 +364,7 @@ class Worksheet(object):
 
     def get_highest_column(self):
         """Get the largest value for column currently stored.
-        
+
         :rtype: int
         """
         if self.column_dimensions:
@@ -475,21 +475,21 @@ class Worksheet(object):
 
     def append(self, list_or_dict):
         """Appends a group of values at the bottom of the current sheet.
-        
+
         * If it's a list: all values are added in order, starting from the first column
         * If it's a dict: values are assigned to the columns indicated by the keys (numbers or letters)
-        
+
         :param list_or_dict: list or dict containing values to append
         :type list_or_dict: list/tuple or dict
-        
+
         Usage:
-        
+
         * append(['This is A1', 'This is B1', 'This is C1'])
         * **or** append({'A' : 'This is A1', 'C' : 'This is C1'})
         * **or** append({0 : 'This is A1', 2 : 'This is C1'})
-        
+
         :raise: TypeError when list_or_dict is neither a list/tuple nor a dict
-        
+
         """
 
         row_idx = len(self.row_dimensions)

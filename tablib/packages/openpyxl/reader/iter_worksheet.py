@@ -23,7 +23,7 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: Eric Gazoni
 
-""" Iterators-based worksheet reader 
+""" Iterators-based worksheet reader
 *Still very raw*
 """
 
@@ -32,18 +32,18 @@ import warnings
 import operator
 from functools import partial
 from itertools import ifilter, groupby
-from openpyxl.worksheet import Worksheet
-from openpyxl.cell import coordinate_from_string, get_column_letter, Cell
-from openpyxl.reader.excel import get_sheet_ids
-from openpyxl.reader.strings import read_string_table
-from openpyxl.reader.style import read_style_table, NumberFormat
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.reader.worksheet import read_dimension
-from openpyxl.shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
+from ..worksheet import Worksheet
+from ..cell import coordinate_from_string, get_column_letter, Cell
+from ..reader.excel import get_sheet_ids
+from ..reader.strings import read_string_table
+from ..reader.style import read_style_table, NumberFormat
+from ..shared.date_time import SharedDate
+from ..reader.worksheet import read_dimension
+from ..shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
     MAX_ROW, MIN_ROW, ARC_SHARED_STRINGS, ARC_APP, ARC_STYLE)
 from xml.etree.cElementTree import iterparse
 from zipfile import ZipFile
-import openpyxl.cell
+from .. import cell
 import re
 import tempfile
 import zlib
@@ -51,7 +51,7 @@ import zipfile
 import struct
 
 TYPE_NULL = Cell.TYPE_NULL
-MISSING_VALUE = None 
+MISSING_VALUE = None
 
 RE_COORDINATE = re.compile('^([A-Z]+)([0-9]+)$')
 
@@ -108,11 +108,11 @@ class RawCell(BaseRawCell):
     def is_date(self):
         res = (self.data_type == Cell.TYPE_NUMERIC
                and self.number_format is not None
-               and ('d' in self.number_format 
+               and ('d' in self.number_format
                     or 'm' in self.number_format
                     or 'y' in self.number_format
                     or 'h' in self.number_format
-                    or 's' in self.number_format 
+                    or 's' in self.number_format
                    ))
 
         return res
@@ -121,7 +121,7 @@ def iter_rows(workbook_name, sheet_name, xml_source, range_string = '', row_offs
 
     archive = get_archive_file(workbook_name)
 
-    source = xml_source 
+    source = xml_source
 
     if range_string:
         min_col, min_row, max_col, max_row = get_range_boundaries(range_string, row_offset, column_offset)
@@ -187,7 +187,7 @@ def get_range_boundaries(range_string, row = 0, column = 0):
         min_col, min_row = coordinate_from_string(range_string)
         min_col = column_index_from_string(min_col)
         max_col = min_col + 1
-        max_row = min_row 
+        max_row = min_row
 
     return (min_col, min_row, max_col, max_row)
 
@@ -215,7 +215,7 @@ def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style
             for gap_row in xrange(current_row, row):
 
                 dummy_cells = get_missing_cells(gap_row, expected_columns)
-                
+
                 yield tuple([dummy_cells[column] for column in expected_columns])
 
                 current_row = row
@@ -254,11 +254,11 @@ def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style
 
         yield tuple(full_row)
 
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 
 class IterableWorksheet(Worksheet):
 
-    def __init__(self, parent_workbook, title, workbook_name, 
+    def __init__(self, parent_workbook, title, workbook_name,
             sheet_codename, xml_source):
 
         Worksheet.__init__(self, parent_workbook, title)
@@ -267,20 +267,20 @@ class IterableWorksheet(Worksheet):
         self._xml_source = xml_source
 
     def iter_rows(self, range_string = '', row_offset = 0, column_offset = 0):
-        """ Returns a squared range based on the `range_string` parameter, 
+        """ Returns a squared range based on the `range_string` parameter,
         using generators.
-        
+
         :param range_string: range of cells (e.g. 'A1:C4')
         :type range_string: string
-        
+
         :param row: row index of the cell (e.g. 4)
         :type row: int
 
         :param column: column index of the cell (e.g. 3)
         :type column: int
-        
+
         :rtype: generator
-        
+
         """
 
         return iter_rows(workbook_name = self._workbook_name,

@@ -38,10 +38,10 @@ import datetime
 import re
 
 # package imports
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.shared.exc import CellCoordinatesException, \
+from .shared.date_time import SharedDate
+from .shared.exc import CellCoordinatesException, \
         ColumnStringIndexException, DataTypeException
-from openpyxl.style import NumberFormat
+from .style import NumberFormat
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
@@ -70,12 +70,12 @@ def absolute_coordinate(coord_string):
 
 def column_index_from_string(column, fast = False):
     """Convert a column letter into a column number (e.g. B -> 2)
-    
+
     Excel only supports 1-3 letter column names from A -> ZZZ, so we
     restrict our column names to 1-3 characters, each in the range A-Z.
-    
+
     .. note::
-    
+
         Fast mode is faster but does not check that all letters are capitals between A and Z
 
     """
@@ -349,7 +349,7 @@ class Cell(object):
         :rtype: string
         """
         return '%s%s' % (self.column, self.row)
-    
+
     @property
     def address(self):
         """Return the coordinate string for this cell (e.g. 'B12')
@@ -376,7 +376,7 @@ class Cell(object):
 
     def is_date(self):
         """Returns whether the value is *probably* a date or not
-        
+
         :rtype: bool
         """
         return (self.has_style

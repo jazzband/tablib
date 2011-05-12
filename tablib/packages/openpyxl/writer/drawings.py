@@ -24,7 +24,7 @@ THE SOFTWARE.
 @author: Eric Gazoni
 '''
 
-from openpyxl.shared.xmltools import Element, SubElement, get_document_content
+from ..shared.xmltools import Element, SubElement, get_document_content
 
 
 class DrawingWriter(object):

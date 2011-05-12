@@ -26,14 +26,14 @@
 """Imports for the openpyxl package."""
 
 # package imports
-from openpyxl import cell
-from openpyxl import namedrange
-from openpyxl import style
-from openpyxl import workbook
-from openpyxl import worksheet
-from openpyxl import reader
-from openpyxl import shared
-from openpyxl import writer
+from . import cell
+from . import namedrange
+from . import style
+from . import workbook
+from . import worksheet
+from . import reader
+from . import shared
+from . import writer
 
 # constants
 

@@ -29,32 +29,32 @@
 from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
 
 # package imports
-from openpyxl.shared.exc import OpenModeError, InvalidFileException
-from openpyxl.shared.ooxml import ARC_SHARED_STRINGS, ARC_CORE, ARC_APP, \
+from ..shared.exc import OpenModeError, InvalidFileException
+from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CORE, ARC_APP, \
         ARC_WORKBOOK, PACKAGE_WORKSHEETS, ARC_STYLE
-from openpyxl.workbook import Workbook
-from openpyxl.reader.strings import read_string_table
-from openpyxl.reader.style import read_style_table
-from openpyxl.reader.workbook import read_sheets_titles, read_named_ranges, \
+from ..workbook import Workbook
+from ..reader.strings import read_string_table
+from ..reader.style import read_style_table
+from ..reader.workbook import read_sheets_titles, read_named_ranges, \
         read_properties_core, get_sheet_ids
-from openpyxl.reader.worksheet import read_worksheet
-from openpyxl.reader.iter_worksheet import unpack_worksheet
+from ..reader.worksheet import read_worksheet
+from ..reader.iter_worksheet import unpack_worksheet
 
 def load_workbook(filename, use_iterators = False):
     """Open the given filename and return the workbook
 
     :param filename: the path to open
     :type filename: string
-    
+
     :param use_iterators: use lazy load for cells
     :type use_iterators: bool
 
     :rtype: :class:`openpyxl.workbook.Workbook`
-    
+
     .. note::
-        
+
         When using lazy load, all worksheets will be :class:`openpyxl.reader.iter_worksheet.IterableWorksheet`
-        and the returned workbook will be read-only. 
+        and the returned workbook will be read-only.
 
     """
 

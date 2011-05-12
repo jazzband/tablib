@@ -26,8 +26,8 @@
 """Imports for the openpyxl.shared namespace."""
 
 # package imports
-from openpyxl.shared import date_time
-from openpyxl.shared import exc
-from openpyxl.shared import ooxml
-from openpyxl.shared import password_hasher
-from openpyxl.shared import xmltools
+from . import date_time
+from . import exc
+from . import ooxml
+from . import password_hasher
+from . import xmltools

@@ -26,11 +26,11 @@
 """Read in global settings to be maintained by the workbook object."""
 
 # package imports
-from openpyxl.shared.xmltools import fromstring, QName
-from openpyxl.shared.ooxml import NAMESPACES
-from openpyxl.workbook import DocumentProperties
-from openpyxl.shared.date_time import W3CDTF_to_datetime
-from openpyxl.namedrange import NamedRange, split_named_range
+from ..shared.xmltools import fromstring, QName
+from ..shared.ooxml import NAMESPACES
+from ..workbook import DocumentProperties
+from ..shared.date_time import W3CDTF_to_datetime
+from ..namedrange import NamedRange, split_named_range
 
 import datetime
 

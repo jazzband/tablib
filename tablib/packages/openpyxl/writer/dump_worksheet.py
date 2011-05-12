@@ -28,19 +28,19 @@
 import datetime
 import os
 
-from openpyxl.cell import column_index_from_string, get_column_letter, Cell
-from openpyxl.worksheet import Worksheet
-from openpyxl.shared.xmltools import XMLGenerator, get_document_content, \
+from ..cell import column_index_from_string, get_column_letter, Cell
+from ..worksheet import Worksheet
+from ..shared.xmltools import XMLGenerator, get_document_content, \
         start_tag, end_tag, tag
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.shared.ooxml import MAX_COLUMN, MAX_ROW
+from ..shared.date_time import SharedDate
+from ..shared.ooxml import MAX_COLUMN, MAX_ROW
 from tempfile import NamedTemporaryFile
-from openpyxl.writer.excel import ExcelWriter
-from openpyxl.writer.strings import write_string_table
-from openpyxl.writer.styles import StyleWriter
-from openpyxl.style import Style, NumberFormat
+from ..writer.excel import ExcelWriter
+from ..writer.strings import write_string_table
+from ..writer.styles import StyleWriter
+from ..style import Style, NumberFormat
 
-from openpyxl.shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
+from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
         ARC_ROOT_RELS, ARC_WORKBOOK_RELS, ARC_APP, ARC_CORE, ARC_THEME, \
         ARC_STYLE, ARC_WORKBOOK, \
         PACKAGE_WORKSHEETS, PACKAGE_DRAWINGS, PACKAGE_CHARTS
@@ -58,7 +58,7 @@ STYLES = {'datetime' : {'type':Cell.TYPE_NUMERIC,
         }
 
 DATETIME_STYLE = Style()
-DATETIME_STYLE.number_format.format_code = NumberFormat.FORMAT_DATE_YYYYMMDD2 
+DATETIME_STYLE.number_format.format_code = NumberFormat.FORMAT_DATE_YYYYMMDD2
 BOUNDING_BOX_PLACEHOLDER = 'A1:%s%d' % (get_column_letter(MAX_COLUMN), MAX_ROW)
 
 class DumpWorksheet(Worksheet):
@@ -66,7 +66,7 @@ class DumpWorksheet(Worksheet):
     """
     .. warning::
 
-        You shouldn't initialize this yourself, use :class:`openpyxl.workbook.Workbook` constructor instead, 
+        You shouldn't initialize this yourself, use :class:`openpyxl.workbook.Workbook` constructor instead,
         with `optimized_write = True`.
     """
 
@@ -101,7 +101,7 @@ class DumpWorksheet(Worksheet):
                 'xmlns:r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'})
         start_tag(doc, 'sheetPr')
         tag(doc, 'outlinePr',
-                {'summaryBelow': '1', 
+                {'summaryBelow': '1',
                 'summaryRight': '1'})
         end_tag(doc, 'sheetPr')
         tag(doc, 'dimension', {'ref': 'A1:%s' % (self.get_dimensions())})
@@ -141,7 +141,7 @@ class DumpWorksheet(Worksheet):
         self._fileobj.flush()
 
     def _close_header(self):
-        
+
         doc = self.header
         #doc.endDocument()
 
@@ -159,7 +159,7 @@ class DumpWorksheet(Worksheet):
             return 'A1'
         else:
             return '%s%d' % (get_column_letter(self._max_col), (self._max_row))
-            
+
     def append(self, row):
 
         """
@@ -185,7 +185,7 @@ class DumpWorksheet(Worksheet):
             if cell is None:
                 continue
 
-            coordinate = '%s%d' % (get_column_letter(col_idx+1), row_idx) 
+            coordinate = '%s%d' % (get_column_letter(col_idx+1), row_idx)
             attributes = {'r': coordinate}
 
             if isinstance(cell, bool):
@@ -211,7 +211,7 @@ class DumpWorksheet(Worksheet):
                 tag(doc, 'v')
             else:
                 tag(doc, 'v', body = '%s' % cell)
-            
+
             end_tag(doc, 'c')
 
 
@@ -253,4 +253,4 @@ class StyleDumpWriter(StyleWriter):
 
     def _get_style_list(self, workbook):
         return []
-        
+
