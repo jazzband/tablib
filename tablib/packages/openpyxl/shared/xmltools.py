@@ -71,12 +71,30 @@ def start_tag(doc, name, attr=None, body=None, namespace=None):
     """Wrapper to start an xml tag."""
     if attr is None:
         attr = {}
+
+
+    # name = bytes(name, 'utf-8')
+    
+    # if namespace is not None:
+        # namespace = bytes(namespace, 'utf-8')
+
+
     attr_vals = {}
     attr_keys = {}
-    for key, val in attr.iteritems():
+    for key, val in attr.items():
+
+            
+        # if key is not None:
+            # key = bytes(key, 'utf-8')
+            
+        # if val is not None:
+            # val = bytes(val, 'utf-8')
+        
         key_tuple = (namespace, key)
+        
         attr_vals[key_tuple] = val
         attr_keys[key_tuple] = key
+        
     attr2 = AttributesNSImpl(attr_vals, attr_keys)
     doc.startElementNS((namespace, name), name, attr2)
     if body:

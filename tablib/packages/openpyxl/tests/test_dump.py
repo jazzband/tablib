@@ -2,7 +2,7 @@
 # file openpyxl/tests/test_dump.py
 
 # Copyright (c) 2010 openpyxl
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -43,7 +43,7 @@ import shutil
 
 def test_dump_sheet():
 
-    test_file = NamedTemporaryFile(prefix='openpyxl.', suffix='.xlsx', delete=False) 
+    test_file = NamedTemporaryFile(prefix='openpyxl.', suffix='.xlsx', delete=False)
     test_file.close()
     test_filename = test_file.name
 
@@ -105,5 +105,5 @@ def test_table_builder():
 
     table = dict(sb.get_table())
 
-    for key,idx in result.iteritems():
+    for key,idx in result.items():
         eq_(idx, table[key])

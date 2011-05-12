@@ -44,13 +44,13 @@ class StyleWriter(object):
                 crc[hash(style)] = style
         self.style_table = dict([(style, i+1) \
             for i, style in enumerate(crc.values())])
-        sorted_styles = sorted(self.style_table.iteritems(), \
+        sorted_styles = sorted(self.style_table.items(), \
             key = lambda pair:pair[1])
         return [s[0] for s in sorted_styles]
 
     def get_style_by_hash(self):
         return dict([(hash(style), id) \
-            for style, id in self.style_table.iteritems()])
+            for style, id in self.style_table.items()])
 
     def write_table(self):
         number_format_table = self._write_number_formats()

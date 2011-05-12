@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<worksheet xml:space="preserve" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+    <sheetPr>
+        <outlinePr summaryBelow="1" summaryRight="1" />
+    </sheetPr>
+    <dimension ref="A1:F1" />
+    <sheetViews>
+        <sheetView workbookViewId="0">
+            <selection activeCell="A1" sqref="A1" />
+        </sheetView>
+    </sheetViews>
+    <sheetFormatPr defaultRowHeight="15" />
+    <cols>
+        <col collapsed="0" max="6" min="6" width="9.10" />
+    </cols>
+    <sheetData>
+        <row r="1" spans="1:6" customHeight="1" ht="30">
+            <c r="F1" t="n">
+                <v>10</v>
+            </c>
+        </row>
+    </sheetData>
+</worksheet>

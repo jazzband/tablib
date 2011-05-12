@@ -42,6 +42,7 @@ from .shared.date_time import SharedDate
 from .shared.exc import CellCoordinatesException, \
         ColumnStringIndexException, DataTypeException
 from .style import NumberFormat
+from ...compat import basestring, unicode
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
@@ -177,7 +178,7 @@ class Cell(object):
         self.xf_index = 0
 
     def __repr__(self):
-        return u"<Cell %s.%s>" % (self.parent.title, self.get_coordinate())
+        return "<Cell %s.%s>" % (self.parent.title, self.get_coordinate())
 
     def check_string(self, value):
         """Check string coding, length, and line break character"""

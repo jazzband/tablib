@@ -30,8 +30,9 @@ try:
     from xml.etree.cElementTree import iterparse
 except ImportError:
     from xml.etree.ElementTree import iterparse
-from itertools import ifilter
-from StringIO import StringIO
+
+from ....compat import ifilter
+from ....compat import BytesIO as StringIO
 
 # package imports
 from ..cell import Cell, coordinate_from_string
@@ -67,7 +68,8 @@ def read_dimension(xml_source):
 
     return None
 
-def filter_cells((event, element)):
+def filter_cells(x):
+    (event, element) = x
 
     return element.tag == '{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c'
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="3" uniqueCount="3">
+    <si>
+        <t>Welcome</t>
+    </si>
+    <si>
+        <r>
+            <t xml:space="preserve">to the best </t>
+        </r><r>
+            <rPr>
+                <b/>
+                <sz val="11"/>
+                <color theme="1"/>
+                <rFont val="Calibri"/>
+                <family val="2"/>
+                <scheme val="minor"/>
+            </rPr><t xml:space="preserve">shop in </t>
+        </r><r>
+            <rPr>
+                <b/>
+                <u/>
+                <sz val="11"/>
+                <color theme="1"/>
+                <rFont val="Calibri"/>
+                <family val="2"/>
+                <scheme val="minor"/>
+            </rPr><t>town</t>
+        </r>
+    </si>
+    <si>
+        <t xml:space="preserve">     let's play </t>
+    </si>
+</sst>

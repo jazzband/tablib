@@ -26,7 +26,7 @@
 """Write worksheets to xml representations."""
 
 # Python stdlib imports
-from StringIO import StringIO  # cStringIO doesn't handle unicode
+from ....compat import BytesIO as StringIO  # cStringIO doesn't handle unicode
 
 # package imports
 from ..cell import coordinate_from_string, column_index_from_string
@@ -107,7 +107,7 @@ def write_worksheet_cols(doc, worksheet):
     if worksheet.column_dimensions:
         start_tag(doc, 'cols')
         for column_string, columndimension in \
-                worksheet.column_dimensions.iteritems():
+                worksheet.column_dimensions.items():
             col_index = column_index_from_string(column_string)
             col_def = {}
             col_def['collapsed'] = str(columndimension.style_index)

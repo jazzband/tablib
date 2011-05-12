@@ -66,8 +66,8 @@ def load_workbook(filename, use_iterators = False):
 
     try:
         archive = ZipFile(filename, 'r', ZIP_DEFLATED)
-    except (BadZipfile, RuntimeError, IOError, ValueError), e:
-        raise InvalidFileException(unicode(e))
+    except (BadZipfile, RuntimeError, IOError, ValueError):
+        raise InvalidFileException()
     wb = Workbook()
 
     if use_iterators:
@@ -75,10 +75,8 @@ def load_workbook(filename, use_iterators = False):
 
     try:
         _load_workbook(wb, archive, filename, use_iterators)
-    except KeyError, e:
-        raise InvalidFileException(unicode(e))
-    except Exception, e:
-        raise e
+    except KeyError:
+        raise InvalidFileException()
     finally:
         archive.close()
     return wb

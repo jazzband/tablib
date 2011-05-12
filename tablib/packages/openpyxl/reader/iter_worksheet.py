@@ -27,11 +27,12 @@
 *Still very raw*
 """
 
-from StringIO import StringIO
+from ....compat import BytesIO as StringIO
 import warnings
 import operator
 from functools import partial
-from itertools import ifilter, groupby
+from ....compat import ifilter, xrange
+from itertools import groupby
 from ..worksheet import Worksheet
 from ..cell import coordinate_from_string, get_column_letter, Cell
 from ..reader.excel import get_sheet_ids
@@ -70,7 +71,7 @@ try:
     BaseRawCell = namedtuple('RawCell', RAW_ATTRIBUTES)
 except ImportError:
 
-    warnings.warn("""Unable to import 'namedtuple' module, this may cause  memory issues when using optimized reader. Please upgrade your Python installation to 2.6+""")
+    # warnings.warn("""Unable to import 'namedtuple' module, this may cause  memory issues when using optimized reader. Please upgrade your Python installation to 2.6+""")
 
     class BaseRawCell(object):
 

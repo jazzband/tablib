@@ -229,12 +229,12 @@ class Worksheet(object):
         self._freeze_panes = None
 
     def __repr__(self):
-        return u'<Worksheet "%s">' % self.title
+        return '<Worksheet "%s">' % self.title
 
     def garbage_collect(self):
         """Delete cells that are not storing a value."""
         delete_list = [coordinate for coordinate, cell in \
-            self._cells.iteritems() if (cell.value in ('', None) and \
+            self._cells.items() if (cell.value in ('', None) and \
             hash(cell.style) == _DEFAULTS_STYLE_HASH)]
         for coordinate in delete_list:
             del self._cells[coordinate]
@@ -502,7 +502,7 @@ class Worksheet(object):
 
         elif isinstance(list_or_dict, dict):
 
-            for col_idx, content in list_or_dict.iteritems():
+            for col_idx, content in list_or_dict.items():
 
                 if isinstance(col_idx, basestring):
                     col_idx = column_index_from_string(col_idx) - 1

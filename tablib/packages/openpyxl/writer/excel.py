@@ -27,7 +27,7 @@
 
 # Python stdlib imports
 from zipfile import ZipFile, ZIP_DEFLATED
-from StringIO import StringIO
+from ....compat import BytesIO as StringIO
 
 # package imports
 from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
@@ -74,9 +74,14 @@ class ExcelWriter(object):
         for ws in self.workbook.worksheets:
             ws.garbage_collect()
         shared_string_table = create_string_table(self.workbook)
+
+            
         archive.writestr(ARC_SHARED_STRINGS,
                 write_string_table(shared_string_table))
 
+        for k, v in shared_string_table.items():
+            shared_string_table[k] = bytes(v)
+            
         return shared_string_table
 
     def _write_worksheets(self, archive, shared_string_table, style_writer):

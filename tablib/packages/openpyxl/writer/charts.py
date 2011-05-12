@@ -242,7 +242,7 @@ class ChartWriter(object):
 
         settings = SubElement(root, 'c:printSettings')
         SubElement(settings, 'c:headerFooter')
-        margins = dict([(k, str(v)) for (k,v) in self.chart.print_margins.iteritems()])
+        margins = dict([(k, str(v)) for (k,v) in self.chart.print_margins.items()])
         SubElement(settings, 'c:pageMargins', margins)
         SubElement(settings, 'c:pageSetup')
 
