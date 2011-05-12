@@ -222,6 +222,7 @@ class TablibTestCase(unittest.TestCase):
         data.csv
         data.tsv
         data.xls
+        data.html
 
 
     def test_book_export_no_exceptions(self):
@@ -490,26 +491,26 @@ class TablibTestCase(unittest.TestCase):
 
     def test_formatters(self):
         """Confirm formatters are being triggered."""
-        
+
         def _formatter(cell_value):
             return str(cell_value).upper()
-            
+
         self.founders.add_formatter('last_name', _formatter)
-        
+
         for name in [r['last_name'] for r in self.founders.dict]:
             self.assertTrue(name.isupper())
 
     def test_unicode_csv(self):
         """Check if unicode in csv export doesn't raise."""
-        
+
         data = tablib.Dataset()
-        
+
         if sys.version_info[0] > 2:
             data.append(['\xfc', '\xfd'])
         else:
             exec("data.append([u'\xfc', u'\xfd'])")
-            
-        
+
+
         data.csv
 
 if __name__ == '__main__':
