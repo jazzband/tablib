@@ -222,6 +222,7 @@ class TablibTestCase(unittest.TestCase):
         data.csv
         data.tsv
         data.xls
+        data.xlsx
         data.html
 
 
@@ -234,6 +235,7 @@ class TablibTestCase(unittest.TestCase):
         book.json
         book.yaml
         book.xls
+        book.xlsx
 
 
     def test_json_import_set(self):
