@@ -1,10 +1,10 @@
 History
 -------
 
-0.9.6
-+++++
+0.9.6 (2011-05-12)
+++++++++++++++++++
 
-* `seperators` renamed to `separators`
+* ``seperators`` renamed to ``separators``
 * Full unicode CSV support
 
 
