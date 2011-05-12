@@ -390,6 +390,10 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def xlsx():
+        pass
+
 
     @property
     def csv():
