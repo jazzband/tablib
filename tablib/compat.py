@@ -25,9 +25,23 @@ if is_py3:
     import tablib.packages.xlwt3 as xlwt
     from tablib.packages import markup3 as markup
 
+    # py3 mappings
+    ifilter = filter
+    xrange = range
+    unicode = str
+    bytes = bytes
+    basestring = str
+
 else:
     from cStringIO import StringIO as BytesIO
     import tablib.packages.xlwt as xlwt
     from tablib.packages import markup
+    from itertools import ifilter
+
+    # py2 mappings
+    xrange = xrange
+    unicode = unicode
+    bytes = str
+    basestring = basestring
 
 
