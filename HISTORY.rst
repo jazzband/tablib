@@ -5,6 +5,7 @@ History
 +++++
 
 * Pickling Bugfix
+* Compat Module
 
 
 0.9.6 (2011-05-12)
