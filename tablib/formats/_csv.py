@@ -5,12 +5,17 @@
 
 import sys
 if sys.version_info[0] > 2:
+    is_py3 = True
+
     from io import StringIO
+    import csv
 else:
+    is_py3 = False
     from cStringIO import StringIO
+    import tablib.packages.unicodecsv as csv
 
 
-import csv
+
 import os
 
 import tablib
@@ -20,11 +25,18 @@ title = 'csv'
 extentions = ('csv',)
 
 
+DEFAULT_ENCODING = 'utf-8'
+
+
 
 def export_set(dataset):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
-    _csv = csv.writer(stream)
+
+    if is_py3:
+        _csv = csv.writer(stream)
+    else:
+        _csv = csv.writer(stream, encoding=DEFAULT_ENCODING)
 
     for row in dataset._package(dicts=False):
         _csv.writerow(row)
@@ -37,7 +49,10 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    rows = csv.reader(in_stream.splitlines())
+    if is_py3:
+        rows = csv.reader(in_stream.splitlines())
+    else:
+        rows = csv.reader(in_stream.splitlines(), encoding=DEFAULT_ENCODING)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):
