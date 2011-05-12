@@ -15,10 +15,8 @@ from operator import itemgetter
 from tablib import formats
 import collections
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from tablib.packages.ordereddict import OrderedDict
+
+from tablib.compat import OrderedDict
 
 
 __title__ = 'tablib'
