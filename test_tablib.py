@@ -499,6 +499,18 @@ class TablibTestCase(unittest.TestCase):
         for name in [r['last_name'] for r in self.founders.dict]:
             self.assertTrue(name.isupper())
 
+    def test_unicode_csv(self):
+        """Check if unicode in csv export doesn't raise."""
+        
+        data = tablib.Dataset()
+        
+        if sys.version_info[0] > 2:
+            data.append(['\xfc', '\xfd'])
+        else:
+            exec("data.append([u'\xfc', u'\xfd'])")
+            
+        
+        data.csv
 
 if __name__ == '__main__':
     unittest.main()

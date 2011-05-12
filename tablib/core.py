@@ -94,7 +94,7 @@ class Row(object):
             return (tag in self.tags)
         else:
             return bool(len(set(tag) & set(self.tags)))
-                
+
 
 
 
@@ -138,7 +138,7 @@ class Dataset(object):
 
         # ('title', index) tuples
         self._separators = []
-        
+
         # (column, callback) tuples
         self._formatters = []
 
@@ -242,12 +242,12 @@ class Dataset(object):
         """Packages Dataset into lists of dictionaries for transmission."""
 
         _data = list(self._data)
-        
+
         # Execute formatters
         if self._formatters:
             for row_i, row in enumerate(_data):
                 for col, callback in self._formatters:
-                    try:                        
+                    try:
                         if col is None:
                             for j, c in enumerate(row):
                                 _data[row_i][j] = callback(c)
@@ -255,7 +255,7 @@ class Dataset(object):
                             _data[row_i][col] = callback(row[col])
                     except IndexError:
                         raise InvalidDatasetIndex
-                        
+
 
         if self.headers:
             if dicts:
@@ -331,8 +331,8 @@ class Dataset(object):
     headers = property(_get_headers, _set_headers)
 
     def _get_dict(self):
-        """A native Python representation of the :class:`Dataset` object. If headers have 
-        been set, a list of Python dictionaries will be returned. If no headers have been set, 
+        """A native Python representation of the :class:`Dataset` object. If headers have
+        been set, a list of Python dictionaries will be returned. If no headers have been set,
         a list of tuples (rows) will be returned instead.
 
         A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
@@ -379,7 +379,7 @@ class Dataset(object):
 
     @property
     def xls():
-        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`seperators`. Cannot be set.
+        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
 
@@ -480,7 +480,7 @@ class Dataset(object):
 
 
     def append_separator(self, text='-'):
-        """Adds a :ref:`seperator <seperators>` to the :class:`Dataset`."""
+        """Adds a :ref:`separator <separators>` to the :class:`Dataset`."""
 
         # change offsets if headers are or aren't defined
         if not self.headers:
@@ -493,26 +493,26 @@ class Dataset(object):
 
     def add_formatter(self, col, handler):
         """Adds a :ref:`formatter` to the :class:`Dataset`.
-        
+
         .. versionadded:: 0.9.5
            :param col: column to. Accepts index int or header str.
-           :param handler: reference to callback function to execute 
+           :param handler: reference to callback function to execute
            against each cell value.
         """
-        
+
         if isinstance(col, str):
             if col in self.headers:
                 col = self.headers.index(col) # get 'key' index from each data
             else:
                 raise KeyError
-        
+
         if not col > self.width:
             self._formatters.append((col, handler))
         else:
             raise InvalidDatasetIndex
-        
+
         return True
-        
+
 
     def insert(self, index, row=None, col=None, header=None, tags=list()):
         """Inserts a row or column to the :class:`Dataset` at the given index.
@@ -584,10 +584,10 @@ class Dataset(object):
     def sort(self, col, reverse=False):
         """Sort a :class:`Dataset` by a specific column, given string (for
         header) or integer (for column index). The order can be reversed by
-        setting ``reverse`` to ``True``. 
+        setting ``reverse`` to ``True``.
         Returns a new :class:`Dataset` instance where columns have been
         sorted."""
-        
+
         if isinstance(col, str):
 
             if not self.headers:
@@ -805,7 +805,7 @@ class InvalidDatasetType(Exception):
 
 class InvalidDimensions(Exception):
     "Invalid size"
-    
+
 class InvalidDatasetIndex(Exception):
     "Outside of Dataset size"
 

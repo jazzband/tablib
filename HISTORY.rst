@@ -1,6 +1,13 @@
 History
 -------
 
+0.9.6 (2011-05-12)
+++++++++++++++++++
+
+* ``seperators`` renamed to ``separators``
+* Full unicode CSV support
+
+
 0.9.5 (2011-03-24)
 ++++++++++++++++++
 
@@ -70,7 +77,7 @@ History
 0.8.3 (2010-10-04)
 ++++++++++++++++++
 
-* Ability to append new column passing a callable 
+* Ability to append new column passing a callable
   as the value that will be applied to every row.
 
 
@@ -98,7 +105,7 @@ History
 0.7.1 (2010-09-20)
 ++++++++++++++++++
 
-* Reverting methods back to properties. 
+* Reverting methods back to properties.
 * Windows bug compensated in documentation.
 
 
