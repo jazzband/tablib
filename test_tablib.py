@@ -503,7 +503,13 @@ class TablibTestCase(unittest.TestCase):
         """Check if unicode in csv export doesn't raise."""
         
         data = tablib.Dataset()
-        data.append([u'\xfc', u'\xfd'])
+        
+        if sys.version_info[0] > 2:
+            data.append(['\xfc', '\xfd'])
+        else:
+            exec("data.append([u'\xfc', u'\xfd'])")
+            
+        
         data.csv
 
 
