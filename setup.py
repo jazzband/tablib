@@ -22,7 +22,7 @@ if sys.version_info[:2] < (2,6):
 
 setup(
     name='tablib',
-    version='0.9.6',
+    version='0.9.7',
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=open('README.rst').read() + '\n\n' +
                      open('HISTORY.rst').read(),
