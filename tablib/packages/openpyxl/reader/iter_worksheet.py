@@ -41,7 +41,12 @@ from ..shared.date_time import SharedDate
 from ..reader.worksheet import read_dimension
 from ..shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
     MAX_ROW, MIN_ROW, ARC_SHARED_STRINGS, ARC_APP, ARC_STYLE)
-from xml.etree.cElementTree import iterparse
+try:
+    from xml.etree.cElementTree import iterparse
+except ImportError:
+    from xml.etree.ElementTree import iterparse
+
+
 from zipfile import ZipFile
 from .. import cell
 import re
