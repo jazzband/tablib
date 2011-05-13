@@ -222,8 +222,11 @@ class TablibTestCase(unittest.TestCase):
         data.csv
         data.tsv
         data.xls
-        data.xlsx
+<<<<<<< HEAD
         data.html
+=======
+        data.xlsx
+>>>>>>> 5350355fbe0aefe053d40fda03c0688a7b7eae3d
 
 
     def test_book_export_no_exceptions(self):

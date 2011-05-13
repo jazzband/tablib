@@ -13,17 +13,14 @@ from copy import copy
 from operator import itemgetter
 
 from tablib import formats
-import collections
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from tablib.packages.ordereddict import OrderedDict
+
+from tablib.compat import OrderedDict
 
 
 __title__ = 'tablib'
-__version__ = '0.9.4'
-__build__ = 0x000904
+__version__ = '0.9.7'
+__build__ = 0x000907
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
@@ -278,7 +275,8 @@ class Dataset(object):
         else:
             header = []
 
-        if len(col) == 1 and isinstance(col[0], collections.Callable):
+        if len(col) == 1 and hasattr(col[0], '__call__'):
+
             col = list(map(col[0], self._data))
         col = tuple(header + col)
 
@@ -387,6 +385,19 @@ class Dataset(object):
 
                 with open('output.xls', 'wb') as f:
                     f.write(data.xls)'
+        """
+        pass
+
+    @property
+    def xlsx():
+        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+         .. admonition:: Binary Warning
+
+             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+
+                with open('output.xlsx', 'wb') as f:
+                    f.write(data.xlsx)'
         """
         pass
 
@@ -549,7 +560,7 @@ class Dataset(object):
             col = list(col)
 
             # Callable Columns...
-            if len(col) == 1 and isinstance(col[0], collections.Callable):
+            if len(col) == 1 and hasattr(col[0], '__call__'):
                 col = list(map(col[0], self._data))
 
             col = self._clean_col(col)
@@ -795,7 +806,7 @@ def import_set(stream):
         format.import_set(data, stream)
         return data
 
-    except AttributeError as e:
+    except AttributeError:
         return None
 
 

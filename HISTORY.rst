@@ -1,6 +1,14 @@
 History
 -------
 
+0.9.7 (2011-05-12)
+++++++++++++++++++
+
+* Full XLSX Support!
+* Pickling Bugfix
+* Compat Module
+
+
 0.9.6 (2011-05-12)
 ++++++++++++++++++
 

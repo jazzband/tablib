@@ -48,7 +48,7 @@ copyright = u'2011, Kenneth Reitz. Styles (modified) &copy; Armin Ronacher'
 # built documents.
 #
 # The short X.Y version.
-version = '0.9.6'
+version = '0.9.7'
 # The full version, including alpha/beta/rc tags.
 release = version
 
