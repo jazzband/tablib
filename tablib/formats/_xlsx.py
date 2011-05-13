@@ -7,14 +7,18 @@ import sys
 
 
 if sys.version_info[0] > 2:
-    from io import BytesIO    
+    from io import BytesIO
 else:
     from cStringIO import StringIO as BytesIO
 
-from tablib.packages.openpyxl.workbook import Workbook
-from tablib.packages.openpyxl.writer.excel import ExcelWriter
+from tablib.compat import openpyxl
 
-from tablib.packages.openpyxl.cell import get_column_letter    
+Workbook = openpyxl.workbook.Workbook
+ExcelWriter = openpyxl.writer.excel.ExcelWriter
+get_column_letter = openpyxl.cell.get_column_letter
+
+from tablib.compat import unicode
+
 
 title = 'xlsx'
 extentions = ('xlsx',)
@@ -65,8 +69,9 @@ def dset_sheet(dataset, ws):
 
             # bold headers
             if (row_number == 1) and dataset.headers:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
+                # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                    # '%s' % col, errors='ignore')
+                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
                 ws.freeze_panes = '%s%s' % (col_idx, row_number)
@@ -91,7 +96,6 @@ def dset_sheet(dataset, ws):
                         ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                 except TypeError:
-                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                        '%s' % col, errors='ignore')
+                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
 
 

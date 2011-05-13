@@ -24,6 +24,7 @@ if is_py3:
     from io import BytesIO
     import tablib.packages.xlwt3 as xlwt
     from tablib.packages import markup3 as markup
+    from tablib.packages import openpyxl3 as openpyxl
 
     # py3 mappings
     ifilter = filter
@@ -37,6 +38,7 @@ else:
     import tablib.packages.xlwt as xlwt
     from tablib.packages import markup
     from itertools import ifilter
+    from tablib.packages import openpyxl
 
     # py2 mappings
     xrange = xrange
