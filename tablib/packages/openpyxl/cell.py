@@ -42,7 +42,6 @@ from .shared.date_time import SharedDate
 from .shared.exc import CellCoordinatesException, \
         ColumnStringIndexException, DataTypeException
 from .style import NumberFormat
-from ...compat import basestring, unicode
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')

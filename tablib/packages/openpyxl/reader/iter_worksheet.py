@@ -31,8 +31,7 @@ from ....compat import BytesIO as StringIO
 import warnings
 import operator
 from functools import partial
-from ....compat import ifilter, xrange
-from itertools import groupby
+from itertools import groupby, ifilter
 from ..worksheet import Worksheet
 from ..cell import coordinate_from_string, get_column_letter, Cell
 from ..reader.excel import get_sheet_ids
