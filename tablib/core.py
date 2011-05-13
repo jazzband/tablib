@@ -377,7 +377,11 @@ class Dataset(object):
 
     @property
     def xls():
-        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """A Legacy Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+        .. note::
+
+            XLS files are limited to a maximum of 65,000 rows. Use :class:`Dataset.xlsx` to avoid this limitation.
 
          .. admonition:: Binary Warning
 
@@ -390,7 +394,7 @@ class Dataset(object):
 
     @property
     def xlsx():
-        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """An Excel '07+ Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
 
