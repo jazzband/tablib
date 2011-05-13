@@ -145,9 +145,8 @@ Roadmap
 -------
 
 v1.0.0:
-   - Add hooks system
+   - Hooks system
    - Tablib.ext namespace
-   - Better 2.x/3.x handling (currently internal codebase fork)
    - Width detection on XLS out
 
 
