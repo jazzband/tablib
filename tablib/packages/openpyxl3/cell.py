@@ -335,7 +335,7 @@ class Cell(object):
 
     @property
     def style(self):
-        """Returns the :class:`openpyxl.style.Style` object for this cell"""
+        """Returns the :class:`.style.Style` object for this cell"""
         return self.parent.get_style(self.get_coordinate())
 
     @property
@@ -367,7 +367,7 @@ class Cell(object):
         :param column: number of columns to offset
         :type column: int
 
-        :rtype: :class:`openpyxl.cell.Cell`
+        :rtype: :class:`.cell.Cell`
         """
         offset_column = get_column_letter(column_index_from_string(
                 column = self.column) + column)

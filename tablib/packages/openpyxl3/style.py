@@ -340,7 +340,7 @@ class NumberFormat(HashableObject):
         """Check if a format code is a standard format code."""
         if format is None:
             format = self._format_code
-        return format in self._BUILTIN_FORMATS.values()
+        return format in list(self._BUILTIN_FORMATS.values())
 
     def builtin_format_id(self, format):
         """Return the id of a standard style."""

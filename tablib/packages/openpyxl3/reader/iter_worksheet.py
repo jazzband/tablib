@@ -27,18 +27,18 @@
 *Still very raw*
 """
 
-from io import BytesIO as StringIO
+from io import StringIO
 import warnings
 import operator
 from functools import partial
 from itertools import groupby
 from ..worksheet import Worksheet
 from ..cell import coordinate_from_string, get_column_letter, Cell
-from ..reader.excel import get_sheet_ids
-from ..reader.strings import read_string_table
-from ..reader.style import read_style_table, NumberFormat
+from .excel import get_sheet_ids
+from .strings import read_string_table
+from .style import read_style_table, NumberFormat
 from ..shared.date_time import SharedDate
-from ..reader.worksheet import read_dimension
+from .worksheet import read_dimension
 from ..shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
     MAX_ROW, MIN_ROW, ARC_SHARED_STRINGS, ARC_APP, ARC_STYLE)
 from xml.etree.cElementTree import iterparse
@@ -88,7 +88,7 @@ except ImportError:
 
 
 class RawCell(BaseRawCell):
-    """Optimized version of the :class:`openpyxl.cell.Cell`, using named tuples.
+    """Optimized version of the :class:`..cell.Cell`, using named tuples.
 
     Useful attributes are:
 

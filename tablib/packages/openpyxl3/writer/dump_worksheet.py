@@ -66,7 +66,7 @@ class DumpWorksheet(Worksheet):
     """
     .. warning::
 
-        You shouldn't initialize this yourself, use :class:`openpyxl.workbook.Workbook` constructor instead, 
+        You shouldn't initialize this yourself, use :class:`..workbook.Workbook` constructor instead, 
         with `optimized_write = True`.
     """
 
@@ -77,9 +77,9 @@ class DumpWorksheet(Worksheet):
         self._max_col = 0
         self._max_row = 0
         self._parent = parent_workbook
-        self._fileobj_header = NamedTemporaryFile(mode='r+', prefix='openpyxl.', suffix='.header', delete=False)
-        self._fileobj_content = NamedTemporaryFile(mode='r+', prefix='openpyxl.', suffix='.content', delete=False)
-        self._fileobj = NamedTemporaryFile(mode='w', prefix='openpyxl.', delete=False)
+        self._fileobj_header = NamedTemporaryFile(mode='r+', prefix='..', suffix='.header', delete=False)
+        self._fileobj_content = NamedTemporaryFile(mode='r+', prefix='..', suffix='.content', delete=False)
+        self._fileobj = NamedTemporaryFile(mode='w', prefix='..', delete=False)
         self.doc = XMLGenerator(self._fileobj_content, 'utf-8')
         self.header = XMLGenerator(self._fileobj_header, 'utf-8')
         self.title = 'Sheet'

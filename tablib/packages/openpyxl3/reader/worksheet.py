@@ -30,7 +30,8 @@ try:
     from xml.etree.cElementTree import iterparse
 except ImportError:
     from xml.etree.ElementTree import iterparse
-from io import BytesIO as StringIO
+
+from io import StringIO
 
 # package imports
 from ..cell import Cell, coordinate_from_string
@@ -54,8 +55,12 @@ def read_dimension(xml_source):
 
         if element.tag == '{http://schemas.openxmlformats.org/spreadsheetml/2006/main}dimension':
             ref = element.get('ref')
+            
+            if ':' in ref:
+                min_range, max_range = ref.split(':')
+            else:
+                min_range = max_range = ref
 
-            min_range, max_range = ref.split(':')
             min_col, min_row = coordinate_from_string(min_range)
             max_col, max_row = coordinate_from_string(max_range)
 
@@ -66,9 +71,9 @@ def read_dimension(xml_source):
 
     return None
 
-def filter_cells(pair):
-    (event, element) = pair
+def filter_cells(xxx_todo_changeme):
 
+    (event, element) = xxx_todo_changeme
     return element.tag == '{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c'
 
 def fast_parse(ws, xml_source, string_table, style_table):

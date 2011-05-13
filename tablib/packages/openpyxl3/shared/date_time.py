@@ -26,7 +26,7 @@
 """Manage Excel date weirdness."""
 
 # Python stdlib imports
-from __future__ import division
+
 from math import floor
 import calendar
 import datetime
@@ -48,7 +48,7 @@ def datetime_to_W3CDTF(dt):
 def W3CDTF_to_datetime(formatted_string):
     """Convert from a timestamp string to a datetime object."""
     match = re.match(RE_W3CDTF,formatted_string)
-    digits = map(int, match.groups()[:6])
+    digits = list(map(int, match.groups()[:6]))
     return datetime.datetime(*digits)
 
 

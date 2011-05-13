@@ -24,7 +24,7 @@
 # @author: Eric Gazoni
 
 # Python stdlib imports
-from __future__ import with_statement
+
 import os.path
 
 # package imports

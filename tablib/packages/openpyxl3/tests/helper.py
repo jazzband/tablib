@@ -24,12 +24,12 @@
 # @author: Eric Gazoni
 
 # Python stdlib imports
-from __future__ import with_statement
+
 import os
 import os.path
 import shutil
 import difflib
-from io import BytesIO as StringIO
+from io import StringIO
 from pprint import pprint
 from tempfile import gettempdir
 

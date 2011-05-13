@@ -24,7 +24,7 @@
 # @author: Eric Gazoni
 
 # Python stdlib imports
-from __future__ import with_statement
+
 from datetime import datetime, date
 
 # 3rd party imports
@@ -57,7 +57,7 @@ class TestNumberFormat(object):
 
         date_pairs= (
                         (40167, datetime(2009, 12, 20)), 
-                        (21980, datetime(1960, 03, 05)), 
+                        (21980, datetime(1960, 0o3, 0o5)), 
                     )
 
         for count, dt in date_pairs:
@@ -128,7 +128,7 @@ class TestNumberFormat(object):
         def check_bad_date(year, month, day):
             assert_raises(ValueError, self.sd.to_julian, year, month, day)
 
-        bad_dates = ((1776, 07, 04), (1899, 12, 31), )
+        bad_dates = ((1776, 0o7, 0o4), (1899, 12, 31), )
         for year, month, day in bad_dates:
             yield check_bad_date, year, month, day
 

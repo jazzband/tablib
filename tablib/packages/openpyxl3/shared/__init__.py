@@ -23,11 +23,11 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: Eric Gazoni
 
-"""Imports for the openpyxl.shared namespace."""
+"""Imports for the . namespace."""
 
 # package imports
-from ..shared import date_time
-from ..shared import exc
-from ..shared import ooxml
-from ..shared import password_hasher
-from ..shared import xmltools
+from . import date_time
+from . import exc
+from . import ooxml
+from . import password_hasher
+from . import xmltools

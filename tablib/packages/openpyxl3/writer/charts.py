@@ -27,6 +27,7 @@ THE SOFTWARE.
 from ..shared.xmltools import Element, SubElement, get_document_content
 from ..chart import Chart, ErrorBar
 
+
 class ChartWriter(object):
     
     def __init__(self, chart):

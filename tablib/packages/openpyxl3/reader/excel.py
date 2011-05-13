@@ -33,12 +33,12 @@ from ..shared.exc import OpenModeError, InvalidFileException
 from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CORE, ARC_APP, \
         ARC_WORKBOOK, PACKAGE_WORKSHEETS, ARC_STYLE
 from ..workbook import Workbook
-from ..reader.strings import read_string_table
-from ..reader.style import read_style_table
-from ..reader.workbook import read_sheets_titles, read_named_ranges, \
+from .strings import read_string_table
+from .style import read_style_table
+from .workbook import read_sheets_titles, read_named_ranges, \
         read_properties_core, get_sheet_ids
-from ..reader.worksheet import read_worksheet
-from ..reader.iter_worksheet import unpack_worksheet
+from .worksheet import read_worksheet
+from .iter_worksheet import unpack_worksheet
 
 def load_workbook(filename, use_iterators = False):
     """Open the given filename and return the workbook
@@ -49,11 +49,11 @@ def load_workbook(filename, use_iterators = False):
     :param use_iterators: use lazy load for cells
     :type use_iterators: bool
 
-    :rtype: :class:`openpyxl.workbook.Workbook`
+    :rtype: :class:`..workbook.Workbook`
     
     .. note::
         
-        When using lazy load, all worksheets will be :class:`openpyxl.reader.iter_worksheet.IterableWorksheet`
+        When using lazy load, all worksheets will be :class:`.iter_worksheet.IterableWorksheet`
         and the returned workbook will be read-only. 
 
     """

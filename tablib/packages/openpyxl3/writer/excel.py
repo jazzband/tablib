@@ -27,22 +27,22 @@
 
 # Python stdlib imports
 from zipfile import ZipFile, ZIP_DEFLATED
-from io import BytesIO as StringIO
+from io import StringIO
 
 # package imports
 from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
         ARC_ROOT_RELS, ARC_WORKBOOK_RELS, ARC_APP, ARC_CORE, ARC_THEME, \
         ARC_STYLE, ARC_WORKBOOK, \
         PACKAGE_WORKSHEETS, PACKAGE_DRAWINGS, PACKAGE_CHARTS
-from ..writer.strings import create_string_table, write_string_table
-from ..writer.workbook import write_content_types, write_root_rels, \
+from .strings import create_string_table, write_string_table
+from .workbook import write_content_types, write_root_rels, \
         write_workbook_rels, write_properties_app, write_properties_core, \
         write_workbook
-from ..writer.theme import write_theme
-from ..writer.styles import StyleWriter
-from ..writer.drawings import DrawingWriter, ShapeWriter
-from ..writer.charts import ChartWriter
-from ..writer.worksheet import write_worksheet, write_worksheet_rels
+from .theme import write_theme
+from .styles import StyleWriter
+from .drawings import DrawingWriter, ShapeWriter
+from .charts import ChartWriter
+from .worksheet import write_worksheet, write_worksheet_rels
 
 
 class ExcelWriter(object):

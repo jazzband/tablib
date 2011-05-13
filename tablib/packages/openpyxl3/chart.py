@@ -238,13 +238,13 @@ class Chart(object):
     def get_y_chars(self):
         """ estimate nb of chars for y axis """
         
-        _max = max([max([x for x in s.values._get_cache() if x is not None]) for s in self._series])
+        _max = max([max(s.values._get_cache()) for s in self._series])
         return len(str(int(_max)))
 
     def _compute_min_max(self):
         """ compute y axis limits and units """
 
-        maxi = max([max([x for x in s.values._get_cache() if x is not None]) for s in self._series])
+        maxi = max([max(s.values._get_cache()) for s in self._series])
 
         mul = None
         if maxi < 1:
@@ -276,7 +276,7 @@ class Chart(object):
     def _compute_xmin_xmax(self):
         """ compute x axis limits and units """
 
-        maxi = max([max([x for x in s.xvalues._get_cache() if x is not None]) for s in self._series])
+        maxi = max([max(s.xvalues._get_cache()) for s in self._series])
 
         mul = None
         if maxi < 1:

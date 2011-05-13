@@ -134,7 +134,7 @@ class TestCellValueTypes():
         def check_error():
             eq_(self.cell.TYPE_ERROR, self.cell.data_type)
 
-        for error_string in self.cell.ERROR_CODES.keys():
+        for error_string in list(self.cell.ERROR_CODES.keys()):
             self.cell.value = error_string
             yield check_error
 

@@ -187,7 +187,7 @@ class Worksheet(object):
     """Represents a worksheet.
 
     Do not create worksheets yourself,
-    use :func:`openpyxl.workbook.Workbook.create_sheet` instead
+    use :func:`.workbook.Workbook.create_sheet` instead
 
     """
     BREAK_NONE = 0
@@ -241,7 +241,7 @@ class Worksheet(object):
 
     def get_cell_collection(self):
         """Return an unordered list of the cells in this worksheet."""
-        return self._cells.values()
+        return list(self._cells.values())
 
     def _set_title(self, value):
         """Set a sheet title, ensuring it is valid."""
@@ -325,7 +325,7 @@ class Worksheet(object):
 
         :raise: InsufficientCoordinatesException when coordinate or (row and column) are not given
 
-        :rtype: :class:`openpyxl.cell.Cell`
+        :rtype: :class:`.cell.Cell`
 
         """
         if not coordinate:
@@ -390,7 +390,7 @@ class Worksheet(object):
         :param column: number of columns to offset
         :type column: int
 
-        :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
+        :rtype: tuples of tuples of :class:`.cell.Cell`
 
         """
         if ':' in range_string:

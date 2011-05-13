@@ -26,7 +26,7 @@
 """Write worksheets to xml representations."""
 
 # Python stdlib imports
-from io import BytesIO as StringIO  # cStringIO doesn't handle unicode
+from io import StringIO  # cStringIO doesn't handle unicode
 
 # package imports
 from ..cell import coordinate_from_string, column_index_from_string

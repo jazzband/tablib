@@ -26,7 +26,7 @@
 """Write the shared string table."""
 
 # Python stdlib imports
-from io import BytesIO as StringIO
+from io import StringIO
 
 # package imports
 from ..shared.xmltools import start_tag, end_tag, tag, XMLGenerator
@@ -49,7 +49,7 @@ def write_string_table(string_table):
     start_tag(doc, 'sst', {'xmlns':
             'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
             'uniqueCount': '%d' % len(string_table)})
-    strings_to_write = sorted(string_table.items(),
+    strings_to_write = sorted(iter(string_table.items()),
             key=lambda pair: pair[1])
     for key in [pair[0] for pair in strings_to_write]:
         start_tag(doc, 'si')

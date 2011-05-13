@@ -24,8 +24,8 @@
 # @author: Eric Gazoni
 
 # Python stdlib imports
-from __future__ import with_statement
-from io import BytesIO as StringIO
+
+from io import StringIO
 import os.path
 
 # 3rd party imports

@@ -40,11 +40,11 @@ class StyleWriter(object):
     def _get_style_list(self, workbook):
         crc = {}
         for worksheet in workbook.worksheets:
-            for style in worksheet._styles.values():
+            for style in list(worksheet._styles.values()):
                 crc[hash(style)] = style
         self.style_table = dict([(style, i+1) \
-            for i, style in enumerate(crc.values())])
-        sorted_styles = sorted(self.style_table.items(), \
+            for i, style in enumerate(list(crc.values()))])
+        sorted_styles = sorted(iter(self.style_table.items()), \
             key = lambda pair:pair[1])
         return [s[0] for s in sorted_styles]
 
