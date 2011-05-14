@@ -3,7 +3,7 @@
 Introduction
 ============
 
-This part of the documentation covers all the interfaces of Tablib. 
+This part of the documentation covers all the interfaces of Tablib.
 Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/export.
 
 
@@ -26,9 +26,9 @@ All contributions to Tablib should keep these important rules in mind.
 MIT License
 -----------
 
-A large number of open source projects you find today are `GPL Licensed`_. While the GPL has its time and place, it should most certainly not be your go-to license for your next open source project. 
+A large number of open source projects you find today are `GPL Licensed`_. While the GPL has its time and place, it should most certainly not be your go-to license for your next open source project.
 
-A project that is released as GPL cannot be used in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software. 
+A project that is released as GPL cannot be used in any commercial product without the product itself also being offered as open source. The MIT and BSD licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software.
 
 Tablib is released under terms of `The MIT License`_.
 
@@ -67,7 +67,7 @@ THE SOFTWARE.
 Pythons Supported
 -----------------
 
-At this time, the following Python platforms are officially supported: 
+At this time, the following Python platforms are officially supported:
 
 * cPython 2.5
 * cPython 2.6
@@ -75,6 +75,7 @@ At this time, the following Python platforms are officially supported:
 * cPython 3.1
 * cPython 3.2
 * PyPy-c 1.4
+* PyPy-c 1.5
 
 Support for other Pythons will be rolled out soon.
 
