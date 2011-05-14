@@ -22,9 +22,11 @@ except ImportError:
 
 if is_py3:
     from io import BytesIO
+    from io import StringIO
     import tablib.packages.xlwt3 as xlwt
     from tablib.packages import markup3 as markup
     from tablib.packages import openpyxl3 as openpyxl
+    import csv
 
     # py3 mappings
 
@@ -34,9 +36,11 @@ if is_py3:
 
 else:
     from cStringIO import StringIO as BytesIO
+    from cStringIO import StringIO
     import tablib.packages.xlwt as xlwt
     from tablib.packages import markup
     from itertools import ifilter
     from tablib.packages import openpyxl
+    import tablib.packages.unicodecsv as csv
 
-
+    unicode = unicode

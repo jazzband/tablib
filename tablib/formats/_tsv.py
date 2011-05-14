@@ -3,20 +3,11 @@
 """ Tablib - TSV (Tab Separated Values) Support.
 """
 
-import sys
-if sys.version_info[0] > 2:
-    is_py3 = True
-    from io import StringIO
-    import csv
-else:
-    is_py3 = False
-    from cStringIO import StringIO
-    import tablib.packages.unicodecsv as csv
-
-
 import os
 
 import tablib
+from tablib.compat import is_py3, csv, StringIO
+
 
 
 title = 'tsv'
