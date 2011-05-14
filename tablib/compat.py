@@ -27,8 +27,7 @@ if is_py3:
     from tablib.packages import openpyxl3 as openpyxl
 
     # py3 mappings
-    ifilter = filter
-    xrange = range
+
     unicode = str
     bytes = bytes
     basestring = str
@@ -39,11 +38,5 @@ else:
     from tablib.packages import markup
     from itertools import ifilter
     from tablib.packages import openpyxl
-
-    # py2 mappings
-    xrange = xrange
-    unicode = unicode
-    bytes = str
-    basestring = basestring
 
 
