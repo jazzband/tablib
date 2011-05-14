@@ -11,23 +11,26 @@ if sys.version_info[0] > 2:
 else:
     from cStringIO import StringIO as BytesIO
 
-from tablib.compat import openpyxl
-
-from odf.opendocument import OpenDocumentSpreadsheet
-from odf.style import Style, TextProperties, TableColumnProperties, Map
-from odf.number import NumberStyle, CurrencyStyle, CurrencySymbol,  Number,  Text
-from odf.text import P
-from odf.table import Table, TableColumn, TableRow, TableCell
+from tablib.packages.odf.opendocument import OpenDocumentSpreadsheet
+from tablib.packages.odf.style import Style, TextProperties, TableColumnProperties, Map
+from tablib.packages.odf.number import NumberStyle, CurrencyStyle, CurrencySymbol,  Number,  Text
+from tablib.packages.odf.text import P
+from tablib.packages.odf.table import Table, TableColumn, TableRow, TableCell
 
 from tablib.compat import unicode
 
-title = 'odf'
-extentions = ('odf',)
+title = 'ods'
+extentions = ('ods',)
+
+bold = Style(name='Bold', family="text")
+bold.addElement(TextProperties(fontweight="bold"))
 
 def export_set(dataset):
     """Returns ODF representation of Dataset."""
 
     wb = OpenDocumentSpreadsheet()
+    wb.automaticstyles.addElement(bold)
+
     ws = Table(name=dataset.title if dataset.title else 'Tablib Dataset')
     wb.spreadsheet.addElement(ws)
     dset_sheet(dataset, ws)
@@ -41,6 +44,8 @@ def export_book(databook):
     """Returns ODF representation of DataBook."""
 
     wb = OpenDocumentSpreadsheet()
+    wb.automaticstyles.addElement(bold)
+
     for i, dset in enumerate(databook._datasets):
         ws = Table(name=dset.title if dset.title else 'Sheet%s' % (i))
         wb.spreadsheet.addElement(ws)
@@ -62,32 +67,24 @@ def dset_sheet(dataset, ws):
 
     for i, row in enumerate(_package):
         row_number = i + 1
-        odf_row = TableRow()
+        odf_row = TableRow(stylename=bold)
         for j, col in enumerate(row):
             ws.addElement(TableColumn())
-            #col_idx = get_column_letter(j + 1)
 
             # bold headers
             if (row_number == 1) and dataset.headers:
+                odf_row.setAttribute('stylename', bold)
                 ws.addElement(odf_row)
                 cell = TableCell()
-                cell.addElement(P(text=col))
+                cell.addElement(P(stylename="Bold", text=unicode(col, errors='ignore')))
                 odf_row.addElement(cell)
-                #style = ws.get_style('%s%s' % (col_idx, row_number))
-                #style.font.bold = True
-                #ws.freeze_panes = '%s%s' % (col_idx, row_number)
-
 
             # bold separators
             elif len(row) < dataset.width:
                 ws.addElement(odf_row)
                 cell = TableCell()
-                cell.addElement(P(text=col))
+                cell.addElement(P(text=unicode(col, errors='ignore')))
                 odf_row.addElement(cell)
-                #ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                #    '%s' % col, errors='ignore')
-                #style = ws.get_style('%s%s' % (col_idx, row_number))
-                #style.font.bold = True
 
             # wrap the rest
             else:
@@ -95,24 +92,17 @@ def dset_sheet(dataset, ws):
                     if '\n' in col:
                         ws.addElement(odf_row)
                         cell = TableCell()
-                        cell.addElement(P(text=col))
+                        cell.addElement(P(text=unicode(col, errors='ignore')))
                         odf_row.addElement(cell)
-                        #ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                        #    '%s' % col, errors='ignore')
-                        #style = ws.get_style('%s%s' % (col_idx, row_number))
-                        #style.alignment.wrap_text
                     else:
                         ws.addElement(odf_row)
                         cell = TableCell()
-                        cell.addElement(P(text=col))
+                        cell.addElement(P(text=unicode(col, errors='ignore')))
                         odf_row.addElement(cell)
-                        #ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                        #    '%s' % col, errors='ignore')
                 except TypeError:
                     ws.addElement(odf_row)
                     cell = TableCell()
-                    cell.addElement(P(text=col))
+                    cell.addElement(P(text=unicode(col, errors='ignore')))
                     odf_row.addElement(cell)
-                    #ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
 
 

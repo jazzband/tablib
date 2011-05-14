@@ -402,7 +402,7 @@ class Dataset(object):
         pass
 
     @property
-    def odf():
+    def ods():
         """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
