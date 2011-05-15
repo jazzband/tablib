@@ -3,20 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Tablib: Pythonic Tabular Datasets 
+Tablib: Pythonic Tabular Datasets
 =================================
 
 Release |version|.
 
 .. Contents:
-.. 
+..
 .. .. toctree::
 ..    :maxdepth: 2
-.. 
+..
 
 .. Indices and tables
 .. ==================
-.. 
+..
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
@@ -25,6 +25,18 @@ Release |version|.
 Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags & filtering, and seamless format import & export.
 
 I recommend you start with :ref:`Installation <install>`.
+
+Testimonials
+------------
+
+`The Library of Congress <http://www.loc.gov/>`_,
+`National Geographic <http://www.nationalgeographic.com/>`,
+`Digg, Inc <http://digg.com/>`_,
+`Northrop Grumman <http://www.northropgrumman.com/>`_,
+`Discovery Channel <http://dsc.discovery.com/>`_,
+`The Sunlight Foundation <http://sunlightfoundation.com/>`_, and
+`NetApp, Inc <http://netapp.com>`_ use Tablib internally.
+
 
 User's Guide
 ------------
