@@ -38,14 +38,12 @@ Testimonials
 `NetApp, Inc <http://netapp.com>`_ use Tablib internally.
 
 
-**Dave Coutts**
-   It's turning into one of my most used modules of 2010. You really hit a sweat spot for managing tabular data with a minimal amount of code and effort.
-
-**Brad Montgomery**
-    I think you nailed the "Python Zen" with tablib. Thanks again for an awesome lib!
 
 **Greg Thorton**
    Tablib by @kennethreitz saved my life. I had to consolidate like 5 huge poorly maintained lists of domains and data. It was a breeze!
+
+**Dave Coutts**
+   It's turning into one of my most used modules of 2010. You really hit a sweat spot for managing tabular data with a minimal amount of code and effort.
 
 **Mark Rogers**
    So, thanks to tablib I'm not angry about Excel... In fact, spreadsheet creation is done, so I'm happy.
@@ -53,12 +51,13 @@ Testimonials
 **Joshua Ourisman**
    Tablib has made it so much easier to deal with the inevitable 'I want an Excel file!' requests from clients...
 
-**Jonas Obrist**
-   <3 tablib
+**Brad Montgomery**
+    I think you nailed the "Python Zen" with tablib. Thanks again for an awesome lib!
+
 
 User's Guide
 ------------
-Dave Coutts**
+
 This part of the documentation, which is mostly prose, begins with some background information about Tablib, then focuses on step-by-step instructions for getting the most out of your datasets.
 
 .. toctree::
