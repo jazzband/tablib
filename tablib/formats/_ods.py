@@ -47,7 +47,7 @@ def export_book(databook):
 
 
     stream = BytesIO()
-    wb.save(stream)
+    wb.save(unicode(stream))
     return stream.getvalue()
 
 
@@ -63,6 +63,11 @@ def dset_sheet(dataset, ws):
         row_number = i + 1
         odf_row = table.TableRow(stylename=bold)
         for j, col in enumerate(row):
+            try:
+                col = unicode(col, errors='ignore')
+            except TypeError:
+                ## col is already unicode
+                pass
             ws.addElement(table.TableColumn())
 
             # bold headers
@@ -70,14 +75,14 @@ def dset_sheet(dataset, ws):
                 odf_row.setAttribute('stylename', bold)
                 ws.addElement(odf_row)
                 cell = table.TableCell()
-                cell.addElement(text.P(stylename="Bold", text=unicode(col, errors='ignore')))
+                cell.addElement(text.P(stylename="Bold", text=col))
                 odf_row.addElement(cell)
 
             # bold separators
             elif len(row) < dataset.width:
                 ws.addElement(odf_row)
                 cell = table.TableCell()
-                cell.addElement(text.P(text=unicode(col, errors='ignore')))
+                cell.addElement(text.P(text=col))
                 odf_row.addElement(cell)
 
             # wrap the rest
@@ -86,17 +91,15 @@ def dset_sheet(dataset, ws):
                     if '\n' in col:
                         ws.addElement(odf_row)
                         cell = table.TableCell()
-                        cell.addElement(text.P(text=unicode(col, errors='ignore')))
+                        cell.addElement(text.P(text=col))
                         odf_row.addElement(cell)
                     else:
                         ws.addElement(odf_row)
                         cell = table.TableCell()
-                        cell.addElement(text.P(text=unicode(col, errors='ignore')))
+                        cell.addElement(text.P(text=col))
                         odf_row.addElement(cell)
                 except TypeError:
                     ws.addElement(odf_row)
                     cell = table.TableCell()
-                    cell.addElement(text.P(text=unicode(col, errors='ignore')))
+                    cell.addElement(text.P(text=col))
                     odf_row.addElement(cell)
-
-

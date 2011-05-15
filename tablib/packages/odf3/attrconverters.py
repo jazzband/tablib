@@ -158,7 +158,7 @@ def cnv_NCName(attribute, arg, element):
     """ NCName is defined in http://www.w3.org/TR/REC-xml-names/#NT-NCName
         Essentially an XML name minus ':'
     """
-    if type(arg) in str:
+    if isinstance(arg, str):
         return make_NCName(arg)
     else:
         return arg.getAttrNS(STYLENS, 'name')

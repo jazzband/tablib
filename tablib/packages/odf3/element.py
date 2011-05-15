@@ -38,6 +38,12 @@ def _escape(data, entities={}):
         the optional entities parameter.  The keys and values must all be
         strings; each key will be replaced with its corresponding value.
     """
+    try:
+        data = data.decode('utf-8')
+    except TypeError:
+        ## Make sure our stream is a string
+        ## If it comes through as bytes it fails
+        pass
     data = data.replace("&", "&amp;")
     data = data.replace("<", "&lt;")
     data = data.replace(">", "&gt;")
@@ -198,7 +204,7 @@ def _append_child(self, node):
     childNodes.append(node)
     node.__dict__["parentNode"] = self
 
-class Childless:
+class Childless(object):
     """ Mixin that makes childless-ness easy to implement and avoids
         the complexity of the Node methods that deal with children.
     """
@@ -255,7 +261,7 @@ class Text(Childless, Node):
         if self.data:
             f.write(_escape(str(self.data).encode('utf-8')))
     
-class CDATASection(Childless, Text):
+class CDATASection(Text, Childless):
     nodeType = Node.CDATA_SECTION_NODE
 
     def toXml(self,level,f):
