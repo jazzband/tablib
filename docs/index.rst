@@ -30,7 +30,7 @@ Testimonials
 ------------
 
 `The Library of Congress <http://www.loc.gov/>`_,
-`National Geographic <http://www.nationalgeographic.com/>`,
+`National Geographic <http://www.nationalgeographic.com/>`_,
 `Digg, Inc <http://digg.com/>`_,
 `Northrop Grumman <http://www.northropgrumman.com/>`_,
 `Discovery Channel <http://dsc.discovery.com/>`_,
