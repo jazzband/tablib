@@ -61,9 +61,6 @@ Testimonials
 **Dave Coutts**
    It's turning into one of my most used modules of 2010. You really hit a sweat spot for managing tabular data with a minimal amount of code and effort.
 
-**Mark Rogers**
-   So, thanks to tablib I'm not angry about Excel... In fact, spreadsheet creation is done, so I'm happy.
-
 **Joshua Ourisman**
    Tablib has made it so much easier to deal with the inevitable 'I want an Excel file!' requests from clients...
 
