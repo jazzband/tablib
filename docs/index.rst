@@ -24,7 +24,23 @@ Release v\ |version|.
 
 Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags & filtering, and seamless format import & export.
 
+::
+
+   >>> data = tablib.Dataset(headers=['First Name', 'Last Name', 'Age'])
+   >>> map(data.append, [('Kenneth', 'Reitz', 22), ('Bessie', 'Monke', 21)])
+
+   >>> data.json
+   [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
+
+   >>> data.yaml
+   - {Age: 22, First Name: Kenneth, Last Name: Reitz}
+   - {Age: 21, First Name: Bessie, Last Name: Monke}
+
+   >>> data.xlsx
+   <censored binary data>
+
 I recommend you start with :ref:`Installation <install>`.
+
 
 Testimonials
 ------------
