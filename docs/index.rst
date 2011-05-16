@@ -6,7 +6,7 @@
 Tablib: Pythonic Tabular Datasets
 =================================
 
-Release |version|.
+Release v\ |version|.
 
 .. Contents:
 ..

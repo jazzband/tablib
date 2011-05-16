@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Tablib'
-copyright = u'2011, Kenneth Reitz.'
+copyright = u'2011. A <a href="http://kennethreitz.com/pages/open-projects.html">Kenneth Reitz</a> Project'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -131,7 +131,11 @@ html_static_path = ['static']
 html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    'index':    ['sidebarintro.html', 'sourcelink.html', 'searchbox.html'],
+    '**':       ['sidebarlogo.html', 'localtoc.html', 'relations.html',
+                 'sourcelink.html', 'searchbox.html']
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
