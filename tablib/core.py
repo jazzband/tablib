@@ -401,6 +401,18 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def ods():
+        """An OpenDocument Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+         .. admonition:: Binary Warning
+
+             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+
+                with open('output.ods', 'wb') as f:
+                    f.write(data.ods)'
+        """
+        pass
 
     @property
     def csv():
