@@ -17,16 +17,13 @@ title = 'ods'
 extentions = ('ods',)
 
 bold = style.Style(name="bold", family="paragraph")
-bold.addElement(style.TextProperties(fontweight="bold"))
-
-#bold = style.Style(name='Bold', family="text")
-#bold.addElement(style.TextProperties(attributes={'fontweight':"bold"}))
+bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))
 
 def export_set(dataset):
     """Returns ODF representation of Dataset."""
 
     wb = opendocument.OpenDocumentSpreadsheet()
-    wb.styles.addElement(bold)
+    wb.automaticstyles.addElement(bold)
 
     ws = table.Table(name=dataset.title if dataset.title else 'Tablib Dataset')
     wb.spreadsheet.addElement(ws)
@@ -41,7 +38,7 @@ def export_book(databook):
     """Returns ODF representation of DataBook."""
 
     wb = opendocument.OpenDocumentSpreadsheet()
-    wb.styles.addElement(bold)
+    wb.automaticstyles.addElement(bold)
 
     for i, dset in enumerate(databook._datasets):
         ws = table.Table(name=dset.title if dset.title else 'Sheet%s' % (i))
@@ -78,14 +75,9 @@ def dset_sheet(dataset, ws):
                 odf_row.setAttribute('stylename', bold)
                 ws.addElement(odf_row)
                 cell = table.TableCell()
-                cell.addElement(text.P(stylename=bold, text=col))
-                odf_row.addElement(cell)
-
-            # bold separators
-            elif len(row) < dataset.width:
-                ws.addElement(odf_row)
-                cell = table.TableCell()
-                cell.addElement(text.P(text=col))
+                p = text.P()
+                p.addElement(text.Span(text=col, stylename=bold))
+                cell.addElement(p)
                 odf_row.addElement(cell)
 
             # wrap the rest
