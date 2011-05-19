@@ -6,7 +6,7 @@
 Tablib: Pythonic Tabular Datasets
 =================================
 
-Release v\ |version|.
+Release v\ |version|. (:ref:`Installation <install>`)
 
 .. Contents:
 ..
@@ -38,8 +38,6 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
 
    >>> data.xlsx
    <censored binary data>
-
-I recommend you start with :ref:`Installation <install>`.
 
 
 Testimonials
