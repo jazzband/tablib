@@ -39,7 +39,6 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
    >>> data.xlsx
    <censored binary data>
 
-Tablib currently supports xlsx, xls, ods, json, yaml, csv, tsv, and html.
 
 Testimonials
 ------------
