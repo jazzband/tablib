@@ -7,7 +7,7 @@
 import os
 
 import tablib
-from tablib.compat import is_py3, StringIO, csv
+from tablib.compat import is_py3, BytesIO, csv
 
 
 title = 'csv'
@@ -20,7 +20,7 @@ DEFAULT_ENCODING = 'utf-8'
 
 def export_set(dataset):
     """Returns CSV representation of Dataset."""
-    stream = StringIO()
+    stream = ()
 
     if is_py3:
         _csv = csv.writer(stream)
