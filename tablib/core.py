@@ -235,10 +235,15 @@ class Dataset(object):
             return False
 
 
-    def _package(self, dicts=True):
+    def _package(self, dicts=True, ordered=True):
         """Packages Dataset into lists of dictionaries for transmission."""
 
         _data = list(self._data)
+
+        if ordered:
+            dict_pack = OrderedDict
+        else:
+            dict_pack = dict
 
         # Execute formatters
         if self._formatters:
@@ -256,7 +261,7 @@ class Dataset(object):
 
         if self.headers:
             if dicts:
-                data = [OrderedDict(list(zip(self.headers, data_row))) for data_row in _data]
+                data = [dict_pack(list(zip(self.headers, data_row))) for data_row in _data]
             else:
                 data = [list(self.headers)] + list(_data)
         else:
@@ -786,13 +791,19 @@ class Databook(object):
             raise InvalidDatasetType
 
 
-    def _package(self):
+    def _package(self, ordered=True):
         """Packages :class:`Databook` for delivery."""
         collector = []
+
+        if ordered:
+            dict_pack = OrderedDict
+        else:
+            dict_pack = dict
+
         for dset in self._datasets:
-            collector.append(OrderedDict(
+            collector.append(dict_pack(
                 title = dset.title,
-                data = dset.dict
+                data = dset._package(ordered=ordered)
             ))
         return collector
 
