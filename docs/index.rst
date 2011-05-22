@@ -3,20 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Tablib: Pythonic Tabular Datasets 
+Tablib: Pythonic Tabular Datasets
 =================================
 
-Release |version|.
+Release v\ |version|. (:ref:`Installation <install>`)
 
 .. Contents:
-.. 
+..
 .. .. toctree::
 ..    :maxdepth: 2
-.. 
+..
 
 .. Indices and tables
 .. ==================
-.. 
+..
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
@@ -24,7 +24,47 @@ Release |version|.
 
 Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags & filtering, and seamless format import & export.
 
-I recommend you start with :ref:`Installation <install>`.
+::
+
+   >>> data = tablib.Dataset(headers=['First Name', 'Last Name', 'Age'])
+   >>> map(data.append, [('Kenneth', 'Reitz', 22), ('Bessie', 'Monke', 21)])
+
+   >>> data.json
+   [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
+
+   >>> data.yaml
+   - {Age: 22, First Name: Kenneth, Last Name: Reitz}
+   - {Age: 21, First Name: Bessie, Last Name: Monke}
+
+   >>> data.xlsx
+   <censored binary data>
+
+
+Testimonials
+------------
+
+`The Library of Congress <http://www.loc.gov/>`_,
+`National Geographic <http://www.nationalgeographic.com/>`_,
+`Digg, Inc <http://digg.com/>`_,
+`Northrop Grumman <http://www.northropgrumman.com/>`_,
+`Discovery Channel <http://dsc.discovery.com/>`_,
+`The Sunlight Foundation <http://sunlightfoundation.com/>`_, and
+`NetApp, Inc <http://netapp.com>`_ use Tablib internally.
+
+
+
+**Greg Thorton**
+   Tablib by @kennethreitz saved my life. I had to consolidate like 5 huge poorly maintained lists of domains and data. It was a breeze!
+
+**Dave Coutts**
+   It's turning into one of my most used modules of 2010. You really hit a sweat spot for managing tabular data with a minimal amount of code and effort.
+
+**Joshua Ourisman**
+   Tablib has made it so much easier to deal with the inevitable 'I want an Excel file!' requests from clients...
+
+**Brad Montgomery**
+    I think you nailed the "Python Zen" with tablib. Thanks again for an awesome lib!
+
 
 User's Guide
 ------------

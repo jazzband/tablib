@@ -259,7 +259,7 @@ Let's tag some students. ::
 Now that we have extra meta-data on our rows, we can use easily filter our :class:`Dataset`. Let's just see Male students. ::
 
 
-    >>> data.filter(['male']).yaml
+    >>> students.filter(['male']).yaml
     - {first: Kenneth, Last: Reitz}
 
 It's that simple. The original :class:`Dataset` is untouched.

@@ -19,8 +19,8 @@ from tablib.compat import OrderedDict
 
 
 __title__ = 'tablib'
-__version__ = '0.9.7'
-__build__ = 0x000907
+__version__ = '0.9.8'
+__build__ = 0x000908
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
@@ -377,7 +377,11 @@ class Dataset(object):
 
     @property
     def xls():
-        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """A Legacy Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+        .. note::
+
+            XLS files are limited to a maximum of 65,000 rows. Use :class:`Dataset.xlsx` to avoid this limitation.
 
          .. admonition:: Binary Warning
 
@@ -390,7 +394,7 @@ class Dataset(object):
 
     @property
     def xlsx():
-        """An Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """An Excel '07+ Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
 
@@ -401,6 +405,18 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def ods():
+        """An OpenDocument Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+
+         .. admonition:: Binary Warning
+
+             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+
+                with open('output.ods', 'wb') as f:
+                    f.write(data.ods)'
+        """
+        pass
 
     @property
     def csv():
@@ -431,6 +447,7 @@ class Dataset(object):
 
         Import assumes (for now) that headers exist.
         """
+        pass
 
     @property
     def yaml():

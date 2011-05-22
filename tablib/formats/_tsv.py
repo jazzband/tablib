@@ -3,27 +3,26 @@
 """ Tablib - TSV (Tab Separated Values) Support.
 """
 
-import sys
-if sys.version_info[0] > 2:
-    from io import StringIO
-else:
-    from cStringIO import StringIO
-    
-import csv
 import os
 
 import tablib
+from tablib.compat import is_py3, csv, StringIO
+
 
 
 title = 'tsv'
 extentions = ('tsv',)
 
-
+DEFAULT_ENCODING = 'utf-8'
 
 def export_set(dataset):
     """Returns a TSV representation of Dataset."""
     stream = StringIO()
-    _tsv = csv.writer(stream, delimiter='\t')
+
+    if is_py3:
+        _tsv = csv.writer(stream, delimiter="\t")
+    else:
+        _tsv = csv.writer(stream, encoding=DEFAULT_ENCODING, delimiter="\t")
 
     for row in dataset._package(dicts=False):
         _tsv.writerow(row)
@@ -35,7 +34,12 @@ def import_set(dset, in_stream, headers=True):
     """Returns dataset from TSV stream."""
     dset.wipe()
 
-    rows = csv.reader(in_stream.split('\r\n'), delimiter='\t')
+    if is_py3:
+        rows = csv.reader(in_stream.split('\r\n'), delimiter='\t')
+    else:
+        rows = csv.reader(in_stream.split('\r\n'), delimiter='\t',
+                          encoding=DEFAULT_ENCODING)
+
     for i, row in enumerate(rows):
         # Skip empty rows
         if not row:
