@@ -4,6 +4,7 @@ History
 0.9.8
 +++++
 
+* OpenDocument Spreadsheet support (.ods)
 * Full Unicode TSV support
 
 

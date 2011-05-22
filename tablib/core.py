@@ -19,8 +19,8 @@ from tablib.compat import OrderedDict
 
 
 __title__ = 'tablib'
-__version__ = '0.9.7'
-__build__ = 0x000907
+__version__ = '0.9.8'
+__build__ = 0x000908
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
