@@ -40,7 +40,7 @@ def _escape(data, entities={}):
     """
     try:
         data = data.decode('utf-8')
-    except TypeError:
+    except (TypeError, AttributeError):
         ## Make sure our stream is a string
         ## If it comes through as bytes it fails
         pass
@@ -260,7 +260,7 @@ class Text(Childless, Node):
         """ Write XML in UTF-8 """
         if self.data:
             f.write(_escape(str(self.data).encode('utf-8')))
-    
+
 class CDATASection(Text, Childless):
     nodeType = Node.CDATA_SECTION_NODE
 
@@ -289,7 +289,7 @@ class Element(Node):
                          Node.TEXT_NODE,
                          Node.CDATA_SECTION_NODE,
                          Node.ENTITY_REFERENCE_NODE)
-    
+
     def __init__(self, attributes=None, text=None, cdata=None, qname=None, qattributes=None, check_grammar=True, **args):
         if qname is not None:
             self.qname = qname
@@ -340,7 +340,7 @@ class Element(Node):
         for ns,p in list(nsdict.items()):
             if p == prefix: return ns
         return None
-        
+
     def get_nsprefix(self, namespace):
         """ Odfpy maintains a list of known namespaces. In some cases we have a namespace URL,
             and needs to look up or assign the prefix for it.
@@ -358,7 +358,7 @@ class Element(Node):
         element.ownerDocument = self.ownerDocument
         for child in element.childNodes:
             self._setOwnerDoc(child)
-        
+
     def addElement(self, element, check_grammar=True):
         """ adds an element to an Element
 
