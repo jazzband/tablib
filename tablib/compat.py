@@ -28,6 +28,7 @@ if is_py3:
     from tablib.packages.odf3 import opendocument, style, text, table
 
     import csv
+    from io import StringIO
     # py3 mappings
 
     unicode = str
@@ -36,6 +37,7 @@ if is_py3:
 
 else:
     from cStringIO import StringIO as BytesIO
+    from cStringIO import StringIO
     import tablib.packages.xlwt as xlwt
     from tablib.packages import markup
     from itertools import ifilter
