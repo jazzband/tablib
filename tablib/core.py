@@ -435,6 +435,7 @@ class Dataset(object):
 
         Import assumes (for now) that headers exist.
         """
+        pass
 
     @property
     def yaml():
