@@ -4,7 +4,10 @@ Introduction
 ============
 
 This part of the documentation covers all the interfaces of Tablib.
-Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/export.
+Tablib is a format-agnostic tabular dataset library, written in Python.
+It allows you to Pythonically import, export, and manipulate tabular data sets.
+Advanced features include, segregation, dynamic columns, tags / filtering, and
+seamless format import/export.
 
 
 Philosphy
@@ -21,47 +24,44 @@ Tablib was developed with a few :pep:`20` idioms in mind.
 
 All contributions to Tablib should keep these important rules in mind.
 
-.. _mit:
+.. _apache:
 
-MIT License
------------
+Apache License v2
+-----------------
 
-A large number of open source projects you find today are `GPL Licensed`_. While the GPL has its time and place, it should most certainly not be your go-to license for your next open source project.
+A large number of open source projects you find today are `GPL Licensed`_.
+While the GPL has its time and place, it should most certainly not be your
+go-to license for your next open source project.
 
-A project that is released as GPL cannot be used in any commercial product without the product itself also being offered as open source. The MIT, BSD, and ISC licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software.
+A project that is released as GPL cannot be used in any commercial product
+without the product itself also being offered as open source. The MIT, BSD, and
+ISC licenses are great alternatives to the GPL that allow your open-source
+software to be used in proprietary, closed-source software.
 
-Tablib is released under terms of `The MIT License`_.
+Tablib is released under terms of `The Apache License v2`_.
 
 .. _`GPL Licensed`: http://www.opensource.org/licenses/gpl-license.php
-.. _`The MIT License`: http://www.opensource.org/licenses/mit-license.php
+.. _`The Apache License v2`: http://opensource.org/licenses/Apache-2.0
 
-.. note::
-    Tablib will be moved to the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0>`_ upon the release of v1.0.0.
 
 .. _license:
 
 Tablib License
 --------------
 
-Copyright (c) 2011 Kenneth Reitz.
+Copyright 2011 Kenneth Reitz
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+   http://www.apache.org/licenses/LICENSE-2.0
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 
 .. _pythonsupport:
