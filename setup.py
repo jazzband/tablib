@@ -7,12 +7,29 @@ import sys
 from distutils.core import setup
 
 
-def publish():
-    """Publish to PyPi"""
-    os.system("python setup.py sdist upload")
 
-if sys.argv[-1] == "publish":
-    publish()
+if sys.argv[-1] == 'publish':
+    os.system("python setup.py sdist upload")
+    sys.exit()
+
+if sys.argv[-1] == 'speedups':
+    try:
+        import pip
+    except ImportError:
+        print('Pip required.')
+        sys.exit(1)
+
+    os.system('pip install simplejson pyyaml')
+    sys.exit()
+
+if sys.argv[-1] == 'test':
+    try:
+        import py
+    except ImportError:
+        print('py.test required.')
+        sys.exit(1)
+
+    os.system('pytest test_tablib.py')
     sys.exit()
 
 required = []
