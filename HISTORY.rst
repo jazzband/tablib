@@ -1,8 +1,8 @@
 History
 -------
 
-0.9.8
-+++++
+0.9.8 (2011-05-22)
+++++++++++++++++++
 
 * OpenDocument Spreadsheet support (.ods)
 * Full Unicode TSV support
