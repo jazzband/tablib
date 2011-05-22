@@ -36,7 +36,6 @@ if is_py3:
 
 else:
     from cStringIO import StringIO as BytesIO
-    from cStringIO import StringIO
     import tablib.packages.xlwt as xlwt
     from tablib.packages import markup
     from itertools import ifilter

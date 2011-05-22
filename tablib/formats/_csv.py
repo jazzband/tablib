@@ -20,7 +20,7 @@ DEFAULT_ENCODING = 'utf-8'
 
 def export_set(dataset):
     """Returns CSV representation of Dataset."""
-    stream = ()
+    stream = BytesIO()
 
     if is_py3:
         _csv = csv.writer(stream)
