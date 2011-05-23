@@ -47,10 +47,12 @@ setup(
     author_email='me@kennethreitz.com',
     url='http://tablib.org',
     packages= [
-        'tablib', 'tablib.formats',
+        'tablib',
+        'tablib.formats',
         'tablib.packages',
         'tablib.packages.xlwt',
         'tablib.packages.openpyxl',
+        'tablib.packages.odf',
         'tablib.packages.openpyxl.shared',
         'tablib.packages.openpyxl.reader',
         'tablib.packages.openpyxl.writer',
