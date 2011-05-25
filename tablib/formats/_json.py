@@ -6,11 +6,7 @@
 import tablib
 
 import sys
-if sys.version_info[:2] > (2, 5):
-    from tablib.packages import anyjson
-else:
-    from tablib.packages import anyjson25 as anyjson
-
+from tablib.compat import anyjson
 
 
 title = 'json'
