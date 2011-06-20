@@ -27,7 +27,7 @@ def import_set(dset, in_stream):
     """Returns dataset from JSON stream."""
 
     dset.wipe()
-    dset.dict = json.dumps(in_stream)
+    dset.dict = json.loads(in_stream)
 
 
 def import_book(dbook, in_stream):
