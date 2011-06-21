@@ -14,7 +14,6 @@ from operator import itemgetter
 
 from tablib import formats
 
-
 from tablib.compat import OrderedDict
 
 
@@ -58,7 +57,7 @@ class Row(object):
         del self._row[i]
 
     def __getstate__(self):
-        return {slot: [getattr(self, slot) for slot in self.__slots__]}
+        return {'slot': [getattr(self, slot) for slot in self.__slots__]}
 
     def __setstate__(self, state):
         for (k, v) in list(state.items()): setattr(self, k, v)
@@ -74,12 +73,12 @@ class Row(object):
 
     @property
     def tuple(self):
-        '''Tuple representation of :class:`Row`.'''
+        """Tuple representation of :class:`Row`."""
         return tuple(self._row)
 
     @property
     def list(self):
-        '''List representation of :class:`Row`.'''
+        """List representation of :class:`Row`."""
         return list(self._row)
 
     def has_tag(self, tag):
