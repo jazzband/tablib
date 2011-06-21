@@ -19,7 +19,7 @@ if sys.argv[-1] == 'speedups':
         print('Pip required.')
         sys.exit(1)
 
-    os.system('pip install simplejson pyyaml')
+    os.system('pip install ujson pyyaml')
     sys.exit()
 
 if sys.argv[-1] == 'test':
