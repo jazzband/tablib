@@ -73,7 +73,7 @@ class TablibTestCase(unittest.TestCase):
 
         new_col = ['reitz', 'monke']
 
-        data.append(col=new_col)
+        data.append_col(new_col)
 
         self.assertEquals(data[0], ('kenneth', 'reitz'))
         self.assertEquals(data.width, 2)
@@ -81,7 +81,7 @@ class TablibTestCase(unittest.TestCase):
         # With Headers
         data.headers = ('fname', 'lname')
         new_col = [21, 22]
-        data.append(col=new_col, header='age')
+        data.append_col(new_col, header='age')
 
         self.assertEquals(data['age'], new_col)
 
@@ -91,7 +91,7 @@ class TablibTestCase(unittest.TestCase):
 
         new_col = ('reitz', 'monke')
 
-        data.append(col=new_col)
+        data.append_col(new_col)
 
         self.assertEquals(data[0], tuple([new_col[0]]))
         self.assertEquals(data.width, 1)
@@ -100,21 +100,23 @@ class TablibTestCase(unittest.TestCase):
 
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
+
         new_col = [lambda x: x[0]]
-        self.founders.append(col=new_col, header='first_again')
-#
-#       self.assertTrue(map(lambda x: x[0] == x[-1], self.founders))
+
+        self.founders.append_col(new_col, header='first_again')
 
 
     def test_header_slicing(self):
         """Verify slicing by headers."""
 
         self.assertEqual(self.founders['first_name'],
-                        [self.john[0], self.george[0], self.tom[0]])
+            [self.john[0], self.george[0], self.tom[0]])
+
         self.assertEqual(self.founders['last_name'],
-                        [self.john[1], self.george[1], self.tom[1]])
+            [self.john[1], self.george[1], self.tom[1]])
+
         self.assertEqual(self.founders['gpa'],
-                        [self.john[2], self.george[2], self.tom[2]])
+            [self.john[2], self.george[2], self.tom[2]])
 
 
     def test_data_slicing(self):
@@ -174,6 +176,7 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(csv, self.founders.csv)
 
+
     def test_tsv_export(self):
         """Verify exporting dataset object as CSV."""
 
@@ -191,8 +194,8 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(tsv, self.founders.tsv)
 
-    def test_html_export(self):
 
+    def test_html_export(self):
         """HTML export"""
 
         html = markup.page()
@@ -421,7 +424,6 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_row_stacking(self):
-
         """Row stacking."""
 
         to_join = tablib.Dataset(headers=self.founders.headers)
@@ -429,7 +431,7 @@ class TablibTestCase(unittest.TestCase):
         for row in self.founders:
             to_join.append(row=row)
 
-        row_stacked = self.founders.stack_rows(to_join)
+        row_stacked = self.founders.stack(to_join)
 
         for column in row_stacked.headers:
 
@@ -439,7 +441,6 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_column_stacking(self):
-
         """Column stacking"""
 
         to_join = tablib.Dataset(headers=self.founders.headers)
@@ -447,7 +448,7 @@ class TablibTestCase(unittest.TestCase):
         for row in self.founders:
             to_join.append(row=row)
 
-        column_stacked = self.founders.stack_columns(to_join)
+        column_stacked = self.founders.stack_cols(to_join)
 
         for index, row in enumerate(column_stacked):
 
@@ -460,7 +461,6 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_sorting(self):
-
         """Sort columns."""
 
         sorted_data = self.founders.sort(col="first_name")
