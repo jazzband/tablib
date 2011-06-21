@@ -10,7 +10,7 @@ title = 'csv'
 extentions = ('csv',)
 
 
-DEFAULT_ENCODING = 'utf-8-sig'
+DEFAULT_ENCODING = 'utf-8'
 
 
 

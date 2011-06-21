@@ -10,7 +10,7 @@ from tablib.compat import is_py3, csv, StringIO
 title = 'tsv'
 extentions = ('tsv',)
 
-DEFAULT_ENCODING = 'utf-8-sig'
+DEFAULT_ENCODING = 'utf-8'
 
 def export_set(dataset):
     """Returns a TSV representation of Dataset."""
