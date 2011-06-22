@@ -43,13 +43,11 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
 Testimonials
 ------------
 
-`The Library of Congress <http://www.loc.gov/>`_,
 `National Geographic <http://www.nationalgeographic.com/>`_,
 `Digg, Inc <http://digg.com/>`_,
 `Northrop Grumman <http://www.northropgrumman.com/>`_,
 `Discovery Channel <http://dsc.discovery.com/>`_,
-`The Sunlight Foundation <http://sunlightfoundation.com/>`_, and
-`NetApp, Inc <http://netapp.com>`_ use Tablib internally.
+and `The Sunlight Foundation <http://sunlightfoundation.com/>`_ use Tablib internally.
 
 
 

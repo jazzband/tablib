@@ -12,7 +12,7 @@ except ImportError:
         import tablib.packages.yaml3 as yaml
     else:
         import tablib.packages.yaml as yaml
-    
+
 
 import tablib
 
@@ -25,7 +25,8 @@ extentions = ('yaml', 'yml')
 
 def export_set(dataset):
     """Returns YAML representation of Dataset."""
-    return yaml.dump(dataset.dict)
+
+    return yaml.dump(dataset._package(ordered=False))
 
 
 def export_book(databook):
@@ -50,7 +51,7 @@ def import_book(dbook, in_stream):
         data.title = sheet['title']
         data.dict = sheet['data']
         dbook.add_sheet(data)
-        
+
 def detect(stream):
     """Returns True if given stream is valid YAML."""
     try:

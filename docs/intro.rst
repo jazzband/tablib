@@ -4,7 +4,10 @@ Introduction
 ============
 
 This part of the documentation covers all the interfaces of Tablib.
-Tablib is a format-agnostic tabular dataset library, written in Python. It allows you to Pythonically import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags / filtering, and seamless format import/export.
+Tablib is a format-agnostic tabular dataset library, written in Python.
+It allows you to Pythonically import, export, and manipulate tabular data sets.
+Advanced features include, segregation, dynamic columns, tags / filtering, and
+seamless format import/export.
 
 
 Philosphy
@@ -21,29 +24,32 @@ Tablib was developed with a few :pep:`20` idioms in mind.
 
 All contributions to Tablib should keep these important rules in mind.
 
-.. _mit:
+.. mit:
 
 MIT License
 -----------
 
-A large number of open source projects you find today are `GPL Licensed`_. While the GPL has its time and place, it should most certainly not be your go-to license for your next open source project.
+A large number of open source projects you find today are `GPL Licensed`_.
+While the GPL has its time and place, it should most certainly not be your
+go-to license for your next open source project.
 
-A project that is released as GPL cannot be used in any commercial product without the product itself also being offered as open source. The MIT, BSD, and ISC licenses are great alternatives to the GPL that allow your open-source software to be used in proprietary, closed-source software.
+A project that is released as GPL cannot be used in any commercial product
+without the product itself also being offered as open source. The MIT, BSD, and
+ISC licenses are great alternatives to the GPL that allow your open-source
+software to be used in proprietary, closed-source software.
 
 Tablib is released under terms of `The MIT License`_.
 
 .. _`GPL Licensed`: http://www.opensource.org/licenses/gpl-license.php
 .. _`The MIT License`: http://www.opensource.org/licenses/mit-license.php
 
-.. note::
-    Tablib will be moved to the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0>`_ upon the release of v1.0.0.
 
 .. _license:
 
 Tablib License
 --------------
 
-Copyright (c) 2011 Kenneth Reitz.
+Copyright 2011 Kenneth Reitz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

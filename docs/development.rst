@@ -5,7 +5,8 @@ Development
 
 Tablib is under active development, and contributors are welcome.
 
-If you have a feature request, suggestion, or bug report, please open a new issue on GitHub_. To submit patches, please send a pull request on GitHub_.
+If you have a feature request, suggestion, or bug report, please open a new
+issue on GitHub_. To submit patches, please send a pull request on GitHub_.
 
 If you'd like to contribute, there's plenty to do. Here's a short todo list.
 
@@ -42,19 +43,18 @@ Source Control
 --------------
 
 
-Tablib source is controlled with Git_, the lean, mean, distributed source control machine.
+Tablib source is controlled with Git_, the lean, mean, distributed source
+control machine.
 
 The repository is publicly accessable.
 
     ``git clone git://github.com/kennethreitz/tablib.git``
-    
-The project is hosted both on **GitHub** and **git.kennethreitz.com**.
-    
-    
-    GitHub: 
+
+The project is hosted on **GitHub**.
+
+
+    GitHub:
         http://github.com/kennethreitz/tablib
-    "Mirror": 
-        http://git.kennethreitz.com/projects/tablib  
 
 
 Git Branch Structure
@@ -100,27 +100,27 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 1. Write a new format interface.
 
     :class:`tablib.core` follows a simple pattern for automatically utilizing your format throughout Tablib. Function names are crucial.
-    
+
     Example **tablib/formats/_xxx.py**: ::
 
         title = 'xxx'
-    
+
         def export_set(dset):
             ....
             # returns string representation of given dataset
-    
+
         def export_book(dbook):
             ....
             # returns string representation of given databook
-        
+
         def import_set(dset, in_stream):
             ...
             # populates given Dataset with given datastream
-    
+
         def import_book(dbook, in_stream):
             ...
             # returns Databook instance
-    
+
         def detect(stream):
             ...
             # returns True if given stream is parsable as xxx
@@ -130,7 +130,7 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 
     If the format excludes support for an import/export mechanism (*eg.* :class:`csv <tablib.Dataset.csv>` excludes :class:`Databook <tablib.Databook>` support), simply don't define the respective functions. Appropriate errors will be raised.
 
-2. 
+2.
 
     Add your new format module to the :class:`tablib.formats.avalable` tuple.
 
@@ -152,7 +152,7 @@ When developing a feature for Tablib, the easiest way to test your changes for p
 	$ ./test_tablib.py
 
 
-`Hudson CI`_, amongst other tools, supports Java's xUnit testing report format. Nose_ allows us to generate our own xUnit reports. 
+`Jenkins CI`_, amongst other tools, supports Java's xUnit testing report format. Nose_ allows us to generate our own xUnit reports.
 
 Installing nose is simple. ::
 
@@ -168,25 +168,25 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 
 
 
-.. _hudson:
+.. _jenkins:
 
 ----------------------
 Continuous Integration
 ----------------------
 
-Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Hudson CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly. 
+Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Jenkins CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
     http://ci.kennethreitz.com/
 
 
-If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Hudson Server. 
+If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Jenkins Server.
 
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Hudson CI`: http://hudson.dev.java.net
+.. _`Jenkins CI`: http://jenkins-ci.org/
 .. _`Kenneth Reitz`: http://kennethreitz.com/contact-me/
 
 
@@ -196,17 +196,17 @@ Additional reports will also be included here in the future, including :pep:`8` 
 Building the Docs
 -----------------
 
-Documentation is written in the powerful, flexible, and standard Python documentation format, `reStructured Text`_. 
+Documentation is written in the powerful, flexible, and standard Python documentation format, `reStructured Text`_.
 Documentation builds are powered by the powerful Pocoo project, Sphinx_. The :ref:`API Documentation <api>` is mostly documented inline throughout the module.
 
 The Docs live in ``tablib/docs``. In order to build them, you will first need to install Sphinx. ::
 
 	$ pip install sphinx
-	
+
 
 Then, to build an HTML version of the docs, simply run the following from the **docs** directory: ::
 
-	$ make html	
+	$ make html
 
 Your ``docs/_build/html`` directory will then contain an HTML representation of the documentation, ready for publication on most web servers.
 
@@ -214,10 +214,10 @@ You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* 
 
 .. admonition:: GitHub Pages
 
-	To push the documentation up to `GitHub Pages`_, you will first need to run `sphinx-to-github`_ against your ``docs/_build/html`` directory. 
-	
+	To push the documentation up to `GitHub Pages`_, you will first need to run `sphinx-to-github`_ against your ``docs/_build/html`` directory.
+
 	GitHub Pages are powered by an HTML generation system called Jeckyl_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
-	
+
 
 
 
@@ -232,8 +232,8 @@ You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* 
 	Running it against the docs is even simpler. ::
 
 		$ sphinx-to-github _build/html
-	
-	Move the resulting files to the **gh-pages** branch of your repository, and push it up to GitHub. 
+
+	Move the resulting files to the **gh-pages** branch of your repository, and push it up to GitHub.
 
 .. _`reStructured Text`: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx.pocoo.org
