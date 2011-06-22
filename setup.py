@@ -7,10 +7,9 @@ import sys
 import tablib
 
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
-    from distutils.core import setup
-
+    from distutils.core import setup, find_packages
 
 
 if sys.argv[-1] == 'publish':
@@ -19,7 +18,7 @@ if sys.argv[-1] == 'publish':
 
 if sys.argv[-1] == 'speedups':
     try:
-        import pip
+        __import__('pip')
     except ImportError:
         print('Pip required.')
         sys.exit(1)
@@ -29,7 +28,7 @@ if sys.argv[-1] == 'speedups':
 
 if sys.argv[-1] == 'test':
     try:
-        import py
+        __import__('py')
     except ImportError:
         print('py.test required.')
         sys.exit(1)
@@ -41,24 +40,12 @@ setup(
     name='tablib',
     version=tablib.__version__,
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
-    long_description=open('README.rst').read() + '\n\n' +
-                     open('HISTORY.rst').read(),
+    long_description=(open('README.rst').read() + '\n\n' +
+        open('HISTORY.rst').read()),
     author='Kenneth Reitz',
     author_email='me@kennethreitz.com',
     url='http://tablib.org',
-    packages= [
-        'tablib',
-        'tablib.formats',
-        'tablib.packages',
-        'tablib.packages.xlwt',
-        'tablib.packages.openpyxl',
-        'tablib.packages.odf',
-        'tablib.packages.openpyxl.shared',
-        'tablib.packages.openpyxl.reader',
-        'tablib.packages.openpyxl.writer',
-        'tablib.packages.yaml',
-        'tablib.packages.unicodecsv'
-    ],
+    packages=find_packages(exclude=('docs',)),
     license='MIT',
     classifiers=(
         'Development Status :: 5 - Production/Stable',
