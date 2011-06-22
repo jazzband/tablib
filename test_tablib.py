@@ -6,15 +6,9 @@
 import unittest
 import sys
 
-
-
-if sys.version_info[0] > 2:
-    from tablib.packages import markup3 as markup
-else:
-    from tablib.packages import markup
-
-
 import tablib
+from tablib.compat import markup
+
 
 
 
@@ -75,15 +69,15 @@ class TablibTestCase(unittest.TestCase):
 
         data.append_col(new_col)
 
-        self.assertEquals(data[0], ('kenneth', 'reitz'))
-        self.assertEquals(data.width, 2)
+        self.assertEqual(data[0], ('kenneth', 'reitz'))
+        self.assertEqual(data.width, 2)
 
         # With Headers
         data.headers = ('fname', 'lname')
         new_col = [21, 22]
         data.append_col(new_col, header='age')
 
-        self.assertEquals(data['age'], new_col)
+        self.assertEqual(data['age'], new_col)
 
 
     def test_add_column_no_data_no_headers(self):
@@ -93,9 +87,9 @@ class TablibTestCase(unittest.TestCase):
 
         data.append_col(new_col)
 
-        self.assertEquals(data[0], tuple([new_col[0]]))
-        self.assertEquals(data.width, 1)
-        self.assertEquals(data.height, len(new_col))
+        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data.width, 1)
+        self.assertEqual(data.height, len(new_col))
 
 
     def test_add_callable_column(self):
