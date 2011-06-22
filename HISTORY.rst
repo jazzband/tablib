@@ -1,6 +1,15 @@
 History
 -------
 
+0.9.9 (?)
++++++++++
+
+* Dataset API Changes
+* ``stack_rows`` => ``stack``, ``stack_columns`` => ``stack_cols``
+* column operations have their own methods now (``apend_col``, ``insert_col``)
+* List-style ``pop()``
+* Redis-style ``rpush``, ``lpush``, ``rpop``, ``lpop``, ``rpush_col``, and ``lpush_col``
+
 0.9.8 (2011-05-22)
 ++++++++++++++++++
 
