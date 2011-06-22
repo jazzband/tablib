@@ -1,8 +1,8 @@
 History
 -------
 
-0.9.9 (?)
-+++++++++
+0.9.9 (2011-06-21)
+++++++++++++++++++
 
 * Dataset API Changes
 * ``stack_rows`` => ``stack``, ``stack_columns`` => ``stack_cols``
