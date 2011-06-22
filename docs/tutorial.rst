@@ -87,7 +87,7 @@ Adding Columns
 
 Now that we have a basic :class:`Dataset` in place, let's add a column of **ages** to it. ::
 
-    data.append(col=[22, 20], header='Age')
+    data.append_col([22, 20], header='Age')
 
 Let's view the data now. ::
 
@@ -158,7 +158,7 @@ Let's find the average age. ::
 Removing Rows & Columns
 -----------------------
 
-It's easier than you could imagine. ::
+It's easier than you could imagine::
 
     >>> del data['Col Name']
 
@@ -195,7 +195,7 @@ Let's add a dynamic column to our :class:`Dataset` object. In this example, we h
         """Returns a random integer for entry."""
         return (random.randint(60,100)/100.0)
 
-    data.append(col=[random_grade], header='Grade')
+    data.append_col(random_grade, header='Grade')
 
 Let's have a look at our data. ::
 
@@ -253,8 +253,8 @@ Let's tag some students. ::
 
     students.headers = ['first', 'last']
 
-    students.append(['Kenneth', 'Reitz'], tags=['male', 'technical'])
-    students.append(['Bessie', 'Monke'], tags=['female', 'creative'])
+    students.rpush(['Kenneth', 'Reitz'], tags=['male', 'technical'])
+    students.rpush(['Bessie', 'Monke'], tags=['female', 'creative'])
 
 Now that we have extra meta-data on our rows, we can use easily filter our :class:`Dataset`. Let's just see Male students. ::
 
@@ -273,7 +273,7 @@ When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet f
 
 Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is add then to a :class:`Databook` object... ::
 
-    book = tablib.Databook([data1, data2, data3])
+    book = tablib.Databook((data1, data2, data3))
 
 ... and export to Excel just like :class:`Datasets <Dataset>`. ::
 
