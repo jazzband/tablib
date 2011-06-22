@@ -4,6 +4,8 @@
 import os
 import sys
 
+import tablib
+
 try:
     from setuptools import setup
 except ImportError:
@@ -35,14 +37,9 @@ if sys.argv[-1] == 'test':
     os.system('pytest test_tablib.py')
     sys.exit()
 
-required = []
-
-if sys.version_info[:2] < (2,6):
-    required.append('simplejson')
-
 setup(
     name='tablib',
-    version='0.9.8',
+    version=tablib.__version__,
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=open('README.rst').read() + '\n\n' +
                      open('HISTORY.rst').read(),
@@ -62,7 +59,6 @@ setup(
         'tablib.packages.yaml',
         'tablib.packages.unicodecsv'
     ],
-    install_requires=required,
     license='MIT',
     classifiers=(
         'Development Status :: 5 - Production/Stable',
