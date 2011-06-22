@@ -50,13 +50,11 @@ The repository is publicly accessable.
 
     ``git clone git://github.com/kennethreitz/tablib.git``
 
-The project is hosted both on **GitHub** and **git.kennethreitz.com**.
+The project is hosted on **GitHub**.
 
 
     GitHub:
         http://github.com/kennethreitz/tablib
-    "Mirror":
-        http://git.kennethreitz.com/projects/tablib
 
 
 Git Branch Structure
@@ -154,7 +152,7 @@ When developing a feature for Tablib, the easiest way to test your changes for p
 	$ ./test_tablib.py
 
 
-`Hudson CI`_, amongst other tools, supports Java's xUnit testing report format. Nose_ allows us to generate our own xUnit reports.
+`Jenkins CI`_, amongst other tools, supports Java's xUnit testing report format. Nose_ allows us to generate our own xUnit reports.
 
 Installing nose is simple. ::
 
@@ -170,25 +168,25 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 
 
 
-.. _hudson:
+.. _jenkins:
 
 ----------------------
 Continuous Integration
 ----------------------
 
-Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Hudson CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly.
+Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Jenkins CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
     http://ci.kennethreitz.com/
 
 
-If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Hudson Server.
+If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Jenkins Server.
 
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Hudson CI`: http://hudson.dev.java.net
+.. _`Jenkins CI`: http://jenkins-ci.org/
 .. _`Kenneth Reitz`: http://kennethreitz.com/contact-me/
 
 
