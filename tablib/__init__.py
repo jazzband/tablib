@@ -1,5 +1,4 @@
-""" Tablib.
-"""
+""" Tablib. """
 
 from tablib.core import (
     Databook, Dataset, detect, import_set,
