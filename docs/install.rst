@@ -11,15 +11,29 @@ This part of the documentation covers the installation of Tablib. The first step
 Installing Tablib
 -----------------
 
-To install Tablib, it only takes one simple command. ::
+Distribute & Pip
+----------------
 
-	$ pip install tablib
+Installing Tablib is simple with `pip <http://www.pip-installer.org/>`_::
 
-Or, if you must: ::
+    $ pip install tablib
 
-	$ easy_install tablib
-	
-But, you really shouldn't do that. 
+or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
+
+    $ easy_install tablib
+
+But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/index.html#pip-compared-to-easy-install>`_.
+
+
+
+Cheeseshop Mirror
+-----------------
+
+If the Cheeseshop is down, you can also install Requests from Kenneth Reitz's personal `Cheeseshop mirror <pip.kreitz.co/>`_::
+
+    $ pip install -i http://pip.kreitz.co/simple tablib
+
+
 
 
 -------------------
@@ -49,15 +63,15 @@ Speed Extentions
 
 .. versionadded:: 0.8.5
 
-Tablib is partially dependent on the **pyyaml**, **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib. 
+Tablib is partially dependent on the **pyyaml**, **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib.
 
 However, if performance is important to you (and it should be), you can install  **pyyaml** with C extentions from PyPi. ::
 
-	$ pip install PyYAML
+    $ pip install PyYAML
 
 If you're using Python 2.5, you should also install the **simplejson** module (pip will do this for you). If you're using Python 2.6+, the built-in **json** module is already optimized and in use. ::
 
-	$ pip install simplejson
+    $ pip install simplejson
 
 
 
@@ -65,14 +79,14 @@ If you're using Python 2.5, you should also install the **simplejson** module (p
 Staying Updated
 ---------------
 
-The latest version of Tablib will always be available here: 
+The latest version of Tablib will always be available here:
 
 * PyPi: http://pypi.python.org/pypi/tablib/
 * GitHub: http://github.com/kennethreitz/tablib/
 
-When a new version is available, upgrading is simple. ::
+When a new version is available, upgrading is simple::
 
-	$ pip install tablib --upgrade
+    $ pip install tablib --upgrade
 
 
 Now, go get a :ref:`Quick Start <quickstart>`.
