@@ -571,13 +571,28 @@ class Dataset(object):
         self.rpush(row, tags)
 
 
-    def pop(self):
+    def lpop(self):
+        """Removes and returns the first row of the :class:`Dataset`."""
+
+        cache = self[0]
+        del self[0]
+
+        return cache
+
+
+    def rpop(self):
         """Removes and returns the last row of the :class:`Dataset`."""
 
         cache = self[-1]
         del self[-1]
 
         return cache
+
+
+    def pop(self):
+        """Removes and returns the last row of the :class:`Dataset`."""
+
+        return self.rpop()
 
 
     # -------
