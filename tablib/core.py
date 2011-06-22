@@ -571,6 +571,15 @@ class Dataset(object):
         self.rpush(row, tags)
 
 
+    def pop(self):
+        """Removes and returns the last row of the :class:`Dataset`."""
+
+        cache = self[-1]
+        del self[-1]
+
+        return cache
+
+
     # -------
     # Columns
     # -------
