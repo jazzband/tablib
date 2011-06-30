@@ -18,8 +18,8 @@ from tablib.compat import OrderedDict
 
 
 __title__ = 'tablib'
-__version__ = '0.9.10'
-__build__ = 0x000910
+__version__ = '0.9.11'
+__build__ = 0x000911
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2011 Kenneth Reitz'
@@ -617,11 +617,9 @@ class Dataset(object):
         See :ref:`dyncols` for an in-depth example.
         """
 
-        col = list(col)
-
         # Callable Columns...
-        if len(col) == 1 and hasattr(col[0], '__call__'):
-            col = list(map(col[0], self._data))
+        if hasattr(col, '__call__'):
+            col = list(map(col, self._data))
 
         col = self._clean_col(col)
         self._validate(col=col)
