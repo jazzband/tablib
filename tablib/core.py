@@ -433,7 +433,7 @@ class Dataset(object):
 
          .. admonition:: Binary Warning
 
-             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+             :class:`Dataset.ods` contains binary data, so make sure to write in binary mode::
 
                 with open('output.ods', 'wb') as f:
                     f.write(data.ods)'
@@ -452,6 +452,17 @@ class Dataset(object):
             data.csv = 'age, first_name, last_name\\n90, John, Adams'
 
         Import assumes (for now) that headers exist.
+        
+        .. admonition:: Binary Warning
+
+             :class:`Dataset.csv` uses \\r\\n line endings by default, so make
+             sure to write in binary mode::
+
+                 with open('output.csv', 'wb') as f:
+                     f.write(data.csv)'
+             
+             If you do not do this, and you export the file on Windows, your
+             CSV file will open in Excel with a blank line between each row.
         """
         pass
 
@@ -477,7 +488,7 @@ class Dataset(object):
         set, a YAML list of objects will be returned. If no headers have
         been set, a YAML list of lists (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.yaml` attribute: ::
 
             data = tablib.Dataset()
             data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
