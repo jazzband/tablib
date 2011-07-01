@@ -511,6 +511,48 @@ class TablibTestCase(unittest.TestCase):
 
 
         data.csv
+    
+    def test_csv_column_select(self):
+        """Build up a CSV and test selecting a column"""
+
+        data = tablib.Dataset()
+        data.csv = self.founders.csv
+
+        headers = data.headers
+        self.assertTrue(isinstance(headers[0], unicode))
+
+        orig_first_name = self.founders[self.headers[0]]
+        csv_first_name = data[headers[0]]
+        self.assertEquals(orig_first_name, csv_first_name)
+
+
+    def test_csv_column_delete(self):
+        """Build up a CSV and test deleting a column"""
+
+        data = tablib.Dataset()
+        data.csv = self.founders.csv
+
+        target_header = data.headers[0]
+        self.assertTrue(isinstance(target_header, unicode))
+
+        del data[target_header]
+
+        self.assertTrue(target_header not in data.headers)
+
+    def test_csv_column_sort(self):
+        """Build up a CSV and test sorting a column by name"""
+
+        data = tablib.Dataset()
+        data.csv = self.founders.csv
+
+        orig_target_header = self.founders.headers[1]
+        target_header = data.headers[1]
+
+        self.founders.sort(orig_target_header)
+        data.sort(target_header)
+
+        self.assertEquals(self.founders[orig_target_header], data[target_header])
+
 
 if __name__ == '__main__':
     unittest.main()
