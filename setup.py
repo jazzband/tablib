@@ -7,17 +7,10 @@ import sys
 import tablib
 
 try:
-    from setuptools import setup, find_packages
+    from setuptools import setup
 except ImportError:
-    from distutils.core import setup, find_packages
+    from distutils.core import setup
 
-
-packages = find_packages(exclude=('docs',))
-
-if sys.version_info[:2] < (3,0):
-    packages = [p for p in packages if '3' not in p]
-else:
-    packages = [p for p in packages if '2' not in p]
 
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
@@ -52,7 +45,17 @@ setup(
     author='Kenneth Reitz',
     author_email='me@kennethreitz.com',
     url='http://tablib.org',
-    packages=packages,
+    packages=[
+        'tablib', 'tablib.formats',
+        'tablib.packages',
+        'tablib.packages.xlwt',
+        'tablib.packages.openpyxl',
+        'tablib.packages.openpyxl.shared',
+        'tablib.packages.openpyxl.reader',
+        'tablib.packages.openpyxl.writer',
+        'tablib.packages.yaml',
+        'tablib.packages.unicodecsv'
+    ],
     license='MIT',
     classifiers=(
         'Development Status :: 5 - Production/Stable',
