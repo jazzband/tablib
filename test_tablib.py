@@ -113,6 +113,22 @@ class TablibTestCase(unittest.TestCase):
             [self.john[2], self.george[2], self.tom[2]])
 
 
+    def test_get_col(self):
+        """Verify getting columns by index"""
+
+        self.assertEqual(
+            self.founders.get_col(self.headers.index('first_name')),
+            [self.john[0], self.george[0], self.tom[0]])
+
+        self.assertEqual(
+            self.founders.get_col(self.headers.index('last_name')),
+            [self.john[1], self.george[1], self.tom[1]])
+
+        self.assertEqual(
+            self.founders.get_col(self.headers.index('gpa')),
+            [self.john[2], self.george[2], self.tom[2]])
+
+            
     def test_data_slicing(self):
         """Verify slicing by data."""
 
