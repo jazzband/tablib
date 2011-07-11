@@ -175,7 +175,6 @@ class Dataset(object):
             else:
                 return [result.tuple for result in _results]
 
-
     def __setitem__(self, key, value):
         self._validate(value)
         self._data[key] = Row(value)
@@ -693,6 +692,12 @@ class Dataset(object):
         """
 
         self.rpush_col(col, header)
+
+
+    def get_col(self, index):
+        """Returns the column from the :class:`Dataset` at the given index."""
+
+        return [row[index] for row in self._data]
 
 
     # ----
