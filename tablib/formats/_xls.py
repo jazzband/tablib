@@ -112,3 +112,11 @@ def dset_sheet(dataset, ws):
                     ws.write(i, j, col)
 
 
+def detect(stream):
+    """Returns True if given stream is valid XLS."""
+    
+    try:
+        xlrd.open_workbook(file_contents=stream)
+        return True
+    except xlrd.XLRDError:
+        return False
