@@ -1,0 +1,1845 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
+<title>The xlrd Module</title>
+</head>
+<body>
+<h1>The xlrd Module</h1>
+<p /><p><b>A Python module for extracting data from MS Excel &#8482; spreadsheet files.
+<br /><br />
+Version 0.7.1 -- 2009-05-31
+</b></p>
+
+<h2>General information</h2>
+
+<h3>Acknowledgements</h3>
+
+<p>
+Development of this module would not have been possible without the document
+"OpenOffice.org's Documentation of the Microsoft Excel File Format"
+("OOo docs" for short).
+The latest version is available from OpenOffice.org in
+<a href="http://sc.openoffice.org/excelfileformat.pdf"> PDF format</a>
+and
+<a href="http://sc.openoffice.org/excelfileformat.odt"> ODT format.</a>
+Small portions of the OOo docs are reproduced in this
+document. A study of the OOo docs is recommended for those who wish a
+deeper understanding of the Excel file layout than the xlrd docs can provide.
+</p>
+
+<p>Backporting to Python 2.1 was partially funded by
+  <a href="http://journyx.com/">
+      Journyx - provider of timesheet and project accounting solutions.
+  </a>
+</p>
+
+<p>Provision of formatting information in version 0.6.1 was funded by
+  <a href="http://www.simplistix.co.uk">
+      Simplistix Ltd.
+  </a>
+</p>
+
+<h3>Unicode</h3>
+
+<p>This module presents all text strings as Python unicode objects.
+From Excel 97 onwards, text in Excel spreadsheets has been stored as Unicode.
+Older files (Excel 95 and earlier) don't keep strings in Unicode;
+a CODEPAGE record provides a codepage number (for example, 1252) which is
+used by xlrd to derive the encoding (for same example: "cp1252") which is
+used to translate to Unicode.</p>
+<small>
+<p>If the CODEPAGE record is missing (possible if the file was created
+by third-party software), xlrd will assume that the encoding is ascii, and keep going.
+If the actual encoding is not ascii, a UnicodeDecodeError exception will be raised and
+you will need to determine the encoding yourself, and tell xlrd:
+<pre>
+    book = xlrd.open_workbook(..., encoding_override="cp1252")
+</pre></p>
+<p>If the CODEPAGE record exists but is wrong (for example, the codepage
+number is 1251, but the strings are actually encoded in koi8_r),
+it can be overridden using the same mechanism.
+The supplied runxlrd.py has a corresponding command-line argument, which
+may be used for experimentation:
+<pre>
+    runxlrd.py -e koi8_r 3rows myfile.xls
+</pre></p>
+<p>The first place to look for an encoding ("codec name") is
+<a href="http://docs.python.org/lib/standard-encodings.html">
+the Python documentation</a>.
+</p>
+</small>
+
+<h3>Dates in Excel spreadsheets</h3>
+
+<p>In reality, there are no such things. What you have are floating point
+numbers and pious hope.
+There are several problems with Excel dates:</p>
+
+<p>(1) Dates are not stored as a separate data type; they are stored as
+floating point numbers and you have to rely on
+(a) the "number format" applied to them in Excel and/or
+(b) knowing which cells are supposed to have dates in them.
+This module helps with (a) by inspecting the
+format that has been applied to each number cell;
+if it appears to be a date format, the cell
+is classified as a date rather than a number. Feedback on this feature,
+especially from non-English-speaking locales, would be appreciated.</p>
+
+<p>(2) Excel for Windows stores dates by default as the number of
+days (or fraction thereof) since 1899-12-31T00:00:00. Excel for
+Macintosh uses a default start date of 1904-01-01T00:00:00. The date
+system can be changed in Excel on a per-workbook basis (for example:
+Tools -&gt; Options -&gt; Calculation, tick the "1904 date system" box).
+This is of course a bad idea if there are already dates in the
+workbook. There is no good reason to change it even if there are no
+dates in the workbook. Which date system is in use is recorded in the
+workbook. A workbook transported from Windows to Macintosh (or vice
+versa) will work correctly with the host Excel. When using this
+module's xldate_as_tuple function to convert numbers from a workbook,
+you must use the datemode attribute of the Book object. If you guess,
+or make a judgement depending on where you believe the workbook was
+created, you run the risk of being 1462 days out of kilter.</p>
+
+<p>Reference:
+http://support.microsoft.com/default.aspx?scid=KB;EN-US;q180162</p>
+
+
+<p>(3) The Excel implementation of the Windows-default 1900-based date system works on the
+incorrect premise that 1900 was a leap year. It interprets the number 60 as meaning 1900-02-29,
+which is not a valid date. Consequently any number less than 61 is ambiguous. Example: is 59 the
+result of 1900-02-28 entered directly, or is it 1900-03-01 minus 2 days? The OpenOffice.org Calc
+program "corrects" the Microsoft problem; entering 1900-02-27 causes the number 59 to be stored.
+Save as an XLS file, then open the file with Excel -- you'll see 1900-02-28 displayed.</p>
+
+<p>Reference: http://support.microsoft.com/default.aspx?scid=kb;en-us;214326</p>
+
+<p>(4) The Macintosh-default 1904-based date system counts 1904-01-02 as day 1 and 1904-01-01 as day zero.
+Thus any number such that (0.0 &lt;= number &lt; 1.0) is ambiguous. Is 0.625 a time of day (15:00:00),
+independent of the calendar,
+or should it be interpreted as an instant on a particular day (1904-01-01T15:00:00)?
+The xldate_* functions in this module
+take the view that such a number is a calendar-independent time of day (like Python's datetime.time type) for both
+date systems. This is consistent with more recent Microsoft documentation
+(for example, the help file for Excel 2002 which says that the first day
+in the 1904 date system is 1904-01-02).
+
+</p><p>(5) Usage of the Excel DATE() function may leave strange dates in a spreadsheet. Quoting the help file,
+in respect of the 1900 date system: "If year is between 0 (zero) and 1899 (inclusive),
+Excel adds that value to 1900 to calculate the year. For example, DATE(108,1,2) returns January 2, 2008 (1900+108)."
+This gimmick, semi-defensible only for arguments up to 99 and only in the pre-Y2K-awareness era,
+means that DATE(1899, 12, 31) is interpreted as 3799-12-31.</p>
+
+<p>For further information, please refer to the documentation for the xldate_* functions.</p>
+
+<h3> Named references, constants, formulas, and macros</h3>
+
+<p>
+A name is used to refer to a cell, a group of cells, a constant
+value, a formula, or a macro. Usually the scope of a name is global
+across the whole workbook. However it can be local to a worksheet.
+For example, if the sales figures are in different cells in
+different sheets, the user may define the name "Sales" in each
+sheet. There are built-in names, like "Print_Area" and
+"Print_Titles"; these two are naturally local to a sheet.
+</p><p>
+To inspect the names with a user interface like MS Excel, OOo Calc,
+or Gnumeric, click on Insert/Names/Define. This will show the global
+names, plus those local to the currently selected sheet.
+</p><p>
+A Book object provides two dictionaries (name_map and
+name_and_scope_map) and a list (name_obj_list) which allow various
+ways of accessing the Name objects. There is one Name object for
+each NAME record found in the workbook. Name objects have many
+attributes, several of which are relevant only when obj.macro is 1.
+</p><p>
+In the examples directory you will find namesdemo.xls which
+showcases the many different ways that names can be used, and
+xlrdnamesAPIdemo.py which offers 3 different queries for inspecting
+the names in your files, and shows how to extract whatever a name is
+referring to. There is currently one "convenience method",
+Name.cell(), which extracts the value in the case where the name
+refers to a single cell. More convenience methods are planned. The
+source code for Name.cell (in __init__.py) is an extra source of
+information on how the Name attributes hang together.
+</p>
+
+<p><i>Name information is <b>not</b> extracted from files older than
+Excel 5.0 (Book.biff_version &lt; 50)</i></p>
+
+<h3>Formatting</h3>
+
+<h4>Introduction</h4>
+
+<p>This collection of features, new in xlrd version 0.6.1, is intended
+to provide the information needed to (1) display/render spreadsheet contents
+(say) on a screen or in a PDF file, and (2) copy spreadsheet data to another
+file without losing the ability to display/render it.</p>
+
+<h4>The Palette; Colour Indexes</h4>
+
+<p>A colour is represented in Excel as a (red, green, blue) ("RGB") tuple
+with each component in range(256). However it is not possible to access an
+unlimited number of colours; each spreadsheet is limited to a palette of 64 different
+colours (24 in Excel 3.0 and 4.0, 8 in Excel 2.0). Colours are referenced by an index
+("colour index") into this palette.
+
+Colour indexes 0 to 7 represent 8 fixed built-in colours: black, white, red, green, blue,
+yellow, magenta, and cyan.</p><p>
+
+The remaining colours in the palette (8 to 63 in Excel 5.0 and later)
+can be changed by the user. In the Excel 2003 UI, Tools/Options/Color presents a palette
+of 7 rows of 8 colours. The last two rows are reserved for use in charts.<br />
+The correspondence between this grid and the assigned
+colour indexes is NOT left-to-right top-to-bottom.<br />
+Indexes 8 to 15 correspond to changeable
+parallels of the 8 fixed colours -- for example, index 7 is forever cyan;
+index 15 starts off being cyan but can be changed by the user.<br />
+
+The default colour for each index depends on the file version; tables of the defaults
+are available in the source code. If the user changes one or more colours,
+a PALETTE record appears in the XLS file -- it gives the RGB values for *all* changeable
+indexes.<br />
+Note that colours can be used in "number formats": "[CYAN]...." and "[COLOR8]...." refer
+to colour index 7; "[COLOR16]...." will produce cyan
+unless the user changes colour index 15 to something else.<br />
+
+</p><p>In addition, there are several "magic" colour indexes used by Excel:<br />
+0x18 (BIFF3-BIFF4), 0x40 (BIFF5-BIFF8): System window text colour for border lines
+(used in XF, CF, and WINDOW2 records)<br />
+0x19 (BIFF3-BIFF4), 0x41 (BIFF5-BIFF8): System window background colour for pattern background
+(used in XF and CF records )<br />
+0x43: System face colour (dialogue background colour)<br />
+0x4D: System window text colour for chart border lines<br />
+0x4E: System window background colour for chart areas<br />
+0x4F: Automatic colour for chart border lines (seems to be always Black)<br />
+0x50: System ToolTip background colour (used in note objects)<br />
+0x51: System ToolTip text colour (used in note objects)<br />
+0x7FFF: System window text colour for fonts (used in FONT and CF records)<br />
+Note 0x7FFF appears to be the *default* colour index. It appears quite often in FONT
+records.<br />
+
+<h4>Default Formatting</h4>
+
+Default formatting is applied to all empty cells (those not described by a cell record).
+Firstly row default information (ROW record, Rowinfo class) is used if available.
+Failing that, column default information (COLINFO record, Colinfo class) is used if available.
+As a last resort the worksheet/workbook default cell format will be used; this
+should always be present in an Excel file,
+described by the XF record with the fixed index 15 (0-based). By default, it uses the
+worksheet/workbook default cell style, described by the very first XF record (index 0).
+
+<h4> Formatting features not included in xlrd version 0.6.1</h4>
+<ul>
+  <li>Rich text i.e. strings containing partial <b>bold</b> <i>italic</i>
+      and <u>underlined</u> text, change of font inside a string, etc.
+      See OOo docs s3.4 and s3.2</li>
+  <li>Asian phonetic text (known as "ruby"), used for Japanese furigana. See OOo docs
+      s3.4.2 (p15)</li>
+  <li>Conditional formatting. See OOo docs
+      s5.12, s6.21 (CONDFMT record), s6.16 (CF record)</li>
+  <li>Miscellaneous sheet-level and book-level items e.g. printing layout, screen panes. </li>
+  <li>Modern Excel file versions don't keep most of the built-in
+      "number formats" in the file; Excel loads formats according to the
+      user's locale. Currently xlrd's emulation of this is limited to
+      a hard-wired table that applies to the US English locale. This may mean
+      that currency symbols, date order, thousands separator, decimals separator, etc
+      are inappropriate. Note that this does not affect users who are copying XLS
+      files, only those who are visually rendering cells.</li>
+</ul>
+
+<h3>Loading worksheets on demand</h3>
+
+</p><p>This feature, new in version 0.7.1, is governed by the on_demand argument
+to the open_workbook() function and allows saving memory and time by loading
+only those sheets that the caller is interested in, and releasing sheets
+when no longer required.</p>
+
+<p>on_demand=False (default): No change. open_workbook() loads global data
+and all sheets, releases resources no longer required (principally the
+str or mmap object containing the Workbook stream), and returns.</p>
+
+<p>on_demand=True and BIFF version &lt; 5.0: A warning message is emitted,
+on_demand is recorded as False, and the old process is followed.</p>
+
+<p>on_demand=True and BIFF version &gt;= 5.0: open_workbook() loads global
+data and returns without releasing resources. At this stage, the only
+information available about sheets is Book.nsheets and Book.sheet_names().</p>
+
+<p>Book.sheet_by_name() and Book.sheet_by_index() will load the requested
+sheet if it is not already loaded.</p>
+
+<p>Book.sheets() will load all/any unloaded sheets.</p>
+
+<p>The caller may save memory by calling
+Book.unload_sheet(sheet_name_or_index) when finished with the sheet.
+This applies irrespective of the state of on_demand.</p>
+
+<p>The caller may re-load an unloaded sheet by calling Book.sheet_by_xxxx()
+ -- except if those required resources have been released (which will
+have happened automatically when on_demand is false). This is the only
+case where an exception will be raised.</p>
+
+<p>The caller may query the state of a sheet:
+Book.sheet_loaded(sheet_name_or_index) -&gt; a bool</p>
+
+<h2>Module Contents</h2>
+<dl>
+<dt><b>BaseObject</b> (class)  [<a href='#biffh.BaseObject-class'>#</a>]</dt>
+<dd>
+<p>Parent of almost all other classes in the package.</p>
+<p>For more information about this class, see <a href='#biffh.BaseObject-class'><i>The BaseObject Class</i></a>.</p>
+</dd>
+<dt><b>Book()</b> (class) [<a href='#__init__.Book-class'>#</a>]</dt>
+<dd>
+<p>Contents of a &quot;workbook&quot;.</p>
+<p>For more information about this class, see <a href='#__init__.Book-class'><i>The Book Class</i></a>.</p>
+</dd>
+<dt><b>Cell(ctype, value, xf_index=None)</b> (class) [<a href='#sheet.Cell-class'>#</a>]</dt>
+<dd>
+<p>Contains the data for one cell.</p>
+<p>For more information about this class, see <a href='#sheet.Cell-class'><i>The Cell Class</i></a>.</p>
+</dd>
+<dt><a id='formula.cellname-function' name='formula.cellname-function'><b>cellname(rowx, colx)</b></a> [<a href='#formula.cellname-function'>#</a>]</dt>
+<dd>
+<p>Utility function: (5, 7) =&gt; 'H6'</p>
+</dd>
+<dt><a id='formula.cellnameabs-function' name='formula.cellnameabs-function'><b>cellnameabs(rowx, colx)</b></a> [<a href='#formula.cellnameabs-function'>#</a>]</dt>
+<dd>
+<p>Utility function: (5, 7) =&gt; '$H$6'</p>
+</dd>
+<dt><b>Colinfo</b> (class)  [<a href='#sheet.Colinfo-class'>#</a>]</dt>
+<dd>
+<p>Width and default formatting information that applies to one or
+more columns in a sheet.</p>
+<p>For more information about this class, see <a href='#sheet.Colinfo-class'><i>The Colinfo Class</i></a>.</p>
+</dd>
+<dt><a id='formula.colname-function' name='formula.colname-function'><b>colname(colx)</b></a> [<a href='#formula.colname-function'>#</a>]</dt>
+<dd>
+<p>Utility function: 7 =&gt; 'H', 27 =&gt; 'AB'</p>
+</dd>
+<dt><a id='__init__.count_records-function' name='__init__.count_records-function'><b>count_records(filename, outfile=sys.stdout)</b></a> [<a href='#__init__.count_records-function'>#</a>]</dt>
+<dd>
+<p>For debugging and analysis: summarise the file's BIFF records.
+I.e. produce a sorted file of (record_name, count).</p>
+<dl>
+<dt><i>filename</i></dt>
+<dd>
+The path to the file to be summarised.</dd>
+<dt><i>outfile</i></dt>
+<dd>
+An open file, to which the summary is written.</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.dump-function' name='__init__.dump-function'><b>dump(filename, outfile=sys.stdout, unnumbered=False)</b></a> [<a href='#__init__.dump-function'>#</a>]</dt>
+<dd>
+<p>For debugging: dump the file's BIFF records in char &amp; hex.
+</p><dl>
+<dt><i>filename</i></dt>
+<dd>
+The path to the file to be dumped.</dd>
+<dt><i>outfile</i></dt>
+<dd>
+An open file, to which the dump is written.</dd>
+<dt><i>unnumbered</i></dt>
+<dd>
+If true, omit offsets (for meaningful diffs).</dd>
+</dl><br />
+</dd>
+<dt><a id='sheet.empty_cell-variable' name='sheet.empty_cell-variable'><b>empty_cell</b></a> (variable) [<a href='#sheet.empty_cell-variable'>#</a>]</dt>
+<dd>
+<p>There is one and only one instance of an empty cell -- it's a singleton. This is it.
+You may use a test like &quot;acell is empty_cell&quot;.</p>
+</dd>
+<dt><b>EqNeAttrs</b> (class)  [<a href='#formatting.EqNeAttrs-class'>#</a>]</dt>
+<dd>
+<p>This mixin class exists solely so that Format, Font, and XF....</p>
+<p>For more information about this class, see <a href='#formatting.EqNeAttrs-class'><i>The EqNeAttrs Class</i></a>.</p>
+</dd>
+<dt><a id='biffh.error_text_from_code-variable' name='biffh.error_text_from_code-variable'><b>error_text_from_code</b></a> (variable) [<a href='#biffh.error_text_from_code-variable'>#</a>]</dt>
+<dd>
+<p /><p>This dictionary can be used to produce a text version of the internal codes
+that Excel uses for error cells. Here are its contents:
+<pre>
+0x00: '#NULL!',  # Intersection of two cell ranges is empty
+0x07: '#DIV/0!', # Division by zero
+0x0F: '#VALUE!', # Wrong type of operand
+0x17: '#REF!',   # Illegal or deleted cell reference
+0x1D: '#NAME?',  # Wrong function or range name
+0x24: '#NUM!',   # Value range overflow
+0x2A: '#N/A!',   # Argument or function not available
+</pre></p>
+</dd>
+<dt><b>Font</b> (class)  [<a href='#formatting.Font-class'>#</a>]</dt>
+<dd>
+<p>An Excel &quot;font&quot; contains the details of not only what is normally
+considered a font, but also several other display attributes.</p>
+<p>For more information about this class, see <a href='#formatting.Font-class'><i>The Font Class</i></a>.</p>
+</dd>
+<dt><b>Format(format_key, ty, format_str)</b> (class) [<a href='#formatting.Format-class'>#</a>]</dt>
+<dd>
+<p>&quot;Number format&quot; information from a FORMAT record.</p>
+<p>For more information about this class, see <a href='#formatting.Format-class'><i>The Format Class</i></a>.</p>
+</dd>
+<dt><b>Name</b> (class)  [<a href='#__init__.Name-class'>#</a>]</dt>
+<dd>
+<p>Information relating to a named reference, formula, macro, etc.</p>
+<p>For more information about this class, see <a href='#__init__.Name-class'><i>The Name Class</i></a>.</p>
+</dd>
+<dt><a id='__init__.open_workbook-function' name='__init__.open_workbook-function'><b>open_workbook(filename=None, 
+logfile=sys.stdout, verbosity=0, pickleable=True, use_mmap=USE_MMAP, 
+file_contents=None, 
+encoding_override=None, 
+formatting_info=False, on_demand=False, 
+)</b></a> [<a href='#__init__.open_workbook-function'>#</a>]</dt>
+<dd>
+<p>Open a spreadsheet file for data extraction.</p>
+<dl>
+<dt><i>filename</i></dt>
+<dd>
+The path to the spreadsheet file to be opened.</dd>
+<dt><i>logfile</i></dt>
+<dd>
+An open file to which messages and diagnostics are written.</dd>
+<dt><i>verbosity</i></dt>
+<dd>
+Increases the volume of trace material written to the logfile.</dd>
+<dt><i>pickleable</i></dt>
+<dd>
+Default is true. In Python 2.4 or earlier, setting to false
+will cause use of array.array objects which save some memory but can't be pickled.
+In Python 2.5, array.arrays are used unconditionally. Note: if you have large files that
+you need to read multiple times, it can be much faster to cPickle.dump() the xlrd.Book object
+once, and use cPickle.load() multiple times.</dd>
+<dt><i>use_mmap</i></dt>
+<dd>
+Whether to use the mmap module is determined heuristically.
+Use this arg to override the result. Current heuristic: mmap is used if it exists.</dd>
+<dt><i>file_contents</i></dt>
+<dd>
+... as a string or an mmap.mmap object or some other behave-alike object.
+If file_contents is supplied, filename will not be used, except (possibly) in messages.</dd>
+<dt><i>encoding_override</i></dt>
+<dd>
+Used to overcome missing or bad codepage information
+in older-version files. Refer to discussion in the <b>Unicode</b> section above.
+<br /> -- New in version 0.6.0
+
+</dd>
+<dt><i>formatting_info</i></dt>
+<dd>
+Governs provision of a reference to an XF (eXtended Format) object
+for each cell in the worksheet.
+<br /> Default is <i>False</i>. This is backwards compatible and saves memory.
+"Blank" cells (those with their own formatting information but no data) are treated as empty
+(by ignoring the file's BLANK and MULBLANK records).
+It cuts off any bottom "margin" of rows of empty (and blank) cells and
+any right "margin" of columns of empty (and blank) cells.
+Only cell_value and cell_type are available.
+<br /> <i>True</i> provides all cells, including empty and blank cells.
+XF information is available for each cell.
+<br /> -- New in version 0.6.1
+
+</dd>
+<dt><i>on_demand</i></dt>
+<dd>
+Governs whether sheets are all loaded initially or when demanded
+by the caller. Please refer back to the section &quot;Loading worksheets on demand&quot; for details.
+-- New in version 0.7.1</dd>
+<dt>Returns:</dt>
+<dd>
+An instance of the Book class.</dd>
+</dl><br />
+</dd>
+<dt><b>Operand(akind=None, avalue=None, arank=0, atext='?')</b> (class) [<a href='#formula.Operand-class'>#</a>]</dt>
+<dd>
+<p>Used in evaluating formulas.</p>
+<p>For more information about this class, see <a href='#formula.Operand-class'><i>The Operand Class</i></a>.</p>
+</dd>
+<dt><a id='formula.rangename3d-function' name='formula.rangename3d-function'><b>rangename3d(book, ref3d)</b></a> [<a href='#formula.rangename3d-function'>#</a>]</dt>
+<dd>
+<p>Utility function:
+<br /> Ref3D((1, 4, 5, 20, 7, 10)) =&gt; 'Sheet2:Sheet3!$H$6:$J$20'
+</p></dd>
+<dt><a id='formula.rangename3drel-function' name='formula.rangename3drel-function'><b>rangename3drel(book, ref3d)</b></a> [<a href='#formula.rangename3drel-function'>#</a>]</dt>
+<dd>
+<p>Utility function:
+<br /> Ref3D(coords=(0, 1, -32, -22, -13, 13), relflags=(0, 0, 1, 1, 1, 1))
+=&gt; 'Sheet1![@-13,#-32]:[@+12,#-23]'
+where '@' refers to the current or base column and '#'
+refers to the current or base row.
+</p></dd>
+<dt><b>Ref3D(atuple)</b> (class) [<a href='#formula.Ref3D-class'>#</a>]</dt>
+<dd>
+<p>Represents an absolute or relative 3-dimensional reference to a box
+of one or more cells.</p>
+<p>For more information about this class, see <a href='#formula.Ref3D-class'><i>The Ref3D Class</i></a>.</p>
+</dd>
+<dt><b>Rowinfo</b> (class)  [<a href='#sheet.Rowinfo-class'>#</a>]</dt>
+<dd>
+<p>Height and default formatting information that applies to a row in a sheet.</p>
+<p>For more information about this class, see <a href='#sheet.Rowinfo-class'><i>The Rowinfo Class</i></a>.</p>
+</dd>
+<dt><b>Sheet(book, position, name, number)</b> (class) [<a href='#sheet.Sheet-class'>#</a>]</dt>
+<dd>
+<p>Contains the data for one worksheet.</p>
+<p>For more information about this class, see <a href='#sheet.Sheet-class'><i>The Sheet Class</i></a>.</p>
+</dd>
+<dt><b>XF</b> (class)  [<a href='#formatting.XF-class'>#</a>]</dt>
+<dd>
+<p>eXtended Formatting information for cells, rows, columns and styles.</p>
+<p>For more information about this class, see <a href='#formatting.XF-class'><i>The XF Class</i></a>.</p>
+</dd>
+<dt><b>XFAlignment</b> (class)  [<a href='#formatting.XFAlignment-class'>#</a>]</dt>
+<dd>
+<p>A collection of the alignment and similar attributes of an XF record.</p>
+<p>For more information about this class, see <a href='#formatting.XFAlignment-class'><i>The XFAlignment Class</i></a>.</p>
+</dd>
+<dt><b>XFBackground</b> (class)  [<a href='#formatting.XFBackground-class'>#</a>]</dt>
+<dd>
+<p>A collection of the background-related attributes of an XF record.</p>
+<p>For more information about this class, see <a href='#formatting.XFBackground-class'><i>The XFBackground Class</i></a>.</p>
+</dd>
+<dt><b>XFBorder</b> (class)  [<a href='#formatting.XFBorder-class'>#</a>]</dt>
+<dd>
+<p>A collection of the border-related attributes of an XF record.</p>
+<p>For more information about this class, see <a href='#formatting.XFBorder-class'><i>The XFBorder Class</i></a>.</p>
+</dd>
+<dt><b>XFProtection</b> (class)  [<a href='#formatting.XFProtection-class'>#</a>]</dt>
+<dd>
+<p>A collection of the protection-related attributes of an XF record.</p>
+<p>For more information about this class, see <a href='#formatting.XFProtection-class'><i>The XFProtection Class</i></a>.</p>
+</dd>
+<dt><a id='xldate.xldate_as_tuple-function' name='xldate.xldate_as_tuple-function'><b>xldate_as_tuple(xldate, datemode)</b></a> [<a href='#xldate.xldate_as_tuple-function'>#</a>]</dt>
+<dd>
+<p>Convert an Excel number (presumed to represent a date, a datetime or a time) into
+a tuple suitable for feeding to datetime or mx.DateTime constructors.</p>
+<dl>
+<dt><i>xldate</i></dt>
+<dd>
+The Excel number</dd>
+<dt><i>datemode</i></dt>
+<dd>
+0: 1900-based, 1: 1904-based.
+<br />WARNING: when using this function to
+interpret the contents of a workbook, you should pass in the Book.datemode
+attribute of that workbook. Whether
+the workbook has ever been anywhere near a Macintosh is irrelevant.
+</dd>
+<dt>Returns:</dt>
+<dd>
+Gregorian (year, month, day, hour, minute, nearest_second).
+<br />Special case: if 0.0 &lt;= xldate &lt; 1.0, it is assumed to represent a time;
+(0, 0, 0, hour, minute, second) will be returned.
+<br />Note: 1904-01-01 is not regarded as a valid date in the datemode 1 system; its "serial number"
+is zero.
+</dd>
+<dt>Raises <b>XLDateNegative</b>:</dt><dd>
+xldate &lt; 0.00
+</dd>
+<dt>Raises <b>XLDateAmbiguous</b>:</dt><dd>
+The 1900 leap-year problem (datemode == 0 and 1.0 &lt;= xldate &lt; 61.0)
+</dd>
+<dt>Raises <b>XLDateTooLarge</b>:</dt><dd>
+Gregorian year 10000 or later</dd>
+<dt>Raises <b>XLDateBadDatemode</b>:</dt><dd>
+datemode arg is neither 0 nor 1</dd>
+<dt>Raises <b>XLDateError</b>:</dt><dd>
+Covers the 4 specific errors</dd>
+</dl><br />
+</dd>
+<dt><a id='xldate.xldate_from_date_tuple-function' name='xldate.xldate_from_date_tuple-function'><b>xldate_from_date_tuple((year, month, day), datemode)</b></a> [<a href='#xldate.xldate_from_date_tuple-function'>#</a>]</dt>
+<dd>
+<p>Convert a date tuple (year, month, day) to an Excel date.</p>
+<dl>
+<dt><i>year</i></dt>
+<dd>
+Gregorian year.</dd>
+<dt><i>month</i></dt>
+<dd>
+1 &lt;= month &lt;= 12
+</dd>
+<dt><i>day</i></dt>
+<dd>
+1 &lt;= day &lt;= last day of that (year, month)
+</dd>
+<dt><i>datemode</i></dt>
+<dd>
+0: 1900-based, 1: 1904-based.</dd>
+<dt>Raises <b>XLDateAmbiguous</b>:</dt><dd>
+The 1900 leap-year problem (datemode == 0 and 1.0 &lt;= xldate &lt; 61.0)
+</dd>
+<dt>Raises <b>XLDateBadDatemode</b>:</dt><dd>
+datemode arg is neither 0 nor 1</dd>
+<dt>Raises <b>XLDateBadTuple</b>:</dt><dd>
+(year, month, day) is too early/late or has invalid component(s)</dd>
+<dt>Raises <b>XLDateError</b>:</dt><dd>
+Covers the specific errors</dd>
+</dl><br />
+</dd>
+<dt><a id='xldate.xldate_from_datetime_tuple-function' name='xldate.xldate_from_datetime_tuple-function'><b>xldate_from_datetime_tuple(datetime_tuple, datemode)</b></a> [<a href='#xldate.xldate_from_datetime_tuple-function'>#</a>]</dt>
+<dd>
+<p>Convert a datetime tuple (year, month, day, hour, minute, second) to an Excel date value.
+For more details, refer to other xldate_from_*_tuple functions.</p>
+<dl>
+<dt><i>datetime_tuple</i></dt>
+<dd>
+(year, month, day, hour, minute, second)</dd>
+<dt><i>datemode</i></dt>
+<dd>
+0: 1900-based, 1: 1904-based.</dd>
+</dl><br />
+</dd>
+<dt><a id='xldate.xldate_from_time_tuple-function' name='xldate.xldate_from_time_tuple-function'><b>xldate_from_time_tuple((hour, minute, second))</b></a> [<a href='#xldate.xldate_from_time_tuple-function'>#</a>]</dt>
+<dd>
+<p>Convert a time tuple (hour, minute, second) to an Excel &quot;date&quot; value (fraction of a day).</p>
+<dl>
+<dt><i>hour</i></dt>
+<dd>
+0 &lt;= hour &lt; 24
+</dd>
+<dt><i>minute</i></dt>
+<dd>
+0 &lt;= minute &lt; 60
+</dd>
+<dt><i>second</i></dt>
+<dd>
+0 &lt;= second &lt; 60
+</dd>
+<dt>Raises <b>XLDateBadTuple</b>:</dt><dd>
+Out-of-range hour, minute, or second</dd>
+</dl><br />
+</dd>
+</dl>
+<h2><a id='biffh.BaseObject-class' name='biffh.BaseObject-class'>The BaseObject Class</a></h2>
+<dl>
+<dt><b>BaseObject</b> (class)  [<a href='#biffh.BaseObject-class'>#</a>]</dt>
+<dd>
+<p>Parent of almost all other classes in the package. Defines a common &quot;dump&quot; method
+for debugging.</p>
+</dd>
+<dt><a id='biffh.BaseObject.dump-method' name='biffh.BaseObject.dump-method'><b>dump(f=None, header=None, footer=None, indent=0)</b></a> [<a href='#biffh.BaseObject.dump-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt><i>f</i></dt>
+<dd>
+open file object, to which the dump is written</dd>
+<dt><i>header</i></dt>
+<dd>
+text to write before the dump</dd>
+<dt><i>footer</i></dt>
+<dd>
+text to write after the dump</dd>
+<dt><i>indent</i></dt>
+<dd>
+number of leading spaces (for recursive calls)</dd>
+</dl><br />
+</dd>
+</dl>
+<h2><a id='__init__.Book-class' name='__init__.Book-class'>The Book Class</a></h2>
+<dl>
+<dt><b>Book()</b> (class) [<a href='#__init__.Book-class'>#</a>]</dt>
+<dd>
+<p>Contents of a "workbook".
+</p><p>WARNING: You don't call this class yourself. You use the Book object that
+was returned when you called xlrd.open_workbook("myfile.xls").</p>
+</dd>
+<dt><a id='__init__.Book.biff_version-attribute' name='__init__.Book.biff_version-attribute'><b>biff_version</b></a> [<a href='#__init__.Book.biff_version-attribute'>#</a>]</dt>
+<dd>
+<p>Version of BIFF (Binary Interchange File Format) used to create the file.
+Latest is 8.0 (represented here as 80), introduced with Excel 97.
+Earliest supported by this module: 2.0 (represented as 20).</p>
+</dd>
+<dt><a id='__init__.Book.codepage-attribute' name='__init__.Book.codepage-attribute'><b>codepage</b></a> [<a href='#__init__.Book.codepage-attribute'>#</a>]</dt>
+<dd>
+<p>An integer denoting the character set used for strings in this file.
+For BIFF 8 and later, this will be 1200, meaning Unicode; more precisely, UTF_16_LE.
+For earlier versions, this is used to derive the appropriate Python encoding
+to be used to convert to Unicode.
+Examples: 1252 -&gt; 'cp1252', 10000 -&gt; 'mac_roman'</p>
+</dd>
+<dt><a id='__init__.Book.colour_map-attribute' name='__init__.Book.colour_map-attribute'><b>colour_map</b></a> [<a href='#__init__.Book.colour_map-attribute'>#</a>]</dt>
+<dd>
+<p>This provides definitions for colour indexes. Please refer to the
+above section "The Palette; Colour Indexes" for an explanation
+of how colours are represented in Excel.<br />
+Colour indexes into the palette map into (red, green, blue) tuples.
+"Magic" indexes e.g. 0x7FFF map to None.
+<i>colour_map</i> is what you need if you want to render cells on screen or in a PDF
+file. If you are writing an output XLS file, use <i>palette_record</i>.
+<br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
+</p></dd>
+<dt><a id='__init__.Book.countries-attribute' name='__init__.Book.countries-attribute'><b>countries</b></a> [<a href='#__init__.Book.countries-attribute'>#</a>]</dt>
+<dd>
+<p>A tuple containing the (telephone system) country code for:<br />
+   [0]: the user-interface setting when the file was created.<br />
+   [1]: the regional settings.<br />
+Example: (1, 61) meaning (USA, Australia).
+This information may give a clue to the correct encoding for an unknown codepage.
+For a long list of observed values, refer to the OpenOffice.org documentation for
+the COUNTRY record.
+</p></dd>
+<dt><a id='__init__.Book.datemode-attribute' name='__init__.Book.datemode-attribute'><b>datemode</b></a> [<a href='#__init__.Book.datemode-attribute'>#</a>]</dt>
+<dd>
+<p>Which date system was in force when this file was last saved.<br />
+   0 =&gt; 1900 system (the Excel for Windows default).<br />
+   1 =&gt; 1904 system (the Excel for Macintosh default).<br />
+</p></dd>
+<dt><a id='__init__.Book.encoding-attribute' name='__init__.Book.encoding-attribute'><b>encoding</b></a> [<a href='#__init__.Book.encoding-attribute'>#</a>]</dt>
+<dd>
+<p>The encoding that was derived from the codepage.</p>
+</dd>
+<dt><a id='__init__.Book.font_list-attribute' name='__init__.Book.font_list-attribute'><b>font_list</b></a> [<a href='#__init__.Book.font_list-attribute'>#</a>]</dt>
+<dd>
+<p>A list of Font class instances, each corresponding to a FONT record.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='__init__.Book.format_list-attribute' name='__init__.Book.format_list-attribute'><b>format_list</b></a> [<a href='#__init__.Book.format_list-attribute'>#</a>]</dt>
+<dd>
+<p>A list of Format objects, each corresponding to a FORMAT record, in
+the order that they appear in the input file.
+It does <i>not</i> contain builtin formats.
+If you are creating an output file using (for example) pyExcelerator,
+use this list.
+The collection to be used for all visual rendering purposes is format_map.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='__init__.Book.format_map-attribute' name='__init__.Book.format_map-attribute'><b>format_map</b></a> [<a href='#__init__.Book.format_map-attribute'>#</a>]</dt>
+<dd>
+<p>The mapping from XF.format_key to Format object.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='__init__.Book.load_time_stage_1-attribute' name='__init__.Book.load_time_stage_1-attribute'><b>load_time_stage_1</b></a> [<a href='#__init__.Book.load_time_stage_1-attribute'>#</a>]</dt>
+<dd>
+<p>Time in seconds to extract the XLS image as a contiguous string (or mmap equivalent).</p>
+</dd>
+<dt><a id='__init__.Book.load_time_stage_2-attribute' name='__init__.Book.load_time_stage_2-attribute'><b>load_time_stage_2</b></a> [<a href='#__init__.Book.load_time_stage_2-attribute'>#</a>]</dt>
+<dd>
+<p>Time in seconds to parse the data from the contiguous string (or mmap equivalent).</p>
+</dd>
+<dt><a id='__init__.Book.name_and_scope_map-attribute' name='__init__.Book.name_and_scope_map-attribute'><b>name_and_scope_map</b></a> [<a href='#__init__.Book.name_and_scope_map-attribute'>#</a>]</dt>
+<dd>
+<p>A mapping from (lower_case_name, scope) to a single Name object.
+<br />  -- New in version 0.6.0
+</p></dd>
+<dt><a id='__init__.Book.name_map-attribute' name='__init__.Book.name_map-attribute'><b>name_map</b></a> [<a href='#__init__.Book.name_map-attribute'>#</a>]</dt>
+<dd>
+<p>A mapping from lower_case_name to a list of Name objects. The list is
+sorted in scope order. Typically there will be one item (of global scope)
+in the list.
+<br />  -- New in version 0.6.0
+</p></dd>
+<dt><a id='__init__.Book.name_obj_list-attribute' name='__init__.Book.name_obj_list-attribute'><b>name_obj_list</b></a> [<a href='#__init__.Book.name_obj_list-attribute'>#</a>]</dt>
+<dd>
+<p>List containing a Name object for each NAME record in the workbook.
+<br />  -- New in version 0.6.0
+</p></dd>
+<dt><a id='__init__.Book.nsheets-attribute' name='__init__.Book.nsheets-attribute'><b>nsheets</b></a> [<a href='#__init__.Book.nsheets-attribute'>#</a>]</dt>
+<dd>
+<p>The number of worksheets present in the workbook file.
+This information is available even when no sheets have yet been loaded.</p>
+</dd>
+<dt><a id='__init__.Book.palette_record-attribute' name='__init__.Book.palette_record-attribute'><b>palette_record</b></a> [<a href='#__init__.Book.palette_record-attribute'>#</a>]</dt>
+<dd>
+<p>If the user has changed any of the colours in the standard palette, the XLS
+file will contain a PALETTE record with 56 (16 for Excel 4.0 and earlier)
+RGB values in it, and this list will be e.g. [(r0, b0, g0), ..., (r55, b55, g55)].
+Otherwise this list will be empty. This is what you need if you are
+writing an output XLS file. If you want to render cells on screen or in a PDF
+file, use colour_map.
+<br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
+</p></dd>
+<dt><a id='__init__.Book.sheet_by_index-method' name='__init__.Book.sheet_by_index-method'><b>sheet_by_index(sheetx)</b></a> [<a href='#__init__.Book.sheet_by_index-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt><i>sheetx</i></dt>
+<dd>
+Sheet index in range(nsheets)</dd>
+<dt>Returns:</dt>
+<dd>
+An object of the Sheet class</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.sheet_by_name-method' name='__init__.Book.sheet_by_name-method'><b>sheet_by_name(sheet_name)</b></a> [<a href='#__init__.Book.sheet_by_name-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt><i>sheet_name</i></dt>
+<dd>
+Name of sheet required</dd>
+<dt>Returns:</dt>
+<dd>
+An object of the Sheet class</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.sheet_loaded-method' name='__init__.Book.sheet_loaded-method'><b>sheet_loaded(sheet_name_or_index)</b></a> [<a href='#__init__.Book.sheet_loaded-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt><i>sheet_name_or_index</i></dt>
+<dd>
+Name or index of sheet enquired upon</dd>
+<dt>Returns:</dt>
+<dd>
+true if sheet is loaded, false otherwise
+<br />  -- New in version 0.7.1
+</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.sheet_names-method' name='__init__.Book.sheet_names-method'><b>sheet_names()</b></a> [<a href='#__init__.Book.sheet_names-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt>Returns:</dt>
+<dd>
+A list of the names of all the worksheets in the workbook file.
+This information is available even when no sheets have yet been loaded.</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.sheets-method' name='__init__.Book.sheets-method'><b>sheets()</b></a> [<a href='#__init__.Book.sheets-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt>Returns:</dt>
+<dd>
+A list of all sheets in the book.
+All sheets not already loaded will be loaded.</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.style_name_map-attribute' name='__init__.Book.style_name_map-attribute'><b>style_name_map</b></a> [<a href='#__init__.Book.style_name_map-attribute'>#</a>]</dt>
+<dd>
+<p>This provides access via name to the extended format information for
+both built-in styles and user-defined styles.<br />
+It maps <i>name</i> to (<i>built_in</i>, <i>xf_index</i>), where:<br />
+<i>name</i> is either the name of a user-defined style,
+or the name of one of the built-in styles. Known built-in names are
+Normal, RowLevel_1 to RowLevel_7,
+ColLevel_1 to ColLevel_7, Comma, Currency, Percent, "Comma [0]",
+"Currency [0]", Hyperlink, and "Followed Hyperlink".<br />
+<i>built_in</i> 1 = built-in style, 0 = user-defined<br />
+<i>xf_index</i> is an index into Book.xf_list.<br />
+References: OOo docs s6.99 (STYLE record); Excel UI Format/Style
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='__init__.Book.unload_sheet-method' name='__init__.Book.unload_sheet-method'><b>unload_sheet(sheet_name_or_index)</b></a> [<a href='#__init__.Book.unload_sheet-method'>#</a>]</dt>
+<dd>
+<dl>
+<dt><i>sheet_name_or_index</i></dt>
+<dd>
+Name or index of sheet to be unloaded.
+<br />  -- New in version 0.7.1
+</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Book.user_name-attribute' name='__init__.Book.user_name-attribute'><b>user_name</b></a> [<a href='#__init__.Book.user_name-attribute'>#</a>]</dt>
+<dd>
+<p>What (if anything) is recorded as the name of the last user to save the file.</p>
+</dd>
+<dt><a id='__init__.Book.xf_list-attribute' name='__init__.Book.xf_list-attribute'><b>xf_list</b></a> [<a href='#__init__.Book.xf_list-attribute'>#</a>]</dt>
+<dd>
+<p>A list of XF class instances, each corresponding to an XF record.
+<br /> -- New in version 0.6.1
+</p></dd>
+</dl>
+<h2><a id='sheet.Cell-class' name='sheet.Cell-class'>The Cell Class</a></h2>
+<dl>
+<dt><b>Cell(ctype, value, xf_index=None)</b> (class) [<a href='#sheet.Cell-class'>#</a>]</dt>
+<dd>
+<p /><p>Contains the data for one cell.</p>
+
+<p>WARNING: You don't call this class yourself. You access Cell objects
+via methods of the Sheet object(s) that you found in the Book object that
+was returned when you called xlrd.open_workbook("myfile.xls").</p>
+<p> Cell objects have three attributes: <i>ctype</i> is an int, <i>value</i>
+(which depends on <i>ctype</i>) and <i>xf_index</i>.
+If "formatting_info" is not enabled when the workbook is opened, xf_index will be None.
+The following table describes the types of cells and how their values
+are represented in Python.</p>
+
+<table border="1" cellpadding="7">
+<tr>
+<th>Type symbol</th>
+<th>Type number</th>
+<th>Python value</th>
+</tr>
+<tr>
+<td>XL_CELL_EMPTY</td>
+<td align="center">0</td>
+<td>empty string u''</td>
+</tr>
+<tr>
+<td>XL_CELL_TEXT</td>
+<td align="center">1</td>
+<td>a Unicode string</td>
+</tr>
+<tr>
+<td>XL_CELL_NUMBER</td>
+<td align="center">2</td>
+<td>float</td>
+</tr>
+<tr>
+<td>XL_CELL_DATE</td>
+<td align="center">3</td>
+<td>float</td>
+</tr>
+<tr>
+<td>XL_CELL_BOOLEAN</td>
+<td align="center">4</td>
+<td>int; 1 means TRUE, 0 means FALSE</td>
+</tr>
+<tr>
+<td>XL_CELL_ERROR</td>
+<td align="center">5</td>
+<td>int representing internal Excel codes; for a text representation,
+refer to the supplied dictionary error_text_from_code</td>
+</tr>
+<tr>
+<td>XL_CELL_BLANK</td>
+<td align="center">6</td>
+<td>empty string u''. Note: this type will appear only when
+open_workbook(..., formatting_info=True) is used.</td>
+</tr>
+</table>
+<p />
+</dd>
+</dl>
+<h2><a id='sheet.Colinfo-class' name='sheet.Colinfo-class'>The Colinfo Class</a></h2>
+<dl>
+<dt><b>Colinfo</b> (class)  [<a href='#sheet.Colinfo-class'>#</a>]</dt>
+<dd>
+<p>Width and default formatting information that applies to one or
+more columns in a sheet. Derived from COLINFO records.
+
+</p><p> Here is the default hierarchy for width, according to the OOo docs:
+
+<br />"""In BIFF3, if a COLINFO record is missing for a column,
+the width specified in the record DEFCOLWIDTH is used instead.
+
+<br />In BIFF4-BIFF7, the width set in this [COLINFO] record is only used,
+if the corresponding bit for this column is cleared in the GCW
+record, otherwise the column width set in the DEFCOLWIDTH record
+is used (the STANDARDWIDTH record is always ignored in this case [see footnote!]).
+
+<br />In BIFF8, if a COLINFO record is missing for a column,
+the width specified in the record STANDARDWIDTH is used.
+If this [STANDARDWIDTH] record is also missing,
+the column width of the record DEFCOLWIDTH is used instead."""
+<br />
+
+Footnote:  The docs on the GCW record say this:
+"""<br />
+If a bit is set, the corresponding column uses the width set in the STANDARDWIDTH
+record. If a bit is cleared, the corresponding column uses the width set in the
+COLINFO record for this column.
+<br />If a bit is set, and the worksheet does not contain the STANDARDWIDTH record, or if
+the bit is cleared, and the worksheet does not contain the COLINFO record, the DEFCOLWIDTH
+record of the worksheet will be used instead.
+<br />"""<br />
+At the moment (2007-01-17) xlrd is going with the GCW version of the story.
+Reference to the source may be useful: see the computed_column_width(colx) method
+of the Sheet class.
+<br />-- New in version 0.6.1
+</p>
+</dd>
+<dt><a id='sheet.Colinfo.bit1_flag-attribute' name='sheet.Colinfo.bit1_flag-attribute'><b>bit1_flag</b></a> [<a href='#sheet.Colinfo.bit1_flag-attribute'>#</a>]</dt>
+<dd>
+<p>Value of a 1-bit flag whose purpose is unknown
+but is often seen set to 1</p>
+</dd>
+<dt><a id='sheet.Colinfo.collapsed-attribute' name='sheet.Colinfo.collapsed-attribute'><b>collapsed</b></a> [<a href='#sheet.Colinfo.collapsed-attribute'>#</a>]</dt>
+<dd>
+<p>1 = column is collapsed</p>
+</dd>
+<dt><a id='sheet.Colinfo.hidden-attribute' name='sheet.Colinfo.hidden-attribute'><b>hidden</b></a> [<a href='#sheet.Colinfo.hidden-attribute'>#</a>]</dt>
+<dd>
+<p>1 = column is hidden</p>
+</dd>
+<dt><a id='sheet.Colinfo.outline_level-attribute' name='sheet.Colinfo.outline_level-attribute'><b>outline_level</b></a> [<a href='#sheet.Colinfo.outline_level-attribute'>#</a>]</dt>
+<dd>
+<p>Outline level of the column, in range(7).
+(0 = no outline)</p>
+</dd>
+<dt><a id='sheet.Colinfo.width-attribute' name='sheet.Colinfo.width-attribute'><b>width</b></a> [<a href='#sheet.Colinfo.width-attribute'>#</a>]</dt>
+<dd>
+<p>Width of the column in 1/256 of the width of the zero character,
+using default font (first FONT record in the file).</p>
+</dd>
+<dt><a id='sheet.Colinfo.xf_index-attribute' name='sheet.Colinfo.xf_index-attribute'><b>xf_index</b></a> [<a href='#sheet.Colinfo.xf_index-attribute'>#</a>]</dt>
+<dd>
+<p>XF index to be used for formatting empty cells.</p>
+</dd>
+</dl>
+<h2><a id='formatting.EqNeAttrs-class' name='formatting.EqNeAttrs-class'>The EqNeAttrs Class</a></h2>
+<dl>
+<dt><b>EqNeAttrs</b> (class)  [<a href='#formatting.EqNeAttrs-class'>#</a>]</dt>
+<dd>
+<p>This mixin class exists solely so that Format, Font, and XF.... objects
+can be compared by value of their attributes.</p>
+</dd>
+</dl>
+<h2><a id='formatting.Font-class' name='formatting.Font-class'>The Font Class</a></h2>
+<dl>
+<dt><b>Font</b> (class)  [<a href='#formatting.Font-class'>#</a>]</dt>
+<dd>
+<p>An Excel "font" contains the details of not only what is normally
+considered a font, but also several other display attributes.
+Items correspond to those in the Excel UI's Format/Cells/Font tab.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='formatting.Font.bold-attribute' name='formatting.Font.bold-attribute'><b>bold</b></a> [<a href='#formatting.Font.bold-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Characters are bold. Redundant; see &quot;weight&quot; attribute.</p>
+</dd>
+<dt><a id='formatting.Font.character_set-attribute' name='formatting.Font.character_set-attribute'><b>character_set</b></a> [<a href='#formatting.Font.character_set-attribute'>#</a>]</dt>
+<dd>
+<p>Values: 0 = ANSI Latin, 1 = System default, 2 = Symbol,
+77 = Apple Roman,
+128 = ANSI Japanese Shift-JIS,
+129 = ANSI Korean (Hangul),
+130 = ANSI Korean (Johab),
+134 = ANSI Chinese Simplified GBK,
+136 = ANSI Chinese Traditional BIG5,
+161 = ANSI Greek,
+162 = ANSI Turkish,
+163 = ANSI Vietnamese,
+177 = ANSI Hebrew,
+178 = ANSI Arabic,
+186 = ANSI Baltic,
+204 = ANSI Cyrillic,
+222 = ANSI Thai,
+238 = ANSI Latin II (Central European),
+255 = OEM Latin I</p>
+</dd>
+<dt><a id='formatting.Font.colour_index-attribute' name='formatting.Font.colour_index-attribute'><b>colour_index</b></a> [<a href='#formatting.Font.colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>An explanation of &quot;colour index&quot; is given in the Formatting
+section at the start of this document.</p>
+</dd>
+<dt><a id='formatting.Font.escapement-attribute' name='formatting.Font.escapement-attribute'><b>escapement</b></a> [<a href='#formatting.Font.escapement-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Superscript, 2 = Subscript.</p>
+</dd>
+<dt><a id='formatting.Font.family-attribute' name='formatting.Font.family-attribute'><b>family</b></a> [<a href='#formatting.Font.family-attribute'>#</a>]</dt>
+<dd>
+<p>0 = None (unknown or don't care)<br />
+1 = Roman (variable width, serifed)<br />
+2 = Swiss (variable width, sans-serifed)<br />
+3 = Modern (fixed width, serifed or sans-serifed)<br />
+4 = Script (cursive)<br />
+5 = Decorative (specialised, for example Old English, Fraktur)
+</p></dd>
+<dt><a id='formatting.Font.font_index-attribute' name='formatting.Font.font_index-attribute'><b>font_index</b></a> [<a href='#formatting.Font.font_index-attribute'>#</a>]</dt>
+<dd>
+<p>The 0-based index used to refer to this Font() instance.
+Note that index 4 is never used; xlrd supplies a dummy place-holder.</p>
+</dd>
+<dt><a id='formatting.Font.height-attribute' name='formatting.Font.height-attribute'><b>height</b></a> [<a href='#formatting.Font.height-attribute'>#</a>]</dt>
+<dd>
+<p>Height of the font (in twips). A twip = 1/20 of a point.</p>
+</dd>
+<dt><a id='formatting.Font.italic-attribute' name='formatting.Font.italic-attribute'><b>italic</b></a> [<a href='#formatting.Font.italic-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Characters are italic.</p>
+</dd>
+<dt><a id='formatting.Font.name-attribute' name='formatting.Font.name-attribute'><b>name</b></a> [<a href='#formatting.Font.name-attribute'>#</a>]</dt>
+<dd>
+<p>The name of the font. Example: u&quot;Arial&quot;</p>
+</dd>
+<dt><a id='formatting.Font.outline-attribute' name='formatting.Font.outline-attribute'><b>outline</b></a> [<a href='#formatting.Font.outline-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Font is outline style (Macintosh only)</p>
+</dd>
+<dt><a id='formatting.Font.shadow-attribute' name='formatting.Font.shadow-attribute'><b>shadow</b></a> [<a href='#formatting.Font.shadow-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Font is shadow style (Macintosh only)</p>
+</dd>
+<dt><a id='formatting.Font.struck_out-attribute' name='formatting.Font.struck_out-attribute'><b>struck_out</b></a> [<a href='#formatting.Font.struck_out-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Characters are struck out.</p>
+</dd>
+<dt><a id='formatting.Font.underline_type-attribute' name='formatting.Font.underline_type-attribute'><b>underline_type</b></a> [<a href='#formatting.Font.underline_type-attribute'>#</a>]</dt>
+<dd>
+<p>0 = None<br />
+1 = Single;  0x21 (33) = Single accounting<br />
+2 = Double;  0x22 (34) = Double accounting
+</p></dd>
+<dt><a id='formatting.Font.underlined-attribute' name='formatting.Font.underlined-attribute'><b>underlined</b></a> [<a href='#formatting.Font.underlined-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Characters are underlined. Redundant; see &quot;underline_type&quot; attribute.</p>
+</dd>
+<dt><a id='formatting.Font.weight-attribute' name='formatting.Font.weight-attribute'><b>weight</b></a> [<a href='#formatting.Font.weight-attribute'>#</a>]</dt>
+<dd>
+<p>Font weight (100-1000). Standard values are 400 for normal text
+and 700 for bold text.</p>
+</dd>
+</dl>
+<h2><a id='formatting.Format-class' name='formatting.Format-class'>The Format Class</a></h2>
+<dl>
+<dt><b>Format(format_key, ty, format_str)</b> (class) [<a href='#formatting.Format-class'>#</a>]</dt>
+<dd>
+<p>"Number format" information from a FORMAT record.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='formatting.Format.format_key-attribute' name='formatting.Format.format_key-attribute'><b>format_key</b></a> [<a href='#formatting.Format.format_key-attribute'>#</a>]</dt>
+<dd>
+<p>The key into Book.format_map</p>
+</dd>
+<dt><a id='formatting.Format.format_str-attribute' name='formatting.Format.format_str-attribute'><b>format_str</b></a> [<a href='#formatting.Format.format_str-attribute'>#</a>]</dt>
+<dd>
+<p>The format string</p>
+</dd>
+<dt><a id='formatting.Format.type-attribute' name='formatting.Format.type-attribute'><b>type</b></a> [<a href='#formatting.Format.type-attribute'>#</a>]</dt>
+<dd>
+<p>A classification that has been inferred from the format string.
+Currently, this is used only to distinguish between numbers and dates.
+<br />Values:
+<br />FUN = 0 # unknown
+<br />FDT = 1 # date
+<br />FNU = 2 # number
+<br />FGE = 3 # general
+<br />FTX = 4 # text
+</p></dd>
+</dl>
+<h2><a id='__init__.Name-class' name='__init__.Name-class'>The Name Class</a></h2>
+<dl>
+<dt><b>Name</b> (class)  [<a href='#__init__.Name-class'>#</a>]</dt>
+<dd>
+<p>Information relating to a named reference, formula, macro, etc.
+<br />  -- New in version 0.6.0
+<br />  -- <i>Name information is <b>not</b> extracted from files older than
+Excel 5.0 (Book.biff_version &lt; 50)</i>
+</p></dd>
+<dt><a id='__init__.Name.area2d-method' name='__init__.Name.area2d-method'><b>area2d(clipped=True)</b></a> [<a href='#__init__.Name.area2d-method'>#</a>]</dt>
+<dd>
+<p>This is a convenience method for the use case where the name
+refers to one rectangular area in one worksheet.</p>
+<dl>
+<dt><i>clipped</i></dt>
+<dd>
+If true (the default), the returned rectangle is clipped
+to fit in (0, sheet.nrows, 0, sheet.ncols) -- it is guaranteed that
+0 &lt;= rowxlo &lt;= rowxhi &lt;= sheet.nrows and that the number of usable rows
+in the area (which may be zero) is rowxhi - rowxlo; likewise for columns.
+</dd>
+<dt>Returns:</dt>
+<dd>
+a tuple (sheet_object, rowxlo, rowxhi, colxlo, colxhi).</dd>
+<dt>Raises <b>XLRDError</b>:</dt><dd>
+The name is not a constant absolute reference
+to a single area in a single sheet.</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Name.binary-attribute' name='__init__.Name.binary-attribute'><b>binary</b></a> [<a href='#__init__.Name.binary-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Formula definition; 1 = Binary data<br />  <i>No examples have been sighted.</i>
+</p></dd>
+<dt><a id='__init__.Name.builtin-attribute' name='__init__.Name.builtin-attribute'><b>builtin</b></a> [<a href='#__init__.Name.builtin-attribute'>#</a>]</dt>
+<dd>
+<p>0 = User-defined name; 1 = Built-in name
+(common examples: Print_Area, Print_Titles; see OOo docs for full list)</p>
+</dd>
+<dt><a id='__init__.Name.cell-method' name='__init__.Name.cell-method'><b>cell()</b></a> [<a href='#__init__.Name.cell-method'>#</a>]</dt>
+<dd>
+<p>This is a convenience method for the frequent use case where the name
+refers to a single cell.</p>
+<dl>
+<dt>Returns:</dt>
+<dd>
+An instance of the Cell class.</dd>
+<dt>Raises <b>XLRDError</b>:</dt><dd>
+The name is not a constant absolute reference
+to a single cell.</dd>
+</dl><br />
+</dd>
+<dt><a id='__init__.Name.complex-attribute' name='__init__.Name.complex-attribute'><b>complex</b></a> [<a href='#__init__.Name.complex-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Simple formula; 1 = Complex formula (array formula or user defined)<br />
+<i>No examples have been sighted.</i>
+</p></dd>
+<dt><a id='__init__.Name.func-attribute' name='__init__.Name.func-attribute'><b>func</b></a> [<a href='#__init__.Name.func-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Command macro; 1 = Function macro. Relevant only if macro == 1</p>
+</dd>
+<dt><a id='__init__.Name.funcgroup-attribute' name='__init__.Name.funcgroup-attribute'><b>funcgroup</b></a> [<a href='#__init__.Name.funcgroup-attribute'>#</a>]</dt>
+<dd>
+<p>Function group. Relevant only if macro == 1; see OOo docs for values.</p>
+</dd>
+<dt><a id='__init__.Name.hidden-attribute' name='__init__.Name.hidden-attribute'><b>hidden</b></a> [<a href='#__init__.Name.hidden-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Visible; 1 = Hidden</p>
+</dd>
+<dt><a id='__init__.Name.macro-attribute' name='__init__.Name.macro-attribute'><b>macro</b></a> [<a href='#__init__.Name.macro-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Standard name; 1 = Macro name</p>
+</dd>
+<dt><a id='__init__.Name.name-attribute' name='__init__.Name.name-attribute'><b>name</b></a> [<a href='#__init__.Name.name-attribute'>#</a>]</dt>
+<dd>
+<p>A Unicode string. If builtin, decoded as per OOo docs.</p>
+</dd>
+<dt><a id='__init__.Name.name_index-attribute' name='__init__.Name.name_index-attribute'><b>name_index</b></a> [<a href='#__init__.Name.name_index-attribute'>#</a>]</dt>
+<dd>
+<p>The index of this object in book.name_obj_list</p>
+</dd>
+<dt><a id='__init__.Name.raw_formula-attribute' name='__init__.Name.raw_formula-attribute'><b>raw_formula</b></a> [<a href='#__init__.Name.raw_formula-attribute'>#</a>]</dt>
+<dd>
+<p>An 8-bit string.</p>
+</dd>
+<dt><a id='__init__.Name.result-attribute' name='__init__.Name.result-attribute'><b>result</b></a> [<a href='#__init__.Name.result-attribute'>#</a>]</dt>
+<dd>
+<p>The result of evaluating the formula, if any.
+If no formula, or evaluation of the formula encountered problems,
+the result is None. Otherwise the result is a single instance of the
+Operand class.</p>
+</dd>
+<dt><a id='__init__.Name.scope-attribute' name='__init__.Name.scope-attribute'><b>scope</b></a> [<a href='#__init__.Name.scope-attribute'>#</a>]</dt>
+<dd>
+<p>-1: The name is global (visible in all calculation sheets).<br />
+-2: The name belongs to a macro sheet or VBA sheet.<br />
+-3: The name is invalid.<br />
+0 &lt;= scope &lt; book.nsheets: The name is local to the sheet whose index is scope.
+</p></dd>
+<dt><a id='__init__.Name.vbasic-attribute' name='__init__.Name.vbasic-attribute'><b>vbasic</b></a> [<a href='#__init__.Name.vbasic-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Sheet macro; 1 = VisualBasic macro. Relevant only if macro == 1</p>
+</dd>
+</dl>
+<h2><a id='formula.Operand-class' name='formula.Operand-class'>The Operand Class</a></h2>
+<dl>
+<dt><b>Operand(akind=None, avalue=None, arank=0, atext='?')</b> (class) [<a href='#formula.Operand-class'>#</a>]</dt>
+<dd>
+<p>Used in evaluating formulas.
+The following table describes the kinds and how their values
+are represented.</p>
+
+<table border="1" cellpadding="7">
+<tr>
+<th>Kind symbol</th>
+<th>Kind number</th>
+<th>Value representation</th>
+</tr>
+<tr>
+<td>oBOOL</td>
+<td align="center">3</td>
+<td>integer: 0 =&gt; False; 1 =&gt; True</td>
+</tr>
+<tr>
+<td>oERR</td>
+<td align="center">4</td>
+<td>None, or an int error code (same as XL_CELL_ERROR in the Cell class).
+</td>
+</tr>
+<tr>
+<td>oMSNG</td>
+<td align="center">5</td>
+<td>Used by Excel as a placeholder for a missing (not supplied) function
+argument. Should *not* appear as a final formula result. Value is None.</td>
+</tr>
+<tr>
+<td>oNUM</td>
+<td align="center">2</td>
+<td>A float. Note that there is no way of distinguishing dates.</td>
+</tr>
+<tr>
+<td>oREF</td>
+<td align="center">-1</td>
+<td>The value is either None or a non-empty list of
+absolute Ref3D instances.<br />
+</td>
+</tr>
+<tr>
+<td>oREL</td>
+<td align="center">-2</td>
+<td>The value is None or a non-empty list of
+fully or partially relative Ref3D instances.
+</td>
+</tr>
+<tr>
+<td>oSTRG</td>
+<td align="center">1</td>
+<td>A Unicode string.</td>
+</tr>
+<tr>
+<td>oUNK</td>
+<td align="center">0</td>
+<td>The kind is unknown or ambiguous. The value is None</td>
+</tr>
+</table>
+<p />
+</dd>
+<dt><a id='formula.Operand.kind-attribute' name='formula.Operand.kind-attribute'><b>kind</b></a> [<a href='#formula.Operand.kind-attribute'>#</a>]</dt>
+<dd>
+<p>oUNK means that the kind of operand is not known unambiguously.</p>
+</dd>
+<dt><a id='formula.Operand.text-attribute' name='formula.Operand.text-attribute'><b>text</b></a> [<a href='#formula.Operand.text-attribute'>#</a>]</dt>
+<dd>
+<p>The reconstituted text of the original formula. Function names will be
+in English irrespective of the original language, which doesn't seem
+to be recorded anywhere. The separator is &quot;,&quot;, not &quot;;&quot; or whatever else
+might be more appropriate for the end-user's locale; patches welcome.</p>
+</dd>
+<dt><a id='formula.Operand.value-attribute' name='formula.Operand.value-attribute'><b>value</b></a> [<a href='#formula.Operand.value-attribute'>#</a>]</dt>
+<dd>
+<p>None means that the actual value of the operand is a variable
+(depends on cell data), not a constant.</p>
+</dd>
+</dl>
+<h2><a id='formula.Ref3D-class' name='formula.Ref3D-class'>The Ref3D Class</a></h2>
+<dl>
+<dt><b>Ref3D(atuple)</b> (class) [<a href='#formula.Ref3D-class'>#</a>]</dt>
+<dd>
+<p /><p>Represents an absolute or relative 3-dimensional reference to a box
+of one or more cells.<br />
+-- New in version 0.6.0
+</p>
+
+<p>The <i>coords</i> attribute is a tuple of the form:<br />
+(shtxlo, shtxhi, rowxlo, rowxhi, colxlo, colxhi)<br />
+where 0 &lt;= thingxlo &lt;= thingx &lt; thingxhi.<br />
+Note that it is quite possible to have thingx &gt; nthings; for example
+Print_Titles could have colxhi == 256 and/or rowxhi == 65536
+irrespective of how many columns/rows are actually used in the worksheet.
+The caller will need to decide how to handle this situation.
+Keyword: IndexError :-)
+</p>
+
+<p>The components of the coords attribute are also available as individual
+attributes: shtxlo, shtxhi, rowxlo, rowxhi, colxlo, and colxhi.</p>
+
+<p>The <i>relflags</i> attribute is a 6-tuple of flags which indicate whether
+the corresponding (sheet|row|col)(lo|hi) is relative (1) or absolute (0).<br />
+Note that there is necessarily no information available as to what cell(s)
+the reference could possibly be relative to. The caller must decide what if
+any use to make of oREL operands. Note also that a partially relative
+reference may well be a typo.
+For example, define name A1Z10 as $a$1:$z10 (missing $ after z)
+while the cursor is on cell Sheet3!A27.<br />
+The resulting Ref3D instance will have coords = (2, 3, 0, -16, 0, 26)
+and relflags = (0, 0, 0, 1, 0, 0).<br />
+So far, only one possibility of a sheet-relative component in
+a reference has been noticed: a 2D reference located in the "current sheet".
+<br /> This will appear as coords = (0, 1, ...) and relflags = (1, 1, ...).
+</p></dd>
+</dl>
+<h2><a id='sheet.Rowinfo-class' name='sheet.Rowinfo-class'>The Rowinfo Class</a></h2>
+<dl>
+<dt><b>Rowinfo</b> (class)  [<a href='#sheet.Rowinfo-class'>#</a>]</dt>
+<dd>
+<p>Height and default formatting information that applies to a row in a sheet.
+Derived from ROW records.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Rowinfo.additional_space_above-attribute' name='sheet.Rowinfo.additional_space_above-attribute'><b>additional_space_above</b></a> [<a href='#sheet.Rowinfo.additional_space_above-attribute'>#</a>]</dt>
+<dd>
+<p>This flag is set, if the upper border of at least one cell in this row
+or if the lower border of at least one cell in the row above is
+formatted with a thick line style. Thin and medium line styles are not
+taken into account.</p>
+</dd>
+<dt><a id='sheet.Rowinfo.additional_space_below-attribute' name='sheet.Rowinfo.additional_space_below-attribute'><b>additional_space_below</b></a> [<a href='#sheet.Rowinfo.additional_space_below-attribute'>#</a>]</dt>
+<dd>
+<p>This flag is set, if the lower border of at least one cell in this row
+or if the upper border of at least one cell in the row below is
+formatted with a medium or thick line style. Thin line styles are not
+taken into account.</p>
+</dd>
+<dt><a id='sheet.Rowinfo.has_default_height-attribute' name='sheet.Rowinfo.has_default_height-attribute'><b>has_default_height</b></a> [<a href='#sheet.Rowinfo.has_default_height-attribute'>#</a>]</dt>
+<dd>
+<p>0 = Row has custom height; 1 = Row has default height</p>
+</dd>
+<dt><a id='sheet.Rowinfo.has_default_xf_index-attribute' name='sheet.Rowinfo.has_default_xf_index-attribute'><b>has_default_xf_index</b></a> [<a href='#sheet.Rowinfo.has_default_xf_index-attribute'>#</a>]</dt>
+<dd>
+<p>1 = the xf_index attribute is usable; 0 = ignore it</p>
+</dd>
+<dt><a id='sheet.Rowinfo.height-attribute' name='sheet.Rowinfo.height-attribute'><b>height</b></a> [<a href='#sheet.Rowinfo.height-attribute'>#</a>]</dt>
+<dd>
+<p>Height of the row, in twips. One twip == 1/20 of a point</p>
+</dd>
+<dt><a id='sheet.Rowinfo.height_mismatch-attribute' name='sheet.Rowinfo.height_mismatch-attribute'><b>height_mismatch</b></a> [<a href='#sheet.Rowinfo.height_mismatch-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Row height and default font height do not match</p>
+</dd>
+<dt><a id='sheet.Rowinfo.hidden-attribute' name='sheet.Rowinfo.hidden-attribute'><b>hidden</b></a> [<a href='#sheet.Rowinfo.hidden-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Row is hidden (manually, or by a filter or outline group)</p>
+</dd>
+<dt><a id='sheet.Rowinfo.outline_group_starts_ends-attribute' name='sheet.Rowinfo.outline_group_starts_ends-attribute'><b>outline_group_starts_ends</b></a> [<a href='#sheet.Rowinfo.outline_group_starts_ends-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Outline group starts or ends here (depending on where the
+outline buttons are located, see WSBOOL record [TODO ??]),
+<i>and</i> is collapsed
+</p></dd>
+<dt><a id='sheet.Rowinfo.outline_level-attribute' name='sheet.Rowinfo.outline_level-attribute'><b>outline_level</b></a> [<a href='#sheet.Rowinfo.outline_level-attribute'>#</a>]</dt>
+<dd>
+<p>Outline level of the row</p>
+</dd>
+<dt><a id='sheet.Rowinfo.xf_index-attribute' name='sheet.Rowinfo.xf_index-attribute'><b>xf_index</b></a> [<a href='#sheet.Rowinfo.xf_index-attribute'>#</a>]</dt>
+<dd>
+<p>Index to default XF record for empty cells in this row.
+Don't use this if has_default_xf_index == 0.</p>
+</dd>
+</dl>
+<h2><a id='sheet.Sheet-class' name='sheet.Sheet-class'>The Sheet Class</a></h2>
+<dl>
+<dt><b>Sheet(book, position, name, number)</b> (class) [<a href='#sheet.Sheet-class'>#</a>]</dt>
+<dd>
+<p /><p>Contains the data for one worksheet.</p>
+
+<p>In the cell access functions, "rowx" is a row index, counting from zero, and "colx" is a
+column index, counting from zero.
+Negative values for row/column indexes and slice positions are supported in the expected fashion.</p>
+
+<p>For information about cell types and cell values, refer to the documentation of the Cell class.</p>
+
+<p>WARNING: You don't call this class yourself. You access Sheet objects via the Book object that
+was returned when you called xlrd.open_workbook("myfile.xls").</p>
+</dd>
+<dt><a id='sheet.Sheet.cell-method' name='sheet.Sheet.cell-method'><b>cell(rowx, colx)</b></a> [<a href='#sheet.Sheet.cell-method'>#</a>]</dt>
+<dd>
+<p>Cell object in the given row and column.</p>
+</dd>
+<dt><a id='sheet.Sheet.cell_type-method' name='sheet.Sheet.cell_type-method'><b>cell_type(rowx, colx)</b></a> [<a href='#sheet.Sheet.cell_type-method'>#</a>]</dt>
+<dd>
+<p>Type of the cell in the given row and column.
+Refer to the documentation of the Cell class.</p>
+</dd>
+<dt><a id='sheet.Sheet.cell_value-method' name='sheet.Sheet.cell_value-method'><b>cell_value(rowx, colx)</b></a> [<a href='#sheet.Sheet.cell_value-method'>#</a>]</dt>
+<dd>
+<p>Value of the cell in the given row and column.</p>
+</dd>
+<dt><a id='sheet.Sheet.cell_xf_index-method' name='sheet.Sheet.cell_xf_index-method'><b>cell_xf_index(rowx, colx)</b></a> [<a href='#sheet.Sheet.cell_xf_index-method'>#</a>]</dt>
+<dd>
+<p>XF index of the cell in the given row and column.
+This is an index into Book.xf_list.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Sheet.col-method' name='sheet.Sheet.col-method'><b>col(colx)</b></a> [<a href='#sheet.Sheet.col-method'>#</a>]</dt>
+<dd>
+<p>Returns a sequence of the Cell objects in the given column.</p>
+</dd>
+<dt><a id='sheet.Sheet.col_label_ranges-attribute' name='sheet.Sheet.col_label_ranges-attribute'><b>col_label_ranges</b></a> [<a href='#sheet.Sheet.col_label_ranges-attribute'>#</a>]</dt>
+<dd>
+<p>List of address ranges of cells containing column labels.
+These are set up in Excel by Insert &gt; Name &gt; Labels &gt; Columns.
+<br /> -- New in version 0.6.0
+<br />How to deconstruct the list:
+<pre>
+for crange in thesheet.col_label_ranges:
+    rlo, rhi, clo, chi = crange
+    for rx in xrange(rlo, rhi):
+        for cx in xrange(clo, chi):
+            print "Column label at (rowx=%d, colx=%d) is %r" \
+                (rx, cx, thesheet.cell_value(rx, cx))
+</pre>
+</p></dd>
+<dt><a id='sheet.Sheet.col_slice-method' name='sheet.Sheet.col_slice-method'><b>col_slice(colx, start_rowx=0, end_rowx=None)</b></a> [<a href='#sheet.Sheet.col_slice-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the Cell objects in the given column.</p>
+</dd>
+<dt><a id='sheet.Sheet.col_types-method' name='sheet.Sheet.col_types-method'><b>col_types(colx, start_rowx=0, end_rowx=None)</b></a> [<a href='#sheet.Sheet.col_types-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the types of the cells in the given column.</p>
+</dd>
+<dt><a id='sheet.Sheet.col_values-method' name='sheet.Sheet.col_values-method'><b>col_values(colx, start_rowx=0, end_rowx=None)</b></a> [<a href='#sheet.Sheet.col_values-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the values of the cells in the given column.</p>
+</dd>
+<dt><a id='sheet.Sheet.colinfo_map-attribute' name='sheet.Sheet.colinfo_map-attribute'><b>colinfo_map</b></a> [<a href='#sheet.Sheet.colinfo_map-attribute'>#</a>]</dt>
+<dd>
+<p>The map from a column index to a Colinfo object. Often there is an entry
+in COLINFO records for all column indexes in range(257).
+Note that xlrd ignores the entry for the non-existent
+257th column. On the other hand, there may be no entry for unused columns.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Sheet.computed_column_width-method' name='sheet.Sheet.computed_column_width-method'><b>computed_column_width(colx)</b></a> [<a href='#sheet.Sheet.computed_column_width-method'>#</a>]</dt>
+<dd>
+<p>Determine column display width.
+<br /> -- New in version 0.6.1
+<br />
+</p><dl>
+<dt><i>colx</i></dt>
+<dd>
+Index of the queried column, range 0 to 255.
+Note that it is possible to find out the width that will be used to display
+columns with no cell information e.g. column IV (colx=255).</dd>
+<dt>Returns:</dt>
+<dd>
+The column width that will be used for displaying
+the given column by Excel, in units of 1/256th of the width of a
+standard character (the digit zero in the first font).</dd>
+</dl><br />
+</dd>
+<dt><a id='sheet.Sheet.default_additional_space_above-attribute' name='sheet.Sheet.default_additional_space_above-attribute'><b>default_additional_space_above</b></a> [<a href='#sheet.Sheet.default_additional_space_above-attribute'>#</a>]</dt>
+<dd>
+<p>Default value to be used for a row if there is
+no ROW record for that row.
+From the <i>optional</i> DEFAULTROWHEIGHT record.
+</p></dd>
+<dt><a id='sheet.Sheet.default_additional_space_below-attribute' name='sheet.Sheet.default_additional_space_below-attribute'><b>default_additional_space_below</b></a> [<a href='#sheet.Sheet.default_additional_space_below-attribute'>#</a>]</dt>
+<dd>
+<p>Default value to be used for a row if there is
+no ROW record for that row.
+From the <i>optional</i> DEFAULTROWHEIGHT record.
+</p></dd>
+<dt><a id='sheet.Sheet.default_row_height-attribute' name='sheet.Sheet.default_row_height-attribute'><b>default_row_height</b></a> [<a href='#sheet.Sheet.default_row_height-attribute'>#</a>]</dt>
+<dd>
+<p>Default value to be used for a row if there is
+no ROW record for that row.
+From the <i>optional</i> DEFAULTROWHEIGHT record.
+</p></dd>
+<dt><a id='sheet.Sheet.default_row_height_mismatch-attribute' name='sheet.Sheet.default_row_height_mismatch-attribute'><b>default_row_height_mismatch</b></a> [<a href='#sheet.Sheet.default_row_height_mismatch-attribute'>#</a>]</dt>
+<dd>
+<p>Default value to be used for a row if there is
+no ROW record for that row.
+From the <i>optional</i> DEFAULTROWHEIGHT record.
+</p></dd>
+<dt><a id='sheet.Sheet.default_row_hidden-attribute' name='sheet.Sheet.default_row_hidden-attribute'><b>default_row_hidden</b></a> [<a href='#sheet.Sheet.default_row_hidden-attribute'>#</a>]</dt>
+<dd>
+<p>Default value to be used for a row if there is
+no ROW record for that row.
+From the <i>optional</i> DEFAULTROWHEIGHT record.
+</p></dd>
+<dt><a id='sheet.Sheet.defcolwidth-attribute' name='sheet.Sheet.defcolwidth-attribute'><b>defcolwidth</b></a> [<a href='#sheet.Sheet.defcolwidth-attribute'>#</a>]</dt>
+<dd>
+<p>Default column width from DEFCOLWIDTH record, else None.
+From the OOo docs:<br />
+"""Column width in characters, using the width of the zero character
+from default font (first FONT record in the file). Excel adds some
+extra space to the default width, depending on the default font and
+default font size. The algorithm how to exactly calculate the resulting
+column width is not known.<br />
+Example: The default width of 8 set in this record results in a column
+width of 8.43 using Arial font with a size of 10 points."""<br />
+For the default hierarchy, refer to the Colinfo class above.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Sheet.gcw-attribute' name='sheet.Sheet.gcw-attribute'><b>gcw</b></a> [<a href='#sheet.Sheet.gcw-attribute'>#</a>]</dt>
+<dd>
+<p>A 256-element tuple corresponding to the contents of the GCW record for this sheet.
+If no such record, treat as all bits zero.
+Applies to BIFF4-7 only. See docs of Colinfo class for discussion.</p>
+</dd>
+<dt><a id='sheet.Sheet.merged_cells-attribute' name='sheet.Sheet.merged_cells-attribute'><b>merged_cells</b></a> [<a href='#sheet.Sheet.merged_cells-attribute'>#</a>]</dt>
+<dd>
+<p>List of address ranges of cells which have been merged.
+These are set up in Excel by Format &gt; Cells &gt; Alignment, then ticking
+the "Merge cells" box.
+<br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
+<br />How to deconstruct the list:
+<pre>
+for crange in thesheet.merged_cells:
+    rlo, rhi, clo, chi = crange
+    for rowx in xrange(rlo, rhi):
+        for colx in xrange(clo, chi):
+            # cell (rlo, clo) (the top left one) will carry the data
+            # and formatting info; the remainder will be recorded as
+            # blank cells, but a renderer will apply the formatting info
+            # for the top left cell (e.g. border, pattern) to all cells in
+            # the range.
+</pre>
+</p></dd>
+<dt><a id='sheet.Sheet.name-attribute' name='sheet.Sheet.name-attribute'><b>name</b></a> [<a href='#sheet.Sheet.name-attribute'>#</a>]</dt>
+<dd>
+<p>Name of sheet.</p>
+</dd>
+<dt><a id='sheet.Sheet.ncols-attribute' name='sheet.Sheet.ncols-attribute'><b>ncols</b></a> [<a href='#sheet.Sheet.ncols-attribute'>#</a>]</dt>
+<dd>
+<p>Number of columns in sheet. A column index is in range(thesheet.ncols).</p>
+</dd>
+<dt><a id='sheet.Sheet.nrows-attribute' name='sheet.Sheet.nrows-attribute'><b>nrows</b></a> [<a href='#sheet.Sheet.nrows-attribute'>#</a>]</dt>
+<dd>
+<p>Number of rows in sheet. A row index is in range(thesheet.nrows).</p>
+</dd>
+<dt><a id='sheet.Sheet.row-method' name='sheet.Sheet.row-method'><b>row(rowx)</b></a> [<a href='#sheet.Sheet.row-method'>#</a>]</dt>
+<dd>
+<p>Returns a sequence of the Cell objects in the given row.</p>
+</dd>
+<dt><a id='sheet.Sheet.row_label_ranges-attribute' name='sheet.Sheet.row_label_ranges-attribute'><b>row_label_ranges</b></a> [<a href='#sheet.Sheet.row_label_ranges-attribute'>#</a>]</dt>
+<dd>
+<p>List of address ranges of cells containing row labels.
+For more details, see <i>col_label_ranges</i> above.
+<br /> -- New in version 0.6.0
+</p></dd>
+<dt><a id='sheet.Sheet.row_slice-method' name='sheet.Sheet.row_slice-method'><b>row_slice(rowx, start_colx=0, end_colx=None)</b></a> [<a href='#sheet.Sheet.row_slice-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the Cell objects in the given row.</p>
+</dd>
+<dt><a id='sheet.Sheet.row_types-method' name='sheet.Sheet.row_types-method'><b>row_types(rowx, start_colx=0, end_colx=None)</b></a> [<a href='#sheet.Sheet.row_types-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the types
+of the cells in the given row.</p>
+</dd>
+<dt><a id='sheet.Sheet.row_values-method' name='sheet.Sheet.row_values-method'><b>row_values(rowx, start_colx=0, end_colx=None)</b></a> [<a href='#sheet.Sheet.row_values-method'>#</a>]</dt>
+<dd>
+<p>Returns a slice of the values
+of the cells in the given row.</p>
+</dd>
+<dt><a id='sheet.Sheet.rowinfo_map-attribute' name='sheet.Sheet.rowinfo_map-attribute'><b>rowinfo_map</b></a> [<a href='#sheet.Sheet.rowinfo_map-attribute'>#</a>]</dt>
+<dd>
+<p>The map from a row index to a Rowinfo object. Note that it is possible
+to have missing entries -- at least one source of XLS files doesn't
+bother writing ROW records.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Sheet.standardwidth-attribute' name='sheet.Sheet.standardwidth-attribute'><b>standardwidth</b></a> [<a href='#sheet.Sheet.standardwidth-attribute'>#</a>]</dt>
+<dd>
+<p>Default column width from STANDARDWIDTH record, else None.
+From the OOo docs:<br />
+"""Default width of the columns in 1/256 of the width of the zero
+character, using default font (first FONT record in the file)."""<br />
+For the default hierarchy, refer to the Colinfo class above.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='sheet.Sheet.visibility-attribute' name='sheet.Sheet.visibility-attribute'><b>visibility</b></a> [<a href='#sheet.Sheet.visibility-attribute'>#</a>]</dt>
+<dd>
+<p>Visibility of the sheet. 0 = visible, 1 = hidden (can be unhidden
+by user -- Format/Sheet/Unhide), 2 = &quot;very hidden&quot; (can be unhidden
+only by VBA macro).</p>
+</dd>
+</dl>
+<h2><a id='formatting.XF-class' name='formatting.XF-class'>The XF Class</a></h2>
+<dl>
+<dt><b>XF</b> (class)  [<a href='#formatting.XF-class'>#</a>]</dt>
+<dd>
+<p>eXtended Formatting information for cells, rows, columns and styles.
+<br /> -- New in version 0.6.1
+
+</p><p>Each of the 6 flags below describes the validity of
+a specific group of attributes.
+<br />
+In cell XFs, flag==0 means the attributes of the parent style XF are used,
+(but only if the attributes are valid there); flag==1 means the attributes
+of this XF are used.<br />
+In style XFs, flag==0 means the attribute setting is valid; flag==1 means
+the attribute should be ignored.<br />
+Note that the API
+provides both "raw" XFs and "computed" XFs -- in the latter case, cell XFs
+have had the above inheritance mechanism applied.
+</p>
+</dd>
+<dt><a id='formatting.XF._alignment_flag-attribute' name='formatting.XF._alignment_flag-attribute'><b>_alignment_flag</b></a> [<a href='#formatting.XF._alignment_flag-attribute'>#</a>]</dt>
+<dd>
+</dd>
+<dt><a id='formatting.XF._background_flag-attribute' name='formatting.XF._background_flag-attribute'><b>_background_flag</b></a> [<a href='#formatting.XF._background_flag-attribute'>#</a>]</dt>
+<dd>
+</dd>
+<dt><a id='formatting.XF._border_flag-attribute' name='formatting.XF._border_flag-attribute'><b>_border_flag</b></a> [<a href='#formatting.XF._border_flag-attribute'>#</a>]</dt>
+<dd>
+</dd>
+<dt><a id='formatting.XF._font_flag-attribute' name='formatting.XF._font_flag-attribute'><b>_font_flag</b></a> [<a href='#formatting.XF._font_flag-attribute'>#</a>]</dt>
+<dd>
+</dd>
+<dt><a id='formatting.XF._format_flag-attribute' name='formatting.XF._format_flag-attribute'><b>_format_flag</b></a> [<a href='#formatting.XF._format_flag-attribute'>#</a>]</dt>
+<dd>
+</dd>
+<dt><a id='formatting.XF._protection_flag-attribute' name='formatting.XF._protection_flag-attribute'><b>_protection_flag</b></a> [<a href='#formatting.XF._protection_flag-attribute'>#</a>]</dt>
+<dd>
+<p>&#160;
+</p></dd>
+<dt><a id='formatting.XF.alignment-attribute' name='formatting.XF.alignment-attribute'><b>alignment</b></a> [<a href='#formatting.XF.alignment-attribute'>#</a>]</dt>
+<dd>
+<p>An instance of an XFAlignment object.</p>
+</dd>
+<dt><a id='formatting.XF.background-attribute' name='formatting.XF.background-attribute'><b>background</b></a> [<a href='#formatting.XF.background-attribute'>#</a>]</dt>
+<dd>
+<p>An instance of an XFBackground object.</p>
+</dd>
+<dt><a id='formatting.XF.border-attribute' name='formatting.XF.border-attribute'><b>border</b></a> [<a href='#formatting.XF.border-attribute'>#</a>]</dt>
+<dd>
+<p>An instance of an XFBorder object.</p>
+</dd>
+<dt><a id='formatting.XF.font_index-attribute' name='formatting.XF.font_index-attribute'><b>font_index</b></a> [<a href='#formatting.XF.font_index-attribute'>#</a>]</dt>
+<dd>
+<p>Index into Book.font_list</p>
+</dd>
+<dt><a id='formatting.XF.format_key-attribute' name='formatting.XF.format_key-attribute'><b>format_key</b></a> [<a href='#formatting.XF.format_key-attribute'>#</a>]</dt>
+<dd>
+<p>Key into Book.format_map
+</p><p>
+Warning: OOo docs on the XF record call this "Index to FORMAT record".
+It is not an index in the Python sense. It is a key to a map.
+It is true <i>only</i> for Excel 4.0 and earlier files
+that the key into format_map from an XF instance
+is the same as the index into format_list, and <i>only</i>
+if the index is less than 164.
+</p>
+</dd>
+<dt><a id='formatting.XF.is_style-attribute' name='formatting.XF.is_style-attribute'><b>is_style</b></a> [<a href='#formatting.XF.is_style-attribute'>#</a>]</dt>
+<dd>
+<p>0 = cell XF, 1 = style XF</p>
+</dd>
+<dt><a id='formatting.XF.parent_style_index-attribute' name='formatting.XF.parent_style_index-attribute'><b>parent_style_index</b></a> [<a href='#formatting.XF.parent_style_index-attribute'>#</a>]</dt>
+<dd>
+<p>cell XF: Index into Book.xf_list
+of this XF's style XF<br />
+style XF: 0xFFF
+</p></dd>
+<dt><a id='formatting.XF.protection-attribute' name='formatting.XF.protection-attribute'><b>protection</b></a> [<a href='#formatting.XF.protection-attribute'>#</a>]</dt>
+<dd>
+<p>An instance of an XFProtection object.</p>
+</dd>
+<dt><a id='formatting.XF.xf_index-attribute' name='formatting.XF.xf_index-attribute'><b>xf_index</b></a> [<a href='#formatting.XF.xf_index-attribute'>#</a>]</dt>
+<dd>
+<p>Index into Book.xf_list</p>
+</dd>
+</dl>
+<h2><a id='formatting.XFAlignment-class' name='formatting.XFAlignment-class'>The XFAlignment Class</a></h2>
+<dl>
+<dt><b>XFAlignment</b> (class)  [<a href='#formatting.XFAlignment-class'>#</a>]</dt>
+<dd>
+<p>A collection of the alignment and similar attributes of an XF record.
+Items correspond to those in the Excel UI's Format/Cells/Alignment tab.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='formatting.XFAlignment.hor_align-attribute' name='formatting.XFAlignment.hor_align-attribute'><b>hor_align</b></a> [<a href='#formatting.XFAlignment.hor_align-attribute'>#</a>]</dt>
+<dd>
+<p>Values: section 6.115 (p 214) of OOo docs</p>
+</dd>
+<dt><a id='formatting.XFAlignment.indent_level-attribute' name='formatting.XFAlignment.indent_level-attribute'><b>indent_level</b></a> [<a href='#formatting.XFAlignment.indent_level-attribute'>#</a>]</dt>
+<dd>
+<p>A number in range(15).</p>
+</dd>
+<dt><a id='formatting.XFAlignment.rotation-attribute' name='formatting.XFAlignment.rotation-attribute'><b>rotation</b></a> [<a href='#formatting.XFAlignment.rotation-attribute'>#</a>]</dt>
+<dd>
+<p>Values: section 6.115 (p 215) of OOo docs.<br />
+Note: file versions BIFF7 and earlier use the documented
+"orientation" attribute; this will be mapped (without loss)
+into "rotation".
+</p></dd>
+<dt><a id='formatting.XFAlignment.shrink_to_fit-attribute' name='formatting.XFAlignment.shrink_to_fit-attribute'><b>shrink_to_fit</b></a> [<a href='#formatting.XFAlignment.shrink_to_fit-attribute'>#</a>]</dt>
+<dd>
+<p>1 = shrink font size to fit text into cell.</p>
+</dd>
+<dt><a id='formatting.XFAlignment.text_direction-attribute' name='formatting.XFAlignment.text_direction-attribute'><b>text_direction</b></a> [<a href='#formatting.XFAlignment.text_direction-attribute'>#</a>]</dt>
+<dd>
+<p>0 = according to context; 1 = left-to-right; 2 = right-to-left</p>
+</dd>
+<dt><a id='formatting.XFAlignment.text_wrapped-attribute' name='formatting.XFAlignment.text_wrapped-attribute'><b>text_wrapped</b></a> [<a href='#formatting.XFAlignment.text_wrapped-attribute'>#</a>]</dt>
+<dd>
+<p>1 = text is wrapped at right margin</p>
+</dd>
+<dt><a id='formatting.XFAlignment.vert_align-attribute' name='formatting.XFAlignment.vert_align-attribute'><b>vert_align</b></a> [<a href='#formatting.XFAlignment.vert_align-attribute'>#</a>]</dt>
+<dd>
+<p>Values: section 6.115 (p 215) of OOo docs</p>
+</dd>
+</dl>
+<h2><a id='formatting.XFBackground-class' name='formatting.XFBackground-class'>The XFBackground Class</a></h2>
+<dl>
+<dt><b>XFBackground</b> (class)  [<a href='#formatting.XFBackground-class'>#</a>]</dt>
+<dd>
+<p>A collection of the background-related attributes of an XF record.
+Items correspond to those in the Excel UI's Format/Cells/Patterns tab.
+An explanation of "colour index" is given in the Formatting
+section at the start of this document.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='formatting.XFBackground.background_colour_index-attribute' name='formatting.XFBackground.background_colour_index-attribute'><b>background_colour_index</b></a> [<a href='#formatting.XFBackground.background_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>See section 3.11 of the OOo docs.</p>
+</dd>
+<dt><a id='formatting.XFBackground.fill_pattern-attribute' name='formatting.XFBackground.fill_pattern-attribute'><b>fill_pattern</b></a> [<a href='#formatting.XFBackground.fill_pattern-attribute'>#</a>]</dt>
+<dd>
+<p>See section 3.11 of the OOo docs.</p>
+</dd>
+<dt><a id='formatting.XFBackground.pattern_colour_index-attribute' name='formatting.XFBackground.pattern_colour_index-attribute'><b>pattern_colour_index</b></a> [<a href='#formatting.XFBackground.pattern_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>See section 3.11 of the OOo docs.</p>
+</dd>
+</dl>
+<h2><a id='formatting.XFBorder-class' name='formatting.XFBorder-class'>The XFBorder Class</a></h2>
+<dl>
+<dt><b>XFBorder</b> (class)  [<a href='#formatting.XFBorder-class'>#</a>]</dt>
+<dd>
+<p /><p>A collection of the border-related attributes of an XF record.
+Items correspond to those in the Excel UI's Format/Cells/Border tab.</p>
+<p> An explanations of &quot;colour index&quot; is given in the Formatting
+section at the start of this document.
+There are five line style attributes; possible values and the
+associated meanings are:
+0&#160;=&#160;No line,
+1&#160;=&#160;Thin,
+2&#160;=&#160;Medium,
+3&#160;=&#160;Dashed,
+4&#160;=&#160;Dotted,
+5&#160;=&#160;Thick,
+6&#160;=&#160;Double,
+7&#160;=&#160;Hair,
+8&#160;=&#160;Medium dashed,
+9&#160;=&#160;Thin dash-dotted,
+10&#160;=&#160;Medium dash-dotted,
+11&#160;=&#160;Thin dash-dot-dotted,
+12&#160;=&#160;Medium dash-dot-dotted,
+13&#160;=&#160;Slanted medium dash-dotted.
+The line styles 8 to 13 appear in BIFF8 files (Excel 97 and later) only.
+For pictures of the line styles, refer to OOo docs s3.10 (p22)
+&quot;Line Styles for Cell Borders (BIFF3-BIFF8)&quot;.</p>
+<br /> -- New in version 0.6.1
+</dd>
+<dt><a id='formatting.XFBorder.bottom_colour_index-attribute' name='formatting.XFBorder.bottom_colour_index-attribute'><b>bottom_colour_index</b></a> [<a href='#formatting.XFBorder.bottom_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>The colour index for the cell's bottom line</p>
+</dd>
+<dt><a id='formatting.XFBorder.bottom_line_style-attribute' name='formatting.XFBorder.bottom_line_style-attribute'><b>bottom_line_style</b></a> [<a href='#formatting.XFBorder.bottom_line_style-attribute'>#</a>]</dt>
+<dd>
+<p>The line style for the cell's bottom line</p>
+</dd>
+<dt><a id='formatting.XFBorder.diag_colour_index-attribute' name='formatting.XFBorder.diag_colour_index-attribute'><b>diag_colour_index</b></a> [<a href='#formatting.XFBorder.diag_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>The colour index for the cell's diagonal lines, if any</p>
+</dd>
+<dt><a id='formatting.XFBorder.diag_down-attribute' name='formatting.XFBorder.diag_down-attribute'><b>diag_down</b></a> [<a href='#formatting.XFBorder.diag_down-attribute'>#</a>]</dt>
+<dd>
+<p>1 = draw a diagonal from top left to bottom right</p>
+</dd>
+<dt><a id='formatting.XFBorder.diag_line_style-attribute' name='formatting.XFBorder.diag_line_style-attribute'><b>diag_line_style</b></a> [<a href='#formatting.XFBorder.diag_line_style-attribute'>#</a>]</dt>
+<dd>
+<p>The line style for the cell's diagonal lines, if any</p>
+</dd>
+<dt><a id='formatting.XFBorder.diag_up-attribute' name='formatting.XFBorder.diag_up-attribute'><b>diag_up</b></a> [<a href='#formatting.XFBorder.diag_up-attribute'>#</a>]</dt>
+<dd>
+<p>1 = draw a diagonal from bottom left to top right</p>
+</dd>
+<dt><a id='formatting.XFBorder.left_colour_index-attribute' name='formatting.XFBorder.left_colour_index-attribute'><b>left_colour_index</b></a> [<a href='#formatting.XFBorder.left_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>The colour index for the cell's left line</p>
+</dd>
+<dt><a id='formatting.XFBorder.left_line_style-attribute' name='formatting.XFBorder.left_line_style-attribute'><b>left_line_style</b></a> [<a href='#formatting.XFBorder.left_line_style-attribute'>#</a>]</dt>
+<dd>
+<p>The line style for the cell's left line</p>
+</dd>
+<dt><a id='formatting.XFBorder.right_colour_index-attribute' name='formatting.XFBorder.right_colour_index-attribute'><b>right_colour_index</b></a> [<a href='#formatting.XFBorder.right_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>The colour index for the cell's right line</p>
+</dd>
+<dt><a id='formatting.XFBorder.right_line_style-attribute' name='formatting.XFBorder.right_line_style-attribute'><b>right_line_style</b></a> [<a href='#formatting.XFBorder.right_line_style-attribute'>#</a>]</dt>
+<dd>
+<p>The line style for the cell's right line</p>
+</dd>
+<dt><a id='formatting.XFBorder.top_colour_index-attribute' name='formatting.XFBorder.top_colour_index-attribute'><b>top_colour_index</b></a> [<a href='#formatting.XFBorder.top_colour_index-attribute'>#</a>]</dt>
+<dd>
+<p>The colour index for the cell's top line</p>
+</dd>
+<dt><a id='formatting.XFBorder.top_line_style-attribute' name='formatting.XFBorder.top_line_style-attribute'><b>top_line_style</b></a> [<a href='#formatting.XFBorder.top_line_style-attribute'>#</a>]</dt>
+<dd>
+<p>The line style for the cell's top line</p>
+</dd>
+</dl>
+<h2><a id='formatting.XFProtection-class' name='formatting.XFProtection-class'>The XFProtection Class</a></h2>
+<dl>
+<dt><b>XFProtection</b> (class)  [<a href='#formatting.XFProtection-class'>#</a>]</dt>
+<dd>
+<p>A collection of the protection-related attributes of an XF record.
+Items correspond to those in the Excel UI's Format/Cells/Protection tab.
+Note the OOo docs include the "cell or style" bit
+in this bundle of attributes.
+This is incorrect; the bit is used in determining which bundles to use.
+<br /> -- New in version 0.6.1
+</p></dd>
+<dt><a id='formatting.XFProtection.cell_locked-attribute' name='formatting.XFProtection.cell_locked-attribute'><b>cell_locked</b></a> [<a href='#formatting.XFProtection.cell_locked-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Cell is prevented from being changed, moved, resized, or deleted
+(only if the sheet is protected).</p>
+</dd>
+<dt><a id='formatting.XFProtection.formula_hidden-attribute' name='formatting.XFProtection.formula_hidden-attribute'><b>formula_hidden</b></a> [<a href='#formatting.XFProtection.formula_hidden-attribute'>#</a>]</dt>
+<dd>
+<p>1 = Hide formula so that it doesn't appear in the formula bar when
+the cell is selected (only if the sheet is protected).</p>
+</dd>
+</dl>
+</body></html>

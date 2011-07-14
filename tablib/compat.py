@@ -39,6 +39,7 @@ else:
     from cStringIO import StringIO as BytesIO
     from cStringIO import StringIO
     import tablib.packages.xlwt as xlwt
+    import tablib.packages.xlrd as xlrd
     from tablib.packages import markup
     from itertools import ifilter
     from tablib.packages import openpyxl
