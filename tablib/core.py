@@ -57,7 +57,14 @@ class Row(object):
         del self._row[i]
 
     def __getstate__(self):
-        return {'slot': [getattr(self, slot) for slot in self.__slots__]}
+
+        slots = dict()
+
+        for slot in self.__slots__:
+            attribute = getattr(self, slot)
+            slots[slot] = attribute
+
+        return slots
 
     def __setstate__(self, state):
         for (k, v) in list(state.items()): setattr(self, k, v)
