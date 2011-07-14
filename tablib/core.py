@@ -29,7 +29,7 @@ __docformat__ = 'restructuredtext'
 class Row(object):
     """Internal Row object. Mainly used for filtering."""
 
-    __slots__ = ['tuple', '_row', 'tags']
+    __slots__ = ['_row', 'tags']
 
     def __init__(self, row=list(), tags=list()):
         self._row = list(row)
