@@ -29,7 +29,7 @@ __docformat__ = 'restructuredtext'
 class Row(object):
     """Internal Row object. Mainly used for filtering."""
 
-    __slots__ = ['tuple', '_row', 'tags']
+    __slots__ = ['_row', 'tags']
 
     def __init__(self, row=list(), tags=list()):
         self._row = list(row)
@@ -57,7 +57,14 @@ class Row(object):
         del self._row[i]
 
     def __getstate__(self):
-        return {'slot': [getattr(self, slot) for slot in self.__slots__]}
+
+        slots = dict()
+
+        for slot in self.__slots__:
+            attribute = getattr(self, slot)
+            slots[slot] = attribute
+
+        return slots
 
     def __setstate__(self, state):
         for (k, v) in list(state.items()): setattr(self, k, v)
