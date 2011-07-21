@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=us-ascii' />
+<title>The compdoc Module</title>
+</head>
+<body>
+<h1>The compdoc Module</h1>
+<p>Implements the minimal functionality required
+to extract a "Workbook" or "Book" stream (as one big string)
+from an OLE2 Compound Document file.
+</p><p>Copyright &#169; 2005-2008 Stephen John Machin, Lingfo Pty Ltd</p>
+<p>This module is part of the xlrd package, which is released under a BSD-style licence.</p>
+<h2>Module Contents</h2>
+<dl>
+<dt><b>CompDoc(mem, logfile=sys.stdout, DEBUG=0)</b> (class) [<a href='#compdoc.CompDoc-class'>#</a>]</dt>
+<dd>
+<p>Compound document handler.</p>
+<dl>
+<dt><i>mem</i></dt>
+<dd>
+The raw contents of the file, as a string, or as an mmap.mmap() object. The
+only operation it needs to support is slicing.</dd>
+</dl><br />
+<p>For more information about this class, see <a href='#compdoc.CompDoc-class'><i>The CompDoc Class</i></a>.</p>
+</dd>
+<dt><a id='compdoc.SIGNATURE-variable' name='compdoc.SIGNATURE-variable'><b>SIGNATURE</b></a> (variable) [<a href='#compdoc.SIGNATURE-variable'>#</a>]</dt>
+<dd>
+<p>Magic cookie that should appear in the first 8 bytes of the file.</p>
+</dd>
+</dl>
+<h2><a id='compdoc.CompDoc-class' name='compdoc.CompDoc-class'>The CompDoc Class</a></h2>
+<dl>
+<dt><b>CompDoc(mem, logfile=sys.stdout, DEBUG=0)</b> (class) [<a href='#compdoc.CompDoc-class'>#</a>]</dt>
+<dd>
+<p>Compound document handler.</p>
+<dl>
+<dt><i>mem</i></dt>
+<dd>
+The raw contents of the file, as a string, or as an mmap.mmap() object. The
+only operation it needs to support is slicing.</dd>
+</dl><br />
+</dd>
+<dt><a id='compdoc.CompDoc.get_named_stream-method' name='compdoc.CompDoc.get_named_stream-method'><b>get_named_stream(qname)</b></a> [<a href='#compdoc.CompDoc.get_named_stream-method'>#</a>]</dt>
+<dd>
+<p>Interrogate the compound document's directory; return the stream as a string if found, otherwise
+return None.</p>
+<dl>
+<dt><i>qname</i></dt>
+<dd>
+Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.</dd>
+</dl><br />
+</dd>
+<dt><a id='compdoc.CompDoc.locate_named_stream-method' name='compdoc.CompDoc.locate_named_stream-method'><b>locate_named_stream(qname)</b></a> [<a href='#compdoc.CompDoc.locate_named_stream-method'>#</a>]</dt>
+<dd>
+<p>Interrogate the compound document's directory.
+If the named stream is not found, (None, 0, 0) will be returned.
+If the named stream is found and is contiguous within the original byte sequence (&quot;mem&quot;)
+used when the document was opened,
+then (mem, offset_to_start_of_stream, length_of_stream) is returned.
+Otherwise a new string is built from the fragments and (new_string, 0, length_of_stream) is returned.</p>
+<dl>
+<dt><i>qname</i></dt>
+<dd>
+Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.</dd>
+</dl><br />
+</dd>
+</dl>
+</body></html>
