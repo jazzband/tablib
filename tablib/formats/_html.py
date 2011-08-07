@@ -30,13 +30,17 @@ def export_set(dataset):
 	page.table.open()
 
 	if dataset.headers is not None:
+		new_header = [item if item is not None else '' for item in dataset.headers] 
+
 		page.thead.open()
-		headers = markup.oneliner.th(dataset.headers)
+		headers = markup.oneliner.th(new_header)
 		page.tr(headers)
 		page.thead.close()
 
 	for row in dataset:
-		html_row = markup.oneliner.td(row)
+		new_row = [item if item is not None else '' for item in row] 
+
+		html_row = markup.oneliner.td(new_row)
 		page.tr(html_row)
 
 	page.table.close()

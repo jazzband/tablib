@@ -224,6 +224,26 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(html, self.founders.html)
 
+    def test_html_export_none_value(self):
+        """HTML export"""
+
+        html = markup.page()
+        html.table.open()
+        html.thead.open()
+
+        html.tr(markup.oneliner.th(['foo','', 'bar']))
+        html.thead.close()
+
+        html.tr(markup.oneliner.td(['foo','', 'bar']))
+
+        html.table.close()
+        html = str(html)
+
+        headers = ['foo', None, 'bar'];
+        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
+
+        self.assertEqual(html, d.html)
+
 
     def test_unicode_append(self):
         """Passes in a single unicode charecter and exports."""
