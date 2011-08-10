@@ -105,13 +105,26 @@ class Dataset(object):
     functionality.
 
     Usually you create a :class:`Dataset` instance in your main module, and append
-    rows and columns as you collect data. ::
+    rows as you collect data. ::
 
         data = tablib.Dataset()
         data.headers = ('name', 'age')
 
         for (name, age) in some_collector():
             data.append((name, age))
+
+
+    Setting columns is similar. The column data length must equal the
+    current height of the data and headers must be set ::
+
+        data = tablib.Dataset()
+        data.headers = ('first_name', 'last_name')
+
+        data.append(('John', 'Adams'))
+        data.append(('George', 'Washington'))
+
+        data.append_col((90, 67), header='age') 
+
 
     You can also set rows and headers upon instantiation. This is useful if dealing
     with dozens or hundres of :class:`Dataset` objects. ::
@@ -120,7 +133,6 @@ class Dataset(object):
         data = [('John', 'Adams'), ('George', 'Washington')]
 
         data = tablib.Dataset(*data, headers=headers)
-
 
     :param \*args: (optional) list of rows to populate Dataset
     :param headers: (optional) list strings for Dataset header row
@@ -518,30 +530,11 @@ class Dataset(object):
     def insert(self, index, row, tags=list()):
         """Inserts a row to the :class:`Dataset` at the given index.
 
-        Rows and columns inserted must be the correct size (height or width).
+        Rows inserted must be the correct size (height or width).
 
         The default behaviour is to insert the given row to the :class:`Dataset`
-        object at the given index. If the ``col`` parameter is given, however,
-        a new column will be insert to the :class:`Dataset` object instead.
-
-        You can also insert a column of a single callable object, which will
-        add a new column with the return values of the callable each as an
-        item in the column. ::
-
-            data.append(col=random.randint)
-
-        See :ref:`dyncols` for an in-depth example.
-
-        .. versionchanged:: 0.9.0
-           If inserting a column, and :class:`Dataset.headers` is set, the
-           header attribute must be set, and will be considered the header for
-           that row.
-
-        .. versionadded:: 0.9.0
-           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
-           This gives you the ability to :class:`filter <Dataset.filter>` your
-           :class:`Dataset` later.
-        """
+        object at the given index. 
+       """
 
         self._validate(row)
         self._data.insert(index, Row(row, tags=tags))
@@ -615,6 +608,17 @@ class Dataset(object):
         that row.
 
         See :ref:`dyncols` for an in-depth example.
+
+        .. versionchanged:: 0.9.0
+           If inserting a column, and :class:`Dataset.headers` is set, the
+           header attribute must be set, and will be considered the header for
+           that row.
+
+        .. versionadded:: 0.9.0
+           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
+           This gives you the ability to :class:`filter <Dataset.filter>` your
+           :class:`Dataset` later.
+ 
         """
 
         # Callable Columns...
