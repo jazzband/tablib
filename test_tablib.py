@@ -58,6 +58,18 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertRaises(tablib.InvalidDimensions, data.append, new_row)
 
+    def test_set_headers_with_incorrect_dimension(self):
+        """Verify headers correctly detects mismatch of number of
+        headers and data.
+        """
+
+        data.append(self.john)
+
+        def set_header_callable():
+            data.headers = ['first_name']
+
+        self.assertRaises(tablib.InvalidDimensions, set_header_callable)
+
 
     def test_add_column(self):
         """Verify adding column works with/without headers."""
@@ -90,6 +102,53 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(data[0], tuple([new_col[0]]))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
+
+
+    def test_add_column_with_header_ignored(self):
+        """Verify append_col() ignores the header if data.headers has
+        not previously been set
+        """
+
+        new_col = ('reitz', 'monke')
+
+        data.append_col(new_col, header='first_name')
+
+        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data.width, 1)
+        self.assertEqual(data.height, len(new_col))
+        self.assertEqual(data.headers, None)
+
+
+    def test_add_column_with_header_and_headers_only_exist(self):
+        """Verify append_col() with header correctly detects mismatch when
+        headers exist but there is no existing row data
+        """
+
+        data.headers = ['first_name']
+        #no data
+
+        new_col = ('allen')
+
+        def append_col_callable():
+            data.append_col(new_col, header='middle_name')
+
+        self.assertRaises(tablib.InvalidDimensions, append_col_callable)
+
+
+    def test_add_column_with_header_and_data_exists(self):
+        """Verify append_col() works when headers and rows exists"""
+
+        data.headers = self.headers
+        data.append(self.john)
+
+        new_col = [10];
+
+        data.append_col(new_col, header='age')
+
+        self.assertEqual(data.height, 1)
+        self.assertEqual(data.width, 4)
+        self.assertEqual(data['age'], new_col)
+        self.assertEqual(len(data.headers), len(self.headers) + 1)
 
 
     def test_add_callable_column(self):
@@ -128,7 +187,7 @@ class TablibTestCase(unittest.TestCase):
             self.founders.get_col(self.headers.index('gpa')),
             [self.john[2], self.george[2], self.tom[2]])
 
-            
+
     def test_data_slicing(self):
         """Verify slicing by data."""
 
@@ -223,6 +282,7 @@ class TablibTestCase(unittest.TestCase):
         html = str(html)
 
         self.assertEqual(html, self.founders.html)
+
 
     def test_html_export_none_value(self):
         """HTML export"""
@@ -547,7 +607,7 @@ class TablibTestCase(unittest.TestCase):
 
 
         data.csv
-    
+
     def test_csv_column_select(self):
         """Build up a CSV and test selecting a column"""
 
@@ -588,7 +648,7 @@ class TablibTestCase(unittest.TestCase):
         data.sort(target_header)
 
         self.assertEquals(self.founders[orig_target_header], data[target_header])
-        
+
     def test_xls_import_set(self):
         """Generate and import XLS set serialization."""
         data.append(self.john)
