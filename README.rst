@@ -55,7 +55,7 @@ Intelligently add new rows: ::
 
 Intelligently add new columns: ::
 
-    >>> data.append(col=(90, 67, 83), header='age')
+    >>> data.append_col((90, 67, 83), header='age')
 
 Slice rows:  ::
 
