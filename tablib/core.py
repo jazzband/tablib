@@ -130,7 +130,7 @@ class Dataset(object):
         data.append(('John', 'Adams'))
         data.append(('George', 'Washington'))
 
-        data.append_col((90, 67), header='age') 
+        data.append_col((90, 67), header='age')
 
 
     You can also set rows and headers upon instantiation. This is useful if dealing
@@ -470,7 +470,7 @@ class Dataset(object):
             data.csv = 'age, first_name, last_name\\n90, John, Adams'
 
         Import assumes (for now) that headers exist.
-        
+
         .. admonition:: Binary Warning
 
              :class:`Dataset.csv` uses \\r\\n line endings by default, so make
@@ -478,7 +478,7 @@ class Dataset(object):
 
                  with open('output.csv', 'wb') as f:
                      f.write(data.csv)'
-             
+
              If you do not do this, and you export the file on Windows, your
              CSV file will open in Excel with a blank line between each row.
         """
@@ -550,7 +550,7 @@ class Dataset(object):
         Rows inserted must be the correct size (height or width).
 
         The default behaviour is to insert the given row to the :class:`Dataset`
-        object at the given index. 
+        object at the given index.
        """
 
         self._validate(row)
@@ -635,8 +635,11 @@ class Dataset(object):
            If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
            This gives you the ability to :class:`filter <Dataset.filter>` your
            :class:`Dataset` later.
- 
+
         """
+
+        if col is None:
+            col = []
 
         # Callable Columns...
         if hasattr(col, '__call__'):
@@ -651,7 +654,7 @@ class Dataset(object):
                 raise HeadersNeeded()
 
             # corner case - if header is set without data
-            elif header and self.height == 0:
+            elif header and self.height == 0 and len(col):
                 raise InvalidDimensions
 
             self.headers.insert(index, header)
