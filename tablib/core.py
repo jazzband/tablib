@@ -649,7 +649,13 @@ class Dataset(object):
             # pop the first item off, add to headers
             if not header:
                 raise HeadersNeeded()
+
+            # corner case - if header is set without data
+            elif header and self.height == 0:
+                raise InvalidDimensions
+
             self.headers.insert(index, header)
+
 
         if self.height and self.width:
 
