@@ -146,7 +146,7 @@ class TablibTestCase(unittest.TestCase):
         data.append_col(new_col, header='age')
 
         self.assertEqual(data.height, 1)
-        self.assertEqual(data.width, 4)
+        self.assertEqual(data.width, len(self.john) + 1)
         self.assertEqual(data['age'], new_col)
         self.assertEqual(len(data.headers), len(self.headers) + 1)
 
