@@ -14,7 +14,7 @@ from operator import itemgetter
 
 from tablib import formats
 
-from tablib.compat import OrderedDict
+from tablib.compat import OrderedDict, unicode
 
 
 __title__ = 'tablib'

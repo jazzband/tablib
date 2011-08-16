@@ -7,7 +7,7 @@ import unittest
 import sys
 
 import tablib
-from tablib.compat import markup
+from tablib.compat import markup, unicode
 
 
 
@@ -649,30 +649,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEquals(self.founders[orig_target_header], data[target_header])
 
-    def test_xls_import_set(self):
-        """Generate and import XLS set serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _xls = data.xls
-
-        data.xls = _xls
-
-        self.assertEqual(_xls, data.xls)
-
-    def test_xls_import_book(self):
-        """Generate and import XLS book serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        book.add_sheet(data)
-        _xls = book.xls
-
-        book.xls = _xls
-
-        self.assertEqual(_xls, book.xls)
 
 
 if __name__ == '__main__':
