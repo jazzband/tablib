@@ -7,7 +7,7 @@ import unittest
 import sys
 
 import tablib
-from tablib.compat import markup, unicode
+from tablib.compat import StringIO, markup, unicode, openpyxl
 from tablib.packages import omnijson as json
 
 
@@ -261,7 +261,23 @@ class TablibTestCase(unittest.TestCase):
             tsv = tsv.strip('\t') + '\r\n'
 
         self.assertEqual(tsv, self.founders.tsv)
+    
+    def test_preserve_leading_zero(self):
+        """issue#39 at upstream; Excel 2007+ export"""
 
+        data.append(self.founders)
+
+        book = tablib.Databook()
+        book.add_sheet(data)
+
+        stream = StringIO()
+        stream.write(self.founders.xlsx)
+
+        wb = openpyxl.reader.excel.load_workbook(stream)
+        ws = wb.get_active_sheet()
+        self.assertEqual(self.john[3], ws.cell('D2').value)
+        self.assertEqual(self.george[3], ws.cell('D3').value)
+        self.assertEqual(self.tom[3], ws.cell('D4').value)
 
     def test_html_export(self):
         """HTML export"""
