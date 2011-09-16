@@ -53,6 +53,16 @@ def export_book(databook):
     ew.save(stream)
     return stream.getvalue()
 
+def set_value(cell, addr, value):
+    """ assign a value, taking care to identify numeric-looking strings """
+    
+    cell(addr).set_value_explicit(value)
+    #if value[0] == '0':
+    #    cell(addr).set_value_explicit(value)
+    #else:
+    #    cell(addr).value = unicode(value, errors='ignore')
+    
+    return cell
 
 def dset_sheet(dataset, ws):
     """Completes given worksheet from given Dataset."""
@@ -61,41 +71,36 @@ def dset_sheet(dataset, ws):
     for i, sep in enumerate(dataset._separators):
         _offset = i
         _package.insert((sep[0] + _offset), (sep[1],))
-
+    import pdb
     for i, row in enumerate(_package):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
-
+            addr = '%s%s'%(col_idx, row_number)
+            value = '%s' % col
+            if '2169' in value:
+                pdb.set_trace()
             # bold headers
             if (row_number == 1) and dataset.headers:
-                # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    # '%s' % col, errors='ignore')
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
-                style = ws.get_style('%s%s' % (col_idx, row_number))
+                ws.cell(addr).value = unicode(col)
+                style = ws.get_style(addr)
                 style.font.bold = True
-                ws.freeze_panes = '%s%s' % (col_idx, row_number)
-
+                ws.freeze_panes = addr
 
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
-                style = ws.get_style('%s%s' % (col_idx, row_number))
+                ws.cell = set_value(ws.cell, addr, value)
+                style = ws.get_style(addr)
                 style.font.bold = True
 
             # wrap the rest
             else:
                 try:
+                    ws.cell = set_value(ws.cell, addr, value)
                     if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
-                        style = ws.get_style('%s%s' % (col_idx, row_number))
+                        style = ws.get_style(addr)
                         style.alignment.wrap_text
-                    else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
                 except TypeError:
-                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
+                    ws.cell = set_value(ws.cell, addr, value)
 
 

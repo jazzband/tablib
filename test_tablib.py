@@ -275,6 +275,7 @@ class TablibTestCase(unittest.TestCase):
 
         wb = openpyxl.reader.excel.load_workbook(stream)
         ws = wb.get_active_sheet()
+
         self.assertEqual(self.john[3], ws.cell('D2').value)
         self.assertEqual(self.george[3], ws.cell('D3').value)
         self.assertEqual(self.tom[3], ws.cell('D4').value)
