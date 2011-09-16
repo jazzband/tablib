@@ -8,8 +8,7 @@ import sys
 
 import tablib
 from tablib.compat import markup, unicode
-
-
+from tablib.packages import omnijson as json
 
 
 class TablibTestCase(unittest.TestCase):
@@ -23,10 +22,10 @@ class TablibTestCase(unittest.TestCase):
         data = tablib.Dataset()
         book = tablib.Databook()
 
-        self.headers = ('first_name', 'last_name', 'gpa')
-        self.john = ('John', 'Adams', 90)
-        self.george = ('George', 'Washington', 67)
-        self.tom = ('Thomas', 'Jefferson', 50)
+        self.headers = ('first_name', 'last_name', 'gpa', 'postal_code')
+        self.john = ('John', 'Adams', 90, '02169')
+        self.george = ('George', 'Washington', 67, '22309')
+        self.tom = ('Thomas', 'Jefferson', 50, '22902')
 
         self.founders = tablib.Dataset(headers=self.headers)
         self.founders.append(self.john)
@@ -214,7 +213,7 @@ class TablibTestCase(unittest.TestCase):
 
         # Verify dimensions, width should NOT change
         self.assertEqual(self.founders.height, 2)
-        self.assertEqual(self.founders.width, 3)
+        self.assertEqual(self.founders.width, 4)
 
         # Delete from back of object
         del self.founders[1]
@@ -222,10 +221,10 @@ class TablibTestCase(unittest.TestCase):
 
         # Verify dimensions, width should NOT change
         self.assertEqual(self.founders.height, 1)
-        self.assertEqual(self.founders.width, 3)
+        self.assertEqual(self.founders.width, 4)
 
         # Delete from invalid index
-        self.assertRaises(IndexError, self.founders.__delitem__, 3)
+        self.assertRaises(IndexError, self.founders.__delitem__, 4)
 
 
     def test_csv_export(self):
@@ -306,7 +305,7 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_unicode_append(self):
-        """Passes in a single unicode charecter and exports."""
+        """Passes in a single unicode character and exports."""
 
         new_row = ('å', 'é')
         data.append(new_row)
@@ -322,7 +321,7 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_book_export_no_exceptions(self):
-        """Test that varoius exports don't error out."""
+        """Test that various exports don't error out."""
 
         book = tablib.Databook()
         book.add_sheet(data)
@@ -344,7 +343,7 @@ class TablibTestCase(unittest.TestCase):
 
         data.json = _json
 
-        self.assertEqual(_json, data.json)
+        self.assertEquals(json.loads(_json), json.loads(data.json))
 
 
     def test_json_import_book(self):
@@ -358,7 +357,7 @@ class TablibTestCase(unittest.TestCase):
 
         book.json = _json
 
-        self.assertEqual(_json, book.json)
+        self.assertEquals(json.loads(_json), json.loads(book.json))
 
 
     def test_yaml_import_set(self):
@@ -547,7 +546,7 @@ class TablibTestCase(unittest.TestCase):
             self.assertEqual(row, expected_data)
 
         self.assertEqual(column_stacked[0],
-                   ("John", "Adams", 90, "John", "Adams", 90))
+                   ("John", "Adams", 90, '02169', "John", "Adams", 90, '02169'))
 
 
     def test_sorting(self):
