@@ -78,8 +78,8 @@ def dset_sheet(dataset, ws):
             col_idx = get_column_letter(j + 1)
             addr = '%s%s'%(col_idx, row_number)
             value = '%s' % col
-            if '2169' in value:
-                pdb.set_trace()
+            #if '2169' in value:
+            #    pdb.set_trace()
             # bold headers
             if (row_number == 1) and dataset.headers:
                 ws.cell(addr).value = unicode(col)
