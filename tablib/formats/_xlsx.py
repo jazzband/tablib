@@ -56,11 +56,11 @@ def export_book(databook):
 def set_value(cell, addr, value):
     """ assign a value, taking care to identify numeric-looking strings """
     
-    cell(addr).set_value_explicit(value)
-    #if value[0] == '0':
-    #    cell(addr).set_value_explicit(value)
-    #else:
-    #    cell(addr).value = unicode(value, errors='ignore')
+    value = unicode(value, errors='ignore')
+    if value.startswith('0'):
+        cell(addr).set_value_explicit(value)
+    else:
+        cell(addr).value = value
     
     return cell
 
