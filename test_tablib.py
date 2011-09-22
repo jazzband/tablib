@@ -5,6 +5,9 @@
 
 import unittest
 import sys
+import zipfile
+from xml.etree import ElementTree
+from time import sleep
 
 import tablib
 from tablib.compat import StringIO, markup, unicode, openpyxl
@@ -262,8 +265,11 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(tsv, self.founders.tsv)
     
-    def test_preserve_leading_zero(self):
-        """issue#39 at upstream; Excel 2007+ export"""
+    def test_preserve_leading_zero_xlsx(self):
+        """issue#39 at upstream"""
+
+        # not using openpyxl-reader because it does not preserve leading zeros.
+        # It really takes the scope of this unittest too far.
 
         data.append(self.founders)
 
@@ -272,13 +278,17 @@ class TablibTestCase(unittest.TestCase):
 
         stream = StringIO()
         stream.write(self.founders.xlsx)
+        stream.flush()
 
-        wb = openpyxl.reader.excel.load_workbook(stream)
-        ws = wb.get_active_sheet()
+        xlsx_data = zipfile.ZipFile(stream)
+        shared_strings = xlsx_data.read('xl/sharedStrings.xml')
+        import pdb; pdb.set_trace()
 
-        self.assertEqual(self.john[3], ws.cell('D2').value)
-        self.assertEqual(self.george[3], ws.cell('D3').value)
-        self.assertEqual(self.tom[3], ws.cell('D4').value)
+        self.assertTrue('>%s<' % self.john[3] in shared_strings)
+        self.assertTrue('>%s<' % self.george[3] in shared_strings, 
+                        '%s not in\n %s' % (self.george[3], shared_strings))
+        self.assertTrue('>%s<' % self.tom[3] in shared_strings,
+                        '%s not in\n %s' % (self.tom[3], shared_strings))
 
     def test_html_export(self):
         """HTML export"""
