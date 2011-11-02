@@ -38,7 +38,7 @@ def import_set(dset, in_stream):
     """Returns dataset from YAML stream."""
 
     dset.wipe()
-    dset.dict = yaml.load(in_stream)
+    dset.dict = yaml.safe_load(in_stream)
 
 
 def import_book(dbook, in_stream):
@@ -46,7 +46,7 @@ def import_book(dbook, in_stream):
 
     dbook.wipe()
 
-    for sheet in yaml.load(in_stream):
+    for sheet in yaml.safe_load(in_stream):
         data = tablib.Dataset()
         data.title = sheet['title']
         data.dict = sheet['data']
@@ -55,7 +55,7 @@ def import_book(dbook, in_stream):
 def detect(stream):
     """Returns True if given stream is valid YAML."""
     try:
-        _yaml = yaml.load(stream)
+        _yaml = yaml.safe_load(stream)
         if isinstance(_yaml, (list, tuple, dict)):
             return True
         else:
