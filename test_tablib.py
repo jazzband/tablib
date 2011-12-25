@@ -649,6 +649,22 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEquals(self.founders[orig_target_header], data[target_header])
 
+    def test_unicode_renders_markdown_table(self):
+        # add another entry to test right field width for
+        # integer
+        self.founders.append(('Old', 'Man', 100500))
+
+        self.assertEquals(
+            u"""
+first_name|last_name |gpa   
+----------|----------|------
+John      |Adams     |90    
+George    |Washington|67    
+Thomas    |Jefferson |50    
+Old       |Man       |100500
+""".strip(),
+            unicode(self.founders)
+        )
 
 
 if __name__ == '__main__':
