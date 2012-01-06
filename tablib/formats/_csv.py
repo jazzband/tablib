@@ -51,5 +51,5 @@ def detect(stream):
     try:
         csv.Sniffer().sniff(stream)
         return True
-    except csv.Error:
+    except (csv.Error, TypeError):
         return False
