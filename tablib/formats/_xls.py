@@ -6,6 +6,8 @@
 import sys
 
 from tablib.compat import BytesIO, xlwt
+from tablib.packages import xlrd
+from tablib.packages.xlrd.biffh import XLRDError
 import tablib
 
 title = 'xls'
@@ -15,6 +17,24 @@ extentions = ('xls',)
 wrap = xlwt.easyxf("alignment: wrap on")
 bold = xlwt.easyxf("font: bold on")
 
+
+def detect(stream):
+    """Returns True if given stream is a readable excel file."""
+    try:
+        xlrd.open_workbook(file_contents=stream)
+        return True
+    except (TypeError, XLRDError):
+        pass 
+    try:
+        xlrd.open_workbook(file_contents=stream.read())
+        return True
+    except (AttributeError, XLRDError):
+        pass
+    try:
+        xlrd.open_workbook(filename=stream)
+        return True
+    except:
+        return False
 
 
 def export_set(dataset):
