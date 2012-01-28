@@ -597,6 +597,14 @@ class Dataset(object):
 
         self.rpush(row, tags)
 
+    def extend(self, rows, tags=list()):
+        """Adds a list of rows to the :class:`Dataset` using
+        :class:`Dataset.append`
+        """
+
+        for row in rows:
+            self.append(row, tags)
+
 
     def lpop(self):
         """Removes and returns the first row of the :class:`Dataset`."""
