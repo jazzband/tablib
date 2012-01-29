@@ -60,5 +60,6 @@ def detect(stream):
             return True
         else:
             return False
-    except (yaml.parser.ParserError, yaml.reader.ReaderError):
+    except (yaml.parser.ParserError, yaml.reader.ReaderError,
+            yaml.scanner.ScannerError):
         return False

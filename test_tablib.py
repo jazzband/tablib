@@ -476,12 +476,14 @@ class TablibTestCase(unittest.TestCase):
         """Test YAML format detection."""
 
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
+        _tsv = 'foo\tbar'
         _bunk = (
             '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
         self.assertTrue(tablib.formats.yaml.detect(_yaml))
         self.assertFalse(tablib.formats.yaml.detect(_bunk))
+        self.assertFalse(tablib.formats.yaml.detect(_tsv))
 
 
     def test_auto_format_detect(self):
