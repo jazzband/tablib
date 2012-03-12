@@ -955,7 +955,7 @@ class Databook(object):
 
     def add_sheet(self, dataset):
         """Adds given :class:`Dataset` to the :class:`Databook`."""
-        if type(dataset) is Dataset:
+        if isinstance(dataset, Dataset):
             self._datasets.append(dataset)
         else:
             raise InvalidDatasetType

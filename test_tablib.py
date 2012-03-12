@@ -669,5 +669,20 @@ Old       |Man       |100500
         )
 
 
+    def test_databook_add_sheet_accepts_dataset_subclasses(self):
+        class DatasetSubclass(tablib.Dataset):
+            pass
+
+        # just checking if subclass of tablib.Dataset can be added to Databook
+        dataset = DatasetSubclass()
+        dataset.append(self.john)
+        dataset.append(self.tom)
+
+        try:
+            book.add_sheet(dataset)
+        except tablib.InvalidDatasetType:
+            self.fail("Subclass of tablib.Dataset should be accepted by Databook.add_sheet")
+
+
 if __name__ == '__main__':
     unittest.main()
