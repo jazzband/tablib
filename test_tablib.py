@@ -669,6 +669,17 @@ Old       |Man       |100500
         )
 
 
+    def test_databook_add_sheet_accepts_only_dataset_instances(self):
+        class NotDataset(object):
+            def append(self, item):
+                pass
+
+        dataset = NotDataset()
+        dataset.append(self.john)
+
+        self.assertRaises(tablib.InvalidDatasetType, book.add_sheet, dataset)
+
+
     def test_databook_add_sheet_accepts_dataset_subclasses(self):
         class DatasetSubclass(tablib.Dataset):
             pass
