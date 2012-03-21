@@ -50,6 +50,7 @@ setup(
         'tablib.packages',
         'tablib.packages.xlrd',
         'tablib.packages.xlwt',
+        'tablib.packages.odf',
         'tablib.packages.openpyxl',
         'tablib.packages.openpyxl.shared',
         'tablib.packages.openpyxl.reader',
