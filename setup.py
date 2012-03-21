@@ -48,6 +48,7 @@ setup(
     packages=[
         'tablib', 'tablib.formats',
         'tablib.packages',
+        'tablib.packages.xlrd',
         'tablib.packages.xlwt',
         'tablib.packages.openpyxl',
         'tablib.packages.openpyxl.shared',
