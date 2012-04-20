@@ -1,4 +1,4 @@
-Tablib includes some vendorized python libraries: ordereddict, pyyaml,
+Tablib includes some vendorized python libraries: ordereddict, odfpy, pyyaml,
 simplejson, unicodecsv, and xlwt.
 
 Markup License
