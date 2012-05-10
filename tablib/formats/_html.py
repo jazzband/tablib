@@ -11,6 +11,7 @@ if sys.version_info[0] > 2:
     from tablib.packages import markup3 as markup
 else:
     from cStringIO import StringIO
+    import codecs
     from tablib.packages import markup
 
 import tablib
@@ -45,7 +46,9 @@ def export_set(dataset):
 
 	page.table.close()
 
-	stream.writelines(str(page))
+    # Allow unicode characters in output
+	wrapper = codecs.getwriter("utf8")(stream)
+	wrapper.writelines(unicode(page))
 
 	return stream.getvalue()
 
