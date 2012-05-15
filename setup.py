@@ -33,7 +33,7 @@ if sys.argv[-1] == 'test':
         print('py.test required.')
         sys.exit(1)
 
-    os.system('pytest test_tablib.py')
+    os.system('py.test test_tablib.py')
     sys.exit()
 
 setup(
@@ -70,4 +70,5 @@ setup(
         'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
     ),
+    tests_require=['pytest'],
 )
