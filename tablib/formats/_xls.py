@@ -5,9 +5,7 @@
 
 import sys
 
-from tablib.compat import BytesIO, xlwt
-from tablib.packages import xlrd
-from tablib.packages.xlrd.biffh import XLRDError
+from tablib.compat import BytesIO, xlwt, xlrd, XLRDError
 import tablib
 
 title = 'xls'

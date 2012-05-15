@@ -23,6 +23,8 @@ except ImportError:
 if is_py3:
     from io import BytesIO
     import tablib.packages.xlwt3 as xlwt
+    import tablib.packages.xlrd3 as xlrd
+    from tablib.packages.xlrd3.biffh import XLRDError
     from tablib.packages import markup3 as markup
     from tablib.packages import openpyxl3 as openpyxl
     from tablib.packages.odf3 import opendocument, style, text, table
@@ -40,6 +42,7 @@ else:
     from cStringIO import StringIO
     import tablib.packages.xlwt as xlwt
     import tablib.packages.xlrd as xlrd
+    from tablib.packages.xlrd.biffh import XLRDError
     from tablib.packages import markup
     from itertools import ifilter
     from tablib.packages import openpyxl
