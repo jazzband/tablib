@@ -1008,6 +1008,19 @@ def import_set(stream):
         return None
 
 
+def import_book(stream):
+    """Return dataset of given stream."""
+    (format, stream) = detect(stream)
+
+    try:
+        databook = Databook()
+        format.import_book(databook, stream)
+        return databook
+
+    except AttributeError:
+        return None
+
+
 class InvalidDatasetType(Exception):
     "Only Datasets can be added to a DataBook"
 
