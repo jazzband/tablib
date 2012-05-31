@@ -8,8 +8,9 @@ from . import _json as json
 from . import _xls as xls
 from . import _yaml as yaml
 from . import _tsv as tsv
+from . import _texttable as texttable
 from . import _html as html
 from . import _xlsx as xlsx
 from . import _ods as ods
 
-available = (json, xls, yaml, csv, tsv, html, xlsx, ods)
+available = (json, xls, yaml, csv, tsv, texttable, html, xlsx, ods)

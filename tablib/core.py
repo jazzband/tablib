@@ -518,6 +518,10 @@ class Dataset(object):
         pass
 
     @property
+    def texttable():
+        pass
+
+    @property
     def yaml():
         """A YAML representation of the :class:`Dataset` object. If headers have been
         set, a YAML list of objects will be returned. If no headers have

@@ -264,6 +264,34 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(tsv, self.founders.tsv)
 
 
+    def test_texttable_export(self):
+        # print("\n"+self.founders.texttable)
+
+        self.assertEqual("""
++------------+------------+-----+
+| first_name | last_name  | gpa |
++============+============+=====+
+| John       | Adams      | 90  |
++------------+------------+-----+
+| George     | Washington | 67  |
++------------+------------+-----+
+| Thomas     | Jefferson  | 50  |
++------------+------------+-----+
+""".strip(), self.founders.texttable)
+
+        tablib.formats._texttable.deco = tablib.formats._texttable.texttable.Texttable.HEADER
+
+        # print("\n"+self.founders.texttable)
+
+        self.assertEqual("""
+first_name   last_name    gpa 
+=============================
+John         Adams        90  
+George       Washington   67  
+Thomas       Jefferson    50  
+""".strip(), self.founders.texttable.strip())
+
+
     def test_html_export(self):
         """HTML export"""
 
