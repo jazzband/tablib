@@ -44,7 +44,7 @@ setup(
         open('HISTORY.rst').read()),
     author='Kenneth Reitz',
     author_email='me@kennethreitz.com',
-    url='http://tablib.org',
+    url='http://python-tablib.org',
     packages=[
         'tablib', 'tablib.formats',
         'tablib.packages',
