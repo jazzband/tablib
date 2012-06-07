@@ -210,7 +210,7 @@ Then, to build an HTML version of the docs, simply run the following from the **
 
 Your ``docs/_build/html`` directory will then contain an HTML representation of the documentation, ready for publication on most web servers.
 
-You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* similarly.
+You can also generate the documentation in **epub**, **latex**, **json**, *&c* similarly.
 
 .. admonition:: GitHub Pages
 
