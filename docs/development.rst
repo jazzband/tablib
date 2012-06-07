@@ -71,7 +71,7 @@ Feature / Hotfix / Release branches follow a `Successful Git Branching Model`_ .
 
 Each release is tagged.
 
-When submitting patches, please place your feature/change in its own branch prior to opening a pull reqeust on GitHub_.
+When submitting patches, please place your feature/change in its own branch prior to opening a pull request on GitHub_.
 
 
 .. _Git: http://git-scm.org
@@ -210,13 +210,13 @@ Then, to build an HTML version of the docs, simply run the following from the **
 
 Your ``docs/_build/html`` directory will then contain an HTML representation of the documentation, ready for publication on most web servers.
 
-You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* similarly.
+You can also generate the documentation in **epub**, **latex**, **json**, *&c* similarly.
 
 .. admonition:: GitHub Pages
 
 	To push the documentation up to `GitHub Pages`_, you will first need to run `sphinx-to-github`_ against your ``docs/_build/html`` directory.
 
-	GitHub Pages are powered by an HTML generation system called Jeckyl_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
+	GitHub Pages are powered by an HTML generation system called Jekyll_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
 
 
 
@@ -238,7 +238,7 @@ You can also generate the documentation in **ebpub**, **latex**, **json**, *&c* 
 .. _`reStructured Text`: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx.pocoo.org
 .. _`GitHub Pages`: http://pages.github.com
-.. _Jeckyl: http://github.com/mojombo/jekyll
+.. _Jekyll: http://github.com/mojombo/jekyll
 .. _`sphinx-to-github`: http://github.com/michaeljones/sphinx-to-github
 
 ----------
