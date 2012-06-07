@@ -71,7 +71,7 @@ Feature / Hotfix / Release branches follow a `Successful Git Branching Model`_ .
 
 Each release is tagged.
 
-When submitting patches, please place your feature/change in its own branch prior to opening a pull reqeust on GitHub_.
+When submitting patches, please place your feature/change in its own branch prior to opening a pull request on GitHub_.
 
 
 .. _Git: http://git-scm.org
