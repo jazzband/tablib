@@ -216,7 +216,7 @@ You can also generate the documentation in **epub**, **latex**, **json**, *&c* s
 
 	To push the documentation up to `GitHub Pages`_, you will first need to run `sphinx-to-github`_ against your ``docs/_build/html`` directory.
 
-	GitHub Pages are powered by an HTML generation system called Jeckyl_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
+	GitHub Pages are powered by an HTML generation system called Jekyll_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
 
 
 
@@ -238,7 +238,7 @@ You can also generate the documentation in **epub**, **latex**, **json**, *&c* s
 .. _`reStructured Text`: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx.pocoo.org
 .. _`GitHub Pages`: http://pages.github.com
-.. _Jeckyl: http://github.com/mojombo/jekyll
+.. _Jekyll: http://github.com/mojombo/jekyll
 .. _`sphinx-to-github`: http://github.com/michaeljones/sphinx-to-github
 
 ----------
