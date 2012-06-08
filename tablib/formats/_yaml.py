@@ -19,7 +19,7 @@ import tablib
 
 
 title = 'yaml'
-extentions = ('yaml', 'yml')
+extensions = ('yaml', 'yml')
 
 
 

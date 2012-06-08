@@ -11,7 +11,7 @@ from tablib.packages.xlrd.biffh import XLRDError
 import tablib
 
 title = 'xls'
-extentions = ('xls',)
+extensions = ('xls',)
 
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")
