@@ -14,7 +14,7 @@ else:
 from tablib.compat import opendocument, style, table, text, unicode
 
 title = 'ods'
-extentions = ('ods',)
+extensions = ('ods',)
 
 bold = style.Style(name="bold", family="paragraph")
 bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))

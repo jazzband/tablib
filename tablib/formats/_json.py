@@ -10,7 +10,7 @@ from tablib.packages import omnijson as json
 
 
 title = 'json'
-extentions = ('json', 'jsn')
+extensions = ('json', 'jsn')
 
 
 def export_set(dataset):

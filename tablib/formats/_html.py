@@ -18,7 +18,7 @@ import tablib
 BOOK_ENDINGS = 'h3'
 
 title = 'html'
-extentions = ('html', )
+extensions = ('html', )
 
 
 def export_set(dataset):

@@ -306,7 +306,7 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_unicode_append(self):
-        """Passes in a single unicode charecter and exports."""
+        """Passes in a single unicode character and exports."""
 
         new_row = ('å', 'é')
         data.append(new_row)
@@ -322,7 +322,7 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_book_export_no_exceptions(self):
-        """Test that varoius exports don't error out."""
+        """Test that various exports don't error out."""
 
         book = tablib.Databook()
         book.add_sheet(data)

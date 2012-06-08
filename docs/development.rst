@@ -46,7 +46,7 @@ Source Control
 Tablib source is controlled with Git_, the lean, mean, distributed source
 control machine.
 
-The repository is publicly accessable.
+The repository is publicly accessible.
 
     ``git clone git://github.com/kennethreitz/tablib.git``
 

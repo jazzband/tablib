@@ -21,7 +21,7 @@ from tablib.compat import unicode
 
 
 title = 'xlsx'
-extentions = ('xlsx',)
+extensions = ('xlsx',)
 
 def export_set(dataset):
     """Returns XLSX representation of Dataset."""
