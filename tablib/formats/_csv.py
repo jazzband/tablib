@@ -7,7 +7,7 @@ from tablib.compat import is_py3, csv, StringIO
 
 
 title = 'csv'
-extentions = ('csv',)
+extensions = ('csv',)
 
 
 DEFAULT_ENCODING = 'utf-8'
