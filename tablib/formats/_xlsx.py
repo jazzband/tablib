@@ -66,6 +66,8 @@ def dset_sheet(dataset, ws):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
+            # We want to freeze the column after the last column
+            frzn_col_idx = get_column_letter(j + 2)
 
             # bold headers
             if (row_number == 1) and dataset.headers:
@@ -74,7 +76,7 @@ def dset_sheet(dataset, ws):
                 ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
-                ws.freeze_panes = '%s%s' % (col_idx, row_number)
+                ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
 
 
             # bold separators
