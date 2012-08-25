@@ -1,0 +1,68 @@
+
+<H1>NAME</H1>
+
+<P>
+google-spreadsheet-csv - Sync a google spreadsheet with a CSV file.
+</P>
+
+<H1>SYNOPSIS</H1>
+
+<P>
+**google-spreadsheet-csv** -h
+</P>
+<P>
+**google-spreadsheet-csv** [-v/<S>verbose] [-o/</S>output=&lt;file&gt;] get &lt;spreadsheet&gt; &lt;worksheet&gt;
+</P>
+<P>
+**google-spreadsheet-csv** [-v/<S>verbose] [-i/</S>input=&lt;file&gt;] send &lt;spreadsheet&gt; &lt;worksheet&gt;
+</P>
+
+<H1>DESCRIPTION</H1>
+
+<P>
+**google-spreadsheet-csv** is a command-line tool that syncs a google
+spreadsheet with a CSV file by using the google spreadsheet API.
+</P>
+<P>
+When getting a spreadsheet, all data is grabbed until the first empty line or
+the end of the spreadsheet.
+</P>
+<P>
+When sending data, the headers of the CSV and spreadsheet must match.
+Otherwise, the operation is aborted and an error is reported. After that, the
+data in the CSV file is sent, and surplus data in the spreadsheet is
+removed.
+</P>
+<P>
+Username and password are found by looking for a machine named **google.com**
+in <I>~/.netrc</I>. See **netrc**(5) for more information.
+</P>
+
+<H1>OPTIONS</H1>
+
+<P>
+**-h** Help.
+</P>
+<P>
+**-v, --verbose** Report progress.
+</P>
+<P>
+**-i, --input=&lt;file&gt;** Input CSV filename.
+</P>
+<P>
+**-o, --output=&lt;file&gt;** Output CSV filename.
+</P>
+
+<H1>AUTHORS</H1>
+
+<P>
+Written by <A HREF="http://lpenz.org">Leandro Penz</A>.
+</P>
+
+<H1>SEE ALSO</H1>
+
+<UL>
+<LI>**netrc**(5)
+<LI><A HREF="http://docs.google.com">http://docs.google.com</A>
+</UL>
+

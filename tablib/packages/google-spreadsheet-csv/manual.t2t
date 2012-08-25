@@ -1,0 +1,65 @@
+google-spreadsheet-csv
+
+
+
+= NAME =
+
+google-spreadsheet-csv - Sync a google spreadsheet with a CSV file.
+
+
+
+= SYNOPSIS =
+
+**google-spreadsheet-csv** -h
+
+**google-spreadsheet-csv** [-v/--verbose] [-o/--output=<file>] get <spreadsheet> <worksheet>
+
+**google-spreadsheet-csv** [-v/--verbose] [-i/--input=<file>] [-b] send <spreadsheet> <worksheet>
+
+
+
+= DESCRIPTION =
+
+**google-spreadsheet-csv** is a command-line tool that syncs a google
+spreadsheet with a CSV file by using the google spreadsheet API.
+
+When getting a spreadsheet, all data is grabbed until the first empty line or
+the end of the spreadsheet.
+
+When sending data, the headers of the CSV and spreadsheet must match.
+Otherwise, the operation is aborted and an error is reported. After that, the
+data in the CSV file is sent, and surplus data in the spreadsheet is
+removed.
+
+Username and password are found by looking for a machine named **google.com**
+in //~/.netrc//. See **netrc**(5) for more information.
+
+
+
+= OPTIONS =
+
+**-h** Help.
+
+**-v, --verbose** Report progress.
+
+**-i, --input=<file>** Input CSV filename.
+
+**-o, --output=<file>** Output CSV filename.
+
+**-b** Blanks out remaining rows. We delete them by default.
+
+
+
+= AUTHORS =
+
+Written by [Leandro Penz http://lpenz.org].
+
+
+
+= SEE ALSO =
+
+- **netrc**(5)
+- http://docs.google.com
+
+
+

@@ -1,0 +1,8 @@
+*.pyc
+google-spreadsheet-csv.1
+
+/debian/google-spreadsheet-csv.debhelper.log
+/debian/google-spreadsheet-csv.substvars
+/debian/google-spreadsheet-csv/
+/debian/files
+/debian/usr/
