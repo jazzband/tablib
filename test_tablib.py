@@ -6,7 +6,7 @@
 import unittest
 import sys
 import zipfile
-from xml.etree import ElementTree
+from xml.etree import ElementTree as ET
 from time import sleep
 
 import tablib
@@ -281,14 +281,14 @@ class TablibTestCase(unittest.TestCase):
         stream.flush()
 
         xlsx_data = zipfile.ZipFile(stream)
-        shared_strings = xlsx_data.read('xl/sharedStrings.xml')
-        import pdb; pdb.set_trace()
+	sst = ET.fromstring(xlsx_data.read('xl/sharedStrings.xml'))
+	namespace = sst.tag[1:].split("}")[0]
+	qry = sst.findall(".//{%s}t" % namespace)
+        strings = [node.text for node in qry]
 
-        self.assertTrue('>%s<' % self.john[3] in shared_strings)
-        self.assertTrue('>%s<' % self.george[3] in shared_strings, 
-                        '%s not in\n %s' % (self.george[3], shared_strings))
-        self.assertTrue('>%s<' % self.tom[3] in shared_strings,
-                        '%s not in\n %s' % (self.tom[3], shared_strings))
+        self.assertTrue(self.john[3] in strings)
+        self.assertFalse(self.george[3] in strings)
+        self.assertFalse(self.tom[3] in strings)
 
     def test_html_export(self):
         """HTML export"""
