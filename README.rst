@@ -3,11 +3,11 @@ Tablib: format-agnostic tabular dataset library
 
 ::
 
-	_____         ______  ___________ ______
-	__  /_______ ____  /_ ___  /___(_)___  /_
-	_  __/_  __ `/__  __ \__  / __  / __  __ \
-	/ /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
-	\__/  \__,_/  /_.___/ /_/   /_/   /_.___/
+    _____         ______  ___________ ______
+    __  /_______ ____  /_ ___  /___(_)___  /_
+    _  __/_  __ `/__  __ \__  / __  / __  __ \
+    / /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
+    \__/  \__,_/  /_.___/ /_/   /_/   /_.___/
 
 
 
@@ -28,14 +28,20 @@ Overview
 --------
 
 `tablib.Dataset()`
-	A Dataset is a table of tabular data. It may or may not have a header row. They can be build and manipulated as raw Python datatypes (Lists of tuples|dictionaries). Datasets can be imported from JSON, YAML, and CSV; they can be exported to XLSX, XLS, ODS, JSON, YAML, CSV, TSV, and HTML.
+    A Dataset is a table of tabular data.
+    It may or may not have a header row.
+    They can be built and manipulated as raw Python datatypes (lists of tuples, or dictionaries).
+    Datasets can be imported from JSON, YAML, and CSV;
+    they can be exported to XLSX, XLS, ODS, JSON, YAML, CSV, TSV, and HTML.
 
 `tablib.Databook()`
-	A Databook is a set of Datasets. The most common form of a Databook is an Excel file with multiple spreadsheets. Databooks can be imported from JSON and YAML; they can be exported to XLSX, XLS, ODS, JSON, and YAML.
+    A Databook is a set of Datasets.
+    The most common form of a Databook is an Excel file with multiple spreadsheets.
+    Databooks can be imported from JSON and YAML;
+    they can be exported to XLSX, XLS, ODS, JSON, and YAML.
 
 Usage
 -----
-
 
 Populate fresh data files: ::
 
@@ -81,43 +87,43 @@ JSON!
 +++++
 ::
 
-	>>> print data.json
-	[
-	  {
-	    "last_name": "Adams",
-	    "age": 90,
-	    "first_name": "John"
-	  },
-	  {
-	    "last_name": "Ford",
-	    "age": 83,
-	    "first_name": "Henry"
-	  }
-	]
+    >>> print data.json
+    [
+      {
+        "last_name": "Adams",
+        "age": 90,
+        "first_name": "John"
+      },
+      {
+        "last_name": "Ford",
+        "age": 83,
+        "first_name": "Henry"
+      }
+    ]
 
 
 YAML!
 +++++
 ::
 
-	>>> print data.yaml
-	- {age: 90, first_name: John, last_name: Adams}
-	- {age: 83, first_name: Henry, last_name: Ford}
+    >>> print data.yaml
+    - {age: 90, first_name: John, last_name: Adams}
+    - {age: 83, first_name: Henry, last_name: Ford}
 
 CSV...
 ++++++
 ::
 
-	>>> print data.csv
-	first_name,last_name,age
-	John,Adams,90
-	Henry,Ford,83
+    >>> print data.csv
+    first_name,last_name,age
+    John,Adams,90
+    Henry,Ford,83
 
 EXCEL!
 ++++++
 ::
 
-	>>> open('people.xls', 'wb').write(data.xls)
+    >>> open('people.xls', 'wb').write(data.xls)
 
 It's that easy.
 
@@ -127,11 +133,11 @@ Installation
 
 To install tablib, simply: ::
 
-	$ pip install tablib
+    $ pip install tablib
 
 Or, if you absolutely must: ::
 
-	$ easy_install tablib
+    $ easy_install tablib
 
 Contribute
 ----------
