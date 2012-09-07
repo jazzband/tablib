@@ -184,7 +184,7 @@ class Dataset(object):
         if isinstance(key, str) or isinstance(key, unicode):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
-                return [row[pos] for row in self._data]
+                return [row[pos] for row in self.data]
             else:
                 raise KeyError
         else:
