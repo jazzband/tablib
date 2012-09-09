@@ -134,7 +134,7 @@ class Dataset(object):
 
 
     You can also set rows and headers upon instantiation. This is useful if dealing
-    with dozens or hundres of :class:`Dataset` objects. ::
+    with dozens or hundreds of :class:`Dataset` objects. ::
 
         headers = ('first_name', 'last_name')
         data = [('John', 'Adams'), ('George', 'Washington')]
@@ -564,7 +564,7 @@ class Dataset(object):
     def insert(self, index, row, tags=list()):
         """Inserts a row to the :class:`Dataset` at the given index.
 
-        Rows inserted must be the correct size (height or width).
+        The row inserted must be the correct width.
 
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index.
