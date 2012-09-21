@@ -4,7 +4,7 @@ from .antlr import ANTLRException
 
 
 class Formula(object):
-    __slots__ = ["__init__",  "__s", "__parser", "__sheet_refs", "__xcall_refs"]
+    __slots__ = ["__s", "__parser", "__sheet_refs", "__xcall_refs"]
 
 
     def __init__(self, s):
