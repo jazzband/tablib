@@ -226,19 +226,21 @@ class Dataset(object):
     def __unicode__(self):
         result = [self.__headers]
 
-        result.extend(map(unicode, row) for row in self._data)
+        result.extend(list(map(unicode, row)) for row in self._data)
 
         # here, we calculate max width for each column
-        lens = (map(len, row) for row in result)
-        field_lens = map(max, zip(*lens))
+        lens = (list(map(len, row)) for row in result)
+        field_lens = list(map(max, zip(*lens)))
 
         # delimiter between header and data
-        result.insert(1, [u'-' * length for length in field_lens])
+        result.insert(1, ['-' * length for length in field_lens])
 
-        format_string = u'|'.join(u'{%s:%s}' % item for item in enumerate(field_lens))
+        format_string = '|'.join('{%s:%s}' % item for item in enumerate(field_lens))
 
-        return u'\n'.join(format_string.format(*row) for row in result)
+        return '\n'.join(format_string.format(*row) for row in result)
 
+    def __str__(self):
+        return self.__unicode__()
 
 
     # ---------

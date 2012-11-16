@@ -659,7 +659,7 @@ class TablibTestCase(unittest.TestCase):
         self.founders.append(('Old', 'Man', 100500))
 
         self.assertEquals(
-            u"""
+            """
 first_name|last_name |gpa   
 ----------|----------|------
 John      |Adams     |90    
