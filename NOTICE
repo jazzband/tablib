@@ -1,5 +1,5 @@
 Tablib includes some vendorized python libraries: ordereddict, odfpy, pyyaml,
-simplejson, unicodecsv, and xlwt.
+simplejson, unicodecsv, xlrd, xlrd3, xlwt, and xlwt3.
 
 Markup License
 ==============
@@ -299,8 +299,8 @@ or implied, of Jeremy Dunck.
 
 
 
-XLWT License
-============
+XLWT (and XLWT3) License
+========================
 
 Portions copyright © 2007, Stephen John Machin, Lingfo Pty Ltd
 All rights reserved.
@@ -384,8 +384,8 @@ Subject: pyExcelerator
 
 
 
-XLRD License
-============
+XLRD (and XLRD3) License
+========================
 
 Portions copyright © 2005-2009, Stephen John Machin, Lingfo Pty Ltd
 All rights reserved.

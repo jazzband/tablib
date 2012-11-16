@@ -23,3 +23,6 @@ nosetests.xml
 junit-py25.xml
 junit-py26.xml
 junit-py27.xml
+
+# tox noise
+.tox
