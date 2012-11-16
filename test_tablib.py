@@ -430,6 +430,16 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(_tsv, data.tsv)
 
 
+    def test_tsv_import_set_universal_line_support(self):
+        _tsv = (
+            '1\t2\t3\n'
+            '4\t5\t6\n'
+            '7\t8\t9\n'
+        )
+        dataset = tablib.Dataset()
+        tablib.formats.tsv.import_set(dataset, _tsv)
+
+
     def test_csv_format_detect(self):
         """Test CSV format detection."""
 
