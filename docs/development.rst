@@ -174,20 +174,15 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 Continuous Integration
 ----------------------
 
-Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Jenkins CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly.
+Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Travis CI`_. If you have access to the main repository and broke the build, you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
-    http://ci.kennethreitz.com/
-
-
-If you are trustworthy and plan to contribute to tablib on a regular basis, please contact `Kenneth Reitz`_ to get an account on the Jenkins Server.
-
+    https://travis-ci.org/kennethreitz/tablib
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Jenkins CI`: http://jenkins-ci.org/
-.. _`Kenneth Reitz`: http://kennethreitz.com/contact-me/
+.. _`Jenkins CI`: https://travis-ci.org/
 
 
 .. _docs:
