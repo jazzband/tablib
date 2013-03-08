@@ -23,7 +23,7 @@ except ImportError:
 if is_py3:
     from io import BytesIO
     import tablib.packages.xlwt3 as xlwt
-    import tablib.packages.xlrd3 as xlrd
+    import tablib.packages.xlrd as xlrd
     from tablib.packages.xlrd3.biffh import XLRDError
     from tablib.packages import markup3 as markup
     from tablib.packages import openpyxl3 as openpyxl
