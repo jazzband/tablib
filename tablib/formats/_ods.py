@@ -157,7 +157,10 @@ def import_set(dset, in_stream, headers=True):
     datals = []  # save in regular list first, ODSReader doesnt fill with blanks
     for row in od.getSheet(sheet):
         datals.append(row)
-    longest = max([len(x) for x in od.getSheet(sheet)])
+    try:
+        longest = max([len(x) for x in od.getSheet(sheet)])
+    except ValueError:
+        longest = 0
     for i, item in enumerate(datals):
         if len(item) < longest:
             for i in range(longest - len(item)):
@@ -178,7 +181,10 @@ def import_book(dbook, in_stream, headers=True):
         dset.title = sheet
         for row in od.getSheet(sheet):
             datals.append(row)
-        longest = max([len(x) for x in od.getSheet(sheet)])
+        try:
+            longest = max([len(x) for x in od.getSheet(sheet)])
+        except ValueError:
+            longest = 0
         for i, item in enumerate(datals):
             if len(item) < longest:
                 for i in range(longest - len(item)):
