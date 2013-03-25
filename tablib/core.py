@@ -173,6 +173,8 @@ class Dataset(object):
         except KeyError:
             self.title = None
 
+        self.format_options = kwargs.get('format_options', {}).copy()
+
         self._register_formats()
 
 
