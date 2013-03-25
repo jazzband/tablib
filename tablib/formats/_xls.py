@@ -100,8 +100,9 @@ def dset_sheet(dataset, ws):
                 ws.write(i, j, col, bold)
 
                 # frozen header row
-                ws.panes_frozen = True
-                ws.horz_split_pos = 1
+                if dataset.format_options.get('freeze_panes', True):
+                    ws.panes_frozen = True
+                    ws.horz_split_pos = 1
 
 
             # bold separators
