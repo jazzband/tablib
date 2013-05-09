@@ -29,8 +29,8 @@
 import re
 
 # package imports
-from openpyxl.shared.compat import unicode
-from openpyxl.shared.exc import NamedRangeException
+from .shared.compat import unicode
+from .shared.exc import NamedRangeException
 
 # constants
 NAMED_RANGE_RE = re.compile("^(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!(?P<range>(\$([A-Za-z]+))?\$([0-9]+)(:(\$([A-Za-z]+))?(\$([0-9]+)))?)")

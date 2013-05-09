@@ -23,10 +23,10 @@
 
 import math
 
-from openpyxl.style import NumberFormat
-from openpyxl.drawing import Drawing, Shape
-from openpyxl.shared.units import pixels_to_EMU, short_color
-from openpyxl.cell import get_column_letter
+from .style import NumberFormat
+from .drawing import Drawing, Shape
+from .shared.units import pixels_to_EMU, short_color
+from .cell import get_column_letter
 
 class Axis(object):
 

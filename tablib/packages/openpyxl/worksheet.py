@@ -1,6 +1,6 @@
 # file openpyxl/worksheet.py
-from openpyxl.shared.units import points_to_pixels
-from openpyxl.shared import DEFAULT_COLUMN_WIDTH, DEFAULT_ROW_HEIGHT
+from .shared.units import points_to_pixels
+from .shared import DEFAULT_COLUMN_WIDTH, DEFAULT_ROW_HEIGHT
 
 # Copyright (c) 2010-2011 openpyxl
 #
@@ -31,18 +31,18 @@ from openpyxl.shared import DEFAULT_COLUMN_WIDTH, DEFAULT_ROW_HEIGHT
 import re
 
 # package imports
-import openpyxl.cell
-from openpyxl.cell import coordinate_from_string, \
+from . import cell
+from .cell import coordinate_from_string, \
     column_index_from_string, get_column_letter
-from openpyxl.shared.exc import SheetTitleException, \
+from .shared.exc import SheetTitleException, \
     InsufficientCoordinatesException, CellCoordinatesException, \
     NamedRangeException
-from openpyxl.shared.password_hasher import hash_password
-from openpyxl.style import Style, DEFAULTS as DEFAULTS_STYLE
-from openpyxl.drawing import Drawing
-from openpyxl.namedrange import NamedRangeContainingValue
-from openpyxl.shared.compat import OrderedDict, unicode, xrange, basestring
-from openpyxl.shared.compat.itertools import iteritems
+from .shared.password_hasher import hash_password
+from .style import Style, DEFAULTS as DEFAULTS_STYLE
+from .drawing import Drawing
+from .namedrange import NamedRangeContainingValue
+from .shared.compat import OrderedDict, unicode, xrange, basestring
+from .shared.compat.itertools import iteritems
 
 _DEFAULTS_STYLE_HASH = hash(DEFAULTS_STYLE)
 
@@ -591,7 +591,7 @@ class Worksheet(object):
 
         if not coordinate in self._cells:
             column, row = coordinate_from_string(coordinate)
-            new_cell = openpyxl.cell.Cell(self, column, row)
+            new_cell = cell.Cell(self, column, row)
             self._cells[coordinate] = new_cell
             if column not in self.column_dimensions:
                 self.column_dimensions[column] = ColumnDimension(column)

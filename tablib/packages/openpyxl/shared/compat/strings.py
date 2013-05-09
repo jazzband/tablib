@@ -1,5 +1,3 @@
-# file openpyxl/reader/__init__.py
-
 # Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,11 +21,32 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
 
-"""Imports for the openpyxl.reader namespace."""
+try:
+    # Python 2
+    basestring = basestring
+except NameError:
+    # Python 3
+    basestring = str
 
-# package imports
-from ..reader import excel
-from ..reader import strings
-from ..reader import style
-from ..reader import workbook
-from ..reader import worksheet
+try:
+    # Python 2
+    unicode = unicode
+except NameError:
+    # Python 3
+    unicode = str
+
+try:
+    # Python 3
+    from io import BytesIO, StringIO
+except:
+    # Python 2
+    from StringIO import StringIO
+    BytesIO = StringIO
+
+try:
+    # Python 2
+    file = file
+except:
+    # Python 3
+    from io import BufferedReader
+    file = BufferedReader

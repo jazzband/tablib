@@ -22,8 +22,8 @@
 # @author: see AUTHORS file
 
 import math
-from openpyxl.style import Color
-from openpyxl.shared.units import pixels_to_EMU, EMU_to_pixels, short_color
+from .style import Color
+from .shared.units import pixels_to_EMU, EMU_to_pixels, short_color
 
 
 class Shadow(object):

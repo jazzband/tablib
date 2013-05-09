@@ -1,5 +1,3 @@
-# file openpyxl/reader/__init__.py
-
 # Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,11 +21,16 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
 
-"""Imports for the openpyxl.reader namespace."""
+import tempfile
+import os
 
-# package imports
-from ..reader import excel
-from ..reader import strings
-from ..reader import style
-from ..reader import workbook
-from ..reader import worksheet
+def NamedTemporaryFile(mode, suffix, prefix, delete=False):
+
+    try:
+        return tempfile.NamedTemporaryFile(mode=mode, suffix=suffix, prefix=prefix, delete=delete)
+    except TypeError:
+        handle, filename = tempfile.mkstemp(suffix=suffix, prefix=prefix)
+        os.close(handle)
+        fobj = open(filename, mode)
+
+        return fobj

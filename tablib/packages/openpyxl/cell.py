@@ -34,14 +34,14 @@ cells using Excel's 'A1' column/row nomenclature are also provided.
 __docformat__ = "restructuredtext en"
 
 # Python stdlib imports
-from openpyxl.shared import (NUMERIC_TYPES, DEFAULT_ROW_HEIGHT,
+from .shared import (NUMERIC_TYPES, DEFAULT_ROW_HEIGHT,
     DEFAULT_COLUMN_WIDTH)
-from openpyxl.shared.compat import all, unicode, basestring
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.shared.exc import (CellCoordinatesException,
+from .shared.compat import all, unicode, basestring
+from .shared.date_time import SharedDate
+from .shared.exc import (CellCoordinatesException,
     ColumnStringIndexException, DataTypeException)
-from openpyxl.shared.units import points_to_pixels
-from openpyxl.style import NumberFormat
+from .shared.units import points_to_pixels
+from .style import NumberFormat
 import datetime
 import re
 

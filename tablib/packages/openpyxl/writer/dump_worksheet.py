@@ -28,22 +28,22 @@
 import datetime
 import os
 
-from openpyxl.shared.compat import OrderedDict
+from ..shared.compat import OrderedDict
 
-from openpyxl.cell import  get_column_letter, Cell
-from openpyxl.worksheet import Worksheet
-from openpyxl.shared.xmltools import (XMLGenerator, start_tag, end_tag, tag)
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.shared.ooxml import MAX_COLUMN, MAX_ROW
-from openpyxl.shared import NUMERIC_TYPES
-from openpyxl.shared.exc import WorkbookAlreadySaved
-from openpyxl.shared.compat import NamedTemporaryFile
-from openpyxl.writer.excel import ExcelWriter
-from openpyxl.writer.strings import write_string_table
-from openpyxl.writer.styles import StyleWriter
-from openpyxl.style import Style, NumberFormat
+from ..cell import  get_column_letter, Cell
+from ..worksheet import Worksheet
+from ..shared.xmltools import (XMLGenerator, start_tag, end_tag, tag)
+from ..shared.date_time import SharedDate
+from ..shared.ooxml import MAX_COLUMN, MAX_ROW
+from ..shared import NUMERIC_TYPES
+from ..shared.exc import WorkbookAlreadySaved
+from ..shared.compat import NamedTemporaryFile
+from ..writer.excel import ExcelWriter
+from ..writer.strings import write_string_table
+from ..writer.styles import StyleWriter
+from ..style import Style, NumberFormat
 
-from openpyxl.shared.ooxml import (ARC_SHARED_STRINGS, PACKAGE_WORKSHEETS)
+from ..shared.ooxml import (ARC_SHARED_STRINGS, PACKAGE_WORKSHEETS)
 
 STYLES = {'datetime' : {'type':Cell.TYPE_NUMERIC,
                         'style':'1'},
@@ -72,7 +72,7 @@ class DumpWorksheet(Worksheet):
     """
     .. warning::
 
-        You shouldn't initialize this yourself, use :class:`openpyxl.workbook.Workbook` constructor instead, 
+        You shouldn't initialize this yourself, use :class:`openpyxl.workbook.Workbook` constructor instead,
         with `optimized_write = True`.
     """
     def __init__(self, parent_workbook, title):

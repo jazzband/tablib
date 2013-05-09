@@ -22,9 +22,9 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
 
-from openpyxl.shared.xmltools import Element, SubElement, get_document_content
-from openpyxl.shared.compat.itertools import iteritems
-from openpyxl.chart import Chart, ErrorBar
+from ..shared.xmltools import Element, SubElement, get_document_content
+from ..shared.compat.itertools import iteritems
+from ..chart import Chart, ErrorBar
 
 try:
     # Python 2

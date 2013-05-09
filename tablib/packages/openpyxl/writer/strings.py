@@ -35,7 +35,7 @@ except ImportError:
     from io import BytesIO, StringIO
 
 # package imports
-from openpyxl.shared.xmltools import start_tag, end_tag, tag, XMLGenerator
+from ..shared.xmltools import start_tag, end_tag, tag, XMLGenerator
 
 
 def create_string_table(workbook):

@@ -27,7 +27,7 @@
 
 # Python stdlib imports
 try:
-    from openpyxl.shared.compat import iterparse
+    from ..shared.compat import iterparse
 except ImportError:
     from xml.etree.ElementTree import iterparse
 try:
@@ -37,12 +37,12 @@ except ImportError:
     # Python 3
     from io import BytesIO, StringIO
 
-from openpyxl.cell import get_column_letter
-from openpyxl.shared.xmltools import fromstring, QName
+from ..cell import get_column_letter
+from ..shared.xmltools import fromstring, QName
 
 # package imports
-from openpyxl.cell import Cell, coordinate_from_string
-from openpyxl.worksheet import Worksheet, ColumnDimension
+from ..cell import Cell, coordinate_from_string
+from ..worksheet import Worksheet, ColumnDimension
 
 def _get_xml_iter(xml_source):
 
@@ -213,7 +213,7 @@ def fast_parse(ws, xml_source, string_table, style_table):
         if oddFooter is not None:
             ws.header_footer.setFooter(oddFooter.text)
 
-from openpyxl.reader.iter_worksheet import IterableWorksheet
+from .iter_worksheet import IterableWorksheet
 
 def read_worksheet(xml_source, parent, preset_title, string_table,
                    style_table, workbook_name=None, sheet_codename=None):

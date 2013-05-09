@@ -23,7 +23,7 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
 
-from openpyxl.shared.xmltools import Element, SubElement, get_document_content
+from ..shared.xmltools import Element, SubElement, get_document_content
 
 
 class DrawingWriter(object):

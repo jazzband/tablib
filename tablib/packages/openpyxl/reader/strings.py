@@ -26,9 +26,9 @@
 """Read the shared strings table."""
 
 # package imports
-from openpyxl.shared.xmltools import fromstring, QName
-from openpyxl.shared.ooxml import NAMESPACES
-from openpyxl.shared.compat import unicode
+from ..shared.xmltools import fromstring, QName
+from ..shared.ooxml import NAMESPACES
+from ..shared.compat import unicode
 
 
 def read_string_table(xml_source):

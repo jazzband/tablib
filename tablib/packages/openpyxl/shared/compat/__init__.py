@@ -1,5 +1,3 @@
-# file openpyxl/reader/__init__.py
-
 # Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,12 +20,16 @@
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
+import sys
 
-"""Imports for the openpyxl.reader namespace."""
+from .elementtree import iterparse
+from .tempnamedfile import NamedTemporaryFile
+from .allany import all, any
+from .strings import basestring, unicode, StringIO, file, BytesIO
+from .numbers import long
+from .itertools import ifilter, xrange
 
-# package imports
-from ..reader import excel
-from ..reader import strings
-from ..reader import style
-from ..reader import workbook
-from ..reader import worksheet
+try:
+    from collections import OrderedDict
+except ImportError:
+    from .odict import OrderedDict

@@ -30,16 +30,16 @@
 import warnings
 import operator
 from itertools import  groupby
-from openpyxl.worksheet import Worksheet
-from openpyxl.cell import (coordinate_from_string, get_column_letter, Cell,
+from ..worksheet import Worksheet
+from ..cell import (coordinate_from_string, get_column_letter, Cell,
                             column_index_from_string)
-from openpyxl.reader.style import read_style_table
-from openpyxl.shared.date_time import SharedDate
-from openpyxl.reader.worksheet import read_dimension
-from openpyxl.shared.compat import unicode
-from openpyxl.shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
+from ..reader.style import read_style_table
+from ..shared.date_time import SharedDate
+from ..reader.worksheet import read_dimension
+from ..shared.compat import unicode
+from ..shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
     MAX_ROW, MIN_ROW, ARC_STYLE)
-from openpyxl.shared.compat import iterparse, xrange
+from ..shared.compat import iterparse, xrange
 from zipfile import ZipFile
 import re
 import tempfile

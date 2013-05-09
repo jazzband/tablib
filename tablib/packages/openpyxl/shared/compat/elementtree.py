@@ -1,5 +1,3 @@
-# file openpyxl/reader/__init__.py
-
 # Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,11 +21,13 @@
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
 
-"""Imports for the openpyxl.reader namespace."""
-
-# package imports
-from ..reader import excel
-from ..reader import strings
-from ..reader import style
-from ..reader import workbook
-from ..reader import worksheet
+import warnings
+try:
+    try:
+        from xml.etree.cElementTree import iterparse
+    except ImportError:
+        from xml.etree.ElementTree import iterparse
+        warnings.warn("""Unable to import 'xml.etree.cElementree'. Falling back on 'xml.etree.Elementree'""")
+except ImportError:
+    from cElementTree import iterparse
+    warnings.warn("""Unable to import 'xml.etree.Elementree'. Falling back on 'cElementree'""")

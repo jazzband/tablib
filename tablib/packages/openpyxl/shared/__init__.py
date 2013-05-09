@@ -26,12 +26,12 @@
 """Imports for the openpyxl.shared namespace."""
 
 # package imports
-from openpyxl.shared import date_time
-from openpyxl.shared import exc
-from openpyxl.shared import ooxml
-from openpyxl.shared import password_hasher
-from openpyxl.shared import xmltools
-from openpyxl.shared.compat import long
+from ..shared import date_time
+from ..shared import exc
+from ..shared import ooxml
+from ..shared import password_hasher
+from ..shared import xmltools
+from ..shared.compat import long
 import decimal
 
 NUMERIC_TYPES = (int, float, long, decimal.Decimal)
