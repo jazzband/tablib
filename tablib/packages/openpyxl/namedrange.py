@@ -1,6 +1,6 @@
 # file openpyxl/namedrange.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Track named groups of cells in a worksheet"""
 
@@ -29,40 +29,62 @@
 import re
 
 # package imports
+from .shared.compat import unicode
 from .shared.exc import NamedRangeException
 
 # constants
-NAMED_RANGE_RE = re.compile("'?([^']*)'?!((\$([A-Za-z]+))?\$([0-9]+)(:(\$([A-Za-z]+))?(\$([0-9]+)))?)$")
+NAMED_RANGE_RE = re.compile("^(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!(?P<range>(\$([A-Za-z]+))?\$([0-9]+)(:(\$([A-Za-z]+))?(\$([0-9]+)))?)")
+SPLIT_NAMED_RANGE_RE = re.compile(r"((?:[^,']|'(?:[^']|'')*')+)")
 
 class NamedRange(object):
-    """A named group of cells"""
-    __slots__ = ('name', 'destinations', 'local_only')
+    """A named group of cells
+    
+    Scope is a worksheet object or None for workbook scope names (the default)
+    """
+    __slots__ = ('name', 'destinations', 'scope')
+
+    str_format = unicode('%s!%s')
+    repr_format = unicode('<%s "%s">')
 
     def __init__(self, name, destinations):
         self.name = name
         self.destinations = destinations
-        self.local_only = False
+        self.scope = None
 
     def __str__(self):
-        return  ','.join(['%s!%s' % (sheet, name) for sheet, name in self.destinations])
+        return  ','.join([self.str_format % (sheet, name) for sheet, name in self.destinations])
 
     def __repr__(self):
 
-        return '<%s "%s">' % (self.__class__.__name__, str(self))
+        return  self.repr_format % (self.__class__.__name__, str(self))
+
+class NamedRangeContainingValue(object):
+    """A named value"""
+    __slots__ = ('name', 'value', 'scope')
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+        self.scope = None
 
 
 def split_named_range(range_string):
     """Separate a named range into its component parts"""
 
     destinations = []
-
-    for range_string in range_string.split(','):
+    for range_string in SPLIT_NAMED_RANGE_RE.split(range_string)[1::2]: # Skip first and from there every second item
 
         match = NAMED_RANGE_RE.match(range_string)
         if not match:
             raise NamedRangeException('Invalid named range string: "%s"' % range_string)
         else:
-            sheet_name, xlrange = match.groups()[:2]
+            match = match.groupdict()
+            sheet_name = match['quoted'] or match['notquoted']
+            xlrange = match['range']
+            sheet_name = sheet_name.replace("''", "'") # Unescape '
             destinations.append((sheet_name, xlrange))
-
+            
     return destinations
+
+def refers_to_range(range_string):
+    return bool(NAMED_RANGE_RE.match(range_string))

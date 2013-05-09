@@ -1,6 +1,6 @@
 # file openpyxl/writer/workbook.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Write the workbook global settings to the archive."""
 
@@ -32,6 +32,7 @@ from ..shared.xmltools import get_document_content
 from ..shared.ooxml import NAMESPACES, ARC_CORE, ARC_WORKBOOK, \
        ARC_APP, ARC_THEME, ARC_STYLE, ARC_SHARED_STRINGS
 from ..shared.date_time import datetime_to_W3CDTF
+from ..namedrange import NamedRange, NamedRangeContainingValue
 
 
 def write_properties_core(properties):
@@ -58,6 +59,7 @@ def write_content_types(workbook):
     SubElement(root, 'Override', {'PartName': '/' + ARC_STYLE, 'ContentType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml'})
     SubElement(root, 'Default', {'Extension': 'rels', 'ContentType': 'application/vnd.openxmlformats-package.relationships+xml'})
     SubElement(root, 'Default', {'Extension': 'xml', 'ContentType': 'application/xml'})
+    SubElement(root, 'Default', {'Extension': 'png', 'ContentType': 'image/png'})
     SubElement(root, 'Override', {'PartName': '/' + ARC_WORKBOOK, 'ContentType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml'})
     SubElement(root, 'Override', {'PartName': '/' + ARC_APP, 'ContentType': 'application/vnd.openxmlformats-officedocument.extended-properties+xml'})
     SubElement(root, 'Override', {'PartName': '/' + ARC_CORE, 'ContentType': 'application/vnd.openxmlformats-package.core-properties+xml'})
@@ -70,9 +72,9 @@ def write_content_types(workbook):
         SubElement(root, 'Override',
                 {'PartName': '/xl/worksheets/sheet%d.xml' % (sheet_id + 1),
                 'ContentType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml'})
-        if sheet._charts:
+        if sheet._charts or sheet._images:
             SubElement(root, 'Override',
-                {'PartName' : '/xl/drawings/drawing%d.xml' % (sheet_id + 1),
+                {'PartName' : '/xl/drawings/drawing%d.xml' % drawing_id,
                 'ContentType' : 'application/vnd.openxmlformats-officedocument.drawing+xml'})
             drawing_id += 1
 
@@ -156,27 +158,41 @@ def write_workbook(workbook):
                 'sheetId': '%d' % (i + 1), 'r:id': 'rId%d' % (i + 1)})
         if not sheet.sheet_state == sheet.SHEETSTATE_VISIBLE:
             sheet_node.set('state', sheet.sheet_state)
-    # named ranges
+
+    # Defined names
     defined_names = SubElement(root, 'definedNames')
+    # named ranges
     for named_range in workbook.get_named_ranges():
         name = SubElement(defined_names, 'definedName',
                 {'name': named_range.name})
+        if named_range.scope:
+            name.set('localSheetId', '%s' % workbook.get_index(named_range.scope))
 
-        # as there can be many cells in one range, generate the list of ranges
-        dest_cells = []
-        cell_ids = []
-        for worksheet, range_name in named_range.destinations:
-            cell_ids.append(workbook.get_index(worksheet))
-            dest_cells.append("'%s'!%s" % (worksheet.title.replace("'", "''"),
-                                           absolute_coordinate(range_name)))
+        if isinstance(named_range, NamedRange):
+            # as there can be many cells in one range, generate the list of ranges
+            dest_cells = []
+            for worksheet, range_name in named_range.destinations:
+                dest_cells.append("'%s'!%s" % (worksheet.title.replace("'", "''"),
+                absolute_coordinate(range_name)))
 
-        # for local ranges, we must check all the cells belong to the same sheet
-        base_id = cell_ids[0]
-        if named_range.local_only and all([x == base_id for x in cell_ids]):
-            name.set('localSheetId', '%s' % base_id)
+            # finally write the cells list
+            name.text = ','.join(dest_cells)
+        else:
+            assert isinstance(named_range, NamedRangeContainingValue)
+            name.text = named_range.value
 
-        # finally write the cells list
-        name.text = ','.join(dest_cells)
+    # autoFilter
+    for i, sheet in enumerate(workbook.worksheets):
+        #continue
+        auto_filter = sheet.auto_filter
+        if not auto_filter:
+            continue
+        name = SubElement(defined_names, 'definedName',
+                dict(name='_xlnm._FilterDatabase',
+                     localSheetId=str(i),
+                     hidden='1'))
+        name.text = "'%s'!%s" % (sheet.title.replace("'", "''"),
+                                  absolute_coordinate(auto_filter))
 
     SubElement(root, 'calcPr', {'calcId': '124519', 'calcMode': 'auto',
             'fullCalcOnLoad': '1'})

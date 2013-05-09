@@ -1,6 +1,6 @@
 # file openpyxl/shared/ooxml.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Constants for fixed paths in a file and xml namespace urls."""
 
@@ -38,6 +38,7 @@ PACKAGE_THEME = PACKAGE_XL + '/' + 'theme'
 PACKAGE_WORKSHEETS = PACKAGE_XL + '/' + 'worksheets'
 PACKAGE_DRAWINGS = PACKAGE_XL + '/' + 'drawings'
 PACKAGE_CHARTS = PACKAGE_XL + '/' + 'charts'
+PACKAGE_IMAGES = PACKAGE_XL + '/' + 'media'
 
 ARC_CONTENT_TYPES = '[Content_Types].xml'
 ARC_ROOT_RELS = PACKAGE_RELS + '/.rels'

@@ -59,10 +59,6 @@ setup(
         'tablib.packages.openpyxl.shared',
         'tablib.packages.openpyxl.reader',
         'tablib.packages.openpyxl.writer',
-        'tablib.packages.openpyxl3',
-        'tablib.packages.openpyxl3.shared',
-        'tablib.packages.openpyxl3.reader',
-        'tablib.packages.openpyxl3.writer',
         'tablib.packages.yaml',
         'tablib.packages.unicodecsv'
     ],

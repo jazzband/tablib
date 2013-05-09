@@ -1,6 +1,6 @@
 # file openpyxl/writer/worksheet.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,17 +21,32 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Write worksheets to xml representations."""
 
 # Python stdlib imports
-from ....compat import BytesIO as StringIO  # cStringIO doesn't handle unicode
+try:
+    # Python 2
+    from StringIO import StringIO  # cStringIO doesn't handle unicode
+    BytesIO = StringIO
+except ImportError:
+    # Python 3
+    from io import BytesIO, StringIO
+
+try:
+    # Python 2
+    isinstance(1, long)
+except NameError:
+    # Python 3, all ints are long
+    long = int
 
 # package imports
+import decimal
 from ..cell import coordinate_from_string, column_index_from_string
 from ..shared.xmltools import Element, SubElement, XMLGenerator, \
         get_document_content, start_tag, end_tag, tag
+from ..shared.compat.itertools import iteritems, iterkeys
 
 
 def row_sort(cell):
@@ -42,7 +57,7 @@ def row_sort(cell):
 def write_worksheet(worksheet, string_table, style_table):
     """Write a worksheet to an xml file."""
     xml_file = StringIO()
-    doc = XMLGenerator(xml_file, 'utf-8')
+    doc = XMLGenerator(out=xml_file, encoding='utf-8')
     start_tag(doc, 'worksheet',
             {'xml:space': 'preserve',
             'xmlns': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
@@ -51,6 +66,8 @@ def write_worksheet(worksheet, string_table, style_table):
     tag(doc, 'outlinePr',
             {'summaryBelow': '%d' % (worksheet.show_summary_below),
             'summaryRight': '%d' % (worksheet.show_summary_right)})
+    if worksheet.page_setup.fitToPage:
+        tag(doc, 'pageSetUpPr', {'fitToPage':'1'})
     end_tag(doc, 'sheetPr')
     tag(doc, 'dimension', {'ref': '%s' % worksheet.calculate_dimension()})
     write_worksheet_sheetviews(doc, worksheet)
@@ -59,8 +76,31 @@ def write_worksheet(worksheet, string_table, style_table):
     write_worksheet_data(doc, worksheet, string_table, style_table)
     if worksheet.auto_filter:
         tag(doc, 'autoFilter', {'ref': worksheet.auto_filter})
+    write_worksheet_mergecells(doc, worksheet)
+    write_worksheet_datavalidations(doc, worksheet)
     write_worksheet_hyperlinks(doc, worksheet)
-    if worksheet._charts:
+
+    options = worksheet.page_setup.options
+    if options:
+        tag(doc, 'printOptions', options)
+
+    margins = worksheet.page_margins.margins
+    if margins:
+        tag(doc, 'pageMargins', margins)
+
+    setup = worksheet.page_setup.setup
+    if setup:
+        tag(doc, 'pageSetup', setup)
+
+    if worksheet.header_footer.hasHeader() or worksheet.header_footer.hasFooter():
+        start_tag(doc, 'headerFooter')
+        if worksheet.header_footer.hasHeader():
+            tag(doc, 'oddHeader', None, worksheet.header_footer.getHeader())
+        if worksheet.header_footer.hasFooter():
+            tag(doc, 'oddFooter', None, worksheet.header_footer.getFooter())
+        end_tag(doc, 'headerFooter')
+
+    if worksheet._charts or worksheet._images:
         tag(doc, 'drawing', {'r:id':'rId1'})
     end_tag(doc, 'worksheet')
     doc.endDocument()
@@ -107,7 +147,7 @@ def write_worksheet_cols(doc, worksheet):
     if worksheet.column_dimensions:
         start_tag(doc, 'cols')
         for column_string, columndimension in \
-                worksheet.column_dimensions.items():
+                iteritems(worksheet.column_dimensions):
             col_index = column_index_from_string(column_string)
             col_def = {}
             col_def['collapsed'] = str(columndimension.style_index)
@@ -138,42 +178,84 @@ def write_worksheet_data(doc, worksheet, string_table, style_table):
     max_column = worksheet.get_highest_column()
     style_id_by_hash = style_table
     cells_by_row = {}
+    for styleCoord in iterkeys(worksheet._styles):
+        # Ensure a blank cell exists if it has a style
+        worksheet.cell(styleCoord)
     for cell in worksheet.get_cell_collection():
         cells_by_row.setdefault(cell.row, []).append(cell)
     for row_idx in sorted(cells_by_row):
         row_dimension = worksheet.row_dimensions[row_idx]
         attrs = {'r': '%d' % row_idx,
                  'spans': '1:%d' % max_column}
+        if not row_dimension.visible:
+            attrs['hidden'] = '1'
         if row_dimension.height > 0:
             attrs['ht'] = str(row_dimension.height)
             attrs['customHeight'] = '1'
         start_tag(doc, 'row', attrs)
         row_cells = cells_by_row[row_idx]
-        sorted_cells = sorted(row_cells, key = row_sort)
+        sorted_cells = sorted(row_cells, key=row_sort)
         for cell in sorted_cells:
             value = cell._value
             coordinate = cell.get_coordinate()
             attributes = {'r': coordinate}
-            attributes['t'] = cell.data_type
+            if cell.data_type != cell.TYPE_FORMULA:
+                attributes['t'] = cell.data_type
             if coordinate in worksheet._styles:
                 attributes['s'] = '%d' % style_id_by_hash[
                         hash(worksheet._styles[coordinate])]
-            start_tag(doc, 'c', attributes)
-            if value is None:
-                tag(doc, 'v', body='')
-            elif cell.data_type == cell.TYPE_STRING:
-                tag(doc, 'v', body = '%s' % string_table[value])
-            elif cell.data_type == cell.TYPE_FORMULA:
-                tag(doc, 'f', body = '%s' % value[1:])
-                tag(doc, 'v')
-            elif cell.data_type == cell.TYPE_NUMERIC:
-                tag(doc, 'v', body = '%s' % value)
+
+            if value in ('', None):
+                tag(doc, 'c', attributes)
             else:
-                tag(doc, 'v', body = '%s' % value)
-            end_tag(doc, 'c')
+                start_tag(doc, 'c', attributes)
+                if cell.data_type == cell.TYPE_STRING:
+                    tag(doc, 'v', body='%s' % string_table[value])
+                elif cell.data_type == cell.TYPE_FORMULA:
+                    tag(doc, 'f', body='%s' % value[1:])
+                    tag(doc, 'v')
+                elif cell.data_type == cell.TYPE_NUMERIC:
+                    if isinstance(value, (long, decimal.Decimal)):
+                        func = str
+                    else:
+                        func = repr
+                    tag(doc, 'v', body=func(value))
+                elif cell.data_type == cell.TYPE_BOOL:
+                    tag(doc, 'v', body='%d' % value)
+                else:
+                    tag(doc, 'v', body='%s' % value)
+                end_tag(doc, 'c')
         end_tag(doc, 'row')
     end_tag(doc, 'sheetData')
 
+
+def write_worksheet_mergecells(doc, worksheet):
+    """Write merged cells to xml."""
+    if len(worksheet._merged_cells) > 0:
+        start_tag(doc, 'mergeCells', {'count': str(len(worksheet._merged_cells))})
+        for range_string in worksheet._merged_cells:
+            attrs = {'ref': range_string}
+            tag(doc, 'mergeCell', attrs)
+        end_tag(doc, 'mergeCells')
+
+def write_worksheet_datavalidations(doc, worksheet):
+    """ Write data validation(s) to xml."""
+    # Filter out "empty" data-validation objects (i.e. with 0 cells)
+    required_dvs = [x for x in worksheet._data_validations
+                    if len(x.cells) or len(x.ranges)]
+    count = len(required_dvs)
+    if count == 0:
+        return
+
+    start_tag(doc, 'dataValidations', {'count': str(count)})
+    for data_validation in required_dvs:
+        start_tag(doc, 'dataValidation', data_validation.generate_attributes_map())
+        if data_validation.formula1:
+            tag(doc, 'formula1', body=data_validation.formula1)
+        if data_validation.formula2:
+            tag(doc, 'formula2', body=data_validation.formula2)
+        end_tag(doc, 'dataValidation')
+    end_tag(doc, 'dataValidations')
 
 def write_worksheet_hyperlinks(doc, worksheet):
     """Write worksheet hyperlinks to xml."""
@@ -201,7 +283,7 @@ def write_worksheet_rels(worksheet, idx):
         if rel.target_mode:
             attrs['TargetMode'] = rel.target_mode
         SubElement(root, 'Relationship', attrs)
-    if worksheet._charts:
+    if worksheet._charts or worksheet._images:
         attrs = {'Id' : 'rId1',
             'Type' : 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing',
             'Target' : '../drawings/drawing%s.xml' % idx }

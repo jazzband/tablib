@@ -5,17 +5,11 @@
 
 import sys
 
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-else:
-    from cStringIO import StringIO as BytesIO
-
 from tablib.compat import openpyxl
 
 Workbook = openpyxl.workbook.Workbook
-ExcelWriter = openpyxl.writer.excel.ExcelWriter
 get_column_letter = openpyxl.cell.get_column_letter
+save_virtual_workbook = openpyxl.writer.excel.save_virtual_workbook
 
 from tablib.compat import unicode
 
@@ -32,26 +26,21 @@ def export_set(dataset):
 
     dset_sheet(dataset, ws)
 
-    stream = BytesIO()
-    wb.save(stream)
-    return stream.getvalue()
+    return save_virtual_workbook(wb)
 
 
 def export_book(databook):
     """Returns XLSX representation of DataBook."""
 
     wb = Workbook()
-    ew = ExcelWriter(workbook = wb)
+    wb.worksheets = [] # clear out auto created sheet
     for i, dset in enumerate(databook._datasets):
         ws = wb.create_sheet()
         ws.title = dset.title if dset.title else 'Sheet%s' % (i)
 
         dset_sheet(dset, ws)
 
-
-    stream = BytesIO()
-    ew.save(stream)
-    return stream.getvalue()
+    return save_virtual_workbook(wb)
 
 
 def dset_sheet(dataset, ws):

@@ -5,10 +5,10 @@
 
 import unittest
 import sys
-import openpyxl
 import os
 import tablib
 from tablib.compat import markup, unicode
+import json
 
 
 
@@ -346,7 +346,7 @@ class TablibTestCase(unittest.TestCase):
 
         data.json = _json
 
-        self.assertEqual(_json, data.json)
+        self.assertEqual(json.loads(_json), json.loads(data.json))
 
 
     def test_json_import_book(self):
@@ -360,7 +360,7 @@ class TablibTestCase(unittest.TestCase):
 
         book.json = _json
 
-        self.assertEqual(_json, book.json)
+        self.assertEqual(json.loads(_json), json.loads(book.json))
 
 
     def test_yaml_import_set(self):

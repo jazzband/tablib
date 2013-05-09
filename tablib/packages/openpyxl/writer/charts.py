@@ -1,31 +1,37 @@
 # coding=UTF-8
-'''
-Copyright (c) 2010 openpyxl
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-@license: http://www.opensource.org/licenses/mit-license.php
-@author: Eric Gazoni
-'''
+# Copyright (c) 2010-2011 openpyxl
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# @license: http://www.opensource.org/licenses/mit-license.php
+# @author: see AUTHORS file
 
 from ..shared.xmltools import Element, SubElement, get_document_content
+from ..shared.compat.itertools import iteritems
 from ..chart import Chart, ErrorBar
+
+try:
+    # Python 2
+    basestring
+except NameError:
+    # Python 3
+    basestring = str
 
 class ChartWriter(object):
 
@@ -115,13 +121,26 @@ class ChartWriter(object):
         scaling = SubElement(ax, 'c:scaling')
         SubElement(scaling, 'c:orientation', {'val':axis.orientation})
         if label == 'c:valAx':
-            SubElement(scaling, 'c:max', {'val':str(axis.max)})
-            SubElement(scaling, 'c:min', {'val':str(axis.min)})
+            SubElement(scaling, 'c:max', {'val':str(float(axis.max))})
+            SubElement(scaling, 'c:min', {'val':str(float(axis.min))})
 
         SubElement(ax, 'c:axPos', {'val':axis.position})
         if label == 'c:valAx':
             SubElement(ax, 'c:majorGridlines')
             SubElement(ax, 'c:numFmt', {'formatCode':"General", 'sourceLinked':'1'})
+        if axis.title != '':
+            title = SubElement(ax, 'c:title')
+            tx = SubElement(title, 'c:tx')
+            rich = SubElement(tx, 'c:rich')
+            SubElement(rich, 'a:bodyPr')
+            SubElement(rich, 'a:lstStyle')
+            p = SubElement(rich, 'a:p')
+            pPr = SubElement(p, 'a:pPr')
+            SubElement(pPr, 'a:defRPr')
+            r = SubElement(p, 'a:r')
+            SubElement(r, 'a:rPr', {'lang':self.chart.lang})
+            t = SubElement(r, 'a:t').text = axis.title
+            SubElement(title, 'c:layout')
         SubElement(ax, 'c:tickLblPos', {'val':axis.tick_label_position})
         SubElement(ax, 'c:crossAx', {'val':str(axis.cross)})
         SubElement(ax, 'c:crosses', {'val':axis.crosses})
@@ -136,7 +155,7 @@ class ChartWriter(object):
                 SubElement(ax, 'c:crossBetween', {'val':'midCat'})
             else:
                 SubElement(ax, 'c:crossBetween', {'val':'between'})
-            SubElement(ax, 'c:majorUnit', {'val':str(axis.unit)})
+            SubElement(ax, 'c:majorUnit', {'val':str(float(axis.unit))})
 
     def _write_series(self, subchart):
 
@@ -173,17 +192,17 @@ class ChartWriter(object):
             if self.chart.type == Chart.SCATTER_CHART:
                 if serie.xvalues:
                     xval = SubElement(ser, 'c:xVal')
-                    self._write_serial(xval, serie.xvalues)
+                    self._write_serial(xval, serie.xreference)
 
                 yval = SubElement(ser, 'c:yVal')
-                self._write_serial(yval, serie.values)
+                self._write_serial(yval, serie.reference)
             else:
                 val = SubElement(ser, 'c:val')
-                self._write_serial(val, serie.values)
+                self._write_serial(val, serie.reference)
 
-    def _write_serial(self, node, serie, literal=False):
+    def _write_serial(self, node, reference, literal=False):
 
-        cache = serie._get_cache()
+        cache = reference.values
         if isinstance(cache[0], basestring):
             typ = 'str'
         else:
@@ -194,7 +213,7 @@ class ChartWriter(object):
                 ref = SubElement(node, 'c:numRef')
             else:
                 ref = SubElement(node, 'c:strRef')
-            SubElement(ref, 'c:f').text = serie._get_ref()
+            SubElement(ref, 'c:f').text = str(reference)
             if typ == 'num':
                 data = SubElement(ref, 'c:numCache')
             else:
@@ -226,23 +245,31 @@ class ChartWriter(object):
 
         plus = SubElement(eb, 'c:plus')
         self._write_serial(plus, serie.error_bar.values,
-            literal=(serie.error_bar.type==ErrorBar.MINUS))
+            literal=(serie.error_bar.type == ErrorBar.MINUS))
 
         minus = SubElement(eb, 'c:minus')
         self._write_serial(minus, serie.error_bar.values,
-            literal=(serie.error_bar.type==ErrorBar.PLUS))
+            literal=(serie.error_bar.type == ErrorBar.PLUS))
 
     def _write_legend(self, chart):
 
-        legend = SubElement(chart, 'c:legend')
-        SubElement(legend, 'c:legendPos', {'val':self.chart.legend.position})
-        SubElement(legend, 'c:layout')
+        if self.chart.show_legend:
+            legend = SubElement(chart, 'c:legend')
+            SubElement(legend, 'c:legendPos', {'val':self.chart.legend.position})
+            SubElement(legend, 'c:layout')
 
     def _write_print_settings(self, root):
 
         settings = SubElement(root, 'c:printSettings')
         SubElement(settings, 'c:headerFooter')
-        margins = dict([(k, str(v)) for (k,v) in self.chart.print_margins.items()])
+        try:
+            # Python 2
+            print_margins_items = iteritems(self.chart.print_margins)
+        except AttributeError:
+            # Python 3
+            print_margins_items = self.chart.print_margins.items()
+
+        margins = dict([(k, str(v)) for (k, v) in print_margins_items])
         SubElement(settings, 'c:pageMargins', margins)
         SubElement(settings, 'c:pageSetup')
 

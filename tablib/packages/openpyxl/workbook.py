@@ -1,6 +1,6 @@
 # file openpyxl/workbook.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Workbook is the top-level container for all document information."""
 
@@ -30,6 +30,7 @@ __docformat__ = "restructuredtext en"
 # Python stdlib imports
 import datetime
 import os
+import threading
 
 # package imports
 from .worksheet import Worksheet
@@ -39,6 +40,7 @@ from .namedrange import NamedRange
 from .style import Style
 from .writer.excel import save_workbook
 from .shared.exc import ReadOnlyWorkbookException
+from .shared.date_time import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 
 
 class DocumentProperties(object):
@@ -55,6 +57,7 @@ class DocumentProperties(object):
         self.keywords = ''
         self.category = ''
         self.company = 'Microsoft Corporation'
+        self.excel_base_date = CALENDAR_WINDOWS_1900
 
 
 class DocumentSecurity(object):
@@ -71,7 +74,7 @@ class DocumentSecurity(object):
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
-    def __init__(self, optimized_write = False):
+    def __init__(self, optimized_write=False, encoding='utf-8'):
         self.worksheets = []
         self._active_sheet_index = 0
         self._named_ranges = []
@@ -80,10 +83,22 @@ class Workbook(object):
         self.security = DocumentSecurity()
         self.__optimized_write = optimized_write
         self.__optimized_read = False
+        self.__thread_local_data = threading.local()
         self.strings_table_builder = StringTableBuilder()
+        self.loaded_theme = None
+
+        self.encoding = encoding
 
         if not optimized_write:
             self.worksheets.append(Worksheet(self))
+
+    @property
+    def _local_data(self):
+        return self.__thread_local_data
+
+    @property
+    def excel_base_date(self):
+        return self.properties.excel_base_date
 
     def _set_optimized_read(self):
         self.__optimized_read = True
@@ -92,7 +107,7 @@ class Workbook(object):
         """Returns the current active sheet."""
         return self.worksheets[self._active_sheet_index]
 
-    def create_sheet(self, index = None):
+    def create_sheet(self, index=None, title=None):
         """Create a worksheet (at an optional index).
 
         :param index: optional position at which the sheet will be inserted
@@ -104,15 +119,21 @@ class Workbook(object):
             raise ReadOnlyWorkbookException('Cannot create new sheet in a read-only workbook')
 
         if self.__optimized_write :
-            new_ws = DumpWorksheet(parent_workbook = self)
+            new_ws = DumpWorksheet(parent_workbook=self, title=title)
         else:
-            new_ws = Worksheet(parent_workbook = self)
+            if title is not None:                                          
+                new_ws = Worksheet(parent_workbook = self, title=title)    
+            else:                                                          
+                new_ws = Worksheet(parent_workbook=self)
 
-        self.add_sheet(worksheet = new_ws, index = index)
+        self.add_sheet(worksheet=new_ws, index=index)
         return new_ws
 
-    def add_sheet(self, worksheet, index = None):
+    def add_sheet(self, worksheet, index=None):
         """Add an existing worksheet (at an optional index)."""
+
+        assert isinstance(worksheet, Worksheet), "The parameter you have given is not of the type 'Worksheet'"
+
         if index is None:
             index = len(self.worksheets)
         self.worksheets.insert(index, worksheet)
@@ -179,7 +200,14 @@ class Workbook(object):
         self._named_ranges.remove(named_range)
 
     def save(self, filename):
-        """ shortcut """
+        """Save the current workbook under the given `filename`. 
+        Use this function instead of using an `ExcelWriter`.
+        
+        .. warning::
+            When creating your workbook using `optimized_write` set to True, 
+            you will only be able to call this function once. Subsequents attempts to
+            modify or save the file will raise an :class:`openpyxl.shared.exc.WorkbookAlreadySaved` exception.
+        """
         if self.__optimized_write:
             save_dump(self, filename)
         else:

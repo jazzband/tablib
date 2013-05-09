@@ -1,6 +1,6 @@
 # file openpyxl/shared/xmltools.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Shared xml tools.
 
@@ -32,7 +32,8 @@ Shortcut functions taken from:
 
 # Python stdlib imports
 from xml.sax.xmlreader import AttributesNSImpl
-from xml.sax.saxutils import XMLGenerator
+from ..shared.compat.sax import XMLGenerator
+from ..shared.compat import OrderedDict
 try:
     from xml.etree.ElementTree import ElementTree, Element, SubElement, \
             QName, fromstring, tostring
@@ -70,31 +71,14 @@ def pretty_indent(elem, level=0):
 def start_tag(doc, name, attr=None, body=None, namespace=None):
     """Wrapper to start an xml tag."""
     if attr is None:
-        attr = {}
+        attr = OrderedDict()
 
-
-    # name = bytes(name, 'utf-8')
-    
-    # if namespace is not None:
-        # namespace = bytes(namespace, 'utf-8')
-
-
-    attr_vals = {}
-    attr_keys = {}
+    attr_vals = OrderedDict()
+    attr_keys = OrderedDict()
     for key, val in attr.items():
-
-            
-        # if key is not None:
-            # key = bytes(key, 'utf-8')
-            
-        # if val is not None:
-            # val = bytes(val, 'utf-8')
-        
         key_tuple = (namespace, key)
-        
         attr_vals[key_tuple] = val
         attr_keys[key_tuple] = key
-        
     attr2 = AttributesNSImpl(attr_vals, attr_keys)
     doc.startElementNS((namespace, name), name, attr2)
     if body:

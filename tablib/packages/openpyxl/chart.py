@@ -1,27 +1,25 @@
-'''
-Copyright (c) 2010 openpyxl
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-@license: http://www.opensource.org/licenses/mit-license.php
-@author: Eric Gazoni
-'''
+# Copyright (c) 2010-2011 openpyxl
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# @license: http://www.opensource.org/licenses/mit-license.php
+# @author: see AUTHORS file
 
 import math
 
@@ -41,12 +39,13 @@ class Axis(object):
 
         self.orientation = self.ORIENTATION_MIN_MAX
         self.number_format = NumberFormat()
-        for attr in ('position','tick_label_position','crosses',
-            'auto','label_align','label_offset','cross_between'):
+        for attr in ('position', 'tick_label_position', 'crosses',
+            'auto', 'label_align', 'label_offset', 'cross_between'):
             setattr(self, attr, None)
         self.min = 0
         self.max = None
         self.unit = None
+        self.title = ''
 
     @classmethod
     def default_category(cls):
@@ -89,35 +88,45 @@ class Reference(object):
 
     def get_type(self):
 
-        if isinstance(self.cache[0], basestring):
+        if isinstance(self.values[0], basestring):
             return 'str'
         else:
             return 'num'
 
+    @property
+    def values(self):
+        """ read data in sheet - to be used at writing time """
+        if hasattr(self, "values"):
+            return self._values
+        if self.pos2 is None:
+            cell = self.sheet.cell(row=self.pos1[0], column=self.pos1[1])
+            self._values = [cell.value]
+        else:
+            self._values = []
+            for row in range(int(self.pos1[0]), int(self.pos2[0] + 1)):
+                for col in range(int(self.pos1[1]), int(self.pos2[1] + 1)):
+                    self._values.append(self.sheet.cell(row=row, column=col).value)
+        return self._values
+
     def _get_ref(self):
+        """ legace method """
+        return str(self)
+
+    def __str__(self):
         """ format excel reference notation """
 
         if self.pos2:
-            return '%s!$%s$%s:$%s$%s' % (self.sheet.title,
-                get_column_letter(self.pos1[1]+1), self.pos1[0]+1,
-                get_column_letter(self.pos2[1]+1), self.pos2[0]+1)
+            return "'%s'!$%s$%s:$%s$%s" % (self.sheet.title,
+                get_column_letter(self.pos1[1] + 1), self.pos1[0] + 1,
+                get_column_letter(self.pos2[1] + 1), self.pos2[0] + 1)
         else:
-            return '%s!$%s$%s' % (self.sheet.title,
-                get_column_letter(self.pos1[1]+1), self.pos1[0]+1)
-
+            return "'%s'!$%s$%s" % (self.sheet.title,
+                get_column_letter(self.pos1[1] + 1), self.pos1[0] + 1)
 
     def _get_cache(self):
-        """ read data in sheet - to be used at writing time """
+        """ legacy method """
+        return self.values
 
-        cache = []
-        if self.pos2:
-            for row in range(self.pos1[0], self.pos2[0]+1):
-                for col in range(self.pos1[1], self.pos2[1]+1):
-                    cache.append(self.sheet.cell(row=row, column=col).value)
-        else:
-            cell = self.sheet.cell(row=self.pos1[0], column=self.pos1[1])
-            cache.append(cell.value)
-        return cache
 
 
 class Serie(object):
@@ -133,29 +142,64 @@ class Serie(object):
         self.labels = labels
         self.legend = legend
         self.error_bar = None
-        self._color = color
 
-    def _get_color(self):
-        return self._color
+    @property
+    def color(self):
+        return getattr(self, "_color", None)
 
-    def _set_color(self, color):
+    @color.setter
+    def color(self, color):
+        if color is None:
+            raise ValueError("Colors must be strings of the format XXXXX")
         self._color = short_color(color)
 
-    color = property(_get_color, _set_color)
+    @property
+    def values(self):
+        """Return values from underlying reference"""
+        return self._values
+
+    @values.setter
+    def values(self, reference):
+        """Assign values from reference to serie"""
+        if reference is not None:
+            if not isinstance(reference, Reference):
+                raise TypeError("Series values must be a Reference instance")
+            self._values = reference.values
+        else:
+            self._values = None
+        self.reference = reference
+
+    @property
+    def xvalues(self):
+        """Return xvalues"""
+        return self._xvalues
+
+    @xvalues.setter
+    def xvalues(self, reference):
+        if reference is not None:
+            if not isinstance(reference, Reference):
+                raise TypeError("Series xvalues must be a Reference instance")
+            self._xvalues = reference.values
+        else:
+            self._xvalues = None
+        self.xreference = reference
+
+    def mymax(self, values):
+        return max([x for x in values])
 
     def get_min_max(self):
 
         if self.error_bar:
-            err_cache = self.error_bar.values._get_cache()
+            err_cache = self.error_bar.values
             vals = [v + err_cache[i] \
-                for i,v in enumerate(self.values._get_cache())]
+                for i, v in enumerate(self.values)]
         else:
-            vals = self.values._get_cache()
-        return min(vals), max(vals)
+            vals = self.values
+        return min(vals), self.mymax(vals)
 
     def __len__(self):
 
-        return len(self.values.cache)
+        return len(self.values)
 
 class Legend(object):
 
@@ -175,6 +219,22 @@ class ErrorBar(object):
         self.type = _type
         self.values = values
 
+    @property
+    def values(self):
+        """Return values from underlying reference"""
+        return self._values
+
+    @values.setter
+    def values(self, reference):
+        """Assign values from reference to serie"""
+        if reference is not None:
+            if not isinstance(reference, Reference):
+                raise TypeError("Errorbar values must be a Reference instance")
+            self._values = reference.values
+        else:
+            self._values = None
+        self.reference = reference
+
 class Chart(object):
     """ raw chart class """
 
@@ -184,6 +244,9 @@ class Chart(object):
     BAR_CHART = 1
     LINE_CHART = 2
     SCATTER_CHART = 3
+
+    def mymax(self, values):
+        return max([x for x in values if x])
 
     def __init__(self, _type, grouping):
 
@@ -195,6 +258,7 @@ class Chart(object):
         self.x_axis = Axis.default_category()
         self.y_axis = Axis.default_value()
         self.legend = Legend()
+        self.show_legend = True
         self.lang = 'fr-FR'
         self.title = ''
         self.print_margins = dict(b=.75, l=.7, r=.7, t=.75, header=0.3, footer=.3)
@@ -227,7 +291,7 @@ class Chart(object):
     def get_x_units(self):
         """ calculate one unit for x axis in EMU """
 
-        return max([len(s.values._get_cache()) for s in self._series])
+        return self.mymax([len(s.values) for s in self._series])
 
     def get_y_units(self):
         """ calculate one unit for y axis in EMU """
@@ -238,33 +302,33 @@ class Chart(object):
     def get_y_chars(self):
         """ estimate nb of chars for y axis """
 
-        _max = max([max(s.values._get_cache()) for s in self._series])
+        _max = max([self.mymax(s.values) for s in self._series])
         return len(str(int(_max)))
 
     def _compute_min_max(self):
         """ compute y axis limits and units """
 
-        maxi = max([max(s.values._get_cache()) for s in self._series])
+        maxi = max([self.mymax(s.values) for s in self._series if s.values])
 
         mul = None
         if maxi < 1:
             s = str(maxi).split('.')[1]
-            mul = 10
+            mul = 10.0
             for x in s:
                 if x == '0':
-                    mul *= 10
+                    mul *= 10.0
                 else:
                     break
             maxi = maxi * mul
 
-        maxi = math.ceil(maxi * 1.1)
-        sz =  len(str(int(maxi))) - 1
-        unit = math.ceil(math.ceil(maxi / pow(10, sz)) * pow(10, sz-1))
-        maxi = math.ceil(maxi/unit) * unit
+        maxi = math.ceil(float(maxi) * 1.1)
+        sz = len(str(int(maxi))) - 1
+        unit = math.ceil(math.ceil(float(maxi) / pow(10.0, sz)) * pow(10.0, sz - 1))
+        maxi = math.ceil(float(maxi) / unit) * unit
 
         if mul is not None:
-            maxi = maxi/mul
-            unit = unit/mul
+            maxi = maxi / mul
+            unit = unit / mul
 
         if maxi / unit > 9:
             # no more that 10 ticks
@@ -276,7 +340,7 @@ class Chart(object):
     def _compute_xmin_xmax(self):
         """ compute x axis limits and units """
 
-        maxi = max([max(s.xvalues._get_cache()) for s in self._series])
+        maxi = max([self.mymax(s.xvalues) for s in self._series])
 
         mul = None
         if maxi < 1:
@@ -290,13 +354,13 @@ class Chart(object):
             maxi = maxi * mul
 
         maxi = math.ceil(maxi * 1.1)
-        sz =  len(str(int(maxi))) - 1
-        unit = math.ceil(math.ceil(maxi / pow(10, sz)) * pow(10, sz-1))
-        maxi = math.ceil(maxi/unit) * unit
+        sz = len(str(int(maxi))) - 1
+        unit = math.ceil(math.ceil(maxi / pow(10, sz)) * pow(10, sz - 1))
+        maxi = math.ceil(maxi / unit) * unit
 
         if mul is not None:
-            maxi = maxi/mul
-            unit = unit/mul
+            maxi = maxi / mul
+            unit = unit / mul
 
         if maxi / unit > 9:
             # no more that 10 ticks
@@ -309,12 +373,12 @@ class Chart(object):
 
         mb = Shape.FONT_HEIGHT + Shape.MARGIN_BOTTOM
         plot_height = self.drawing.height * self.height
-        return float(self.drawing.height - plot_height - mb)/self.drawing.height
+        return float(self.drawing.height - plot_height - mb) / self.drawing.height
 
     def _get_min_margin_left(self):
 
         ml = (self.get_y_chars() * Shape.FONT_WIDTH) + Shape.MARGIN_LEFT
-        return float(ml)/self.drawing.width
+        return float(ml) / self.drawing.width
 
     def _get_margin_top(self):
         """ get margin in percent """

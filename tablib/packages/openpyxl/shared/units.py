@@ -1,6 +1,6 @@
 # file openpyxl/shared/units.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,42 +21,58 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 import math
 
+
+def cm_to_pixels(value):
+    return int(value * 44.6)
+
+
+def pixels_to_cm(value):
+    return (1 / cm_to_pixels(value))
+
+
 def pixels_to_EMU(value):
     return int(round(value * 9525))
+
 
 def EMU_to_pixels(value):
     if not value:
         return 0
     else:
-        return round(value / 9525.) 
+        return round(value / 9525.)
+
 
 def EMU_to_cm(value):
     if not value:
         return 0
     else:
-        return (EMU_to_pixels(value) * 2.57 / 96) 
+        return (EMU_to_pixels(value) * 2.57 / 96)
+
 
 def pixels_to_points(value):
     return value * 0.67777777
+
 
 def points_to_pixels(value):
     if not value:
         return 0
     else:
-        return int(math.ceil(value * 1.333333333)) 
+        return int(math.ceil(value * 1.333333333))
+
 
 def degrees_to_angle(value):
     return int(round(value * 60000))
+
 
 def angle_to_degrees(value):
     if not value:
         return 0
     else:
-        return round(value / 60000.) 
+        return round(value / 60000.)
+
 
 def short_color(color):
     """ format a color to its short size """
