@@ -1,6 +1,6 @@
 # file openpyxl/writer/excel.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,34 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Write a .xlsx file."""
 
 # Python stdlib imports
 from zipfile import ZipFile, ZIP_DEFLATED
-from ....compat import BytesIO as StringIO
+try:
+    # Python 2
+    from StringIO import StringIO
+    BytesIO = StringIO
+except ImportError:
+    # Python 3
+    from io import BytesIO, StringIO
 
 # package imports
-from ..shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
+from openpyxl.shared.ooxml import ARC_SHARED_STRINGS, ARC_CONTENT_TYPES, \
         ARC_ROOT_RELS, ARC_WORKBOOK_RELS, ARC_APP, ARC_CORE, ARC_THEME, \
         ARC_STYLE, ARC_WORKBOOK, \
-        PACKAGE_WORKSHEETS, PACKAGE_DRAWINGS, PACKAGE_CHARTS
-from ..writer.strings import create_string_table, write_string_table
-from ..writer.workbook import write_content_types, write_root_rels, \
+        PACKAGE_WORKSHEETS, PACKAGE_DRAWINGS, PACKAGE_CHARTS, PACKAGE_IMAGES
+from openpyxl.writer.strings import create_string_table, write_string_table
+from openpyxl.writer.workbook import write_content_types, write_root_rels, \
         write_workbook_rels, write_properties_app, write_properties_core, \
         write_workbook
-from ..writer.theme import write_theme
-from ..writer.styles import StyleWriter
-from ..writer.drawings import DrawingWriter, ShapeWriter
-from ..writer.charts import ChartWriter
-from ..writer.worksheet import write_worksheet, write_worksheet_rels
+from openpyxl.writer.theme import write_theme
+from openpyxl.writer.styles import StyleWriter
+from openpyxl.writer.drawings import DrawingWriter, ShapeWriter
+from openpyxl.writer.charts import ChartWriter
+from openpyxl.writer.worksheet import write_worksheet, write_worksheet_rels
 
 
 class ExcelWriter(object):
@@ -56,14 +62,17 @@ class ExcelWriter(object):
         """Write the various xml files into the zip archive."""
         # cleanup all worksheets
         shared_string_table = self._write_string_table(archive)
-
+        
         archive.writestr(ARC_CONTENT_TYPES, write_content_types(self.workbook))
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
         archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
         archive.writestr(ARC_APP, write_properties_app(self.workbook))
         archive.writestr(ARC_CORE,
                 write_properties_core(self.workbook.properties))
-        archive.writestr(ARC_THEME, write_theme())
+        if self.workbook.loaded_theme:
+            archive.writestr(ARC_THEME, self.workbook.loaded_theme)
+        else:
+            archive.writestr(ARC_THEME, write_theme())
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
         archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
 
@@ -74,36 +83,31 @@ class ExcelWriter(object):
         for ws in self.workbook.worksheets:
             ws.garbage_collect()
         shared_string_table = create_string_table(self.workbook)
-
-            
         archive.writestr(ARC_SHARED_STRINGS,
                 write_string_table(shared_string_table))
 
-        for k, v in shared_string_table.items():
-            shared_string_table[k] = bytes(v)
-            
         return shared_string_table
 
     def _write_worksheets(self, archive, shared_string_table, style_writer):
-
         drawing_id = 1
         chart_id = 1
+        image_id = 1
         shape_id = 1
 
         for i, sheet in enumerate(self.workbook.worksheets):
             archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % (i + 1),
                     write_worksheet(sheet, shared_string_table,
                             style_writer.get_style_by_hash()))
-            if sheet._charts or sheet.relationships:
+            if sheet._charts or sheet._images or sheet.relationships:
                 archive.writestr(PACKAGE_WORKSHEETS +
                         '/_rels/sheet%d.xml.rels' % (i + 1),
                         write_worksheet_rels(sheet, drawing_id))
-            if sheet._charts:
+            if sheet._charts or sheet._images:
                 dw = DrawingWriter(sheet)
                 archive.writestr(PACKAGE_DRAWINGS + '/drawing%d.xml' % drawing_id,
                     dw.write())
                 archive.writestr(PACKAGE_DRAWINGS + '/_rels/drawing%d.xml.rels' % drawing_id,
-                    dw.write_rels(chart_id))
+                    dw.write_rels(chart_id, image_id))
                 drawing_id += 1
 
                 for chart in sheet._charts:
@@ -122,6 +126,11 @@ class ExcelWriter(object):
 
                     chart_id += 1
 
+                for img in sheet._images:
+                    buf = StringIO()
+                    img.image.save(buf, format= 'PNG')
+                    archive.writestr(PACKAGE_IMAGES + '/image%d.png' % image_id, buf.getvalue())
+                    image_id += 1
 
     def save(self, filename):
         """Write data into the archive."""
@@ -150,7 +159,7 @@ def save_workbook(workbook, filename):
 def save_virtual_workbook(workbook):
     """Return an in-memory workbook, suitable for a Django response."""
     writer = ExcelWriter(workbook)
-    temp_buffer = StringIO()
+    temp_buffer = BytesIO()
     try:
         archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED)
         writer.write_data(archive)

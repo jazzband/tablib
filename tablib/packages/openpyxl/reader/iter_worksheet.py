@@ -1,6 +1,6 @@
 # file openpyxl/reader/iter_worksheet.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,34 +21,26 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
-""" Iterators-based worksheet reader
+""" Iterators-based worksheet reader 
 *Still very raw*
 """
 
-from ....compat import BytesIO as StringIO
 import warnings
 import operator
-from functools import partial
-from itertools import groupby, ifilter
-from ..worksheet import Worksheet
-from ..cell import coordinate_from_string, get_column_letter, Cell
-from ..reader.excel import get_sheet_ids
-from ..reader.strings import read_string_table
-from ..reader.style import read_style_table, NumberFormat
-from ..shared.date_time import SharedDate
-from ..reader.worksheet import read_dimension
-from ..shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
-    MAX_ROW, MIN_ROW, ARC_SHARED_STRINGS, ARC_APP, ARC_STYLE)
-try:
-    from xml.etree.cElementTree import iterparse
-except ImportError:
-    from xml.etree.ElementTree import iterparse
-
-
+from itertools import  groupby
+from openpyxl.worksheet import Worksheet
+from openpyxl.cell import (coordinate_from_string, get_column_letter, Cell,
+                            column_index_from_string)
+from openpyxl.reader.style import read_style_table
+from openpyxl.shared.date_time import SharedDate
+from openpyxl.reader.worksheet import read_dimension
+from openpyxl.shared.compat import unicode
+from openpyxl.shared.ooxml import (MIN_COLUMN, MAX_COLUMN, PACKAGE_WORKSHEETS,
+    MAX_ROW, MIN_ROW, ARC_STYLE)
+from openpyxl.shared.compat import iterparse, xrange
 from zipfile import ZipFile
-from .. import cell
 import re
 import tempfile
 import zlib
@@ -75,12 +67,12 @@ try:
     BaseRawCell = namedtuple('RawCell', RAW_ATTRIBUTES)
 except ImportError:
 
-    # warnings.warn("""Unable to import 'namedtuple' module, this may cause  memory issues when using optimized reader. Please upgrade your Python installation to 2.6+""")
+    warnings.warn("""Unable to import 'namedtuple' module, this may cause  memory issues when using optimized reader. Please upgrade your Python installation to 2.6+""")
 
     class BaseRawCell(object):
 
         def __init__(self, *args):
-            assert len(args)==len(RAW_ATTRIBUTES)
+            assert len(args) == len(RAW_ATTRIBUTES)
 
             for attr, val in zip(RAW_ATTRIBUTES, args):
                 setattr(self, attr, val)
@@ -122,7 +114,7 @@ class RawCell(BaseRawCell):
 
         return res
 
-def iter_rows(workbook_name, sheet_name, xml_source, range_string = '', row_offset = 0, column_offset = 0):
+def iter_rows(workbook_name, sheet_name, xml_source, shared_date, string_table, range_string='', row_offset=0, column_offset=0):
 
     archive = get_archive_file(workbook_name)
 
@@ -131,25 +123,20 @@ def iter_rows(workbook_name, sheet_name, xml_source, range_string = '', row_offs
     if range_string:
         min_col, min_row, max_col, max_row = get_range_boundaries(range_string, row_offset, column_offset)
     else:
-        min_col, min_row, max_col, max_row = read_dimension(xml_source = source)
+        min_col, min_row, max_col, max_row = read_dimension(xml_source=source)
         min_col = column_index_from_string(min_col)
         max_col = column_index_from_string(max_col) + 1
         max_row += 6
-
-    try:
-        string_table = read_string_table(archive.read(ARC_SHARED_STRINGS))
-    except KeyError:
-        string_table = {}
 
     style_table = read_style_table(archive.read(ARC_STYLE))
 
     source.seek(0)
     p = iterparse(source)
 
-    return get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style_table)
+    return get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style_table, shared_date)
 
 
-def get_rows(p, min_column = MIN_COLUMN, min_row = MIN_ROW, max_column = MAX_COLUMN, max_row = MAX_ROW):
+def get_rows(p, min_column=MIN_COLUMN, min_row=MIN_ROW, max_column=MAX_COLUMN, max_row=MAX_ROW):
 
     return groupby(get_cells(p, min_row, min_column, max_row, max_column), operator.attrgetter('row'))
 
@@ -176,7 +163,7 @@ def get_cells(p, min_row, min_col, max_row, max_col, _re_coordinate=RE_COORDINAT
 
 
 
-def get_range_boundaries(range_string, row = 0, column = 0):
+def get_range_boundaries(range_string, row=0, column=0):
 
     if ':' in range_string:
         min_range, max_range = range_string.split(':')
@@ -208,12 +195,12 @@ def get_missing_cells(row, columns):
 
     return dict([(column, RawCell(row, column, '%s%s' % (column, row), MISSING_VALUE, TYPE_NULL, None, None)) for column in columns])
 
-def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style_table):
+def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style_table, shared_date):
 
     expected_columns = [get_column_letter(ci) for ci in xrange(min_col, max_col)]
 
     current_row = min_row
-    for row, cells in get_rows(p, min_row = min_row, max_row = max_row, min_column = min_col, max_column = max_col):
+    for row, cells in get_rows(p, min_row=min_row, max_row=max_row, min_column=min_col, max_column=max_col):
         full_row = []
         if current_row < row:
 
@@ -240,16 +227,18 @@ def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style
 
                 if cell.style_id is not None:
                     style = style_table[int(cell.style_id)]
-                    cell = cell._replace(number_format = style.number_format.format_code) #pylint: disable-msg=W0212
+                    cell = cell._replace(number_format=style.number_format.format_code) #pylint: disable-msg=W0212
                 if cell.internal_value is not None:
-                    if cell.data_type == Cell.TYPE_STRING:
-                        cell = cell._replace(internal_value = string_table[int(cell.internal_value)]) #pylint: disable-msg=W0212
+                    if cell.data_type in Cell.TYPE_STRING:
+                        cell = cell._replace(internal_value=unicode(string_table[int(cell.internal_value)])) #pylint: disable-msg=W0212
                     elif cell.data_type == Cell.TYPE_BOOL:
-                        cell = cell._replace(internal_value = cell.internal_value == 'True')
+                        cell = cell._replace(internal_value=cell.internal_value == '1')
                     elif cell.is_date:
-                        cell = cell._replace(internal_value = SHARED_DATE.from_julian(float(cell.internal_value)))
+                        cell = cell._replace(internal_value=shared_date.from_julian(float(cell.internal_value)))
                     elif cell.data_type == Cell.TYPE_NUMERIC:
-                        cell = cell._replace(internal_value = float(cell.internal_value))
+                        cell = cell._replace(internal_value=float(cell.internal_value))
+                    elif cell.data_type in(Cell.TYPE_INLINE, Cell.TYPE_FORMULA_CACHE_STRING):
+                        cell = cell._replace(internal_value=unicode(cell.internal_value))
                 full_row.append(cell)
 
             else:
@@ -259,53 +248,72 @@ def get_squared_range(p, min_col, min_row, max_col, max_row, string_table, style
 
         yield tuple(full_row)
 
-#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------ 
 
 class IterableWorksheet(Worksheet):
 
     def __init__(self, parent_workbook, title, workbook_name,
-            sheet_codename, xml_source):
+            sheet_codename, xml_source, string_table):
 
         Worksheet.__init__(self, parent_workbook, title)
         self._workbook_name = workbook_name
         self._sheet_codename = sheet_codename
         self._xml_source = xml_source
+        self._string_table = string_table
 
-    def iter_rows(self, range_string = '', row_offset = 0, column_offset = 0):
-        """ Returns a squared range based on the `range_string` parameter,
+        min_col, min_row, max_col, max_row = read_dimension(xml_source=xml_source)
+
+        self._max_row = max_row
+        self._max_column = max_col
+        self._dimensions = '%s%s:%s%s' % (min_col, min_row, max_col, max_row)
+
+        self._shared_date = SharedDate(base_date=parent_workbook.excel_base_date)
+
+
+    def iter_rows(self, range_string='', row_offset=0, column_offset=0):
+        """ Returns a squared range based on the `range_string` parameter, 
         using generators.
-
+        
         :param range_string: range of cells (e.g. 'A1:C4')
         :type range_string: string
-
+        
         :param row: row index of the cell (e.g. 4)
         :type row: int
 
         :param column: column index of the cell (e.g. 3)
         :type column: int
-
+        
         :rtype: generator
-
+        
         """
 
-        return iter_rows(workbook_name = self._workbook_name,
-                         sheet_name = self._sheet_codename,
-                         xml_source = self._xml_source,
-                         range_string = range_string,
-                         row_offset = row_offset,
-                         column_offset = column_offset)
+        return iter_rows(workbook_name=self._workbook_name,
+                         sheet_name=self._sheet_codename,
+                         xml_source=self._xml_source,
+                         range_string=range_string,
+                         row_offset=row_offset,
+                         column_offset=column_offset,
+                         shared_date=self._shared_date,
+                         string_table=self._string_table)
 
     def cell(self, *args, **kwargs):
-
         raise NotImplementedError("use 'iter_rows()' instead")
 
     def range(self, *args, **kwargs):
-
         raise NotImplementedError("use 'iter_rows()' instead")
+
+    def calculate_dimension(self):
+        return self._dimensions
+
+    def get_highest_column(self):
+        return column_index_from_string(self._max_column)
+
+    def get_highest_row(self):
+        return self._max_row
 
 def unpack_worksheet(archive, filename):
 
-    temp_file = tempfile.TemporaryFile(mode='r+', prefix='openpyxl.', suffix='.unpack.temp')
+    temp_file = tempfile.TemporaryFile(mode='rb+', prefix='openpyxl.', suffix='.unpack.temp')
 
     zinfo = archive.getinfo(filename)
 
@@ -327,9 +335,6 @@ def unpack_worksheet(archive, filename):
         if decoder:
             buff = decoder.decompress(buff)
         temp_file.write(buff)
-
-    if decoder:
-        temp_file.write(decoder.decompress('Z'))
 
     return temp_file
 

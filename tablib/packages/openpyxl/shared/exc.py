@@ -1,6 +1,6 @@
 # file openpyxl/shared/exc.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Definitions for openpyxl shared exception classes."""
 
@@ -56,4 +56,7 @@ class ReadOnlyWorkbookException(Exception):
 class MissingNumberFormat(Exception):
     """Error when a referenced number format is not in the stylesheet"""
 
+class WorkbookAlreadySaved(Exception):
+    """Error when attempting to perform operations on a dump workbook 
+    while it has already been dumped once"""
 

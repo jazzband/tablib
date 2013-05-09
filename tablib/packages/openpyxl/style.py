@@ -1,6 +1,6 @@
 # file openpyxl/style.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Style and formatting option tracking."""
 
@@ -32,6 +32,7 @@ try:
 except ImportError:
     from md5 import md5
 
+from openpyxl.shared.compat import any
 
 class HashableObject(object):
     """Define how to hash property classes."""
@@ -265,6 +266,7 @@ class NumberFormat(HashableObject):
     FORMAT_DATE_TIME6 = 'h:mm:ss'
     FORMAT_DATE_TIME7 = 'i:s.S'
     FORMAT_DATE_TIME8 = 'h:mm:ss@'
+    FORMAT_DATE_TIMEDELTA = '[hh]:mm:ss'
     FORMAT_DATE_YYYYMMDDSLASH = 'yy/mm/dd@'
     FORMAT_CURRENCY_USD_SIMPLE = '"$"#,##0.00_-'
     FORMAT_CURRENCY_USD = '$#,##0_-'
@@ -315,6 +317,7 @@ class NumberFormat(HashableObject):
     __leaf__ = True
 
     DATE_INDICATORS = 'dmyhs'
+    BAD_DATE_RE = re.compile(r'(\[|").*[dmhys].*(\]|")')
 
     def __init__(self):
         super(NumberFormat, self).__init__()
@@ -351,7 +354,11 @@ class NumberFormat(HashableObject):
         if format is None:
             format = self._format_code
 
-        return any([x in format for x in self.DATE_INDICATORS])
+        if any([x in format for x in self.DATE_INDICATORS]):
+            if self.BAD_DATE_RE.search(format) is None:
+                return True
+            
+        return False
 
 class Protection(HashableObject):
     """Protection options for use in styles."""

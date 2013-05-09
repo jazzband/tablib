@@ -1,6 +1,6 @@
 # file openpyxl/writer/__init__.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Imports for the openpyxl.writer namespace."""
 
 # package imports
-from . import excel
-from . import strings
-from . import styles
-from . import theme
-from . import workbook
-from . import worksheet
+from openpyxl.writer import excel
+from openpyxl.writer import strings
+from openpyxl.writer import styles
+from openpyxl.writer import theme
+from openpyxl.writer import workbook
+from openpyxl.writer import worksheet

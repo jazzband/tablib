@@ -1,6 +1,6 @@
 # file openpyxl/__init__.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,28 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Imports for the openpyxl package."""
 
 # package imports
-from . import cell
-from . import namedrange
-from . import style
-from . import workbook
-from . import worksheet
-from . import reader
-from . import shared
-from . import writer
+from openpyxl import cell
+from openpyxl import namedrange
+from openpyxl import style
+from openpyxl import workbook
+from openpyxl import worksheet
+from openpyxl import reader
+from openpyxl import shared
+from openpyxl import writer
+
+# shortcuts
+from openpyxl.workbook import Workbook
+from openpyxl.reader.excel import load_workbook
 
 # constants
 
 __major__ = 1  # for major interface/format changes
-__minor__ = 5  # for minor interface/format changes
+__minor__ = 6  # for minor interface/format changes
 __release__ = 2  # for tweaks, bug-fixes, or development
 
 __version__ = '%d.%d.%d' % (__major__, __minor__, __release__)
@@ -47,7 +51,7 @@ __author__ = 'Eric Gazoni'
 __license__ = 'MIT/Expat'
 __author_email__ = 'eric.gazoni@gmail.com'
 __maintainer_email__ = 'openpyxl-users@googlegroups.com'
-__url__ = 'http://bitbucket.org/ericgazoni/openpyxl/wiki/Home'
+__url__ = 'http://openpyxl.readthedocs.org'
 __downloadUrl__ = "http://bitbucket.org/ericgazoni/openpyxl/downloads"
 
 __all__ = ('reader', 'shared', 'writer',)

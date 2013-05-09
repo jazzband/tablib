@@ -1,6 +1,6 @@
 # file openpyxl/reader/strings.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,14 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Read the shared strings table."""
 
 # package imports
-from ..shared.xmltools import fromstring, QName
-from ..shared.ooxml import NAMESPACES
+from openpyxl.shared.xmltools import fromstring, QName
+from openpyxl.shared.ooxml import NAMESPACES
+from openpyxl.shared.compat import unicode
 
 
 def read_string_table(xml_source):
@@ -37,7 +38,14 @@ def read_string_table(xml_source):
     root = fromstring(text=xml_source)
     string_index_nodes = root.findall(QName(xmlns, 'si').text)
     for index, string_index_node in enumerate(string_index_nodes):
-        table[index] = get_string(xmlns, string_index_node)
+
+        string = get_string(xmlns, string_index_node)
+
+        # fix XML escaping sequence for '_x'
+        string = string.replace('x005F_', '')
+
+        table[index] = string
+
     return table
 
 
@@ -49,7 +57,7 @@ def get_string(xmlns, string_index_node):
         for rich_node in rich_nodes:
             partial_text = get_text(xmlns, rich_node)
             reconstructed_text.append(partial_text)
-        return ''.join(reconstructed_text)
+        return unicode(''.join(reconstructed_text))
     else:
         return get_text(xmlns, string_index_node)
 
@@ -57,7 +65,7 @@ def get_string(xmlns, string_index_node):
 def get_text(xmlns, rich_node):
     """Read rich text, discarding formatting if not disallowed"""
     text_node = rich_node.find(QName(xmlns, 't').text)
-    partial_text = text_node.text  or ''
+    partial_text = text_node.text or unicode('')
 
     if text_node.get(QName(NAMESPACES['xml'], 'space').text) != 'preserve':
         partial_text = partial_text.strip()

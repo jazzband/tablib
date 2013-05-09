@@ -1,31 +1,30 @@
-'''
-Copyright (c) 2010 openpyxl
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-@license: http://www.opensource.org/licenses/mit-license.php
-@author: Eric Gazoni
-'''
+# Copyright (c) 2010-2011 openpyxl
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# @license: http://www.opensource.org/licenses/mit-license.php
+# @author: see AUTHORS file
 
 import math
-from .style import Color
-from .shared.units import pixels_to_EMU, EMU_to_pixels, short_color
+from openpyxl.style import Color
+from openpyxl.shared.units import pixels_to_EMU, EMU_to_pixels, short_color
+
 
 class Shadow(object):
 
@@ -39,13 +38,14 @@ class Shadow(object):
     SHADOW_TOP_RIGHT = 'tr'
 
     def __init__(self):
-    	self.visible = False
-    	self.blurRadius = 6
-    	self.distance = 2
-    	self.direction = 0
-    	self.alignment = self.SHADOW_BOTTOM_RIGHT
-    	self.color = Color(Color.BLACK)
-    	self.alpha = 50
+        self.visible = False
+        self.blurRadius = 6
+        self.distance = 2
+        self.direction = 0
+        self.alignment = self.SHADOW_BOTTOM_RIGHT
+        self.color = Color(Color.BLACK)
+        self.alpha = 50
+
 
 class Drawing(object):
     """ a drawing object - eg container for shapes or charts
@@ -59,7 +59,7 @@ class Drawing(object):
 
         self.name = ''
         self.description = ''
-        self.coordinates = ((1,2), (16,8))
+        self.coordinates = ((1, 2), (16, 8))
         self.left = 0
         self.top = 0
         self._width = EMU_to_pixels(200000)
@@ -102,10 +102,10 @@ class Drawing(object):
         if self.resize_proportional and w and h:
             if (xratio * self._height) < h:
                 self._height = math.ceil(xratio * self._height)
-                self._width = width
+                self._width = w
             else:
-                self._width	= math.ceil(yratio * self._width)
-                self._height = height
+                self._width = math.ceil(yratio * self._width)
+                self._height = h
 
     def get_emu_dimensions(self):
         """ return (x, y, w, h) in EMU """
@@ -318,14 +318,15 @@ class Shape(object):
     "chartPlus"
     '''
 
-    def __init__(self, coordinates=((0,0), (1,1)), text=None, scheme="accent1"):
+    def __init__(self, coordinates=((0, 0), (1, 1)),
+                 text=None, scheme="accent1"):
 
-        self.coordinates = coordinates # in axis unit
+        self.coordinates = coordinates  # in axis unit
         self.text = text
         self.scheme = scheme
         self.style = Shape.RECT
-        self._border_width = 3175 # in EMU
-        self._border_color = Color.BLACK[2:] #"F3B3C5"
+        self._border_width = 3175  # in EMU
+        self._border_color = Color.BLACK[2:]  # "F3B3C5"
         self._color = Color.WHITE[2:]
         self._text_color = Color.BLACK[2:]
 
@@ -360,12 +361,12 @@ class Shape(object):
     def _set_border_width(self, w):
 
         self._border_width = pixels_to_EMU(w)
-        # print self._border_width
 
     border_width = property(_get_border_width, _set_border_width)
 
     def get_coordinates(self):
-        """ return shape coordinates in percentages (left, top, right, bottom) """
+        """ return shape coordinates in percentages (left, top, right, bottom)
+        """
 
         (x1, y1), (x2, y2) = self.coordinates
 
@@ -381,15 +382,23 @@ class Shape(object):
         yunit = self._chart.get_y_units()
 
         x_start = (margin_left + (float(x1) * xunit)) / drawing_width
-        y_start = (margin_top + plot_height - (float(y1) * yunit)) / drawing_height
+        y_start = ((margin_top
+                    + plot_height
+                    - (float(y1) * yunit))
+                    / drawing_height)
 
         x_end = (margin_left + (float(x2) * xunit)) / drawing_width
-        y_end = (margin_top + plot_height - (float(y2) * yunit)) / drawing_height
+        y_end = ((margin_top
+                  + plot_height
+                  - (float(y2) * yunit))
+                  / drawing_height)
 
         def _norm_pct(pct):
             """ force shapes to appear by truncating too large sizes """
-            if pct>1: pct = 1
-            elif pct<0: pct = 0
+            if pct > 1:
+                pct = 1
+            elif pct < 0:
+                pct = 0
             return pct
 
         # allow user to specify y's in whatever order
@@ -399,3 +408,61 @@ class Shape(object):
 
         return (_norm_pct(x_start), _norm_pct(y_start),
             _norm_pct(x_end), _norm_pct(y_end))
+
+
+def bounding_box(bw, bh, w, h):
+    """
+    Returns a tuple (new_width, new_height) which has the property
+    that it fits within box_width and box_height and has (close to)
+    the same aspect ratio as the original size
+    """
+    new_width, new_height = w, h
+    if bw and new_width > bw:
+        new_width = bw
+        new_height = new_width / (float(w) / h)
+    if bh and new_height > bh:
+        new_height = bh
+        new_width = new_height * (float(w) / h)
+    return (new_width, new_height)
+
+
+class Image(object):
+    """ Raw Image class """
+
+    def _import_image(self, img):
+        try:
+            try:
+                import Image as PILImage
+            except ImportError:
+                from PIL import Image as PILImage
+        except ImportError:
+            raise ImportError('You must install PIL to fetch image objects')
+
+        if not isinstance(img, PILImage.Image):
+            img = PILImage.open(img)
+
+        return img
+
+    def __init__(self, img, coordinates=((0, 0), (1, 1)), size=(None, None),
+                 nochangeaspect=True, nochangearrowheads=True):
+
+        self.image = self._import_image(img)
+        self.nochangeaspect = nochangeaspect
+        self.nochangearrowheads = nochangearrowheads
+
+        # the containing drawing
+        self.drawing = Drawing()
+        self.drawing.coordinates = coordinates
+
+        newsize = bounding_box(size[0], size[1],
+                               self.image.size[0], self.image.size[1])
+        size = newsize
+        self.drawing.width = size[0]
+        self.drawing.height = size[1]
+
+    def anchor(self, cell):
+        """ anchors the image to the given cell """
+        self.drawing.left, self.drawing.top = cell.anchor
+        return ((cell.column, cell.row),
+                cell.parent.point_pos(self.drawing.top + self.drawing.height,
+                                      self.drawing.left + self.drawing.width))

@@ -1,6 +1,6 @@
 # file openpyxl/reader/__init__.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Imports for the openpyxl.reader namespace."""
 
 # package imports
-from ..reader import excel
-from ..reader import strings
-from ..reader import style
-from ..reader import workbook
-from ..reader import worksheet
+from openpyxl.reader import excel
+from openpyxl.reader import strings
+from openpyxl.reader import style
+from openpyxl.reader import workbook
+from openpyxl.reader import worksheet

@@ -1,6 +1,6 @@
 # file openpyxl/writer/strings.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,21 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Write the shared string table."""
 
 # Python stdlib imports
-from ....compat import BytesIO as StringIO
+try:
+    # Python 2
+    from StringIO import StringIO
+    BytesIO = StringIO
+except ImportError:
+    # Python 3
+    from io import BytesIO, StringIO
 
 # package imports
-from ..shared.xmltools import start_tag, end_tag, tag, XMLGenerator
+from openpyxl.shared.xmltools import start_tag, end_tag, tag, XMLGenerator
 
 
 def create_string_table(workbook):
@@ -45,7 +51,7 @@ def create_string_table(workbook):
 def write_string_table(string_table):
     """Write the string table xml."""
     temp_buffer = StringIO()
-    doc = XMLGenerator(temp_buffer, 'utf-8')
+    doc = XMLGenerator(out=temp_buffer, encoding='utf-8')
     start_tag(doc, 'sst', {'xmlns':
             'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
             'uniqueCount': '%d' % len(string_table)})

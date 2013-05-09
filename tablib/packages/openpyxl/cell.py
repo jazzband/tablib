@@ -1,6 +1,6 @@
 # file openpyxl/cell.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Manage individual cells in a spreadsheet.
 
@@ -34,19 +34,24 @@ cells using Excel's 'A1' column/row nomenclature are also provided.
 __docformat__ = "restructuredtext en"
 
 # Python stdlib imports
+from openpyxl.shared import (NUMERIC_TYPES, DEFAULT_ROW_HEIGHT,
+    DEFAULT_COLUMN_WIDTH)
+from openpyxl.shared.compat import all, unicode, basestring
+from openpyxl.shared.date_time import SharedDate
+from openpyxl.shared.exc import (CellCoordinatesException,
+    ColumnStringIndexException, DataTypeException)
+from openpyxl.shared.units import points_to_pixels
+from openpyxl.style import NumberFormat
 import datetime
 import re
 
 # package imports
-from .shared.date_time import SharedDate
-from .shared.exc import CellCoordinatesException, \
-        ColumnStringIndexException, DataTypeException
-from .style import NumberFormat
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
 
 ABSOLUTE_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)(:[$]?([A-Z]+)[$]?(\d+))?$')
+
 
 def coordinate_from_string(coord_string):
     """Convert a coordinate string like 'B12' to a tuple ('B', 12)"""
@@ -55,7 +60,11 @@ def coordinate_from_string(coord_string):
         msg = 'Invalid cell coordinates (%s)' % coord_string
         raise CellCoordinatesException(msg)
     column, row = match.groups()
-    return (column, int(row))
+    row = int(row)
+    if not row:
+        msg = "There is no row 0 (%s)" % coord_string
+        raise CellCoordinatesException(msg)
+    return (column, row)
 
 
 def absolute_coordinate(coord_string):
@@ -68,7 +77,7 @@ def absolute_coordinate(coord_string):
         return '$%s$%s' % (parts[0], parts[1])
 
 
-def column_index_from_string(column, fast = False):
+def column_index_from_string(column, fast=False):
     """Convert a column letter into a column number (e.g. B -> 2)
 
     Excel only supports 1-3 letter column names from A -> ZZZ, so we
@@ -76,7 +85,8 @@ def column_index_from_string(column, fast = False):
 
     .. note::
 
-        Fast mode is faster but does not check that all letters are capitals between A and Z
+        Fast mode is faster but does not check that all letters
+        are capitals between A and Z
 
     """
     column = column.upper()
@@ -138,7 +148,9 @@ class Cell(object):
                  '_data_type',
                  'parent',
                  'xf_index',
-                 '_hyperlink_rel')
+                 '_hyperlink_rel',
+                 '_shared_date',
+                 'merged')
 
     ERROR_CODES = {'#NULL!': 0,
                    '#DIV/0!': 1,
@@ -155,16 +167,18 @@ class Cell(object):
     TYPE_NULL = 's'
     TYPE_INLINE = 'inlineStr'
     TYPE_ERROR = 'e'
+    TYPE_FORMULA_CACHE_STRING = 'str'
 
     VALID_TYPES = [TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
-                   TYPE_NULL, TYPE_INLINE, TYPE_ERROR]
+                   TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING]
 
     RE_PATTERNS = {
-        'percentage': re.compile('^\-?[0-9]*\.?[0-9]*\s?\%$'),
-        'time': re.compile('^(\d|[0-1]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$'),
-        'numeric': re.compile('^\-?([0-9]+\\.?[0-9]*|[0-9]*\\.?[0-9]+)((E|e)\-?[0-9]+)?$'), }
+        'percentage': re.compile(r'^\-?[0-9]*\.?[0-9]*\s?\%$'),
+        'time': re.compile(r'^(\d|[0-1]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$'),
+        'numeric': re.compile(r'^-?([\d]|[\d]+\.[\d]*|\.[\d]+|[1-9][\d]+\.?[\d]*)((E|e)-?[\d]+)?$'),
+        }
 
-    def __init__(self, worksheet, column, row, value = None):
+    def __init__(self, worksheet, column, row, value=None):
         self.column = column.upper()
         self.row = row
         # _value is the stored value, while value is the displayed value
@@ -175,13 +189,21 @@ class Cell(object):
             self.value = value
         self.parent = worksheet
         self.xf_index = 0
+        self._shared_date = SharedDate(base_date=worksheet.parent.excel_base_date)
+        self.merged = False
+
+    @property
+    def encoding(self):
+        return self.parent.encoding
 
     def __repr__(self):
-        return "<Cell %s.%s>" % (self.parent.title, self.get_coordinate())
+        return unicode("<Cell %s.%s>") % (self.parent.title, self.get_coordinate())
 
     def check_string(self, value):
         """Check string coding, length, and line break character"""
         # convert to unicode string
+        if not isinstance(value, unicode):
+            value = unicode(value, self.encoding)
         value = unicode(value)
         # string must never be longer than 32,767 characters
         # truncate if necessary
@@ -193,19 +215,19 @@ class Cell(object):
 
     def check_numeric(self, value):
         """Cast value to int or float if necessary"""
-        if not isinstance(value, (int, float)):
+        if not isinstance(value, NUMERIC_TYPES):
             try:
                 value = int(value)
             except ValueError:
                 value = float(value)
         return value
 
-    def set_value_explicit(self, value = None, data_type = TYPE_STRING):
+    def set_value_explicit(self, value=None, data_type=TYPE_STRING):
         """Coerce values according to their explicit type"""
         type_coercion_map = {
             self.TYPE_INLINE: self.check_string,
             self.TYPE_STRING: self.check_string,
-            self.TYPE_FORMULA: unicode,
+            self.TYPE_FORMULA: self.check_string,
             self.TYPE_NUMERIC: self.check_numeric,
             self.TYPE_BOOL: bool, }
         try:
@@ -222,17 +244,21 @@ class Cell(object):
             data_type = self.TYPE_NULL
         elif value is True or value is False:
             data_type = self.TYPE_BOOL
-        elif isinstance(value, (int, float)):
+        elif isinstance(value, NUMERIC_TYPES):
+            data_type = self.TYPE_NUMERIC
+        elif isinstance(value, (datetime.datetime, datetime.date, datetime.time, datetime.timedelta)):
             data_type = self.TYPE_NUMERIC
         elif not value:
             data_type = self.TYPE_STRING
-        elif isinstance(value, (datetime.datetime, datetime.date)):
-            data_type = self.TYPE_NUMERIC
         elif isinstance(value, basestring) and value[0] == '=':
             data_type = self.TYPE_FORMULA
-        elif self.RE_PATTERNS['numeric'].match(value):
+        elif isinstance(value, unicode) and self.RE_PATTERNS['numeric'].match(value):
             data_type = self.TYPE_NUMERIC
-        elif value.strip() in self.ERROR_CODES:
+        elif not isinstance(value, unicode) and self.RE_PATTERNS['numeric'].match(str(value)):
+            data_type = self.TYPE_NUMERIC
+        elif isinstance(value, basestring) and value.strip() in self.ERROR_CODES:
+            data_type = self.TYPE_ERROR
+        elif isinstance(value, list):
             data_type = self.TYPE_ERROR
         else:
             data_type = self.TYPE_STRING
@@ -246,22 +272,28 @@ class Cell(object):
             return True
         elif self._data_type == self.TYPE_STRING:
             # percentage detection
-            percentage_search = self.RE_PATTERNS['percentage'].match(value)
+            if isinstance(value, unicode):
+                percentage_search = self.RE_PATTERNS['percentage'].match(value)
+            else:
+                percentage_search = self.RE_PATTERNS['percentage'].match(str(value))
             if percentage_search and value.strip() != '%':
                 value = float(value.replace('%', '')) / 100.0
                 self.set_value_explicit(value, self.TYPE_NUMERIC)
                 self._set_number_format(NumberFormat.FORMAT_PERCENTAGE)
                 return True
             # time detection
-            time_search = self.RE_PATTERNS['time'].match(value)
+            if isinstance(value, unicode):
+                time_search = self.RE_PATTERNS['time'].match(value)
+            else:
+                time_search = self.RE_PATTERNS['time'].match(str(value))
             if time_search:
-                sep_count = value.count(':') #pylint: disable-msg=E1103
+                sep_count = value.count(':')  # pylint: disable=E1103
                 if sep_count == 1:
-                    hours, minutes = [int(bit) for bit in value.split(':')] #pylint: disable-msg=E1103
+                    hours, minutes = [int(bit) for bit in value.split(':')]  # pylint: disable=E1103
                     seconds = 0
                 elif sep_count == 2:
                     hours, minutes, seconds = \
-                            [int(bit) for bit in value.split(':')] #pylint: disable-msg=E1103
+                            [int(bit) for bit in value.split(':')]  # pylint: disable=E1103
                 days = (hours / 24.0) + (minutes / 1440.0) + \
                         (seconds / 86400.0)
                 self.set_value_explicit(days, self.TYPE_NUMERIC)
@@ -274,10 +306,15 @@ class Cell(object):
             if isinstance(value, datetime.date) and not \
                     isinstance(value, datetime.datetime):
                 value = datetime.datetime.combine(value, datetime.time())
-            if isinstance(value, datetime.datetime):
-                value = SharedDate().datetime_to_julian(date = value)
+            if isinstance(value, (datetime.datetime, datetime.time, datetime.timedelta)):
+                if isinstance(value, datetime.datetime):
+                    self._set_number_format(NumberFormat.FORMAT_DATE_YYYYMMDD2)
+                elif isinstance(value, datetime.time):
+                    self._set_number_format(NumberFormat.FORMAT_DATE_TIME6)
+                elif isinstance(value, datetime.timedelta):
+                    self._set_number_format(NumberFormat.FORMAT_DATE_TIMEDELTA)
+                value = SharedDate().datetime_to_julian(date=value)
                 self.set_value_explicit(value, self.TYPE_NUMERIC)
-                self._set_number_format(NumberFormat.FORMAT_DATE_YYYYMMDD2)
                 return True
         self.set_value_explicit(value, self._data_type)
 
@@ -285,7 +322,7 @@ class Cell(object):
         """Return the value, formatted as a date if needed"""
         value = self._value
         if self.is_date():
-            value = SharedDate().from_julian(value)
+            value = self._shared_date.from_julian(value)
         return value
 
     def _set_value(self, value):
@@ -293,7 +330,7 @@ class Cell(object):
         self.bind_value(value)
 
     value = property(_get_value, _set_value,
-            doc = 'Get or set the value held in the cell.\n\n'
+            doc='Get or set the value held in the cell.\n\n'
             ':rtype: depends on the value (string, float, int or '
             ':class:`datetime.datetime`)')
 
@@ -312,7 +349,7 @@ class Cell(object):
                 self._hyperlink_rel.target or ''
 
     hyperlink = property(_get_hyperlink, _set_hyperlink,
-            doc = 'Get or set the hyperlink held in the cell.  '
+            doc='Get or set the hyperlink held in the cell.  '
             'Automatically sets the `value` of the cell with link text, '
             'but you can modify it afterwards by setting the '
             '`value` property, and the hyperlink will remain.\n\n'
@@ -331,7 +368,7 @@ class Cell(object):
     @property
     def has_style(self):
         """Check if the parent worksheet has a style for this cell"""
-        return self.get_coordinate() in self.parent._styles #pylint: disable-msg=W0212
+        return self.get_coordinate() in self.parent._styles  # pylint: disable=W0212
 
     @property
     def style(self):
@@ -358,7 +395,7 @@ class Cell(object):
         """
         return self.get_coordinate()
 
-    def offset(self, row = 0, column = 0):
+    def offset(self, row=0, column=0):
         """Returns a cell location relative to this cell.
 
         :param row: number of rows to offset
@@ -370,7 +407,7 @@ class Cell(object):
         :rtype: :class:`openpyxl.cell.Cell`
         """
         offset_column = get_column_letter(column_index_from_string(
-                column = self.column) + column)
+                column=self.column) + column)
         offset_row = self.row + row
         return self.parent.cell('%s%s' % (offset_column, offset_row))
 
@@ -381,4 +418,39 @@ class Cell(object):
         """
         return (self.has_style
                 and self.style.number_format.is_date_format()
-                and isinstance(self._value, (int, float)))
+                and isinstance(self._value, NUMERIC_TYPES))
+
+    @property
+    def anchor(self):
+        """ returns the expected position of a cell in pixels from the top-left
+            of the sheet. For example, A1 anchor should be (0,0).
+
+            :rtype: tuple(int, int)
+        """
+        left_columns = (column_index_from_string(self.column, True) - 1)
+        column_dimensions = self.parent.column_dimensions
+        left_anchor = 0
+        default_width = points_to_pixels(DEFAULT_COLUMN_WIDTH)
+
+        for col_idx in range(left_columns):
+            letter = get_column_letter(col_idx + 1)
+            if letter in column_dimensions:
+                cdw = column_dimensions.get(letter).width
+                if cdw > 0:
+                    left_anchor += points_to_pixels(cdw)
+                    continue
+            left_anchor += default_width
+
+        row_dimensions = self.parent.row_dimensions
+        top_anchor = 0
+        top_rows = (self.row - 1)
+        default_height = points_to_pixels(DEFAULT_ROW_HEIGHT)
+        for row_idx in range(1, top_rows + 1):
+            if row_idx in row_dimensions:
+                rdh = row_dimensions[row_idx].height
+                if rdh > 0:
+                    top_anchor += points_to_pixels(rdh)
+                    continue
+            top_anchor += default_height
+
+        return (left_anchor, top_anchor)

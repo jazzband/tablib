@@ -1,6 +1,6 @@
 # file openpyxl/shared/__init__.py
 
-# Copyright (c) 2010 openpyxl
+# Copyright (c) 2010-2011 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,21 @@
 # THE SOFTWARE.
 #
 # @license: http://www.opensource.org/licenses/mit-license.php
-# @author: Eric Gazoni
+# @author: see AUTHORS file
 
 """Imports for the openpyxl.shared namespace."""
 
 # package imports
-from . import date_time
-from . import exc
-from . import ooxml
-from . import password_hasher
-from . import xmltools
+from openpyxl.shared import date_time
+from openpyxl.shared import exc
+from openpyxl.shared import ooxml
+from openpyxl.shared import password_hasher
+from openpyxl.shared import xmltools
+from openpyxl.shared.compat import long
+import decimal
+
+NUMERIC_TYPES = (int, float, long, decimal.Decimal)
+
+# both values in points
+DEFAULT_ROW_HEIGHT = 15.
+DEFAULT_COLUMN_WIDTH = 51.85
