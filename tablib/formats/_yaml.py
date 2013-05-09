@@ -31,7 +31,7 @@ def export_set(dataset):
 
 def export_book(databook):
     """Returns YAML representation of Databook."""
-    return yaml.dump(databook._package())
+    return yaml.dump(databook._package(ordered=False))
 
 
 def import_set(dset, in_stream):
