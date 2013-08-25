@@ -117,7 +117,8 @@ EXCEL!
 ++++++
 ::
 
-	>>> open('people.xls', 'wb').write(data.xls)
+	>>> with open('people.xls', 'wb') as f:
+	...     f.write(data.xls)
 
 It's that easy.
 
