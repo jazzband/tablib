@@ -26,12 +26,12 @@ extensions = ('yaml', 'yml')
 def export_set(dataset):
     """Returns YAML representation of Dataset."""
 
-    return yaml.dump(dataset._package(ordered=False))
+    return yaml.safe_dump(dataset._package(ordered=False))
 
 
 def export_book(databook):
     """Returns YAML representation of Databook."""
-    return yaml.dump(databook._package())
+    return yaml.safe_dump(databook._package(ordered=False))
 
 
 def import_set(dset, in_stream):
