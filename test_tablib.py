@@ -5,7 +5,6 @@
 
 import unittest
 import sys
-from tablib.packages import openpyxl
 import os
 import tablib
 from tablib.compat import markup, unicode
