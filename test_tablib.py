@@ -95,7 +95,7 @@ class TablibTestCase(unittest.TestCase):
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
 
-        new_col = [lambda x: x[0]]
+        new_col = lambda x: x[0]
 
         self.founders.append_col(new_col, header='first_again')
 
