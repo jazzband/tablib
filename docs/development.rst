@@ -132,7 +132,7 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 
 2.
 
-    Add your new format module to the :class:`tablib.formats.avalable` tuple.
+    Add your new format module to the :class:`tablib.formats.available` tuple.
 
 3.
     Add a mock property to the :class:`Dataset <tablib.Dataset>` class with verbose `reStructured Text`_ docstring. This alleviates IDE confusion, and allows for pretty auto-generated Sphinx_ documentation.
