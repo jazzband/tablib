@@ -800,7 +800,7 @@ class Dataset(object):
                 raise HeadersNeeded
 
             _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers)
+            _dset = Dataset(headers=self.headers, title=self.title)
 
             for item in _sorted:
                 row = [item[key] for key in self.headers]
@@ -811,7 +811,7 @@ class Dataset(object):
                 col = self.headers[col]
 
             _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers)
+            _dset = Dataset(headers=self.headers, title=self.title)
 
             for item in _sorted:
                 if self.headers:

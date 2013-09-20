@@ -29,7 +29,7 @@ class TablibTestCase(unittest.TestCase):
         self.george = ('George', 'Washington', 67)
         self.tom = ('Thomas', 'Jefferson', 50)
 
-        self.founders = tablib.Dataset(headers=self.headers)
+        self.founders = tablib.Dataset(headers=self.headers, title='Founders')
         self.founders.append(self.john)
         self.founders.append(self.george)
         self.founders.append(self.tom)
@@ -559,6 +559,7 @@ class TablibTestCase(unittest.TestCase):
         """Sort columns."""
 
         sorted_data = self.founders.sort(col="first_name")
+        self.assertEqual(sorted_data.title, 'Founders')
 
         first_row = sorted_data[0]
         second_row = sorted_data[2]
