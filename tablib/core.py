@@ -795,13 +795,16 @@ class Dataset(object):
 
         _dset = Dataset(headers=self.headers, title=self.title)
 
-        if isinstance(col, str) or isinstance(col, unicode):
+        key = None
+        if hasattr(col, '__call__'):
+            key = col
+        elif isinstance(col, str) or isinstance(col, unicode):
             if not self.headers:
                 raise HeadersNeeded
         elif self.headers:
-            col = self.headers[col]
+            col = itemgetter(self.headers[col])
 
-        _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+        _sorted = sorted(self.dict, key=key or itemgetter(col), reverse=reverse)
 
         for item in _sorted:
             if self.headers:
