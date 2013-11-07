@@ -13,7 +13,6 @@ else:
     from cStringIO import StringIO
     from tablib.packages import markup
 
-import tablib
 
 BOOK_ENDINGS = 'h3'
 
