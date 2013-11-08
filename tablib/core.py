@@ -133,8 +133,8 @@ class Dataset(object):
         data.append_col((90, 67), header='age')
 
 
-    You can also set rows and headers upon instantiation. This is useful if dealing
-    with dozens or hundres of :class:`Dataset` objects. ::
+    You can also set rows and headers upon instantiation. This is useful if
+    dealing with dozens or hundreds of :class:`Dataset` objects. ::
 
         headers = ('first_name', 'last_name')
         data = [('John', 'Adams'), ('George', 'Washington')]
