@@ -447,7 +447,7 @@ class Dataset(object):
              :class:`Dataset.xls` contains binary data, so make sure to write in binary mode::
 
                 with open('output.xls', 'wb') as f:
-                    f.write(data.xls)'
+                    f.write(data.xls)
         """
         pass
 
@@ -460,7 +460,7 @@ class Dataset(object):
              :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
 
                 with open('output.xlsx', 'wb') as f:
-                    f.write(data.xlsx)'
+                    f.write(data.xlsx)
         """
         pass
 
@@ -473,7 +473,7 @@ class Dataset(object):
              :class:`Dataset.ods` contains binary data, so make sure to write in binary mode::
 
                 with open('output.ods', 'wb') as f:
-                    f.write(data.ods)'
+                    f.write(data.ods)
         """
         pass
 
@@ -496,7 +496,7 @@ class Dataset(object):
              sure to write in binary mode::
 
                  with open('output.csv', 'wb') as f:
-                     f.write(data.csv)'
+                     f.write(data.csv)
 
              If you do not do this, and you export the file on Windows, your
              CSV file will open in Excel with a blank line between each row.
