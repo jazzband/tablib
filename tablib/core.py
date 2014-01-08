@@ -955,6 +955,8 @@ class Databook(object):
             except AttributeError:
                 pass
 
+    def sheets(self):
+        return self._datasets
 
     def add_sheet(self, dataset):
         """Adds given :class:`Dataset` to the :class:`Databook`."""

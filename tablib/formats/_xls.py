@@ -64,6 +64,22 @@ def export_book(databook):
     return stream.getvalue()
 
 
+def import_set(dset, in_stream, headers=True):
+    """Returns databook from XLS stream."""
+
+    dset.wipe()
+
+    xls_book = xlrd.open_workbook(file_contents=in_stream)
+    sheet = xls_book.sheet_by_index(0)
+
+    dset.title = sheet.name
+
+    for i in xrange(sheet.nrows):
+        if (i == 0) and (headers):
+            dset.headers = sheet.row_values(0)
+        else:
+            dset.append(sheet.row_values(i))
+
 def import_book(dbook, in_stream, headers=True):
     """Returns databook from XLS stream."""
 
