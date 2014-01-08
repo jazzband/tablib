@@ -248,9 +248,9 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_tsv_export(self):
-        """Verify exporting dataset object as CSV."""
+        """Verify exporting dataset object as TSV."""
 
-        # Build up the csv string with headers first, followed by each row
+        # Build up the tsv string with headers first, followed by each row
         tsv = ''
         for col in self.headers:
             tsv += col + '\t'
