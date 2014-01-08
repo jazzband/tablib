@@ -67,7 +67,7 @@ class element:
     def render( self, tag, single, between, kwargs ):
         """Append the actual tags to content."""
 
-        out = "<%s" % tag
+        out = u"<%s" % tag
         for key, value in kwargs.iteritems( ):
             if value is not None:               # when value is None that means stuff like <... checked>
                 key = key.strip('_')            # strip this so class_ will mean class, etc.
@@ -75,16 +75,16 @@ class element:
                     key = 'http-equiv'
                 elif key == 'accept_charset':
                     key = 'accept-charset'
-                out = "%s %s=\"%s\"" % ( out, key, escape( value ) )
+                out = u"%s %s=\"%s\"" % ( out, key, escape( value ) )
             else:
-                out = "%s %s" % ( out, key )
+                out = u"%s %s" % ( out, key )
         if between is not None:
-            out = "%s>%s</%s>" % ( out, between, tag )
+            out = u"%s>%s</%s>" % ( out, between, tag )
         else:
             if single:
-                out = "%s />" % out
+                out = u"%s />" % out
             else:
-                out = "%s>" % out
+                out = u"%s>" % out
         if self.parent is not None:
             self.parent.content.append( out )
         else:

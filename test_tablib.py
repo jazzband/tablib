@@ -309,7 +309,7 @@ class TablibTestCase(unittest.TestCase):
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
-        new_row = ('å', 'é')
+        new_row = (u'å', u'é')
         data.append(new_row)
 
         data.json

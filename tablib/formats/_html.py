@@ -14,6 +14,7 @@ else:
     from tablib.packages import markup
 
 import tablib
+import codecs
 
 BOOK_ENDINGS = 'h3'
 
@@ -45,7 +46,9 @@ def export_set(dataset):
 
 	page.table.close()
 
-	stream.writelines(str(page))
+    # Allow unicode characters in output
+	wrapper = codecs.getwriter("utf8")(stream)
+	wrapper.writelines(unicode(page))
 
 	return stream.getvalue()
 
