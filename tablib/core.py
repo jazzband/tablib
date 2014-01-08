@@ -941,6 +941,9 @@ class Databook(object):
         """Removes all :class:`Dataset` objects from the :class:`Databook`."""
         self._datasets = []
 
+    def sheets(self):  # Added to excess sheets of Databook
+        return self._datasets
+
 
     @classmethod
     def _register_formats(cls):
@@ -992,15 +995,15 @@ def detect(stream):
     for fmt in formats.available:
         try:
             if fmt.detect(stream):
-                return (fmt, stream)
+                return (fmt)
         except AttributeError:
             pass
-    return (None, stream)
+    return (None)
 
 
 def import_set(stream):
     """Return dataset of given stream."""
-    (format, stream) = detect(stream)
+    (format) = detect(stream)
 
     try:
         data = Dataset()
@@ -1013,7 +1016,7 @@ def import_set(stream):
 
 def import_book(stream):
     """Return dataset of given stream."""
-    (format, stream) = detect(stream)
+    (format) = detect(stream)
 
     try:
         databook = Databook()

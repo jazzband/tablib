@@ -7,6 +7,7 @@
 # <p>Copyright © 2006 Stephen John Machin, Lingfo Pty Ltd</p>
 # <p>This module is part of the xlrd package, which is released under a BSD-style licence.</p>
 ##
+from __future__ import print_function
 
 import xlrd
 import sys
@@ -30,7 +31,7 @@ def do_scope_query(book, scope_strg, show_contents=0, f=sys.stdout):
         else:
             # so assume it's a sheet name ...
             qscope = book.sheet_names().index(scope_strg)
-            print >> f, "%r => %d" % (scope_strg, qscope)
+            print("%r => %d" % (scope_strg, qscope), file=f)
     for nobj in book.name_obj_list:
         if qscope is None or nobj.scope == qscope:
             show_name_object(book, nobj, show_contents, f)
@@ -45,7 +46,7 @@ def show_name_details(book, name, show_contents=0, f=sys.stdout):
     name_lcase = name.lower() # Excel names are case-insensitive.
     nobj_list = book.name_map.get(name_lcase)
     if not nobj_list:
-        print >> f, "%r: unknown name" % name
+        print("%r: unknown name" % name, file=f)
         return
     for nobj in nobj_list:
         show_name_object(book, nobj, show_contents, f)
@@ -58,17 +59,17 @@ def show_name_details_in_scope(
     except ValueError:
         # so assume it's a sheet name ...
         scope = book.sheet_names().index(scope_strg)
-        print >> f, "%r => %d" % (scope_strg, scope)
+        print("%r => %d" % (scope_strg, scope), file=f)
     name_lcase = name.lower() # Excel names are case-insensitive.
     while 1:
         nobj = book.name_and_scope_map.get((name_lcase, scope))
         if nobj:
             break
-        print >> f, "Name %r not found in scope %d" % (name, scope)
+        print("Name %r not found in scope %d" % (name, scope), file=f)
         if scope == -1:
             return
         scope = -1 # Try again with global scope
-    print >> f, "Name %r found in scope %d" % (name, scope)
+    print("Name %r found in scope %d" % (name, scope), file=f)
     show_name_object(book, nobj, show_contents, f)
 
 def showable_cell_value(celltype, cellvalue, datemode):
@@ -86,10 +87,10 @@ def showable_cell_value(celltype, cellvalue, datemode):
     return showval
 
 def show_name_object(book, nobj, show_contents=0, f=sys.stdout):
-    print >> f, "\nName: %r, scope: %r (%s)" \
-        % (nobj.name, nobj.scope, scope_as_string(book, nobj.scope))
+    print("\nName: %r, scope: %r (%s)" \
+        % (nobj.name, nobj.scope, scope_as_string(book, nobj.scope)), file=f)
     res = nobj.result
-    print >> f, "Formula eval result: %r" % res
+    print("Formula eval result: %r" % res, file=f)
     if res is None:
         return
     # result should be an instance of the Operand class
@@ -100,31 +101,31 @@ def show_name_object(book, nobj, show_contents=0, f=sys.stdout):
         pass
     elif kind == xlrd.oREL:
         # A list of Ref3D objects representing *relative* ranges
-        for i in xrange(len(value)):
+        for i in range(len(value)):
             ref3d = value[i]
-            print >> f, "Range %d: %r ==> %s"% (i, ref3d.coords, xlrd.rangename3drel(book, ref3d))
+            print("Range %d: %r ==> %s"% (i, ref3d.coords, xlrd.rangename3drel(book, ref3d)), file=f)
     elif kind == xlrd.oREF:
         # A list of Ref3D objects
-        for i in xrange(len(value)):
+        for i in range(len(value)):
             ref3d = value[i]
-            print >> f, "Range %d: %r ==> %s"% (i, ref3d.coords, xlrd.rangename3d(book, ref3d))
+            print("Range %d: %r ==> %s"% (i, ref3d.coords, xlrd.rangename3d(book, ref3d)), file=f)
             if not show_contents:
                 continue
             datemode = book.datemode
-            for shx in xrange(ref3d.shtxlo, ref3d.shtxhi):
+            for shx in range(ref3d.shtxlo, ref3d.shtxhi):
                 sh = book.sheet_by_index(shx)
-                print >> f, "   Sheet #%d (%s)" % (shx, sh.name)
+                print("   Sheet #%d (%s)" % (shx, sh.name), file=f)
                 rowlim = min(ref3d.rowxhi, sh.nrows)
                 collim = min(ref3d.colxhi, sh.ncols)
-                for rowx in xrange(ref3d.rowxlo, rowlim):
-                    for colx in xrange(ref3d.colxlo, collim):
+                for rowx in range(ref3d.rowxlo, rowlim):
+                    for colx in range(ref3d.colxlo, collim):
                         cty = sh.cell_type(rowx, colx)
                         if cty == xlrd.XL_CELL_EMPTY and show_contents == 1:
                             continue
                         cval = sh.cell_value(rowx, colx)
                         sval = showable_cell_value(cty, cval, datemode)
-                        print >> f, "      (%3d,%3d) %-5s: %r" \
-                            % (rowx, colx, xlrd.cellname(rowx, colx), sval)
+                        print("      (%3d,%3d) %-5s: %r" \
+                            % (rowx, colx, xlrd.cellname(rowx, colx), sval), file=f)
 
 if __name__ == "__main__":
     def usage():

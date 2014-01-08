@@ -11,5 +11,5 @@ from . import _tsv as tsv
 from . import _html as html
 from . import _xlsx as xlsx
 from . import _ods as ods
-
-available = (json, xls, yaml, csv, tsv, html, xlsx, ods)
+# csv as last, since xlsx and ods might also be detected as csv
+available = (json, xls, yaml, tsv, html, xlsx, ods, csv)
