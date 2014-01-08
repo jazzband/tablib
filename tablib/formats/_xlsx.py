@@ -41,7 +41,6 @@ def export_book(databook):
     """Returns XLSX representation of DataBook."""
 
     wb = Workbook()
-    ew = ExcelWriter(workbook = wb)
     for i, dset in enumerate(databook._datasets):
         ws = wb.create_sheet()
         ws.title = dset.title if dset.title else 'Sheet%s' % (i)
@@ -50,7 +49,7 @@ def export_book(databook):
 
 
     stream = BytesIO()
-    ew.save(stream)
+    wb.save(stream)
     return stream.getvalue()
 
 
