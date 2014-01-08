@@ -794,32 +794,25 @@ class Dataset(object):
         sorted.
         """
 
-        if isinstance(col, str) or isinstance(col, unicode):
+        _dset = Dataset(headers=self.headers, title=self.title)
 
+        key = None
+        if hasattr(col, '__call__'):
+            key = col
+        elif isinstance(col, str) or isinstance(col, unicode):
             if not self.headers:
                 raise HeadersNeeded
+        elif self.headers:
+            col = itemgetter(self.headers[col])
 
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers)
+        _sorted = sorted(self.dict, key=key or itemgetter(col), reverse=reverse)
 
-            for item in _sorted:
-                row = [item[key] for key in self.headers]
-                _dset.append(row=row)
-
-        else:
+        for item in _sorted:
             if self.headers:
-                col = self.headers[col]
-
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers)
-
-            for item in _sorted:
-                if self.headers:
-                    row = [item[key] for key in self.headers]
-                else:
-                    row = item
-                _dset.append(row=row)
-
+                row = [item[key] for key in self.headers]
+            else:
+                row = item
+            _dset.append(row=row)
 
         return _dset
 

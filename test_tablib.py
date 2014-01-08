@@ -29,7 +29,7 @@ class TablibTestCase(unittest.TestCase):
         self.george = ('George', 'Washington', 67)
         self.tom = ('Thomas', 'Jefferson', 50)
 
-        self.founders = tablib.Dataset(headers=self.headers)
+        self.founders = tablib.Dataset(headers=self.headers, title='Founders')
         self.founders.append(self.john)
         self.founders.append(self.george)
         self.founders.append(self.tom)
@@ -557,6 +557,7 @@ class TablibTestCase(unittest.TestCase):
         """Sort columns."""
 
         sorted_data = self.founders.sort(col="first_name")
+        self.assertEqual(sorted_data.title, 'Founders')
 
         first_row = sorted_data[0]
         second_row = sorted_data[2]
@@ -564,6 +565,22 @@ class TablibTestCase(unittest.TestCase):
         expected_first = self.founders[1]
         expected_second = self.founders[2]
         expected_third = self.founders[0]
+
+        self.assertEqual(first_row, expected_first)
+        self.assertEqual(second_row, expected_second)
+        self.assertEqual(third_row, expected_third)
+
+    def test_sorting_with_function(self):
+        # order by last letter in first name
+        sorted_data = self.founders.sort(col=lambda row: row['first_name'][-1])
+
+        import tablib
+        first_row = sorted_data[0]
+        second_row = sorted_data[1]
+        third_row = sorted_data[2]
+        expected_first = self.founders[1]
+        expected_second = self.founders[0]
+        expected_third = self.founders[2]
 
         self.assertEqual(first_row, expected_first)
         self.assertEqual(second_row, expected_second)
