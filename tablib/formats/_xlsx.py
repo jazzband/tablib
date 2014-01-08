@@ -41,6 +41,7 @@ def export_book(databook):
     """Returns XLSX representation of DataBook."""
 
     wb = Workbook()
+    wb.worksheets = []
     ew = ExcelWriter(workbook = wb)
     for i, dset in enumerate(databook._datasets):
         ws = wb.create_sheet()
