@@ -67,7 +67,7 @@ Feature / Hotfix / Release branches follow a `Successful Git Branching Model`_ .
 ``master``
     Current production release (|version|) on PyPi.
 ``gh-pages``
-    Current release of http://tablib.org.
+    Current release of http://docs.python-tablib.org.
 
 Each release is tagged.
 
