@@ -30,7 +30,7 @@ def detect(stream):
     try:
         openpyxl.reader.excel.load_workbook(stream)
         return True
-    except TypeError:
+    except openpyxl.shared.exc.InvalidFileException:
         pass
 
 def export_set(dataset):
