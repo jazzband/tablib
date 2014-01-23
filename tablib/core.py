@@ -174,6 +174,7 @@ class Dataset(object):
             self.title = None
 
         self._register_formats()
+        self.fields_width = ''
 
 
     def __len__(self):
@@ -556,6 +557,21 @@ class Dataset(object):
         headers have been set, they will be used as table headers.
 
         ..notice:: This method can be used for export only.
+        """
+        pass
+
+    @property
+    def fix():
+        """A Fixed width representation of the :class:`Dataset` object.
+
+        A dataset object can also be imported by setting the :class:`Dataset.fix` attribute: ::
+        but you have to set fields_width with a python struct format
+
+            data = tablib.Dataset(headers=['age', 'first_name', 'last_name')
+            data.fields_width = '2s 4s 5s'
+            data.fix = '90JohnAdams'
+
+        Then you can export this to json
         """
         pass
 

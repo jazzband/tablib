@@ -11,5 +11,6 @@ from . import _tsv as tsv
 from . import _html as html
 from . import _xlsx as xlsx
 from . import _ods as ods
+from . import _fix as fix
 
-available = (json, xls, yaml, csv, tsv, html, xlsx, ods)
+available = (json, xls, yaml, csv, tsv, html, xlsx, ods, fix)
