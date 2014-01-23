@@ -19,7 +19,15 @@ def check_fields_width(dset):
 
 
 def export_set(dataset):
-    pass
+    lines = []
+    for idx, row in enumerate(dataset._package(dicts=False)):
+        if dataset.headers and idx == 0:
+            continue
+        lines.append(
+            ''.join([str(x).ljust(y)
+                     for x, y in zip(row, dataset.fields_width)])
+        )
+    return '\n'.join(lines)
 
 
 def import_set(dset, in_stream, headers=True):
