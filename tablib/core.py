@@ -174,7 +174,7 @@ class Dataset(object):
             self.title = None
 
         self._register_formats()
-        self.fields_width = ''
+        self.fields_width = set()
 
 
     def __len__(self):
