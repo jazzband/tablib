@@ -568,7 +568,7 @@ class Dataset(object):
         but you have to set fields_width with a python struct format
 
             data = tablib.Dataset(headers=['age', 'first_name', 'last_name')
-            data.fields_width = '2s 4s 5s'
+            data.fields_width = (2, 4, 5)
             data.fix = '90JohnAdams'
 
         Then you can export this to json
