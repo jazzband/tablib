@@ -18,6 +18,10 @@ def check_fields_width(dset):
         raise Exception('You have to define fields_width to Dataset')
 
 
+def make_struct(sizes):
+    return Struct(' '.join(['%ss' % s for s in sizes]))
+
+
 def export_set(dataset):
     lines = []
     for idx, row in enumerate(dataset._package(dicts=False)):
@@ -32,7 +36,7 @@ def export_set(dataset):
 
 def import_set(dset, in_stream, headers=True):
     """Returns dataset from CSV stream."""
-
-    fixed_struct = Struct(dset.fields_width)
+    dset.wipe()
+    fixed_struct = make_struct(dset.fields_width)
     for row in in_stream.splitlines():
-        dset.extend([fixed_struct.unpack(row)])
+        dset.append([x.strip() for x in fixed_struct.unpack(row)])
