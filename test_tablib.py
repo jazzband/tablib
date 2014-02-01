@@ -719,5 +719,30 @@ Old       |Man       |100500
         except tablib.InvalidDatasetType:
             self.fail("Subclass of tablib.Dataset should be accepted by Databook.add_sheet")
 
+
+    def test_csv_formatter_support_kwargs(self):
+        """Test CSV import and export with formatter configuration."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        expected = 'first_name;last_name;gpa\nJohn;Adams;90\nGeorge;Washington;67\n'
+
+        kwargs = dict(delimiter=';', lineterminator='\n')
+        _csv = data.export('csv', **kwargs)
+        self.assertEqual(expected, _csv)
+
+        # the import works but consider default delimiter=','
+        d1 = tablib.import_set(_csv, format="csv")
+        self.assertEqual(1, len(d1.headers))
+
+        d2 = tablib.import_set(_csv, format="csv", **kwargs)
+        self.assertEqual(3, len(d2.headers))
+
+    def test_databook_formatter_support_kwargs(self):
+        """Test XLSX export with formatter configuration."""
+        self.founders.export('xlsx', freeze_panes=False)
+
+
 if __name__ == '__main__':
     unittest.main()

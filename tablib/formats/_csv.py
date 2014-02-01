@@ -14,14 +14,14 @@ DEFAULT_ENCODING = 'utf-8'
 
 
 
-def export_set(dataset):
+def export_set(dataset, **kwargs):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
 
-    if is_py3:
-        _csv = csv.writer(stream)
-    else:
-        _csv = csv.writer(stream, encoding=DEFAULT_ENCODING)
+    if not is_py3:
+        kwargs.setdefault('encoding', DEFAULT_ENCODING)
+
+    _csv = csv.writer(stream, **kwargs)
 
     for row in dataset._package(dicts=False):
         _csv.writerow(row)
@@ -29,15 +29,15 @@ def export_set(dataset):
     return stream.getvalue()
 
 
-def import_set(dset, in_stream, headers=True):
+def import_set(dset, in_stream, headers=True, **kwargs):
     """Returns dataset from CSV stream."""
 
     dset.wipe()
 
-    if is_py3:
-        rows = csv.reader(StringIO(in_stream))
-    else:
-        rows = csv.reader(StringIO(in_stream), encoding=DEFAULT_ENCODING)
+    if not is_py3:
+        kwargs.setdefault('encoding', DEFAULT_ENCODING)
+
+    rows = csv.reader(StringIO(in_stream), **kwargs)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):

@@ -153,6 +153,8 @@ class Dataset(object):
 
     """
 
+    _formats = {}
+
     def __init__(self, *args, **kwargs):
         self._data = list(Row(arg) for arg in args)
         self.__headers = None
@@ -254,11 +256,13 @@ class Dataset(object):
             try:
                 try:
                     setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
+                    cls._formats[fmt.title] = (fmt.export_set, fmt.import_set)
                 except AttributeError:
                     setattr(cls, fmt.title, property(fmt.export_set))
+                    cls._formats[fmt.title] = (fmt.export_set, None)
 
             except AttributeError:
-                pass
+                cls._formats[fmt.title] = (None, None)
 
 
     def _validate(self, row=None, col=None, safety=False):
@@ -428,11 +432,33 @@ class Dataset(object):
             except TypeError:
                 return 0
 
+    def import_(self, format, in_stream, **kwargs):
+        """
+        Import `in_stream` to the :class:`Dataset` object using the `format`.
+
+        :param \*\*kwargs: (optional) custom configuration to the format `import_set`.
+        """
+        export_set, import_set = self._formats.get(format, (None, None))
+        if not import_set:
+            raise UnsupportedFormat
+
+        import_set(self, in_stream, **kwargs)
+
+    def export(self, format, **kwargs):
+        """
+        Export :class:`Dataset` object to `format`.
+
+        :param \*\*kwargs: (optional) custom configuration to the format `export_set`.
+        """
+        export_set, import_set = self._formats.get(format, (None, None))
+        if not export_set:
+            raise UnsupportedFormat
+
+        return export_set(self, **kwargs)
 
     # -------
     # Formats
     # -------
-
 
     @property
     def xls():
@@ -921,6 +947,8 @@ class Databook(object):
     """A book of :class:`Dataset` objects.
     """
 
+    _formats = {}
+
     def __init__(self, sets=None):
 
         if sets is None:
@@ -936,7 +964,6 @@ class Databook(object):
         except AttributeError:
             return '<databook object>'
 
-
     def wipe(self):
         """Removes all :class:`Dataset` objects from the :class:`Databook`."""
         self._datasets = []
@@ -949,11 +976,13 @@ class Databook(object):
             try:
                 try:
                     setattr(cls, fmt.title, property(fmt.export_book, fmt.import_book))
+                    cls._formats[fmt.title] = (fmt.export_book, fmt.import_book)
                 except AttributeError:
                     setattr(cls, fmt.title, property(fmt.export_book))
+                    cls._formats[fmt.title] = (fmt.export_book, None)
 
             except AttributeError:
-                pass
+                cls._formats[fmt.title] = (None, None)
 
     def sheets(self):
         return self._datasets
@@ -988,6 +1017,30 @@ class Databook(object):
         """The number of the :class:`Dataset` objects within :class:`Databook`."""
         return len(self._datasets)
 
+    def import_(self, format, in_stream, **kwargs):
+        """
+        Import `in_stream` to the :class:`Databook` object using the `format`.
+
+        :param \*\*kwargs: (optional) custom configuration to the format `import_book`.
+        """
+        export_book, import_book = self._formats.get(format, (None, None))
+        if not import_book:
+            raise UnsupportedFormat
+
+        import_book(self, in_stream, **kwargs)
+
+    def export(self, format, **kwargs):
+        """
+        Export :class:`Databook` object to `format`.
+
+        :param \*\*kwargs: (optional) custom configuration to the format `export_book`.
+        """
+        export_book, import_book = self._formats.get(format, (None, None))
+        if not export_book:
+            raise UnsupportedFormat
+
+        return export_book(self, **kwargs)
+
 
 def detect(stream):
     """Return (format, stream) of given stream."""
@@ -1000,30 +1053,41 @@ def detect(stream):
     return (None, stream)
 
 
-def import_set(stream):
+def import_set(stream, format=None, **kwargs):
     """Return dataset of given stream."""
-    (format, stream) = detect(stream)
+    if format:
+        format = get_formatter(format)
+    else:
+        format, stream = detect(stream)
 
+    data = Dataset()
     try:
-        data = Dataset()
-        format.import_set(data, stream)
+        format.import_set(data, stream, **kwargs)
         return data
-
     except AttributeError:
         return None
 
 
-def import_book(stream):
+def import_book(stream, format=None, **kwargs):
     """Return dataset of given stream."""
-    (format, stream) = detect(stream)
+    if format:
+        format = get_formatter(format)
+    else:
+        format, stream = detect(stream)
 
+    databook = Databook()
     try:
-        databook = Databook()
-        format.import_book(databook, stream)
+        format.import_book(databook, stream, **kwargs)
         return databook
-
     except AttributeError:
         return None
+
+
+def get_formatter(format):
+    for item in formats.available:
+        if item.title == format:
+            return item
+    raise UnsupportedFormat(format)
 
 
 class InvalidDatasetType(Exception):

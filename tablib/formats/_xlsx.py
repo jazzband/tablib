@@ -33,21 +33,21 @@ def detect(stream):
     except openpyxl.shared.exc.InvalidFileException:
         pass
 
-def export_set(dataset):
+def export_set(dataset, freeze_panes=True):
     """Returns XLSX representation of Dataset."""
 
     wb = Workbook()
     ws = wb.worksheets[0]
     ws.title = dataset.title if dataset.title else 'Tablib Dataset'
 
-    dset_sheet(dataset, ws)
+    dset_sheet(dataset, ws, freeze_panes=freeze_panes)
 
     stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()
 
 
-def export_book(databook):
+def export_book(databook, freeze_panes=True):
     """Returns XLSX representation of DataBook."""
 
     wb = Workbook()
@@ -56,7 +56,7 @@ def export_book(databook):
         ws = wb.create_sheet()
         ws.title = dset.title if dset.title else 'Sheet%s' % (i)
 
-        dset_sheet(dset, ws)
+        dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
 
     stream = BytesIO()
@@ -103,7 +103,7 @@ def import_book(dbook, in_stream, headers=True):
         dbook.add_sheet(data)
 
 
-def dset_sheet(dataset, ws):
+def dset_sheet(dataset, ws, freeze_panes=True):
     """Completes given worksheet from given Dataset."""
     _package = dataset._package(dicts=False)
 
@@ -125,8 +125,9 @@ def dset_sheet(dataset, ws):
                 ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
-                ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
-
+                if freeze_panes:
+                    # We want to freeze the column after the last column
+                    ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
 
             # bold separators
             elif len(row) < dataset.width:
