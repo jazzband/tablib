@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Tablib - CSV Support.
+""" Tablib - *SV Support.
 """
 
 from tablib.compat import is_py3, csv, StringIO
@@ -11,17 +11,17 @@ extensions = ('csv',)
 
 
 DEFAULT_ENCODING = 'utf-8'
+DEFAULT_DELIMITER = ','
 
 
-
-def export_set(dataset):
+def export_set(dataset, delimiter=DEFAULT_DELIMITER):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
 
     if is_py3:
-        _csv = csv.writer(stream)
+        _csv = csv.writer(stream, delimiter=delimiter)
     else:
-        _csv = csv.writer(stream, encoding=DEFAULT_ENCODING)
+        _csv = csv.writer(stream, delimiter=delimiter, encoding=DEFAULT_ENCODING)
 
     for row in dataset._package(dicts=False):
         _csv.writerow(row)
@@ -29,15 +29,15 @@ def export_set(dataset):
     return stream.getvalue()
 
 
-def import_set(dset, in_stream, headers=True):
+def import_set(dset, in_stream, headers=True, delimiter=DEFAULT_DELIMITER):
     """Returns dataset from CSV stream."""
 
     dset.wipe()
 
     if is_py3:
-        rows = csv.reader(in_stream.splitlines())
+        rows = csv.reader(in_stream.splitlines(), delimiter=delimiter)
     else:
-        rows = csv.reader(in_stream.splitlines(), encoding=DEFAULT_ENCODING)
+        rows = csv.reader(in_stream.splitlines(), delimiter=delimiter, encoding=DEFAULT_ENCODING)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):
@@ -46,10 +46,10 @@ def import_set(dset, in_stream, headers=True):
             dset.append(row)
 
 
-def detect(stream):
+def detect(stream, delimiter=DEFAULT_DELIMITER):
     """Returns True if given stream is valid CSV."""
     try:
-        csv.Sniffer().sniff(stream, delimiters=',')
+        csv.Sniffer().sniff(stream, delimiters=delimiter)
         return True
     except (csv.Error, TypeError):
         return False

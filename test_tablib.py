@@ -401,6 +401,17 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_csv, data.csv)
 
+    def test_csv_import_set_semicolons(self):
+        """Test for proper output with semicolon separated CSV."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _csv = data.get_csv(delimiter=';')
+
+        data.set_csv(_csv, delimiter=';')
+
+        self.assertEqual(_csv, data.get_csv(delimiter=';'))
 
     def test_csv_import_set_with_spaces(self):
         """Generate and import CSV set serialization when row values have
@@ -414,6 +425,19 @@ class TablibTestCase(unittest.TestCase):
         data.csv = _csv
 
         self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_semicolon_with_spaces(self):
+        """Generate and import semicolon separated CSV set serialization when row values have
+        spaces."""
+        data.append(('Bill Gates', 'Microsoft'))
+        data.append(('Steve Jobs', 'Apple'))
+        data.headers = ('Name', 'Company')
+
+        _csv = data.get_csv(delimiter=';')
+
+        data.set_csv(_csv, delimiter=';')
+
+        self.assertEqual(_csv, data.get_csv(delimiter=';'))
 
 
     def test_tsv_import_set(self):

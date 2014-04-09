@@ -256,6 +256,8 @@ class Dataset(object):
                     setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
                 except AttributeError:
                     setattr(cls, fmt.title, property(fmt.export_set))
+                setattr(cls, 'set_%s' % fmt.title, fmt.import_set)
+                setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
 
             except AttributeError:
                 pass
