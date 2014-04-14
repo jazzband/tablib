@@ -26,8 +26,8 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
 
 ::
 
-   >>> data = tablib.Dataset(headers=['First Name', 'Last Name', 'Age'])
-   >>> data.extend([('Kenneth', 'Reitz', 23), ('Bessie', 'Monke', 22)])
+   >>> data = tablib.Dataset(*[('Kenneth', 'Reitz', 23), ('Bessie', 'Monke', 22)],
+                             headers=['First Name', 'Last Name', 'Age'])
 
    >>> data.json
    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
