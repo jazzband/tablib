@@ -629,7 +629,7 @@ class TablibTestCase(unittest.TestCase):
 
         orig_first_name = self.founders[self.headers[0]]
         csv_first_name = data[headers[0]]
-        self.assertEquals(orig_first_name, csv_first_name)
+        self.assertEqual(orig_first_name, csv_first_name)
 
 
     def test_csv_column_delete(self):
@@ -657,14 +657,14 @@ class TablibTestCase(unittest.TestCase):
         self.founders.sort(orig_target_header)
         data.sort(target_header)
 
-        self.assertEquals(self.founders[orig_target_header], data[target_header])
+        self.assertEqual(self.founders[orig_target_header], data[target_header])
 
     def test_unicode_renders_markdown_table(self):
         # add another entry to test right field width for
         # integer
         self.founders.append(('Old', 'Man', 100500))
 
-        self.assertEquals(
+        self.assertEqual(
             """
 first_name|last_name |gpa   
 ----------|----------|------
