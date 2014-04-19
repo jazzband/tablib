@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Tests for Tablib."""
 
 import unittest
 import sys
 import os
 import tablib
-from tablib.compat import markup, unicode
+from tablib.compat import markup, unicode, is_py3
 
 
 
@@ -309,7 +308,12 @@ class TablibTestCase(unittest.TestCase):
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
-        new_row = (u'å', u'é')
+        if is_py3:
+            new_row = ('å', 'é')
+        else:
+            exec("new_row = (u'å', u'é')")
+
+
         data.append(new_row)
 
         data.json
