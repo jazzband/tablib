@@ -64,6 +64,7 @@ setup(
         'tablib.packages.openpyxl3.reader',
         'tablib.packages.openpyxl3.writer',
         'tablib.packages.yaml',
+        'tablib.packages.yaml3',
         'tablib.packages.unicodecsv'
     ],
     license='MIT',
