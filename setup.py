@@ -33,8 +33,8 @@ if sys.argv[-1] == 'test':
         print('py.test required.')
         sys.exit(1)
 
-    os.system('py.test test_tablib.py')
-    sys.exit()
+    errors = os.system('py.test test_tablib.py')
+    sys.exit(bool(errors))
 
 setup(
     name='tablib',
