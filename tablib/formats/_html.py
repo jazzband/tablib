@@ -5,15 +5,15 @@
 
 import sys
 
-
 if sys.version_info[0] > 2:
-    from io import StringIO
+    from io import BytesIO as StringIO
     from tablib.packages import markup3 as markup
 else:
     from cStringIO import StringIO
     from tablib.packages import markup
 
 import tablib
+from tablib.compat import unicode
 import codecs
 
 BOOK_ENDINGS = 'h3'
@@ -50,7 +50,7 @@ def export_set(dataset):
 	wrapper = codecs.getwriter("utf8")(stream)
 	wrapper.writelines(unicode(page))
 
-	return stream.getvalue()
+	return stream.getvalue().decode('utf-8')
 
 
 def export_book(databook):
