@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for Tablib."""
 
+import json
 import unittest
 import sys
 import os
@@ -349,7 +350,7 @@ class TablibTestCase(unittest.TestCase):
 
         data.json = _json
 
-        self.assertEqual(_json, data.json)
+        self.assertEqual(json.loads(_json), json.loads(data.json))
 
 
     def test_json_import_book(self):
@@ -363,7 +364,7 @@ class TablibTestCase(unittest.TestCase):
 
         book.json = _json
 
-        self.assertEqual(_json, book.json)
+        self.assertEqual(json.loads(_json), json.loads(book.json))
 
 
     def test_yaml_import_set(self):
