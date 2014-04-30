@@ -421,6 +421,22 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(_csv, data.csv)
 
 
+    def test_csv_import_set_with_newlines(self):
+        """Generate and import CSV set serialization when row values have
+        newlines."""
+        data.append(('Markdown\n=======',
+                     'A cool language\n\nwith paragraphs'))
+        data.append(('reStructedText\n==============',
+                     'Another cool language\n\nwith paragraphs'))
+        data.headers = ('title', 'body')
+
+        _csv = data.csv
+
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
+
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
         data.append(self.john)
