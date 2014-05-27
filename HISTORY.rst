@@ -5,6 +5,7 @@ History
 +++++++++++++++++++
 
 * Unicode Column Headers
+* ALL the bugfixes!
 
 0.9.11 (2011-06-30)
 +++++++++++++++++++
