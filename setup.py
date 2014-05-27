@@ -36,6 +36,34 @@ if sys.argv[-1] == 'test':
     errors = os.system('py.test test_tablib.py')
     sys.exit(bool(errors))
 
+packages = [
+    'tablib.packages.omnijson',
+    'tablib.packages.unicodecsv'
+]
+if sys.version_info[0] == 2:
+    packages.extend([
+        'tablib.packages.xlwt',
+        'tablib.packages.xlrd',
+        'tablib.packages.odf',
+        'tablib.packages.openpyxl',
+        'tablib.packages.openpyxl.shared',
+        'tablib.packages.openpyxl.reader',
+        'tablib.packages.openpyxl.writer',
+        'tablib.packages.yaml',
+    ])
+else:
+    packages.extend([
+        'tablib.packages.xlwt3',
+        'tablib.packages.xlrd3',
+        'tablib.packages.odf3',
+        'tablib.packages.openpyxl3',
+        'tablib.packages.openpyxl3.shared',
+        'tablib.packages.openpyxl3.reader',
+        'tablib.packages.openpyxl3.writer',
+        'tablib.packages.yaml3',
+    ])
+
+
 setup(
     name='tablib',
     version=tablib.__version__,
@@ -45,28 +73,7 @@ setup(
     author='Kenneth Reitz',
     author_email='me@kennethreitz.org',
     url='http://python-tablib.org',
-    packages=[
-        'tablib', 'tablib.formats',
-        'tablib.packages',
-        'tablib.packages.xlwt',
-        'tablib.packages.xlwt3',
-        'tablib.packages.xlrd',
-        'tablib.packages.xlrd3',
-        'tablib.packages.omnijson',
-        'tablib.packages.odf',
-        'tablib.packages.odf3',
-        'tablib.packages.openpyxl',
-        'tablib.packages.openpyxl.shared',
-        'tablib.packages.openpyxl.reader',
-        'tablib.packages.openpyxl.writer',
-        'tablib.packages.openpyxl3',
-        'tablib.packages.openpyxl3.shared',
-        'tablib.packages.openpyxl3.reader',
-        'tablib.packages.openpyxl3.writer',
-        'tablib.packages.yaml',
-        'tablib.packages.yaml3',
-        'tablib.packages.unicodecsv'
-    ],
+    packages=packages,
     license='MIT',
     classifiers=(
         'Development Status :: 5 - Production/Stable',
