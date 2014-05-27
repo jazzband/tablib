@@ -43,7 +43,7 @@ setup(
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
     author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
+    author_email='me@kennethreitz.org',
     url='http://python-tablib.org',
     packages=[
         'tablib', 'tablib.formats',
