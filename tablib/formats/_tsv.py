@@ -8,7 +8,7 @@ from tablib.compat import is_py3, csv, StringIO
 
 
 title = 'tsv'
-extentions = ('tsv',)
+extensions = ('tsv',)
 
 DEFAULT_ENCODING = 'utf-8'
 
@@ -34,9 +34,9 @@ def import_set(dset, in_stream, headers=True):
     dset.wipe()
 
     if is_py3:
-        rows = csv.reader(in_stream.split('\r\n'), delimiter='\t')
+        rows = csv.reader(in_stream.splitlines(), delimiter='\t')
     else:
-        rows = csv.reader(in_stream.split('\r\n'), delimiter='\t',
+        rows = csv.reader(in_stream.splitlines(), delimiter='\t',
                           encoding=DEFAULT_ENCODING)
 
     for i, row in enumerate(rows):
@@ -55,5 +55,5 @@ def detect(stream):
     try:
         csv.Sniffer().sniff(stream, delimiters='\t')
         return True
-    except csv.Error:
+    except (csv.Error, TypeError):
         return False

@@ -1,6 +1,9 @@
 Tablib: format-agnostic tabular dataset library
 ===============================================
 
+.. image:: https://travis-ci.org/kennethreitz/tablib.svg?branch=develop
+    :target: https://travis-ci.org/kennethreitz/tablib
+
 ::
 
 	_____         ______  ___________ ______
@@ -55,7 +58,7 @@ Intelligently add new rows: ::
 
 Intelligently add new columns: ::
 
-    >>> data.append(col=(90, 67, 83), header='age')
+    >>> data.append_col((90, 67, 83), header='age')
 
 Slice rows:  ::
 
@@ -117,7 +120,8 @@ EXCEL!
 ++++++
 ::
 
-	>>> open('people.xls', 'wb').write(data.xls)
+	>>> with open('people.xls', 'wb') as f:
+	...     f.write(data.xls)
 
 It's that easy.
 

@@ -7,7 +7,7 @@ from tablib.compat import is_py3, csv, StringIO
 
 
 title = 'csv'
-extentions = ('csv',)
+extensions = ('csv',)
 
 
 DEFAULT_ENCODING = 'utf-8'
@@ -35,9 +35,9 @@ def import_set(dset, in_stream, headers=True):
     dset.wipe()
 
     if is_py3:
-        rows = csv.reader(in_stream.splitlines())
+        rows = csv.reader(StringIO(in_stream))
     else:
-        rows = csv.reader(in_stream.splitlines(), encoding=DEFAULT_ENCODING)
+        rows = csv.reader(StringIO(in_stream), encoding=DEFAULT_ENCODING)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):
@@ -49,7 +49,7 @@ def import_set(dset, in_stream, headers=True):
 def detect(stream):
     """Returns True if given stream is valid CSV."""
     try:
-        csv.Sniffer().sniff(stream)
+        csv.Sniffer().sniff(stream, delimiters=',')
         return True
-    except csv.Error:
+    except (csv.Error, TypeError):
         return False

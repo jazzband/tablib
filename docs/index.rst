@@ -26,8 +26,8 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
 
 ::
 
-   >>> data = tablib.Dataset(headers=['First Name', 'Last Name', 'Age'])
-   >>> map(data.append, [('Kenneth', 'Reitz', 22), ('Bessie', 'Monke', 21)])
+   >>> data = tablib.Dataset(*[('Kenneth', 'Reitz', 23), ('Bessie', 'Monke', 22)],
+                             headers=['First Name', 'Last Name', 'Age'])
 
    >>> data.json
    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
@@ -55,7 +55,7 @@ and `The Sunlight Foundation <http://sunlightfoundation.com/>`_ use Tablib inter
    Tablib by @kennethreitz saved my life. I had to consolidate like 5 huge poorly maintained lists of domains and data. It was a breeze!
 
 **Dave Coutts**
-   It's turning into one of my most used modules of 2010. You really hit a sweat spot for managing tabular data with a minimal amount of code and effort.
+   It's turning into one of my most used modules of 2010. You really hit a sweet spot for managing tabular data with a minimal amount of code and effort.
 
 **Joshua Ourisman**
    Tablib has made it so much easier to deal with the inevitable 'I want an Excel file!' requests from clients...

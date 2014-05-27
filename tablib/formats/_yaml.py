@@ -19,26 +19,26 @@ import tablib
 
 
 title = 'yaml'
-extentions = ('yaml', 'yml')
+extensions = ('yaml', 'yml')
 
 
 
 def export_set(dataset):
     """Returns YAML representation of Dataset."""
 
-    return yaml.dump(dataset._package(ordered=False))
+    return yaml.safe_dump(dataset._package(ordered=False))
 
 
 def export_book(databook):
     """Returns YAML representation of Databook."""
-    return yaml.dump(databook._package())
+    return yaml.safe_dump(databook._package(ordered=False))
 
 
 def import_set(dset, in_stream):
     """Returns dataset from YAML stream."""
 
     dset.wipe()
-    dset.dict = yaml.load(in_stream)
+    dset.dict = yaml.safe_load(in_stream)
 
 
 def import_book(dbook, in_stream):
@@ -55,10 +55,11 @@ def import_book(dbook, in_stream):
 def detect(stream):
     """Returns True if given stream is valid YAML."""
     try:
-        _yaml = yaml.load(stream)
+        _yaml = yaml.safe_load(stream)
         if isinstance(_yaml, (list, tuple, dict)):
             return True
         else:
             return False
-    except yaml.parser.ParserError:
+    except (yaml.parser.ParserError, yaml.reader.ReaderError,
+            yaml.scanner.ScannerError):
         return False

@@ -2,7 +2,7 @@
 Installation
 ============
 
-This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancements <peed-extentions>`.
+This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancements <peed-extensions>`.
 
 
 .. _installing:
@@ -22,7 +22,7 @@ or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
 
     $ easy_install tablib
 
-But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/index.html#pip-compared-to-easy-install>`_.
+But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
 
 
 
@@ -57,15 +57,15 @@ To download the full source history from Git, see :ref:`Source Control <scm>`.
 .. _zipball: http://github.com/kennethreitz/tablib/zipball/master
 
 
-.. _speed-extentions:
-Speed Extentions
+.. _speed-extensions:
+Speed Extensions
 ----------------
 
 .. versionadded:: 0.8.5
 
 Tablib is partially dependent on the **pyyaml**, **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib.
 
-However, if performance is important to you (and it should be), you can install  **pyyaml** with C extentions from PyPi. ::
+However, if performance is important to you (and it should be), you can install  **pyyaml** with C extensions from PyPi. ::
 
     $ pip install PyYAML
 

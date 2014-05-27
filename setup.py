@@ -7,17 +7,10 @@ import sys
 import tablib
 
 try:
-    from setuptools import setup, find_packages
+    from setuptools import setup
 except ImportError:
-    from distutils.core import setup, find_packages
+    from distutils.core import setup
 
-
-packages = find_packages(exclude=('docs',))
-
-if sys.version_info[:2] < (3,0):
-    packages = [p for p in packages if '3' not in p]
-else:
-    packages = [p for p in packages if '2' not in p]
 
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
@@ -40,8 +33,8 @@ if sys.argv[-1] == 'test':
         print('py.test required.')
         sys.exit(1)
 
-    os.system('pytest test_tablib.py')
-    sys.exit()
+    errors = os.system('py.test test_tablib.py')
+    sys.exit(bool(errors))
 
 setup(
     name='tablib',
@@ -50,9 +43,30 @@ setup(
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
     author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
-    url='http://tablib.org',
-    packages=packages,
+    author_email='me@kennethreitz.org',
+    url='http://python-tablib.org',
+    packages=[
+        'tablib', 'tablib.formats',
+        'tablib.packages',
+        'tablib.packages.xlwt',
+        'tablib.packages.xlwt3',
+        'tablib.packages.xlrd',
+        'tablib.packages.xlrd3',
+        'tablib.packages.omnijson',
+        'tablib.packages.odf',
+        'tablib.packages.odf3',
+        'tablib.packages.openpyxl',
+        'tablib.packages.openpyxl.shared',
+        'tablib.packages.openpyxl.reader',
+        'tablib.packages.openpyxl.writer',
+        'tablib.packages.openpyxl3',
+        'tablib.packages.openpyxl3.shared',
+        'tablib.packages.openpyxl3.reader',
+        'tablib.packages.openpyxl3.writer',
+        'tablib.packages.yaml',
+        'tablib.packages.yaml3',
+        'tablib.packages.unicodecsv'
+    ],
     license='MIT',
     classifiers=(
         'Development Status :: 5 - Production/Stable',
@@ -66,5 +80,8 @@ setup(
         'Programming Language :: Python :: 3.0',
         'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ),
+    tests_require=['pytest'],
 )
