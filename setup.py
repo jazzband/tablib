@@ -50,6 +50,7 @@ if sys.version_info[0] == 2:
         'tablib.packages.openpyxl.reader',
         'tablib.packages.openpyxl.writer',
         'tablib.packages.yaml',
+        'tablib.packages.dbfpy'
     ])
 else:
     packages.extend([
@@ -61,6 +62,7 @@ else:
         'tablib.packages.openpyxl3.reader',
         'tablib.packages.openpyxl3.writer',
         'tablib.packages.yaml3',
+        'tablib.packages.dbfpy3'
     ])
 
 
