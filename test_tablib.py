@@ -305,6 +305,20 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(html, d.html)
 
+    def test_fix_export(self):
+        """Verify exporting dataset object as Fixed width data."""
+
+        fixed_data = ''
+        dimensions = (6, 10, 2)
+        self.founders.fields_width = dimensions
+        for founder in self.founders:
+            for col, width in zip(founder, dimensions):
+                fixed_data += str(col).ljust(width)
+            fixed_data += '\n'
+        fixed_data = fixed_data.strip()
+
+        self.assertEqual(fixed_data, self.founders.fix)
+
 
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
@@ -405,6 +419,19 @@ class TablibTestCase(unittest.TestCase):
         data.csv = _csv
 
         self.assertEqual(_csv, data.csv)
+
+    def test_fix_import(self):
+        """Generate and import Fixed width."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+        data.fields_width = (6, 10, 2)
+
+        _fix = data.fix
+
+        data.fix = _fix
+
+        self.assertEqual(_fix, data.fix)
 
 
     def test_csv_import_set_with_spaces(self):
