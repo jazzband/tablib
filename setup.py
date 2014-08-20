@@ -91,4 +91,5 @@ setup(
         'Programming Language :: Python :: 3.4',
     ),
     tests_require=['pytest'],
+    install_requires=['reportlab'],
 )
