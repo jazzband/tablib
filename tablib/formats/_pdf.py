@@ -38,6 +38,9 @@ def export_book(databook):
             new_row = [item if item is not None else '' for item in row]
             data.append(new_row)
 
+        if not data:
+            continue
+
         t = Table(data, hAlign='LEFT')
         # noinspection PyTypeChecker
         t.setStyle(
