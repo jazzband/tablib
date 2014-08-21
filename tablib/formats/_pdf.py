@@ -1,6 +1,7 @@
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate
 from reportlab.platypus.tables import Table
+from reportlab.platypus.flowables import PageBreak
 from reportlab.lib.pagesizes import A4
 
 import tablib
@@ -51,6 +52,7 @@ def export_book(databook):
         )
 
         elements.append(t)
+        elements.append(PageBreak())
         max_width = max(max_width, t.minWidth() + 2*margin + 2*len(data[0]))
 
     if max_width > A4[0]:
