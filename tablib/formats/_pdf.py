@@ -24,6 +24,8 @@ header_style = [
 
 
 def export_book(databook):
+    max_width = 0
+    pagesize = list(A4)
     elements = []
 
     for dataset in databook._datasets:
@@ -49,9 +51,13 @@ def export_book(databook):
         )
 
         elements.append(t)
+        max_width = max(max_width, t.minWidth() + 2*margin + 2*len(data[0]))
+
+    if max_width > A4[0]:
+        pagesize[0] = max_width
 
     stringbuf = StringIO()
-    doc = SimpleDocTemplate(stringbuf, pagesize=A4, leftMargin=margin,
+    doc = SimpleDocTemplate(stringbuf, pagesize=pagesize, leftMargin=margin,
                             topMargin=margin, rightMargin=margin,
                             bottomMargin=margin)
     doc.build(elements)
