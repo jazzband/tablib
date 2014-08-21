@@ -53,7 +53,7 @@ def export_book(databook):
 
         elements.append(t)
         elements.append(PageBreak())
-        max_width = max(max_width, t.minWidth() + 2*margin + 2*len(data[0]))
+        max_width = max(max_width, t.minWidth() + 2*margin + 2*dataset.width)
 
     if max_width > A4[0]:
         pagesize[0] = max_width
