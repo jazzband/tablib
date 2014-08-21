@@ -4,8 +4,6 @@
 import os
 import sys
 
-import tablib
-
 try:
     from setuptools import setup
 except ImportError:
@@ -66,7 +64,7 @@ else:
 
 setup(
     name='tablib',
-    version=tablib.__version__,
+    version=open('VERSION').read().strip('\n'),
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
@@ -90,6 +88,8 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ),
+    extras_require = {
+        'pdf': ['reportlab']
+    },
     tests_require=['pytest'],
-    install_requires=['reportlab'],
 )
