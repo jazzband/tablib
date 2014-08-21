@@ -6,7 +6,7 @@ from reportlab.platypus.flowables import PageBreak
 from reportlab.lib.pagesizes import A4
 
 import tablib
-from tablib.compat import StringIO
+from tablib.compat import BytesIO
 
 title = 'pdf'
 extensions = ('pdf', )
@@ -68,7 +68,7 @@ def export_book(databook):
     if max_width > A4[0]:
         pagesize[0] = max_width
 
-    stringbuf = StringIO()
+    stringbuf = BytesIO()
     doc = SimpleDocTemplate(stringbuf, pagesize=pagesize, leftMargin=margin,
                             topMargin=margin, rightMargin=margin,
                             bottomMargin=margin)
