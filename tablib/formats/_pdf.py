@@ -1,5 +1,6 @@
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.platypus.tables import Table
 from reportlab.platypus.flowables import PageBreak
 from reportlab.lib.pagesizes import A4
@@ -22,6 +23,10 @@ header_style = [
     ('BACKGROUND', (0, 0), (-1, 0), colors.Whiter(colors.black, 0.6)),
     ('TEXTCOLOR', (0, 0), (-1, 0), colors.white)
 ]
+
+title_style = ParagraphStyle(
+    name='Title Style', fontName='Helvetica-Bold', fontSize=16
+)
 
 
 def export_book(databook):
@@ -51,8 +56,13 @@ def export_book(databook):
             else table_style
         )
 
+        if dataset.title is not None:
+            elements.append(Paragraph(dataset.title, title_style))
+            elements.append(Spacer(1, 20))
+
         elements.append(t)
         elements.append(PageBreak())
+
         max_width = max(max_width, t.minWidth() + 2*margin + 2*dataset.width)
 
     if max_width > A4[0]:
