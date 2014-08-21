@@ -325,6 +325,7 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.pdf
 
 
     def test_book_export_no_exceptions(self):
@@ -338,6 +339,7 @@ class TablibTestCase(unittest.TestCase):
         book.xls
         book.xlsx
         book.ods
+        data.pdf
 
 
     def test_json_import_set(self):
