@@ -48,7 +48,7 @@ copyright = u'2011. A <a href="http://kennethreitz.com/pages/open-projects.html"
 # built documents.
 #
 # The short X.Y version.
-version = tablib.__version__
+version = open('../VERSION').read().strip('\n')
 # The full version, including alpha/beta/rc tags.
 release = version
 
