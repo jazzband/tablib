@@ -319,6 +319,67 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(html, d.html)
 
 
+    def test_latex_export(self):
+        """LaTeX export"""
+
+        expected = """\
+% Note: add \\usepackage{booktabs} to your preamble
+%
+\\begin{table}[!htbp]
+  \\centering
+  \\caption{Founders}
+  \\begin{tabular}{lrr}
+    \\toprule
+      first\\_name & last\\_name & gpa \\\\
+    \\cmidrule(r){1-1} \\cmidrule(lr){2-2} \\cmidrule(l){3-3}
+      John & Adams & 90 \\\\
+      George & Washington & 67 \\\\
+      Thomas & Jefferson & 50 \\\\
+    \\bottomrule
+  \\end{tabular}
+\\end{table}
+"""
+        output = self.founders.latex
+        self.assertEqual(output, expected)
+
+
+    def test_latex_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().latex is not None)
+
+
+    def test_latex_export_no_headers(self):
+        d = tablib.Dataset()
+        d.append(('one', 'two', 'three'))
+        self.assertTrue('one' in d.latex)
+
+
+    def test_latex_export_caption(self):
+        d = tablib.Dataset()
+        d.append(('one', 'two', 'three'))
+        self.assertFalse('caption' in d.latex)
+
+        d.title = 'Title'
+        self.assertTrue('\\caption{Title}' in d.latex)
+
+
+    def test_latex_export_none_values(self):
+        headers = ['foo', None, 'bar']
+        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
+        output = d.latex
+        self.assertTrue('foo' in output)
+        self.assertFalse('None' in output)
+
+
+    def test_latex_escaping(self):
+        d = tablib.Dataset(['~', '^'])
+        output = d.latex
+
+        self.assertFalse('~' in output)
+        self.assertTrue('textasciitilde' in output)
+        self.assertFalse('^' in output)
+        self.assertTrue('textasciicircum' in output)
+
+
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
@@ -338,6 +399,7 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.latex
 
 
     def test_book_export_no_exceptions(self):

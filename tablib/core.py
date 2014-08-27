@@ -584,6 +584,16 @@ class Dataset(object):
         pass
 
 
+    @property
+    def latex():
+        """A LaTeX booktabs representation of the :class:`Dataset` object. If a
+        title has been set, it will be exported as the table caption.
+
+        .. note:: This method can be used for export only.
+        """
+        pass
+
+
     # ----
     # Rows
     # ----
