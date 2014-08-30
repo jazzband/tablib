@@ -933,6 +933,42 @@ class Dataset(object):
         self.__headers = None
 
 
+    def subset(self, rows=None, cols=None):
+        """Returns a new instance of the :class:`Dataset`,
+        including only specified rows and columns.
+        """
+
+        # Don't return if no data
+        if not self:
+            return
+        
+        if rows is None:
+            rows = list(range(self.height))
+        
+        if cols is None:
+            cols = list(self.headers)
+            
+        _dset = Dataset()
+        
+        #filtering rows and columns
+        _dset.headers = list(cols)
+
+        _dset._data = []
+        for row_no, row in enumerate(self._data):
+            data_row = []
+            for key in _dset.headers:
+                if key in self.headers:
+                    pos = self.headers.index(key)
+                    data_row.append(row[pos])
+                else:
+                    raise KeyError
+
+            if row_no in rows:
+                _dset.append(row=Row(data_row))
+        
+        return _dset
+
+
 
 class Databook(object):
     """A book of :class:`Dataset` objects.

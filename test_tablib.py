@@ -713,6 +713,26 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(data[0] == new_row)
 
 
+    def test_subset(self):
+        """Create a subset of a dataset"""
+        
+        rows = (0, 2)
+        columns = ('first_name','gpa')
+        
+        data.headers = self.headers
+
+        data.append(self.john)
+        data.append(self.george)
+        data.append(self.tom)
+        
+        #Verify data is truncated
+        subset = data.subset(rows=rows, cols=columns)
+        self.assertEqual(type(subset), tablib.Dataset)
+        self.assertEqual(subset.headers, list(columns))
+        self.assertEqual(subset._data[0].list, ['John', 90])
+        self.assertEqual(subset._data[1].list, ['Thomas', 50])
+
+
     def test_formatters(self):
         """Confirm formatters are being triggered."""
 
