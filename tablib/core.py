@@ -163,15 +163,9 @@ class Dataset(object):
         # (column, callback) tuples
         self._formatters = []
 
-        try:
-            self.headers = kwargs['headers']
-        except KeyError:
-            self.headers = None
+        self.headers = kwargs.get('headers')
 
-        try:
-            self.title = kwargs['title']
-        except KeyError:
-            self.title = None
+        self.title = kwargs.get('title')
 
         self._register_formats()
 
