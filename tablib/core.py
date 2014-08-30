@@ -45,7 +45,7 @@ class Row(object):
         return repr(self._row)
 
     def __getslice__(self, i, j):
-        return self._row[i,j]
+        return self._row[i:j]
 
     def __getitem__(self, i):
         return self._row[i]
