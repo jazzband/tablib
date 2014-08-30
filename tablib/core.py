@@ -948,6 +948,10 @@ class Dataset(object):
         if cols is None:
             cols = list(self.headers)
             
+        #filter out impossible rows and columns
+        rows = [row for row in rows if row in range(self.height)]
+        cols = [header for header in cols if header in self.headers]
+
         _dset = Dataset()
         
         #filtering rows and columns
