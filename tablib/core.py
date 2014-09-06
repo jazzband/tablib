@@ -563,7 +563,8 @@ class Dataset(object):
     def dbf():
         """A dBASE representation of the :class:`Dataset` object.
 
-        A dataset object can also be imported by setting the :class:`Dataset.dbf` attribute:::
+        A dataset object can also be imported by setting the
+        :class:`Dataset.dbf` attribute. ::
 
             # To import data from an existing DBF file:
             data = tablib.Dataset()
@@ -571,11 +572,11 @@ class Dataset(object):
 
             # to import data from an ASCII-encoded bytestring:
             data = tablib.Dataset()
-            data.dbf = <bytestring of tabular data>
+            data.dbf = '<bytestring of tabular data>'
 
-         .. admonition:: Binary Warning
+        .. admonition:: Binary Warning
 
-             :class:`Dataset.dbf` contains binary data, so make sure to write in binary mode::
+            :class:`Dataset.dbf` contains binary data, so make sure to write in binary mode::
 
                 with open('output.dbf', 'wb') as f:
                     f.write(data.dbf)
