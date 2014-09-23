@@ -123,8 +123,7 @@ def dset_sheet(dataset, ws):
                 cell = ws.cell('%s%s'%(col_idx, row_number))
                 cell.value = unicode(col)
                 cell.style = cell.style.copy(
-                    font=openpyxl.styles.Font(bold=True)
-                )
+                    font=openpyxl.styles.Font(bold=True))
                 ws.freeze_panes = 'A2'
 
 
@@ -133,8 +132,7 @@ def dset_sheet(dataset, ws):
                 cell = ws.cell('%s%s'%(col_idx, row_number))
                 cell.value = unicode('%s' % col, errors='ignore')
                 cell.style = cell.style.copy(
-                    font=openpyxl.styles.Font(bold=True)
-                )
+                    font=openpyxl.styles.Font(bold=True))
 
             # wrap the rest
             else:
@@ -143,8 +141,7 @@ def dset_sheet(dataset, ws):
                         cell = ws.cell('%s%s'%(col_idx, row_number))
                         cell.value = unicode('%s' % col, errors='ignore')
                         cell.style = cell.style.copy(
-                            openpyxl.styles.Alignment(wrap_text=True)
-                        )
+                            openpyxl.styles.Alignment(wrap_text=True))
                     else:
                         ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
