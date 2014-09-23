@@ -143,8 +143,8 @@ def dset_sheet(dataset, ws):
                         cell.style = cell.style.copy(
                             openpyxl.styles.Alignment(wrap_text=True))
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                        cell = ws.cell('%s%s'%(col_idx, row_number))
+                        cell.value = unicode('%s' % col, errors='ignore')
                 except TypeError:
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
 
