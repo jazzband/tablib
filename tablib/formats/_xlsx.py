@@ -30,7 +30,7 @@ def detect(stream):
     try:
         openpyxl.reader.excel.load_workbook(stream)
         return True
-    except TypeError:
+    except (TypeError, openpyxl.exceptions.InvalidFileException):
         pass
     try:
         byte_stream = BytesIO(stream)
