@@ -11,7 +11,7 @@ if sys.version_info[0] > 2:
 else:
     from cStringIO import StringIO as BytesIO
 
-from tablib.compat import openpyxl
+import openpyxl
 import tablib
 
 Workbook = openpyxl.workbook.Workbook
