@@ -30,7 +30,13 @@ def detect(stream):
     try:
         openpyxl.reader.excel.load_workbook(stream)
         return True
-    except openpyxl.shared.exc.InvalidFileException:
+    except TypeError:
+        pass
+    try:
+        byte_stream = BytesIO(stream)
+        openpyxl.reader.excel.load_workbook(byte_stream)
+        return True
+    except openpyxl.exceptions.InvalidFileException:
         pass
 
 def export_set(dataset):
@@ -69,7 +75,12 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    try:
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    except TypeError:
+        byte_stream = BytesIO(in_stream)
+        xls_book = openpyxl.reader.excel.load_workbook(byte_stream)
+
     sheet = xls_book.get_active_sheet()
 
     dset.title = sheet.title
@@ -87,7 +98,11 @@ def import_book(dbook, in_stream, headers=True):
 
     dbook.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    try:
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    except TypeError:
+        byte_stream = BytesIO(in_stream)
+        xls_book = openpyxl.reader.excel.load_workbook(byte_stream)
 
     for sheet in xls_book.worksheets:
         data = tablib.Dataset()
