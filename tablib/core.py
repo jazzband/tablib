@@ -544,7 +544,7 @@ class Dataset(object):
         A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
 
             data = tablib.Dataset()
-            data.json = '[{age: 90, first_name: "John", liast_name: "Adams"}]'
+            data.json = '[{"age": 90, "first_name": "John", "last_name": "Adams"}]'
 
         Import assumes (for now) that headers exist.
         """
