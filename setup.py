@@ -37,6 +37,8 @@ if sys.argv[-1] == 'test':
     sys.exit(bool(errors))
 
 packages = [
+    'tablib', 'tablib.formats',
+    'tablib.packages',
     'tablib.packages.omnijson',
     'tablib.packages.unicodecsv'
 ]
