@@ -696,6 +696,25 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(third_row, expected_third)
 
 
+    def test_unique(self):
+        """Unique Rows."""
+
+        self.founders.append(self.john)
+        self.founders.append(self.george)
+        self.founders.append(self.tom)
+        self.assertEqual(self.founders[0], self.founders[3])
+        self.assertEqual(self.founders[1], self.founders[4])
+        self.assertEqual(self.founders[2], self.founders[5])
+        self.assertEqual(self.founders.height, 6)
+
+        self.founders.unique()
+
+        self.assertEqual(self.founders[0], self.john)
+        self.assertEqual(self.founders[1], self.george)
+        self.assertEqual(self.founders[2], self.tom)
+        self.assertEqual(self.founders.height, 3)
+
+
     def test_wipe(self):
         """Purge a dataset."""
 
