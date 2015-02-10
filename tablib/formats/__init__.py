@@ -14,3 +14,14 @@ from . import _ods as ods
 from . import _dbf as dbf
 
 available = (json, xls, yaml, csv, dbf, tsv, html, xlsx, ods)
+get_format = {
+        'json' : json, 
+        'xls' : xls, 
+        'yaml' : yaml, 
+        'csv' : csv, 
+        'dbf' : dbf, 
+        'tsv' : tsv, 
+        'html' : html, 
+        'xlsx' : xlsx, 
+        'ods' : ods
+    }
