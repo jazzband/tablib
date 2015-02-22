@@ -5,9 +5,6 @@
 
 import sys
 
-import xlrd
-from xlrd.biffh import XLRDError
-
 from tablib.compat import BytesIO, xlwt
 import tablib
 
@@ -21,6 +18,8 @@ bold = xlwt.easyxf("font: bold on")
 
 def detect(stream):
     """Returns True if given stream is a readable excel file."""
+    import xlrd
+    from xlrd.biffh import XLRDError
     try:
         xlrd.open_workbook(file_contents=stream)
         return True
@@ -69,6 +68,7 @@ def export_book(databook):
 
 def import_set(dset, in_stream, headers=True):
     """Returns databook from XLS stream."""
+    import xlrd
 
     dset.wipe()
 
@@ -85,6 +85,7 @@ def import_set(dset, in_stream, headers=True):
 
 def import_book(dbook, in_stream, headers=True):
     """Returns databook from XLS stream."""
+    import xlrd
 
     dbook.wipe()
 
