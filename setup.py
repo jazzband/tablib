@@ -45,7 +45,6 @@ packages = [
 if sys.version_info[0] == 2:
     packages.extend([
         'tablib.packages.xlwt',
-        'tablib.packages.xlrd',
         'tablib.packages.odf',
         'tablib.packages.openpyxl',
         'tablib.packages.openpyxl.shared',
@@ -57,7 +56,6 @@ if sys.version_info[0] == 2:
 else:
     packages.extend([
         'tablib.packages.xlwt3',
-        'tablib.packages.xlrd3',
         'tablib.packages.odf3',
         'tablib.packages.openpyxl3',
         'tablib.packages.openpyxl3.shared',
@@ -67,6 +65,9 @@ else:
         'tablib.packages.dbfpy3'
     ])
 
+install_requires = [
+    'xlrd',
+]
 
 setup(
     name='tablib',
@@ -94,5 +95,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ),
+    install_requires=install_requires,
     tests_require=['pytest'],
 )
