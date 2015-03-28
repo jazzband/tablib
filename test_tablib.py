@@ -8,6 +8,7 @@ import sys
 import os
 import tablib
 from tablib.compat import markup, unicode, is_py3
+from tablib.core import Row
 
 
 
@@ -204,6 +205,18 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(self.founders[0:2], [self.john, self.george])
         self.assertEqual(self.founders[1:3], [self.george, self.tom])
         self.assertEqual(self.founders[2:], [self.tom])
+
+
+    def test_row_slicing(self):
+        """Verify Row's __getslice__ method. Issue #184."""
+
+        john = Row(self.john)
+
+        self.assertEqual(john[:], list(self.john[:]))
+        self.assertEqual(john[0:], list(self.john[0:]))
+        self.assertEqual(john[:2], list(self.john[:2]))
+        self.assertEqual(john[0:2], list(self.john[0:2]))
+        self.assertEqual(john[0:-1], list(self.john[0:-1]))
 
 
     def test_delete(self):
