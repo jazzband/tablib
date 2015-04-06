@@ -1,5 +1,5 @@
 Tablib includes some vendorized python libraries: ordereddict, odfpy, pyyaml,
-simplejson, unicodecsv, xlrd, xlrd3, xlwt, and xlwt3.
+simplejson, unicodecsv, xlrd, xlwt, and xlwt3.
 
 Markup License
 ==============

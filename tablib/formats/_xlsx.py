@@ -5,40 +5,41 @@
 
 import sys
 
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-else:
-    from cStringIO import StringIO as BytesIO
-
-from tablib.compat import openpyxl
+from tablib.compat import BytesIO, xlwt, xlrd, XLRDError
 import tablib
-
-Workbook = openpyxl.workbook.Workbook
-ExcelWriter = openpyxl.writer.excel.ExcelWriter
-get_column_letter = openpyxl.cell.get_column_letter
-
-from tablib.compat import unicode
-
 
 title = 'xlsx'
 extensions = ('xlsx',)
+
+# special styles
+wrap = xlwt.easyxf("alignment: wrap on")
+bold = xlwt.easyxf("font: bold on")
 
 
 def detect(stream):
     """Returns True if given stream is a readable excel file."""
     try:
-        openpyxl.reader.excel.load_workbook(stream)
+        xlrd.open_workbook(file_contents=stream)
         return True
-    except openpyxl.shared.exc.InvalidFileException:
+    except (TypeError, XLRDError):
+        pass 
+    try:
+        xlrd.open_workbook(file_contents=stream.read())
+        return True
+    except (AttributeError, XLRDError):
         pass
+    try:
+        xlrd.open_workbook(filename=stream)
+        return True
+    except:
+        return False
+
 
 def export_set(dataset):
-    """Returns XLSX representation of Dataset."""
+    """Returns XLS representation of Dataset."""
 
-    wb = Workbook()
-    ws = wb.worksheets[0]
-    ws.title = dataset.title if dataset.title else 'Tablib Dataset'
+    wb = xlwt.Workbook(encoding='utf8')
+    ws = wb.add_sheet(dataset.title if dataset.title else 'Tablib Dataset')
 
     dset_sheet(dataset, ws)
 
@@ -48,13 +49,12 @@ def export_set(dataset):
 
 
 def export_book(databook):
-    """Returns XLSX representation of DataBook."""
+    """Returns XLS representation of DataBook."""
 
-    wb = Workbook()
-    wb.worksheets = []
+    wb = xlwt.Workbook(encoding='utf8')
+
     for i, dset in enumerate(databook._datasets):
-        ws = wb.create_sheet()
-        ws.title = dset.title if dset.title else 'Sheet%s' % (i)
+        ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
 
         dset_sheet(dset, ws)
 
@@ -69,36 +69,33 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
-    sheet = xls_book.get_active_sheet()
+    xlsx_book = xlrd.open_workbook(file_contents=in_stream)
+    sheet = xlsx_book.sheet_by_index(0)
 
-    dset.title = sheet.title
+    dset.title = sheet.name
 
-    for i, row in enumerate(sheet.rows):
-        row_vals = [c.value for c in row]
+    for i in xrange(sheet.nrows):
         if (i == 0) and (headers):
-            dset.headers = row_vals
+            dset.headers = sheet.row_values(0)
         else:
-            dset.append(row_vals)
-
+            dset.append(sheet.row_values(i))
 
 def import_book(dbook, in_stream, headers=True):
     """Returns databook from XLS stream."""
 
     dbook.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    xlsx_book = xlrd.open_workbook(file_contents=in_stream)
 
-    for sheet in xls_book.worksheets:
+    for sheet in xlsx_book.sheets():
         data = tablib.Dataset()
-        data.title = sheet.title
+        data.title = sheet.name
 
-        for i, row in enumerate(sheet.rows):
-            row_vals = [c.value for c in row]
+        for i in xrange(sheet.nrows):
             if (i == 0) and (headers):
-                data.headers = row_vals
+                data.headers = sheet.row_values(0)
             else:
-                data.append(row_vals)
+                data.append(sheet.row_values(i))
 
         dbook.add_sheet(data)
 
@@ -112,39 +109,27 @@ def dset_sheet(dataset, ws):
         _package.insert((sep[0] + _offset), (sep[1],))
 
     for i, row in enumerate(_package):
-        row_number = i + 1
         for j, col in enumerate(row):
-            col_idx = get_column_letter(j + 1)
 
             # bold headers
-            if (row_number == 1) and dataset.headers:
-                # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    # '%s' % col, errors='ignore')
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
-                style = ws.get_style('%s%s' % (col_idx, row_number))
-                style.font.bold = True
-                ws.freeze_panes = 'A2'
+            if (i == 0) and dataset.headers:
+                ws.write(i, j, col, bold)
+
+                # frozen header row
+                ws.panes_frozen = True
+                ws.horz_split_pos = 1
 
 
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
-                style = ws.get_style('%s%s' % (col_idx, row_number))
-                style.font.bold = True
+                ws.write(i, j, col, bold)
 
             # wrap the rest
             else:
                 try:
                     if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
-                        style = ws.get_style('%s%s' % (col_idx, row_number))
-                        style.alignment.wrap_text
+                        ws.write(i, j, col, wrap)
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                        ws.write(i, j, col)
                 except TypeError:
-                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
-
-
+                    ws.write(i, j, col)

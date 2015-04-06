@@ -41,28 +41,19 @@ packages = [
     'tablib.packages',
     'tablib.packages.omnijson',
     'tablib.packages.unicodecsv'
+    'tablib.packages.xlrd',
 ]
 if sys.version_info[0] == 2:
     packages.extend([
         'tablib.packages.xlwt',
-        'tablib.packages.xlrd',
         'tablib.packages.odf',
-        'tablib.packages.openpyxl',
-        'tablib.packages.openpyxl.shared',
-        'tablib.packages.openpyxl.reader',
-        'tablib.packages.openpyxl.writer',
         'tablib.packages.yaml',
         'tablib.packages.dbfpy'
     ])
 else:
     packages.extend([
         'tablib.packages.xlwt3',
-        'tablib.packages.xlrd3',
         'tablib.packages.odf3',
-        'tablib.packages.openpyxl3',
-        'tablib.packages.openpyxl3.shared',
-        'tablib.packages.openpyxl3.reader',
-        'tablib.packages.openpyxl3.writer',
         'tablib.packages.yaml3',
         'tablib.packages.dbfpy3'
     ])
