@@ -40,7 +40,7 @@ packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
     'tablib.packages.omnijson',
-    'tablib.packages.unicodecsv'
+    'tablib.packages.unicodecsv',
     'tablib.packages.xlrd',
 ]
 if sys.version_info[0] == 2:
