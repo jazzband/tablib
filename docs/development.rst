@@ -87,9 +87,7 @@ Adding New Formats
 
 Tablib welcomes new format additions! Format suggestions include:
 
-* Tab Separated Values
 * MySQL Dump
-* HTML Table
 
 
 Coding by Convention
