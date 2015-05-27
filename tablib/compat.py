@@ -37,6 +37,7 @@ if is_py3:
     unicode = str
     bytes = bytes
     basestring = str
+    xrange = range
 
 else:
     from cStringIO import StringIO as BytesIO
@@ -53,3 +54,4 @@ else:
     import tablib.packages.dbfpy as dbfpy
 
     unicode = unicode
+    xrange = xrange
