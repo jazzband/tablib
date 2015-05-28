@@ -4,7 +4,6 @@
 import os
 import sys
 
-import tablib
 
 try:
     from setuptools import setup
@@ -39,38 +38,22 @@ if sys.argv[-1] == 'test':
 packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
-    'tablib.packages.omnijson',
-    'tablib.packages.unicodecsv'
 ]
 if sys.version_info[0] == 2:
     packages.extend([
-        'tablib.packages.xlwt',
-        'tablib.packages.xlrd',
         'tablib.packages.odf',
-        'tablib.packages.openpyxl',
-        'tablib.packages.openpyxl.shared',
-        'tablib.packages.openpyxl.reader',
-        'tablib.packages.openpyxl.writer',
-        'tablib.packages.yaml',
         'tablib.packages.dbfpy'
     ])
 else:
     packages.extend([
-        'tablib.packages.xlwt3',
-        'tablib.packages.xlrd3',
         'tablib.packages.odf3',
-        'tablib.packages.openpyxl3',
-        'tablib.packages.openpyxl3.shared',
-        'tablib.packages.openpyxl3.reader',
-        'tablib.packages.openpyxl3.writer',
-        'tablib.packages.yaml3',
         'tablib.packages.dbfpy3'
     ])
 
 
 setup(
     name='tablib',
-    version=tablib.__version__,
+    version='0.10.0',
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
@@ -79,6 +62,14 @@ setup(
     url='http://python-tablib.org',
     packages=packages,
     license='MIT',
+    install_requires = [
+        'xlwt==1.0.0',
+        'xlrd==0.9.3',
+        'openpyxl==2.2.3',
+        'omnijson==0.1.2',
+        'unicodecsv==0.13.0',
+        'pyyaml==3.11',
+    ],
     classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
