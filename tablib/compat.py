@@ -21,7 +21,6 @@ import xlwt
 import xlrd
 from xlrd.biffh import XLRDError
 import openpyxl
-import unicodecsv as csv
 
 
 if is_py3:
@@ -29,6 +28,7 @@ if is_py3:
     from tablib.packages import markup3 as markup
     from tablib.packages.odf3 import opendocument, style, text, table
     import tablib.packages.dbfpy3 as dbfpy
+    import csv
 
     from io import StringIO
     # py3 mappings
@@ -45,6 +45,7 @@ else:
     from itertools import ifilter
     from tablib.packages.odf import opendocument, style, text, table
     import tablib.packages.dbfpy as dbfpy
+    import unicodecsv as csv
 
 
     unicode = unicode

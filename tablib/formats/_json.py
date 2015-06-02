@@ -6,7 +6,10 @@
 import tablib
 
 import sys
-import omnijson as json
+try:
+    import omnijson as json
+except ImportError:
+    import json
 
 
 title = 'json'

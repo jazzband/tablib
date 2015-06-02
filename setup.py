@@ -39,11 +39,23 @@ packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
 ]
+
+install = [
+    'xlrd',      # xlrd==0.9.3
+    'openpyxl',  # openpyxl==2.2.3
+    'pyyaml',    # pyyaml==3.11
+    'xlwt',      # xlwt==1.0.0
+    #'omnijson',  # omnijson==0.1.2
+]
+
 if sys.version_info[0] == 2:
     packages.extend([
         'tablib.packages.odf',
         'tablib.packages.dbfpy'
     ])
+    # unicodecsv defaults to stdlib csv library in python 3,
+    # so only install it in python 2
+    install.append('unicodecsv')  # unicodecsv==0.13.0
 else:
     packages.extend([
         'tablib.packages.odf3',
@@ -62,14 +74,7 @@ setup(
     url='http://python-tablib.org',
     packages=packages,
     license='MIT',
-    install_requires = [
-        'xlwt==1.0.0',
-        'xlrd==0.9.3',
-        'openpyxl==2.2.3',
-        'omnijson==0.1.2',
-        'unicodecsv==0.13.0',
-        'pyyaml==3.11',
-    ],
+    install_requires = install,
     classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
