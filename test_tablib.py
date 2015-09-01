@@ -352,6 +352,31 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
 
+    def test_header_no_pane_freeze(self):
+        headers = ['foo', 'bar','plop'];
+        data = [
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],            
+            ["test","test2","toto"]
+        ]
+        d = tablib.Dataset(*data, headers=headers, freeze_panes=False)
+        book = tablib.Databook()
+        book.add_sheet(d)
+
+        with open("test.xls","wb") as f:
+            f.write(book.xls)
+
+        with open("test.xlsx","wb") as f:
+            f.write(book.xlsx)            
+        
+        self.assertEqual(2, 1)
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""

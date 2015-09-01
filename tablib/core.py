@@ -173,6 +173,11 @@ class Dataset(object):
         except KeyError:
             self.title = None
 
+        try:
+            self.freeze_panes = kwargs['freeze_panes']
+        except KeyError:
+            self.freeze_panes = True
+            
         self._register_formats()
 
 
