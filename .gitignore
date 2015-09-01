@@ -26,3 +26,7 @@ junit-py27.xml
 
 # tox noise
 .tox
+
+# test files
+test.xls
+test.xlsx

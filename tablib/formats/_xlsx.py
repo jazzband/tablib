@@ -125,7 +125,8 @@ def dset_sheet(dataset, ws):
                 ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
-                ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
+                if dataset.freeze_panes: 
+                    ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
 
 
             # bold separators

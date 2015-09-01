@@ -8,6 +8,7 @@ import sys
 import os
 import tablib
 from tablib.compat import markup, unicode, is_py3
+from tablib.core import Row
 
 
 
@@ -206,6 +207,18 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(self.founders[2:], [self.tom])
 
 
+    def test_row_slicing(self):
+        """Verify Row's __getslice__ method. Issue #184."""
+
+        john = Row(self.john)
+
+        self.assertEqual(john[:], list(self.john[:]))
+        self.assertEqual(john[0:], list(self.john[0:]))
+        self.assertEqual(john[:2], list(self.john[:2]))
+        self.assertEqual(john[0:2], list(self.john[0:2]))
+        self.assertEqual(john[0:-1], list(self.john[0:-1]))
+
+
     def test_delete(self):
         """Verify deleting from dataset works."""
 
@@ -339,6 +352,31 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
 
+    def test_header_no_pane_freeze(self):
+        headers = ['foo', 'bar','plop'];
+        data = [
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],
+            ["test","test2","toto"],             
+            ["test","test2","toto"]
+        ]
+        d = tablib.Dataset(*data, headers=headers, freeze_panes=False)
+        book = tablib.Databook()
+        book.add_sheet(d)
+
+        with open("test.xls","wb") as f:
+            f.write(book.xls)
+
+        with open("test.xlsx","wb") as f:
+            f.write(book.xlsx)            
+        
+        self.assertEqual(2, 1)
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
@@ -449,6 +487,108 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_tsv, data.tsv)
 
+
+    def test_dbf_import_set(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _dbf = data.dbf
+        data.dbf = _dbf
+
+        #self.assertEqual(_dbf, data.dbf)
+        try:
+            self.assertEqual(_dbf, data.dbf)
+        except AssertionError:
+            index = 0
+            so_far = ''
+            for reg_char, data_char in zip(_dbf, data.dbf):
+                so_far += chr(data_char)
+                if reg_char != data_char and index not in [1, 2, 3]:
+                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                        index, reg_char, data_char, so_far))
+                index += 1
+
+    def test_dbf_export_set(self):
+        """Test DBF import."""
+        data.append(self.john)
+        data.append(self.george)
+        data.append(self.tom)
+        data.headers = self.headers
+
+        _regression_dbf = (b'\x03r\x06\x06\x03\x00\x00\x00\x81\x00\xab\x00\x00'
+            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+            b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+            b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+        )
+        _regression_dbf += b' John' + (b' ' * 75)
+        _regression_dbf += b' Adams' + (b' ' * 74)
+        _regression_dbf += b' 90.0000000'
+        _regression_dbf += b' George' + (b' ' * 73)
+        _regression_dbf += b' Washington' + (b' ' * 69)
+        _regression_dbf += b' 67.0000000'
+        _regression_dbf += b' Thomas' + (b' ' * 73)
+        _regression_dbf += b' Jefferson' + (b' ' * 70)
+        _regression_dbf += b' 50.0000000'
+        _regression_dbf += b'\x1a'
+
+        if is_py3:
+            # If in python3, decode regression string to binary.
+            #_regression_dbf = bytes(_regression_dbf, 'utf-8')
+            #_regression_dbf = _regression_dbf.replace(b'\n', b'\r')
+            pass
+
+        try:
+            self.assertEqual(_regression_dbf, data.dbf)
+        except AssertionError:
+            index = 0
+            found_so_far = ''
+            for reg_char, data_char in zip(_regression_dbf, data.dbf):
+                #found_so_far += chr(data_char)
+                if reg_char != data_char and index not in [1, 2, 3]:
+                    raise AssertionError(
+                        'Failing at char %s: %s vs %s (found %s)' % (
+                        index, reg_char, data_char, found_so_far))
+                index += 1
+
+    def test_dbf_format_detect(self):
+        """Test the DBF format detection."""
+        _dbf = (b'\x03r\x06\x03\x03\x00\x00\x00\x81\x00\xab\x00\x00'
+            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+            b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+            b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+        )
+        _dbf += b' John' + (b' ' * 75)
+        _dbf += b' Adams' + (b' ' * 74)
+        _dbf += b' 90.0000000'
+        _dbf += b' George' + (b' ' * 73)
+        _dbf += b' Washington' + (b' ' * 69)
+        _dbf += b' 67.0000000'
+        _dbf += b' Thomas' + (b' ' * 73)
+        _dbf += b' Jefferson' + (b' ' * 70)
+        _dbf += b' 50.0000000'
+        _dbf += b'\x1a'
+
+        _yaml = '- {age: 90, first_name: John, last_name: Adams}'
+        _tsv = 'foo\tbar'
+        _csv = '1,2,3\n4,5,6\n7,8,9\n'
+        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+
+        _bunk = (
+            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+        self.assertTrue(tablib.formats.dbf.detect(_dbf))
+        self.assertFalse(tablib.formats.dbf.detect(_yaml))
+        self.assertFalse(tablib.formats.dbf.detect(_tsv))
+        self.assertFalse(tablib.formats.dbf.detect(_csv))
+        self.assertFalse(tablib.formats.dbf.detect(_json))
+        self.assertFalse(tablib.formats.dbf.detect(_bunk))
 
     def test_csv_format_detect(self):
         """Test CSV format detection."""
