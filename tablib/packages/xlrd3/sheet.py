@@ -9,6 +9,7 @@
 # 2007-10-11 SJM Added missing entry for blank cell type to ctype_text
 # 2007-07-11 SJM Allow for BIFF2/3-style FORMAT record in BIFF4/8 file
 # 2007-04-22 SJM Remove experimental "trimming" facility.
+from __future__ import print_function
 
 #for debugging only
 from math import isnan
