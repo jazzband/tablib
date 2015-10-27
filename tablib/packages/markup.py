@@ -359,7 +359,7 @@ def _argsdicts( args, mydict ):
     elif len( args ) == 1:
         args = _totuple( args[0] )
     else:
-        raise Exception, "We should have never gotten here."
+        raise Exception("We should have never gotten here.")
 
     mykeys = mydict.keys( )
     myvalues = map( _totuple, mydict.values( ) )
