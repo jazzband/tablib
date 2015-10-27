@@ -322,7 +322,7 @@ class page:
             for name, content in mydict.iteritems( ):
                 self.meta( name=name, content=content )
         else:
-            raise TypeError, "Metainfo should be called with a dictionary argument of name:content pairs."
+            raise TypeError ("Metainfo should be called with a dictionary argument of name:content pairs.")
 
     def scripts( self, mydict ):
         """Only useful in html, mydict is dictionary of src:type pairs will
@@ -332,7 +332,7 @@ class page:
             for src, type in mydict.iteritems( ):
                 self.script( '', src=src, type='text/%s' % type )
         else:
-            raise TypeError, "Script should be given a dictionary of src:type pairs."
+            raise TypeError ("Script should be given a dictionary of src:type pairs.")
 
 
 class _oneliner:
