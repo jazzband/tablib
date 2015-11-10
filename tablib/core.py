@@ -349,7 +349,7 @@ class Dataset(object):
         A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
 
             data = tablib.Dataset()
-            data.json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+            data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
         """
         return self._package()
