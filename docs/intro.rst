@@ -10,7 +10,7 @@ Advanced features include, segregation, dynamic columns, tags / filtering, and
 seamless format import/export.
 
 
-Philosphy
+Philosophy
 ---------
 
 Tablib was developed with a few :pep:`20` idioms in mind.

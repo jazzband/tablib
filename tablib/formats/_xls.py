@@ -5,7 +5,7 @@
 
 import sys
 
-from tablib.compat import BytesIO, xlwt, xlrd, XLRDError
+from tablib.compat import BytesIO, xlwt, xlrd, XLRDError, xrange
 import tablib
 
 title = 'xls'
@@ -109,15 +109,20 @@ def dset_sheet(dataset, ws):
         _package.insert((sep[0] + _offset), (sep[1],))
 
     for i, row in enumerate(_package):
-        for j, col in enumerate(row):
 
+        
+        for j, col in enumerate(row):
+            
             # bold headers
             if (i == 0) and dataset.headers:
                 ws.write(i, j, col, bold)
 
                 # frozen header row
-                ws.panes_frozen = True
-                ws.horz_split_pos = 1
+
+                if dataset.freeze_panes:
+
+                    ws.panes_frozen = True
+                    ws.horz_split_pos = 1
 
 
             # bold separators
