@@ -129,6 +129,8 @@ def dset_sheet(dataset, ws):
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
 
+            frzn_col_idx = get_column_letter(j + 2)
+            
             # bold headers
             if (row_number == 1) and dataset.headers:
                 # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
