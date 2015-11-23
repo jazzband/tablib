@@ -45,7 +45,7 @@ class Row(object):
         return repr(self._row)
 
     def __getslice__(self, i, j):
-        return self._row[i,j]
+        return self._row[i:j]
 
     def __getitem__(self, i):
         return self._row[i]
@@ -549,7 +549,7 @@ class Dataset(object):
         A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
 
             data = tablib.Dataset()
-            data.json = '[{age: 90, first_name: "John", liast_name: "Adams"}]'
+            data.json = '[{"age": 90, "first_name": "John", "last_name": "Adams"}]'
 
         Import assumes (for now) that headers exist.
         """
@@ -561,6 +561,30 @@ class Dataset(object):
         headers have been set, they will be used as table headers.
 
         ..notice:: This method can be used for export only.
+        """
+        pass
+
+    @property
+    def dbf():
+        """A dBASE representation of the :class:`Dataset` object.
+
+        A dataset object can also be imported by setting the
+        :class:`Dataset.dbf` attribute. ::
+
+            # To import data from an existing DBF file:
+            data = tablib.Dataset()
+            data.dbf = open('existing_table.dbf').read()
+
+            # to import data from an ASCII-encoded bytestring:
+            data = tablib.Dataset()
+            data.dbf = '<bytestring of tabular data>'
+
+        .. admonition:: Binary Warning
+
+            :class:`Dataset.dbf` contains binary data, so make sure to write in binary mode::
+
+                with open('output.dbf', 'wb') as f:
+                    f.write(data.dbf)
         """
         pass
 

@@ -5,7 +5,7 @@
 
 import sys
 
-from tablib.compat import BytesIO, xlwt, xlrd, XLRDError
+from tablib.compat import BytesIO, xlwt, xlrd, XLRDError, xrange
 import tablib
 
 title = 'xls'
@@ -116,7 +116,9 @@ def dset_sheet(dataset, ws):
                 ws.write(i, j, col, bold)
 
                 # frozen header row
+
                 if dataset.freeze_panes:
+
                     ws.panes_frozen = True
                     ws.horz_split_pos = 1
 

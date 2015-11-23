@@ -24,6 +24,7 @@ Output formats supported:
 - HTML (Sets)
 - TSV (Sets)
 - CSV (Sets)
+- DBF (Sets)
 
 Note that tablib *purposefully* excludes XML support. It always will. (Note: This is a joke. Pull requests are welcome.)
 
@@ -31,7 +32,7 @@ Overview
 --------
 
 `tablib.Dataset()`
-	A Dataset is a table of tabular data. It may or may not have a header row. They can be build and manipulated as raw Python datatypes (Lists of tuples|dictionaries). Datasets can be imported from JSON, YAML, and CSV; they can be exported to XLSX, XLS, ODS, JSON, YAML, CSV, TSV, and HTML.
+	A Dataset is a table of tabular data. It may or may not have a header row. They can be build and manipulated as raw Python datatypes (Lists of tuples|dictionaries). Datasets can be imported from JSON, YAML, DBF, and CSV; they can be exported to XLSX, XLS, ODS, JSON, YAML, DBF, CSV, TSV, and HTML.
 
 `tablib.Databook()`
 	A Databook is a set of Datasets. The most common form of a Databook is an Excel file with multiple spreadsheets. Databooks can be imported from JSON and YAML; they can be exported to XLSX, XLS, ODS, JSON, and YAML.
@@ -122,6 +123,13 @@ EXCEL!
 
 	>>> with open('people.xls', 'wb') as f:
 	...     f.write(data.xls)
+
+DBF!
+++++
+::
+
+    >>> with open('people.dbf', 'wb') as f:
+    ...     f.write(data.dbf)
 
 It's that easy.
 

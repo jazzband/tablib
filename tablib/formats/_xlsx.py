@@ -4,7 +4,7 @@
 """
 
 import sys
-
+import datetime
 
 if sys.version_info[0] > 2:
     from io import BytesIO
@@ -23,6 +23,19 @@ from tablib.compat import unicode
 
 title = 'xlsx'
 extensions = ('xlsx',)
+
+
+def retriveDate(val):
+    if type(val) in [datetime.datetime,datetime.date]:
+        return val
+    for fmt in ["%d/%m/%Y","%Y-%m-%d","%Y-%m-%d %H:%M:%S"]:
+        try:
+            date = datetime.datetime.strptime(val,fmt)
+            return date
+        except ValueError as e:
+            pass
+    raise ValueError()
+
 
 
 def detect(stream):
@@ -115,8 +128,6 @@ def dset_sheet(dataset, ws):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
-            # We want to freeze the column after the last column
-            frzn_col_idx = get_column_letter(j + 2)
 
             # bold headers
             if (row_number == 1) and dataset.headers:
@@ -139,13 +150,17 @@ def dset_sheet(dataset, ws):
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
+                    if isinstance(col,basestring) and '\n' in col:   
                         ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
-                    else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                    else: 
+                        try:
+                            ws.cell('%s%s'%(col_idx, row_number)).value = retriveDate(col)
+                            
+                        except ValueError as e:
+                            ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                 except TypeError:
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
