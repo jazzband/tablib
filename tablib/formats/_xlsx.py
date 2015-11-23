@@ -149,7 +149,7 @@ def dset_sheet(dataset, ws):
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
+                    if isinstance(col,basestring) and '\n' in col:   
                         ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                         style = ws.get_style('%s%s' % (col_idx, row_number))
@@ -157,6 +157,7 @@ def dset_sheet(dataset, ws):
                     else: 
                         try:
                             ws.cell('%s%s'%(col_idx, row_number)).value = retriveDate(col)
+                            
                         except ValueError as e:
                             ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
