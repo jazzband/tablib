@@ -4,7 +4,7 @@
 """
 
 import sys
-
+import datetime
 
 if sys.version_info[0] > 2:
     from io import BytesIO
@@ -23,6 +23,17 @@ from tablib.compat import unicode
 
 title = 'xlsx'
 extensions = ('xlsx',)
+
+
+def retriveDate(val):
+    for fmt in ["%d/%m/%Y","%Y-%m-%d","%Y-%m-%d %H:%M:%S"]:
+        try:
+            date = datetime.datetime.strptime(val,fmt)
+            return date
+        except ValueError as e:
+            pass
+    raise ValueError()
+
 
 
 def detect(stream):
@@ -142,7 +153,10 @@ def dset_sheet(dataset, ws):
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
+                        try:
+                            ws.cell('%s%s'%(col_idx, row_number)).value = retriveDate(col)
+                        except ValueError as e::
+                            ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                 except TypeError:
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
