@@ -155,7 +155,7 @@ def dset_sheet(dataset, ws):
                     else:
                         try:
                             ws.cell('%s%s'%(col_idx, row_number)).value = retriveDate(col)
-                        except ValueError as e::
+                        except ValueError as e:
                             ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                             '%s' % col, errors='ignore')
                 except TypeError:
