@@ -26,6 +26,8 @@ extensions = ('xlsx',)
 
 
 def retriveDate(val):
+    if type(val) in [datetime.datetime,datetime.date]:
+        return val
     for fmt in ["%d/%m/%Y","%Y-%m-%d","%Y-%m-%d %H:%M:%S"]:
         try:
             date = datetime.datetime.strptime(val,fmt)
@@ -152,7 +154,7 @@ def dset_sheet(dataset, ws):
                             '%s' % col, errors='ignore')
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
-                    else:
+                    else: 
                         try:
                             ws.cell('%s%s'%(col_idx, row_number)).value = retriveDate(col)
                         except ValueError as e:
