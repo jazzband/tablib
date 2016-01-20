@@ -39,6 +39,7 @@ You can now start filling this :class:`Dataset <tablib.Dataset>` object with dat
 
 
 
+
 -----------
 Adding Rows
 -----------
@@ -96,6 +97,15 @@ Let's view the data now. ::
 
 It's that easy.
 
+
+--------------
+Importing Data
+--------------
+Creating a :class:`tablib.Dataset` object by importing a pre-existing file is simple. ::
+
+   imported_data = tablib.import_set(open('data.csv').read())
+
+This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
 
 --------------
 Exporting Data
