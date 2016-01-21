@@ -11,7 +11,7 @@ if sys.version_info[0] > 2:
 else:
     from cStringIO import StringIO as BytesIO
 
-from tablib.compat import openpyxl
+import openpyxl
 import tablib
 
 Workbook = openpyxl.workbook.Workbook
@@ -30,7 +30,13 @@ def detect(stream):
     try:
         openpyxl.reader.excel.load_workbook(stream)
         return True
-    except openpyxl.shared.exc.InvalidFileException:
+    except (TypeError, openpyxl.exceptions.InvalidFileException):
+        pass
+    try:
+        byte_stream = BytesIO(stream)
+        openpyxl.reader.excel.load_workbook(byte_stream)
+        return True
+    except openpyxl.exceptions.InvalidFileException:
         pass
 
 def export_set(dataset):
@@ -69,7 +75,12 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    try:
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    except TypeError:
+        byte_stream = BytesIO(in_stream)
+        xls_book = openpyxl.reader.excel.load_workbook(byte_stream)
+
     sheet = xls_book.get_active_sheet()
 
     dset.title = sheet.title
@@ -87,7 +98,11 @@ def import_book(dbook, in_stream, headers=True):
 
     dbook.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    try:
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    except TypeError:
+        byte_stream = BytesIO(in_stream)
+        xls_book = openpyxl.reader.excel.load_workbook(byte_stream)
 
     for sheet in xls_book.worksheets:
         data = tablib.Dataset()
@@ -116,34 +131,39 @@ def dset_sheet(dataset, ws):
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
 
+            # avoid "None" strings
+            if not col:
+                col = ""
+
             # bold headers
             if (row_number == 1) and dataset.headers:
                 # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                     # '%s' % col, errors='ignore')
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
-                style = ws.get_style('%s%s' % (col_idx, row_number))
-                style.font.bold = True
+                cell = ws.cell('%s%s'%(col_idx, row_number))
+                cell.value = unicode(col)
+                cell.style = cell.style.copy(
+                    font=openpyxl.styles.Font(bold=True))
                 ws.freeze_panes = 'A2'
 
 
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
-                style = ws.get_style('%s%s' % (col_idx, row_number))
-                style.font.bold = True
+                cell = ws.cell('%s%s'%(col_idx, row_number))
+                cell.value = unicode('%s' % col, errors='ignore')
+                cell.style = cell.style.copy(
+                    font=openpyxl.styles.Font(bold=True))
 
             # wrap the rest
             else:
                 try:
                     if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
-                        style = ws.get_style('%s%s' % (col_idx, row_number))
-                        style.alignment.wrap_text
+                        cell = ws.cell('%s%s'%(col_idx, row_number))
+                        cell.value = unicode('%s' % col, errors='ignore')
+                        cell.style = cell.style.copy(
+                            openpyxl.styles.Alignment(wrap_text=True))
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                        cell = ws.cell('%s%s'%(col_idx, row_number))
+                        cell.value = unicode('%s' % col, errors='ignore')
                 except TypeError:
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
 
