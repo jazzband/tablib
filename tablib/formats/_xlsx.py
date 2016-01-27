@@ -69,7 +69,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream))
     sheet = xls_book.get_active_sheet()
 
     dset.title = sheet.title
@@ -87,7 +87,7 @@ def import_book(dbook, in_stream, headers=True):
 
     dbook.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(in_stream)
+    xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream))
 
     for sheet in xls_book.worksheets:
         data = tablib.Dataset()
