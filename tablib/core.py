@@ -1013,20 +1013,43 @@ class Databook(object):
         return len(self._datasets)
 
 
-def detect(stream):
+def detect(stream,stream_format=None): # For now the 'stream_format' need to be declare like this because i dont know where this function could being used too!
     """Return (format, stream) of given stream."""
+    
+    if stream_format in formats.get_format.keys():
+
+        return (formats.get_format[stream_format],stream) # really don't know why we have to return stream! we already have the object on the previous call!
+
     for fmt in formats.available:
         try:
             if fmt.detect(stream):
-                return (fmt, stream)
+                return (fmt, stream) # really don't know why we have to return stream! we already have the object on the previous call!
         except AttributeError:
             pass
     return (None, stream)
 
+def adjust_stream(stream):
+    """Adjust the received data as stream (string, file or file stream) to be a real stream object"""
+    type_stream = type(stream)
 
-def import_set(stream):
+    if type_stream == str :
+
+        return open(stream).read()
+
+    elif type_stream == file :
+
+        return stream.read()
+
+    else :
+
+        return stream # already a stream
+
+def import_set(stream,stream_format=None): # let the user send a String, File object or Stream! We can make the magic for him
     """Return dataset of given stream."""
-    (format, stream) = detect(stream)
+
+    stream = adjust_stream(stream)
+
+    (format, stream) = detect(stream,stream_format)
 
     try:
         data = Dataset()
