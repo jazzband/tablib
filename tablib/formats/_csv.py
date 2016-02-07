@@ -35,9 +35,9 @@ def import_set(dset, in_stream, headers=True, delimiter=DEFAULT_DELIMITER):
     dset.wipe()
 
     if is_py3:
-        rows = csv.reader(in_stream.splitlines(), delimiter=delimiter)
+        rows = csv.reader(StringIO(in_stream), delimiter=delimiter)
     else:
-        rows = csv.reader(in_stream.splitlines(), delimiter=delimiter, encoding=DEFAULT_ENCODING)
+        rows = csv.reader(StringIO(in_stream), delimiter=delimiter, encoding=DEFAULT_ENCODING)
     for i, row in enumerate(rows):
 
         if (i == 0) and (headers):
