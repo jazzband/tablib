@@ -11,12 +11,17 @@ History
 
 **Improvements**
 
-- New import/export interface (``Dataset.export()``, ``Dataset.import_()``).
+- New import/export interface (``Dataset.export()``, ``Dataset.load()``).
 - CSV custom delimiter support (``Dataset.export('csv', delimiter='$')``).
 - Adding ability to remove duplicates to all rows in a dataset (``Dataset.remove_duplicates()``).
 - Added a mechanism to avoid ``datetime.datetime`` issues when serializing data.
+- New ``detect_format()`` function (mostly for internal use).
 - Update the vendored unicodecsv to fix ``None`` handling.
 - Only freeze the headers row, not the headers columns (xls).
+
+**Breaking Changes**
+
+- ``detect()`` function removed.
 
 **Bugfixes**
 

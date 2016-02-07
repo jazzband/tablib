@@ -23,6 +23,7 @@ Output formats supported:
 - YAML (Sets + Books)
 - HTML (Sets)
 - TSV (Sets)
+- OSD (Sets)
 - CSV (Sets)
 - DBF (Sets)
 
@@ -141,9 +142,6 @@ To install tablib, simply: ::
 
 	$ pip install tablib
 
-Or, if you absolutely must: ::
-
-	$ easy_install tablib
 
 Contribute
 ----------

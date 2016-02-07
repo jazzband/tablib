@@ -5,7 +5,7 @@
 
     This module implements the central Tablib objects.
 
-    :copyright: (c) 2014 by Kenneth Reitz.
+    :copyright: (c) 2016 by Kenneth Reitz.
     :license: MIT, see LICENSE for more details.
 """
 
@@ -18,11 +18,11 @@ from tablib.compat import OrderedDict, unicode
 
 
 __title__ = 'tablib'
-__version__ = '0.10.0'
-__build__ = 0x001000
+__version__ = '0.11.0'
+__build__ = 0x001100
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2014 Kenneth Reitz'
+__copyright__ = 'Copyright 2016 Kenneth Reitz'
 __docformat__ = 'restructuredtext'
 
 
