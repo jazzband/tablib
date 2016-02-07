@@ -26,13 +26,13 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
 
 ::
 
-   >>> data = tablib.Dataset(*[('Kenneth', 'Reitz', 23), ('Bessie', 'Monke', 22)],
-                             headers=['First Name', 'Last Name', 'Age'])
+   >>> data = tablib.Dataset(headers=['First Name', 'Last Name', 'Age'])
+   >>> map(data.append, [('Kenneth', 'Reitz', 22), ('Bessie', 'Monke', 21)])
 
-   >>> data.json
+   >>> print data.json
    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
 
-   >>> data.yaml
+   >>> print data.yaml
    - {Age: 22, First Name: Kenneth, Last Name: Reitz}
    - {Age: 21, First Name: Bessie, Last Name: Monke}
 

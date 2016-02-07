@@ -14,26 +14,9 @@ Installing Tablib
 Distribute & Pip
 ----------------
 
-Installing Tablib is simple with `pip <http://www.pip-installer.org/>`_::
+Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_::
 
     $ pip install tablib
-
-or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
-
-    $ easy_install tablib
-
-But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
-
-
-
-Cheeseshop Mirror
------------------
-
-If the Cheeseshop is down, you can also install Requests from Kenneth Reitz's personal `Cheeseshop mirror <pip.kreitz.co/>`_::
-
-    $ pip install -i http://pip.kreitz.co/simple tablib
-
-
 
 
 -------------------

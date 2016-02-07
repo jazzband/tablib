@@ -45,7 +45,7 @@ class Row(object):
         return repr(self._row)
 
     def __getslice__(self, i, j):
-        return self._row[i,j]
+        return self._row[i:j]
 
     def __getitem__(self, i):
         return self._row[i]
@@ -165,15 +165,9 @@ class Dataset(object):
         # (column, callback) tuples
         self._formatters = []
 
-        try:
-            self.headers = kwargs['headers']
-        except KeyError:
-            self.headers = None
+        self.headers = kwargs.get('headers')
 
-        try:
-            self.title = kwargs['title']
-        except KeyError:
-            self.title = None
+        self.title = kwargs.get('title')
 
         self._register_formats()
 
@@ -260,6 +254,7 @@ class Dataset(object):
                 except AttributeError:
                     setattr(cls, fmt.title, property(fmt.export_set))
                     cls._formats[fmt.title] = (fmt.export_set, None)
+                setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
 
             except AttributeError:
                 cls._formats[fmt.title] = (None, None)
@@ -353,7 +348,7 @@ class Dataset(object):
         A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
 
             data = tablib.Dataset()
-            data.json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+            data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
         """
         return self._package()
@@ -570,7 +565,7 @@ class Dataset(object):
         A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
 
             data = tablib.Dataset()
-            data.json = '[{age: 90, first_name: "John", liast_name: "Adams"}]'
+            data.json = '[{"age": 90, "first_name": "John", "last_name": "Adams"}]'
 
         Import assumes (for now) that headers exist.
         """
@@ -582,6 +577,40 @@ class Dataset(object):
         headers have been set, they will be used as table headers.
 
         ..notice:: This method can be used for export only.
+        """
+        pass
+
+    @property
+    def dbf():
+        """A dBASE representation of the :class:`Dataset` object.
+
+        A dataset object can also be imported by setting the
+        :class:`Dataset.dbf` attribute. ::
+
+            # To import data from an existing DBF file:
+            data = tablib.Dataset()
+            data.dbf = open('existing_table.dbf').read()
+
+            # to import data from an ASCII-encoded bytestring:
+            data = tablib.Dataset()
+            data.dbf = '<bytestring of tabular data>'
+
+        .. admonition:: Binary Warning
+
+            :class:`Dataset.dbf` contains binary data, so make sure to write in binary mode::
+
+                with open('output.dbf', 'wb') as f:
+                    f.write(data.dbf)
+        """
+        pass
+
+
+    @property
+    def latex():
+        """A LaTeX booktabs representation of the :class:`Dataset` object. If a
+        title has been set, it will be exported as the table caption.
+
+        .. note:: This method can be used for export only.
         """
         pass
 
@@ -936,10 +965,57 @@ class Dataset(object):
         return _dset
 
 
+    def remove_duplicates(self):
+        """Removes all duplicate rows from the :class:`Dataset` object
+        while maintaining the original order."""
+        seen = set()
+        self._data[:] = [row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))]
+
+
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
+
+
+    def subset(self, rows=None, cols=None):
+        """Returns a new instance of the :class:`Dataset`,
+        including only specified rows and columns.
+        """
+
+        # Don't return if no data
+        if not self:
+            return
+
+        if rows is None:
+            rows = list(range(self.height))
+
+        if cols is None:
+            cols = list(self.headers)
+
+        #filter out impossible rows and columns
+        rows = [row for row in rows if row in range(self.height)]
+        cols = [header for header in cols if header in self.headers]
+
+        _dset = Dataset()
+
+        #filtering rows and columns
+        _dset.headers = list(cols)
+
+        _dset._data = []
+        for row_no, row in enumerate(self._data):
+            data_row = []
+            for key in _dset.headers:
+                if key in self.headers:
+                    pos = self.headers.index(key)
+                    data_row.append(row[pos])
+                else:
+                    raise KeyError
+
+            if row_no in rows:
+                _dset.append(row=Row(data_row))
+
+        return _dset
 
 
 

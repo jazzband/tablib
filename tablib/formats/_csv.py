@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Tablib - CSV Support.
+""" Tablib - *SV Support.
 """
 
 from tablib.compat import is_py3, csv, StringIO
@@ -11,13 +11,14 @@ extensions = ('csv',)
 
 
 DEFAULT_ENCODING = 'utf-8'
-
+DEFAULT_DELIMITER = ','
 
 
 def export_set(dataset, **kwargs):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
 
+    kwargs.setdefault('delimeter', DEFAULT_DELIMITER)
     if not is_py3:
         kwargs.setdefault('encoding', DEFAULT_ENCODING)
 
@@ -34,6 +35,7 @@ def import_set(dset, in_stream, headers=True, **kwargs):
 
     dset.wipe()
 
+    kwargs.setdefault('delimeter', DEFAULT_DELIMITER)
     if not is_py3:
         kwargs.setdefault('encoding', DEFAULT_ENCODING)
 
@@ -46,10 +48,10 @@ def import_set(dset, in_stream, headers=True, **kwargs):
             dset.append(row)
 
 
-def detect(stream):
+def detect(stream, delimiter=DEFAULT_DELIMITER):
     """Returns True if given stream is valid CSV."""
     try:
-        csv.Sniffer().sniff(stream, delimiters=',')
+        csv.Sniffer().sniff(stream, delimiters=delimiter)
         return True
     except (csv.Error, TypeError):
         return False
