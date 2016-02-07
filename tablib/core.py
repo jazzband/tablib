@@ -940,6 +940,13 @@ class Dataset(object):
         return _dset
 
 
+    def unique(self):
+        """Removes all duplicate rows from the :class:`Dataset` object
+        while maintaining the original order."""
+        seen = set()
+        self._data[:] = [row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))]
+
+
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
