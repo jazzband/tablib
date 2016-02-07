@@ -241,7 +241,6 @@ class TablibTestCase(unittest.TestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
-
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 
@@ -737,6 +736,15 @@ class TablibTestCase(unittest.TestCase):
                    ("last_name","Adams", "Washington", "Jefferson"))
         self.assertEqual(second_row,
                    ("gpa",90, 67, 50))
+
+    def test_transpose_multiple_headers(self):
+
+        data = tablib.Dataset()
+        data.headers = ("first_name", "last_name", "age")
+        data.append(('John', 'Adams', 90))
+        data.append(('George', 'Washington', 67))
+        data.append(('John', 'Tyler', 71))
+        self.assertEqual(data.transpose().transpose().dict, data.dict)
 
 
     def test_row_stacking(self):

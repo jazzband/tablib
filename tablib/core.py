@@ -895,17 +895,17 @@ class Dataset(object):
         new_headers = [self.headers[0]] + self[self.headers[0]]
 
         _dset.headers = new_headers
-        for column in self.headers:
+        for index, column in enumerate(self.headers):
 
             if column == self.headers[0]:
                 # It's in the headers, so skip it
                 continue
 
             # Adding the column name as now they're a regular column
-            row_data = [column] + self[column]
+            # Use `get_col(index)` in case there are repeated values
+            row_data = [column] + self.get_col(index)
             row_data = Row(row_data)
             _dset.append(row=row_data)
-
         return _dset
 
 
