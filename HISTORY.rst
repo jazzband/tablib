@@ -1,6 +1,29 @@
 History
 -------
 
+0.11.0 (2016-02-07)
++++++++++++++++++++
+
+**New Formats!**
+
+- Added LaTeX table export format (``Dataset.latex``).
+- Support for dBase (DBF) files (``Dataset.dbf``).
+
+**Improvements**
+
+- New import/export interface (``Dataset.export()``, ``Dataset.import_()``).
+- CSV custom delimiter support (``Dataset.export('csv', delimiter='$')``).
+- Adding ability to remove duplicates to all rows in a dataset (``Dataset.remove_duplicates()``).
+- Added a mechanism to avoid ``datetime.datetime`` issues when serializing data.
+- Update the vendored unicodecsv to fix ``None`` handling.
+- Only freeze the headers row, not the headers columns (xls).
+
+**Bugfixes**
+
+- Fix XLSX import.
+- Bugfix for ``Dataset.transpose().transpose()``.
+
+
 0.10.0 (2014-05-27)
 +++++++++++++++++++
 
