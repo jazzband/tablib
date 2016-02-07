@@ -794,7 +794,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(third_row, expected_third)
 
 
-    def test_unique(self):
+    def test_remove_duplicates(self):
         """Unique Rows."""
 
         self.founders.append(self.john)
@@ -805,7 +805,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(self.founders[2], self.founders[5])
         self.assertEqual(self.founders.height, 6)
 
-        self.founders.unique()
+        self.founders.remove_duplicates()
 
         self.assertEqual(self.founders[0], self.john)
         self.assertEqual(self.founders[1], self.george)
@@ -832,16 +832,16 @@ class TablibTestCase(unittest.TestCase):
 
     def test_subset(self):
         """Create a subset of a dataset"""
-        
+
         rows = (0, 2)
         columns = ('first_name','gpa')
-        
+
         data.headers = self.headers
 
         data.append(self.john)
         data.append(self.george)
         data.append(self.tom)
-        
+
         #Verify data is truncated
         subset = data.subset(rows=rows, cols=columns)
         self.assertEqual(type(subset), tablib.Dataset)

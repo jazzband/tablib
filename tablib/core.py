@@ -940,7 +940,7 @@ class Dataset(object):
         return _dset
 
 
-    def unique(self):
+    def remove_duplicates(self):
         """Removes all duplicate rows from the :class:`Dataset` object
         while maintaining the original order."""
         seen = set()
@@ -961,19 +961,19 @@ class Dataset(object):
         # Don't return if no data
         if not self:
             return
-        
+
         if rows is None:
             rows = list(range(self.height))
-        
+
         if cols is None:
             cols = list(self.headers)
-            
+
         #filter out impossible rows and columns
         rows = [row for row in rows if row in range(self.height)]
         cols = [header for header in cols if header in self.headers]
 
         _dset = Dataset()
-        
+
         #filtering rows and columns
         _dset.headers = list(cols)
 
@@ -989,7 +989,7 @@ class Dataset(object):
 
             if row_no in rows:
                 _dset.append(row=Row(data_row))
-        
+
         return _dset
 
 
