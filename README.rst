@@ -142,6 +142,8 @@ To install tablib, simply: ::
 
 	$ pip install tablib
 
+Make sure to check out `Tablib on PyPi <https://pypi.python.org/pypi/tablib/>`_!
+
 
 Contribute
 ----------
