@@ -18,7 +18,7 @@ def export_set(dataset, **kwargs):
     """Returns CSV representation of Dataset."""
     stream = StringIO()
 
-    kwargs.setdefault('delimeter', DEFAULT_DELIMITER)
+    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
     if not is_py3:
         kwargs.setdefault('encoding', DEFAULT_ENCODING)
 
@@ -35,7 +35,7 @@ def import_set(dset, in_stream, headers=True, **kwargs):
 
     dset.wipe()
 
-    kwargs.setdefault('delimeter', DEFAULT_DELIMITER)
+    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
     if not is_py3:
         kwargs.setdefault('encoding', DEFAULT_ENCODING)
 

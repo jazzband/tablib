@@ -255,6 +255,7 @@ class Dataset(object):
                     setattr(cls, fmt.title, property(fmt.export_set))
                     cls._formats[fmt.title] = (fmt.export_set, None)
                 setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
+                setattr(cls, 'set_%s' % fmt.title, fmt.import_set)
 
             except AttributeError:
                 cls._formats[fmt.title] = (None, None)
