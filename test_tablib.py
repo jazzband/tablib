@@ -716,11 +716,11 @@ class TablibTestCase(unittest.TestCase):
         _tsv = '1\t2\t3\n4\t5\t6\n7\t8\t9\n'
         _bunk = '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
 
-        self.assertEqual(tablib.detect(_yaml)[0], tablib.formats.yaml)
-        self.assertEqual(tablib.detect(_csv)[0], tablib.formats.csv)
-        self.assertEqual(tablib.detect(_tsv)[0], tablib.formats.tsv)
-        self.assertEqual(tablib.detect(_json)[0], tablib.formats.json)
-        self.assertEqual(tablib.detect(_bunk)[0], None)
+        self.assertEqual(tablib.detect_format(_yaml), 'yaml')
+        self.assertEqual(tablib.detect_format(_csv), 'csv')
+        self.assertEqual(tablib.detect_format(_tsv), 'tsv')
+        self.assertEqual(tablib.detect_format(_json), 'json')
+        self.assertEqual(tablib.detect_format(_bunk), None)
 
 
     def test_transpose(self):
