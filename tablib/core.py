@@ -163,15 +163,9 @@ class Dataset(object):
         # (column, callback) tuples
         self._formatters = []
 
-        try:
-            self.headers = kwargs['headers']
-        except KeyError:
-            self.headers = None
+        self.headers = kwargs.get('headers')
 
-        try:
-            self.title = kwargs['title']
-        except KeyError:
-            self.title = None
+        self.title = kwargs.get('title')
 
         self._register_formats()
 
@@ -950,6 +944,46 @@ class Dataset(object):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
+
+
+    def subset(self, rows=None, cols=None):
+        """Returns a new instance of the :class:`Dataset`,
+        including only specified rows and columns.
+        """
+
+        # Don't return if no data
+        if not self:
+            return
+        
+        if rows is None:
+            rows = list(range(self.height))
+        
+        if cols is None:
+            cols = list(self.headers)
+            
+        #filter out impossible rows and columns
+        rows = [row for row in rows if row in range(self.height)]
+        cols = [header for header in cols if header in self.headers]
+
+        _dset = Dataset()
+        
+        #filtering rows and columns
+        _dset.headers = list(cols)
+
+        _dset._data = []
+        for row_no, row in enumerate(self._data):
+            data_row = []
+            for key in _dset.headers:
+                if key in self.headers:
+                    pos = self.headers.index(key)
+                    data_row.append(row[pos])
+                else:
+                    raise KeyError
+
+            if row_no in rows:
+                _dset.append(row=Row(data_row))
+        
+        return _dset
 
 
 
