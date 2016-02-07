@@ -220,12 +220,15 @@ class Dataset(object):
             return '<dataset object>'
 
     def __unicode__(self):
-        result = [self.__headers]
+        result = []
 
+        # Add unicode representation of headers.
+        result.append([unicode(h) for h in self.__headers])
+
+        # Add unicode representation of rows.
         result.extend(list(map(unicode, row)) for row in self._data)
 
-        # here, we calculate max width for each column
-        lens = (list(map(len, row)) for row in result)
+        lens = [list(map(len, row)) for row in result]
         field_lens = list(map(max, zip(*lens)))
 
         # delimiter between header and data
