@@ -13,14 +13,18 @@ title = 'json'
 extensions = ('json', 'jsn')
 
 
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+
 def export_set(dataset):
     """Returns JSON representation of Dataset."""
-    return json.dumps(dataset.dict)
+    return json.dumps(dataset.dict, default=date_handler)
 
 
 def export_book(databook):
     """Returns JSON representation of Databook."""
-    return json.dumps(databook._package())
+    return json.dumps(databook._package(), default=date_handler)
 
 
 def import_set(dset, in_stream):
