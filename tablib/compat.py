@@ -26,7 +26,6 @@ if is_py3:
     import tablib.packages.xlrd3 as xlrd
     from tablib.packages.xlrd3.biffh import XLRDError
     from tablib.packages import markup3 as markup
-    from tablib.packages import openpyxl3 as openpyxl
     from tablib.packages.odf3 import opendocument, style, text, table
     import tablib.packages.dbfpy3 as dbfpy
 
@@ -48,7 +47,6 @@ else:
     from tablib.packages.xlrd.biffh import XLRDError
     from tablib.packages import markup
     from itertools import ifilter
-    from tablib.packages import openpyxl
     from tablib.packages.odf import opendocument, style, text, table
 
     import unicodecsv as csv
