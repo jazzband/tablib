@@ -124,9 +124,10 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
                 if freeze_panes:
-                    # We want to freeze the column after the last column
-                    ws.freeze_panes = '%s%s' % (frzn_col_idx, row_number)
-
+                    # As already done in #53, but after Merge lost:
+                    #  Export Freeze only after first Line
+                    ws.freeze_panes = 'A2'
+                    
             # bold separators
             elif len(row) < dataset.width:
                 ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
