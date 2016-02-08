@@ -49,21 +49,17 @@ packages = [
     'tablib.packages.xlwt',
     'tablib.packages.xlrd',
     'tablib.packages.odf',
-    'tablib.packages.openpyxl',
-    'tablib.packages.openpyxl.shared',
-    'tablib.packages.openpyxl.reader',
-    'tablib.packages.openpyxl.writer',
     'tablib.packages.yaml',
     'tablib.packages.dbfpy',
     'tablib.packages.xlwt3',
     'tablib.packages.xlrd3',
     'tablib.packages.odf3',
-    'tablib.packages.openpyxl3',
-    'tablib.packages.openpyxl3.shared',
-    'tablib.packages.openpyxl3.reader',
-    'tablib.packages.openpyxl3.writer',
     'tablib.packages.yaml3',
     'tablib.packages.dbfpy3'
+]
+
+install = [
+     'openpyxl',
 ]
 
 
@@ -90,5 +86,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ),
+    install_requires = install,
     tests_require=['pytest'],
 )
