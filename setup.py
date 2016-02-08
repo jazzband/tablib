@@ -2,15 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import sys
-
-import tablib
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
+# Read version from core.py (without importing it)
+with open(os.path.join(os.path.dirname(__file__), 'tablib', 'core.py')) as fh:
+    for line in fh:
+        if line.startswith('__version__'):
+            m = re.match(r"^[^=]*=\s'(\d+\.\d+\.\d+)'", line)
+            version = m.groups()[0]
 
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
@@ -64,7 +69,7 @@ packages = [
 
 setup(
     name='tablib',
-    version=tablib.__version__,
+    version=version,
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
