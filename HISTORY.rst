@@ -1,6 +1,14 @@
 History
 -------
 
+0.11.2 (2016-02-16)
++++++++++++++++++++
+
+**Bugfixes**
+
+- Fix export only formats.
+- Fix for xlsx output.
+
 0.11.1 (2016-02-07)
 +++++++++++++++++++
 
