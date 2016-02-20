@@ -468,6 +468,11 @@ class Dataset(object):
     # -------
 
     @property
+    def xml():
+
+        pass
+
+    @property
     def xls():
         """A Legacy Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
 
