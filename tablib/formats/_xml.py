@@ -21,11 +21,23 @@ def export_set(dataset):
     """Returns XML representation of Dataset."""
     return to_xml(dataset.dict)
 
+
 def import_set(dset, in_stream):
     """Returns dataset from XML stream."""
-
     dset.wipe()
-    dset.dict = to_dict(in_stream)
+    dict = to_dict(in_stream)
+    dict = harmonize(dict)
+    dset.dict = dict
+
+
+def detect(stream):
+    """Returns True if given stream is valid XML."""
+    try:
+        parse(stream)
+        return True
+    except (xml.parsers.expat.ExpatError, TypeError):
+        return False
+
 
 def create_content(content, root, tag):
     if isinstance(content, Mapping):
@@ -93,18 +105,30 @@ def xml_tree_walk(root):
     return dictionary
 
 
+def get_keys(structure):
+    key_list = [list(item) for item in structure]
+    key_list = [item for sublist in key_list for item in sublist]
+    return set(key_list)
+
+
+def harmonize(structure):
+    structure = structure[list(structure)[0]]
+    structure = structure[list(structure)[0]]
+    keys = get_keys(structure)
+    structure = [add_keys(record, keys) for record in structure]
+    return structure
+
+
+def add_keys(dict, keys):
+    diff = keys - set(list(dict))
+    if diff:
+        for key in diff:
+            dict[key] = None
+    return dict
+
+
 def to_dict(xml_file):
     tree = ElementTree.parse(xml_file)
     root = tree.getroot()
     result = xml_tree_walk(root)
-    result = result[list(result)[0]]
-    result = result[list(result)[0]]
     return result
-
-def detect(stream):
-    """Returns True if given stream is valid XML."""
-    try:
-        parse(stream)
-        return True
-    except (xml.parsers.expat.ExpatError, TypeError):
-        return False
