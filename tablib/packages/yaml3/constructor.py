@@ -5,7 +5,13 @@ __all__ = ['BaseConstructor', 'SafeConstructor', 'Constructor',
 from .error import *
 from .nodes import *
 
-import collections, datetime, base64, binascii, re, sys, types
+import base64
+import binascii
+import collections
+import datetime
+import re
+import sys
+import types
 
 class ConstructorError(MarkedYAMLError):
     pass
