@@ -11,9 +11,6 @@ from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
 
 
-
-
-
 class TablibTestCase(unittest.TestCase):
     """Tablib test cases."""
 
@@ -35,11 +32,9 @@ class TablibTestCase(unittest.TestCase):
         self.founders.append(self.george)
         self.founders.append(self.tom)
 
-
     def tearDown(self):
         """Teardown."""
         pass
-
 
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
@@ -49,7 +44,6 @@ class TablibTestCase(unittest.TestCase):
         # Verify width/data
         self.assertTrue(data.width == len(new_row))
         self.assertTrue(data[0] == new_row)
-
 
     def test_empty_append_with_headers(self):
         """Verify append() correctly detects mismatch of number of
@@ -72,7 +66,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertRaises(tablib.InvalidDimensions, set_header_callable)
 
-
     def test_add_column(self):
         """Verify adding column works with/without headers."""
 
@@ -93,7 +86,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(data['age'], new_col)
 
-
     def test_add_column_no_data_no_headers(self):
         """Verify adding new column with no headers."""
 
@@ -104,7 +96,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(data[0], tuple([new_col[0]]))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
-
 
     def test_add_column_with_header_ignored(self):
         """Verify append_col() ignores the header if data.headers has
@@ -120,14 +111,13 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(data.height, len(new_col))
         self.assertEqual(data.headers, None)
 
-
     def test_add_column_with_header_and_headers_only_exist(self):
         """Verify append_col() with header correctly detects mismatch when
         headers exist but there is no existing row data
         """
 
         data.headers = ['first_name']
-        #no data
+        # no data
 
         new_col = ('allen')
 
@@ -135,7 +125,6 @@ class TablibTestCase(unittest.TestCase):
             data.append_col(new_col, header='middle_name')
 
         self.assertRaises(tablib.InvalidDimensions, append_col_callable)
-
 
     def test_add_column_with_header_and_data_exists(self):
         """Verify append_col() works when headers and rows exists"""
@@ -152,7 +141,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(data['age'], new_col)
         self.assertEqual(len(data.headers), len(self.headers) + 1)
 
-
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
 
@@ -160,19 +148,17 @@ class TablibTestCase(unittest.TestCase):
 
         self.founders.append_col(new_col, header='first_again')
 
-
     def test_header_slicing(self):
         """Verify slicing by headers."""
 
         self.assertEqual(self.founders['first_name'],
-            [self.john[0], self.george[0], self.tom[0]])
+                         [self.john[0], self.george[0], self.tom[0]])
 
         self.assertEqual(self.founders['last_name'],
-            [self.john[1], self.george[1], self.tom[1]])
+                         [self.john[1], self.george[1], self.tom[1]])
 
         self.assertEqual(self.founders['gpa'],
-            [self.john[2], self.george[2], self.tom[2]])
-
+                         [self.john[2], self.george[2], self.tom[2]])
 
     def test_get_col(self):
         """Verify getting columns by index"""
@@ -188,7 +174,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(
             self.founders.get_col(list(self.headers).index('gpa')),
             [self.john[2], self.george[2], self.tom[2]])
-
 
     def test_data_slicing(self):
         """Verify slicing by data."""
@@ -206,7 +191,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(self.founders[1:3], [self.george, self.tom])
         self.assertEqual(self.founders[2:], [self.tom])
 
-
     def test_row_slicing(self):
         """Verify Row's __getslice__ method. Issue #184."""
 
@@ -217,7 +201,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(john[:2], list(self.john[:2]))
         self.assertEqual(john[0:2], list(self.john[0:2]))
         self.assertEqual(john[0:-1], list(self.john[0:-1]))
-
 
     def test_delete(self):
         """Verify deleting from dataset works."""
@@ -258,7 +241,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(csv, self.founders.csv)
 
-
     def test_tsv_export(self):
         """Verify exporting dataset object as TSV."""
 
@@ -276,7 +258,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(tsv, self.founders.tsv)
 
-
     def test_html_export(self):
         """HTML export"""
 
@@ -288,14 +269,12 @@ class TablibTestCase(unittest.TestCase):
         html.thead.close()
 
         for founder in self.founders:
-
             html.tr(markup.oneliner.td(founder))
 
         html.table.close()
         html = str(html)
 
         self.assertEqual(html, self.founders.html)
-
 
     def test_html_export_none_value(self):
         """HTML export"""
@@ -304,10 +283,10 @@ class TablibTestCase(unittest.TestCase):
         html.table.open()
         html.thead.open()
 
-        html.tr(markup.oneliner.th(['foo','', 'bar']))
+        html.tr(markup.oneliner.th(['foo', '', 'bar']))
         html.thead.close()
 
-        html.tr(markup.oneliner.td(['foo','', 'bar']))
+        html.tr(markup.oneliner.td(['foo', '', 'bar']))
 
         html.table.close()
         html = str(html)
@@ -316,7 +295,6 @@ class TablibTestCase(unittest.TestCase):
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
-
 
     def test_latex_export(self):
         """LaTeX export"""
@@ -341,16 +319,13 @@ class TablibTestCase(unittest.TestCase):
         output = self.founders.latex
         self.assertEqual(output, expected)
 
-
     def test_latex_export_empty_dataset(self):
         self.assertTrue(tablib.Dataset().latex is not None)
-
 
     def test_latex_export_no_headers(self):
         d = tablib.Dataset()
         d.append(('one', 'two', 'three'))
         self.assertTrue('one' in d.latex)
-
 
     def test_latex_export_caption(self):
         d = tablib.Dataset()
@@ -360,14 +335,12 @@ class TablibTestCase(unittest.TestCase):
         d.title = 'Title'
         self.assertTrue('\\caption{Title}' in d.latex)
 
-
     def test_latex_export_none_values(self):
         headers = ['foo', None, 'bar']
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
         output = d.latex
         self.assertTrue('foo' in output)
         self.assertFalse('None' in output)
-
 
     def test_latex_escaping(self):
         d = tablib.Dataset(['~', '^'])
@@ -378,15 +351,13 @@ class TablibTestCase(unittest.TestCase):
         self.assertFalse('^' in output)
         self.assertTrue('textasciicircum' in output)
 
-
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
         if is_py3:
             new_row = ('å', 'é')
         else:
-            exec("new_row = (u'å', u'é')")
-
+            exec ("new_row = (u'å', u'é')")
 
         data.append(new_row)
 
@@ -400,7 +371,6 @@ class TablibTestCase(unittest.TestCase):
         data.html
         data.latex
 
-
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
 
@@ -413,7 +383,6 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
 
-
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
         data.append(self.john)
@@ -425,7 +394,6 @@ class TablibTestCase(unittest.TestCase):
         data.json = _json
 
         self.assertEqual(json.loads(_json), json.loads(data.json))
-
 
     def test_json_import_book(self):
         """Generate and import JSON book serialization."""
@@ -440,7 +408,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(json.loads(_json), json.loads(book.json))
 
-
     def test_yaml_import_set(self):
         """Generate and import YAML set serialization."""
         data.append(self.john)
@@ -452,7 +419,6 @@ class TablibTestCase(unittest.TestCase):
         data.yaml = _yaml
 
         self.assertEqual(_yaml, data.yaml)
-
 
     def test_yaml_import_book(self):
         """Generate and import YAML book serialization."""
@@ -466,7 +432,6 @@ class TablibTestCase(unittest.TestCase):
         book.yaml = _yaml
 
         self.assertEqual(_yaml, book.yaml)
-
 
     def test_csv_import_set(self):
         """Generate and import CSV set serialization."""
@@ -518,7 +483,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_csv, data.get_csv(delimiter=';'))
 
-
     def test_csv_import_set_with_newlines(self):
         """Generate and import CSV set serialization when row values have
         newlines."""
@@ -533,7 +497,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_csv, data.csv)
 
-
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
         data.append(self.john)
@@ -546,7 +509,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(_tsv, data.tsv)
 
-
     def test_dbf_import_set(self):
         data.append(self.john)
         data.append(self.george)
@@ -555,7 +517,7 @@ class TablibTestCase(unittest.TestCase):
         _dbf = data.dbf
         data.dbf = _dbf
 
-        #self.assertEqual(_dbf, data.dbf)
+        # self.assertEqual(_dbf, data.dbf)
         try:
             self.assertEqual(_dbf, data.dbf)
         except AssertionError:
@@ -576,13 +538,13 @@ class TablibTestCase(unittest.TestCase):
         data.headers = self.headers
 
         _regression_dbf = (b'\x03r\x06\x06\x03\x00\x00\x00\x81\x00\xab\x00\x00'
-            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-            b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
-            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
-            b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-            b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
-            b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
-        )
+                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                           b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+                           b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                           b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+                           b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+                           )
         _regression_dbf += b' John' + (b' ' * 75)
         _regression_dbf += b' Adams' + (b' ' * 74)
         _regression_dbf += b' 90.0000000'
@@ -596,8 +558,8 @@ class TablibTestCase(unittest.TestCase):
 
         if is_py3:
             # If in python3, decode regression string to binary.
-            #_regression_dbf = bytes(_regression_dbf, 'utf-8')
-            #_regression_dbf = _regression_dbf.replace(b'\n', b'\r')
+            # _regression_dbf = bytes(_regression_dbf, 'utf-8')
+            # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
             pass
 
         try:
@@ -606,23 +568,23 @@ class TablibTestCase(unittest.TestCase):
             index = 0
             found_so_far = ''
             for reg_char, data_char in zip(_regression_dbf, data.dbf):
-                #found_so_far += chr(data_char)
+                # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
                         'Failing at char %s: %s vs %s (found %s)' % (
-                        index, reg_char, data_char, found_so_far))
+                            index, reg_char, data_char, found_so_far))
                 index += 1
 
     def test_dbf_format_detect(self):
         """Test the DBF format detection."""
         _dbf = (b'\x03r\x06\x03\x03\x00\x00\x00\x81\x00\xab\x00\x00'
-            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-            b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
-            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
-            b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-            b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
-            b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
-        )
+                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+                b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+                b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+                )
         _dbf += b' John' + (b' ' * 75)
         _dbf += b' Adams' + (b' ' * 74)
         _dbf += b' 90.0000000'
@@ -664,7 +626,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(tablib.formats.csv.detect(_csv))
         self.assertFalse(tablib.formats.csv.detect(_bunk))
 
-
     def test_tsv_format_detect(self):
         """Test TSV format detection."""
 
@@ -680,7 +641,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(tablib.formats.tsv.detect(_tsv))
         self.assertFalse(tablib.formats.tsv.detect(_bunk))
 
-
     def test_json_format_detect(self):
         """Test JSON format detection."""
 
@@ -691,7 +651,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertTrue(tablib.formats.json.detect(_json))
         self.assertFalse(tablib.formats.json.detect(_bunk))
-
 
     def test_yaml_format_detect(self):
         """Test YAML format detection."""
@@ -705,7 +664,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(tablib.formats.yaml.detect(_yaml))
         self.assertFalse(tablib.formats.yaml.detect(_bunk))
         self.assertFalse(tablib.formats.yaml.detect(_tsv))
-
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
@@ -722,7 +680,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(tablib.detect_format(_json), 'json')
         self.assertEqual(tablib.detect_format(_bunk), None)
 
-
     def test_transpose(self):
         """Transpose a dataset."""
 
@@ -731,11 +688,11 @@ class TablibTestCase(unittest.TestCase):
         second_row = transposed_founders[1]
 
         self.assertEqual(transposed_founders.headers,
-                  ["first_name","John", "George", "Thomas"])
+                         ["first_name", "John", "George", "Thomas"])
         self.assertEqual(first_row,
-                   ("last_name","Adams", "Washington", "Jefferson"))
+                         ("last_name", "Adams", "Washington", "Jefferson"))
         self.assertEqual(second_row,
-                   ("gpa",90, 67, 50))
+                         ("gpa", 90, 67, 50))
 
     def test_transpose_multiple_headers(self):
 
@@ -745,7 +702,6 @@ class TablibTestCase(unittest.TestCase):
         data.append(('George', 'Washington', 67))
         data.append(('John', 'Tyler', 71))
         self.assertEqual(data.transpose().transpose().dict, data.dict)
-
 
     def test_row_stacking(self):
         """Row stacking."""
@@ -758,11 +714,9 @@ class TablibTestCase(unittest.TestCase):
         row_stacked = self.founders.stack(to_join)
 
         for column in row_stacked.headers:
-
             original_data = self.founders[column]
             expected_data = original_data + original_data
             self.assertEqual(row_stacked[column], expected_data)
-
 
     def test_column_stacking(self):
         """Column stacking"""
@@ -775,14 +729,12 @@ class TablibTestCase(unittest.TestCase):
         column_stacked = self.founders.stack_cols(to_join)
 
         for index, row in enumerate(column_stacked):
-
             original_data = self.founders[index]
             expected_data = original_data + original_data
             self.assertEqual(row, expected_data)
 
         self.assertEqual(column_stacked[0],
-                   ("John", "Adams", 90, "John", "Adams", 90))
-
+                         ("John", "Adams", 90, "John", "Adams", 90))
 
     def test_sorting(self):
         """Sort columns."""
@@ -800,7 +752,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(first_row, expected_first)
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
-
 
     def test_remove_duplicates(self):
         """Unique Rows."""
@@ -820,7 +771,6 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(self.founders[2], self.tom)
         self.assertEqual(self.founders.height, 3)
 
-
     def test_wipe(self):
         """Purge a dataset."""
 
@@ -837,12 +787,11 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(data.width == len(new_row))
         self.assertTrue(data[0] == new_row)
 
-
     def test_subset(self):
         """Create a subset of a dataset"""
 
         rows = (0, 2)
-        columns = ('first_name','gpa')
+        columns = ('first_name', 'gpa')
 
         data.headers = self.headers
 
@@ -850,13 +799,12 @@ class TablibTestCase(unittest.TestCase):
         data.append(self.george)
         data.append(self.tom)
 
-        #Verify data is truncated
+        # Verify data is truncated
         subset = data.subset(rows=rows, cols=columns)
         self.assertEqual(type(subset), tablib.Dataset)
         self.assertEqual(subset.headers, list(columns))
         self.assertEqual(subset._data[0].list, ['John', 90])
         self.assertEqual(subset._data[1].list, ['Thomas', 50])
-
 
     def test_formatters(self):
         """Confirm formatters are being triggered."""
@@ -877,8 +825,7 @@ class TablibTestCase(unittest.TestCase):
         if sys.version_info[0] > 2:
             data.append(['\xfc', '\xfd'])
         else:
-            exec("data.append([u'\xfc', u'\xfd'])")
-
+            exec ("data.append([u'\xfc', u'\xfd'])")
 
         data.csv
 
@@ -894,7 +841,6 @@ class TablibTestCase(unittest.TestCase):
         orig_first_name = self.founders[self.headers[0]]
         csv_first_name = data[headers[0]]
         self.assertEqual(orig_first_name, csv_first_name)
-
 
     def test_csv_column_delete(self):
         """Build up a CSV and test deleting a column"""
@@ -929,7 +875,6 @@ class TablibTestCase(unittest.TestCase):
         self.founders.append(('Old', 'Man', 100500))
         self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
 
-
     def test_databook_add_sheet_accepts_only_dataset_instances(self):
         class NotDataset(object):
             def append(self, item):
@@ -939,7 +884,6 @@ class TablibTestCase(unittest.TestCase):
         dataset.append(self.john)
 
         self.assertRaises(tablib.InvalidDatasetType, book.add_sheet, dataset)
-
 
     def test_databook_add_sheet_accepts_dataset_subclasses(self):
         class DatasetSubclass(tablib.Dataset):
@@ -954,7 +898,6 @@ class TablibTestCase(unittest.TestCase):
             book.add_sheet(dataset)
         except tablib.InvalidDatasetType:
             self.fail("Subclass of tablib.Dataset should be accepted by Databook.add_sheet")
-
 
     def test_csv_formatter_support_kwargs(self):
         """Test CSV import and export with formatter configuration."""

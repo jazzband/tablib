@@ -1,15 +1,16 @@
-
 __all__ = ['Composer', 'ComposerError']
 
 from error import MarkedYAMLError
-from events import *
-from nodes import *
+from events import StreamEndEvent, StreamStartEvent, AliasEvent, SequenceEndEvent, SequenceStartEvent, MappingEndEvent,\
+    MappingStartEvent, ScalarEvent
+from nodes import MappingNode, ScalarNode, SequenceNode
+
 
 class ComposerError(MarkedYAMLError):
     pass
 
-class Composer(object):
 
+class Composer(object):
     def __init__(self):
         self.anchors = {}
 
@@ -39,8 +40,8 @@ class Composer(object):
         if not self.check_event(StreamEndEvent):
             event = self.get_event()
             raise ComposerError("expected a single document in the stream",
-                    document.start_mark, "but found another document",
-                    event.start_mark)
+                                document.start_mark, "but found another document",
+                                event.start_mark)
 
         # Drop the STREAM-END event.
         self.get_event()
@@ -66,15 +67,14 @@ class Composer(object):
             anchor = event.anchor
             if anchor not in self.anchors:
                 raise ComposerError(None, None, "found undefined alias %r"
-                        % anchor.encode('utf-8'), event.start_mark)
+                                    % anchor.encode('utf-8'), event.start_mark)
             return self.anchors[anchor]
         event = self.peek_event()
         anchor = event.anchor
-        if anchor is not None:
-            if anchor in self.anchors:
+        if anchor is not None and anchor in self.anchors:
                 raise ComposerError("found duplicate anchor %r; first occurence"
-                        % anchor.encode('utf-8'), self.anchors[anchor].start_mark,
-                        "second occurence", event.start_mark)
+                                    % anchor.encode('utf-8'), self.anchors[anchor].start_mark,
+                                    "second occurence", event.start_mark)
         self.descend_resolver(parent, index)
         if self.check_event(ScalarEvent):
             node = self.compose_scalar_node(anchor)
@@ -91,7 +91,7 @@ class Composer(object):
         if tag is None or tag == u'!':
             tag = self.resolve(ScalarNode, event.value, event.implicit)
         node = ScalarNode(tag, event.value,
-                event.start_mark, event.end_mark, style=event.style)
+                          event.start_mark, event.end_mark, style=event.style)
         if anchor is not None:
             self.anchors[anchor] = node
         return node
@@ -102,8 +102,8 @@ class Composer(object):
         if tag is None or tag == u'!':
             tag = self.resolve(SequenceNode, None, start_event.implicit)
         node = SequenceNode(tag, [],
-                start_event.start_mark, None,
-                flow_style=start_event.flow_style)
+                            start_event.start_mark, None,
+                            flow_style=start_event.flow_style)
         if anchor is not None:
             self.anchors[anchor] = node
         index = 0
@@ -120,20 +120,19 @@ class Composer(object):
         if tag is None or tag == u'!':
             tag = self.resolve(MappingNode, None, start_event.implicit)
         node = MappingNode(tag, [],
-                start_event.start_mark, None,
-                flow_style=start_event.flow_style)
+                           start_event.start_mark, None,
+                           flow_style=start_event.flow_style)
         if anchor is not None:
             self.anchors[anchor] = node
         while not self.check_event(MappingEndEvent):
-            #key_event = self.peek_event()
+            # key_event = self.peek_event()
             item_key = self.compose_node(node, None)
-            #if item_key in node.value:
+            # if item_key in node.value:
             #    raise ComposerError("while composing a mapping", start_event.start_mark,
             #            "found duplicate key", key_event.start_mark)
             item_value = self.compose_node(node, item_key)
-            #node.value[item_key] = item_value
+            # node.value[item_key] = item_value
             node.value.append((item_key, item_value))
         end_event = self.get_event()
         node.end_mark = end_event.end_mark
         return node
-
