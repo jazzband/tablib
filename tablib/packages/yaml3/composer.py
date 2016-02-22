@@ -1,10 +1,8 @@
 __all__ = ['Composer', 'ComposerError']
 
 from .error import MarkedYAMLError
-from error import MarkedYAMLError
-from events import StreamEndEvent, StreamStartEvent, AliasEvent, SequenceEndEvent, SequenceStartEvent, MappingEndEvent,\
-    MappingStartEvent, ScalarEvent
-from nodes import MappingNode, ScalarNode, SequenceNode
+from .events import *
+from .nodes import *
 
 
 class ComposerError(MarkedYAMLError):
@@ -72,7 +70,8 @@ class Composer:
             return self.anchors[anchor]
         event = self.peek_event()
         anchor = event.anchor
-        if anchor is not None and anchor in self.anchors:
+        if anchor is not None:
+            if anchor in self.anchors:
                 raise ComposerError("found duplicate anchor %r; first occurence"
                                     % anchor, self.anchors[anchor].start_mark,
                                     "second occurence", event.start_mark)

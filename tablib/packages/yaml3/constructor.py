@@ -5,13 +5,7 @@ __all__ = ['BaseConstructor', 'SafeConstructor', 'Constructor',
 from .error import *
 from .nodes import *
 
-import base64
-import binascii
-import collections
-import datetime
-import re
-import sys
-import types
+import collections, datetime, base64, binascii, re, sys, types
 
 class ConstructorError(MarkedYAMLError):
     pass
@@ -689,4 +683,3 @@ Constructor.add_multi_constructor(
 Constructor.add_multi_constructor(
     'tag:yaml.org,2002:python/object/new:',
     Constructor.construct_python_object_new)
-

@@ -13,14 +13,10 @@ except ImportError:
     else:
         import tablib.packages.yaml as yaml
 
-
 import tablib
-
-
 
 title = 'yaml'
 extensions = ('yaml', 'yml')
-
 
 
 def export_set(dataset):
@@ -51,6 +47,7 @@ def import_book(dbook, in_stream):
         data.title = sheet['title']
         data.dict = sheet['data']
         dbook.add_sheet(data)
+
 
 def detect(stream):
     """Returns True if given stream is valid YAML."""
