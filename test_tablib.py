@@ -437,6 +437,19 @@ class TablibTestCase(unittest.TestCase):
         self.assertEqual(_csv, data.csv)
 
 
+    def test_csv_import_set_ragged(self):
+        """Generate and import CSV set serialization when not all rows have
+        the same length.
+        """
+        # input has rows of length 3, 1, 0, and 2. output rows all have
+        # length 3, and different line terminators.
+        input_csv = 'A,B,C\nD\n\nE,F\n'
+        output_csv = 'A,B,C\r\nD,,\r\n,,\r\nE,F,\r\n'
+
+        data.csv = input_csv
+
+        self.assertEqual(output_csv, data.csv)
+
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
         data.append(self.john)

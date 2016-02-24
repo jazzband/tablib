@@ -31,15 +31,21 @@ def export_set(dataset):
 
 def import_set(dset, in_stream, headers=True):
     """Returns dataset from CSV stream."""
-
     dset.wipe()
+
+    lines = in_stream.splitlines()
+    reader = csv.reader(lines)
+    max_width = max(len(row) for row in reader)
+    del reader
 
     if is_py3:
         rows = csv.reader(StringIO(in_stream))
     else:
         rows = csv.reader(StringIO(in_stream), encoding=DEFAULT_ENCODING)
-    for i, row in enumerate(rows):
 
+    for i, row in enumerate(rows):
+        while(len(row) < max_width):
+            row.append('')
         if (i == 0) and (headers):
             dset.headers = row
         else:
