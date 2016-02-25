@@ -1,6 +1,11 @@
 History
 -------
 
+0.11.4 (???)
+++++++++++++
+
+- Fixed textual representation for Dataset with no headers
+
 0.11.3 (2016-02-16)
 +++++++++++++++++++
 
