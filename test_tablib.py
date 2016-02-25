@@ -438,8 +438,7 @@ class TablibTestCase(unittest.TestCase):
 
 
     def test_csv_import_set_ragged(self):
-        """Generate and import CSV set serialization when not all rows have
-        the same length.
+        """Import CSV set when not all rows have the same length.
         """
         # input has rows of length 3, 1, 0, and 2. output rows all have
         # length 3, and different line terminators.

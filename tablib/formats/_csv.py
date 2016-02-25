@@ -33,10 +33,11 @@ def import_set(dset, in_stream, headers=True):
     """Returns dataset from CSV stream."""
     dset.wipe()
 
+    # get width of widest row
     lines = in_stream.splitlines()
     reader = csv.reader(lines)
     max_width = max(len(row) for row in reader)
-    del reader
+    del lines, reader
 
     if is_py3:
         rows = csv.reader(StringIO(in_stream))
@@ -44,8 +45,9 @@ def import_set(dset, in_stream, headers=True):
         rows = csv.reader(StringIO(in_stream), encoding=DEFAULT_ENCODING)
 
     for i, row in enumerate(rows):
-        while(len(row) < max_width):
-            row.append('')
+        # fill in empty cells to make all rows match the width of the widest row
+        row.extend([''] * (max_width - len(row)))
+
         if (i == 0) and (headers):
             dset.headers = row
         else:
