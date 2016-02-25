@@ -351,6 +351,16 @@ class TablibTestCase(unittest.TestCase):
         self.assertFalse('^' in output)
         self.assertTrue('textasciicircum' in output)
 
+    def test_str_no_columns(self):
+        d = tablib.Dataset(['a', 1], ['b', 2], ['c', 3])
+        output = '%s' % d
+
+        self.assertEqual(output.splitlines(), [
+            'a|1',
+            'b|2',
+            'c|3'
+        ])
+
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 

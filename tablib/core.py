@@ -223,7 +223,8 @@ class Dataset(object):
         result = []
 
         # Add unicode representation of headers.
-        result.append([unicode(h) for h in self.__headers])
+        if self.__headers:
+            result.append([unicode(h) for h in self.__headers])
 
         # Add unicode representation of rows.
         result.extend(list(map(unicode, row)) for row in self._data)
@@ -232,7 +233,8 @@ class Dataset(object):
         field_lens = list(map(max, zip(*lens)))
 
         # delimiter between header and data
-        result.insert(1, ['-' * length for length in field_lens])
+        if self.__headers:
+            result.insert(1, ['-' * length for length in field_lens])
 
         format_string = '|'.join('{%s:%s}' % item for item in enumerate(field_lens))
 
