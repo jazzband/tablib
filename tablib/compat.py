@@ -34,6 +34,7 @@ if is_py3:
     from io import StringIO
     # py3 mappings
 
+    ifilter = filter
     unicode = str
     bytes = bytes
     basestring = str
