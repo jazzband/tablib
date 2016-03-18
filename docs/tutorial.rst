@@ -158,9 +158,9 @@ To do so, we access the :class:`Dataset` as if it were a standard Python diction
 
 You can also access the column using its index. ::
 
-    >>> d.headers
+    >>> data.headers
     ['Last Name', 'First Name', 'Age']
-    >>> d.get_col(1)
+    >>> data.get_col(1)
     ['Kenneth', 'Bessie']
 
 Let's find the average age. ::
