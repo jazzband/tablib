@@ -392,6 +392,7 @@ class TablibTestCase(unittest.TestCase):
         book.xls
         book.xlsx
         book.ods
+        book.html
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
