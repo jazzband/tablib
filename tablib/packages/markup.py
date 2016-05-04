@@ -71,10 +71,8 @@ class element:
         for key, value in kwargs.iteritems( ):
             if value is not None:               # when value is None that means stuff like <... checked>
                 key = key.strip('_')            # strip this so class_ will mean class, etc.
-                if key == 'http_equiv':         # special cases, maybe change _ to - overall?
-                    key = 'http-equiv'
-                elif key == 'accept_charset':
-                    key = 'accept-charset'
+                if key in ['http_equiv', 'accept_charset']:
+                    key.replace('_','-')
                 out = u"%s %s=\"%s\"" % ( out, key, escape( value ) )
             else:
                 out = u"%s %s" % ( out, key )
