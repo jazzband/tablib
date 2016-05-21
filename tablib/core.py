@@ -143,6 +143,7 @@ class Dataset(object):
 
     :param \*args: (optional) list of rows to populate Dataset
     :param headers: (optional) list strings for Dataset header row
+    :param title: (optional) string to use as title of the Dataset
 
 
     .. admonition:: Format Attributes Definition
