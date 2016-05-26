@@ -28,7 +28,7 @@ extensions = ('xlsx',)
 def detect(stream):
     """Returns True if given stream is a readable excel file."""
     try:
-        openpyxl.reader.excel.load_workbook(stream)
+        openpyxl.reader.excel.load_workbook(BytesIO(stream))
         return True
     except openpyxl.shared.exc.InvalidFileException:
         pass
