@@ -14,4 +14,4 @@ from . import _ods as ods
 from . import _dbf as dbf
 from . import _latex as latex
 
-available = (json, xls, yaml, csv, dbf, tsv, html, latex, xlsx, ods)
+available = (json, xls, xlsx, yaml, csv, dbf, tsv, html, latex, ods)
