@@ -5,21 +5,12 @@
 
 import sys
 
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-else:
-    from cStringIO import StringIO as BytesIO
-
-from tablib.compat import openpyxl
+from tablib.compat import BytesIO, openpyxl, unicode
 import tablib
 
 Workbook = openpyxl.workbook.Workbook
 ExcelWriter = openpyxl.writer.excel.ExcelWriter
 get_column_letter = openpyxl.cell.get_column_letter
-
-from tablib.compat import unicode
-
 
 title = 'xlsx'
 extensions = ('xlsx',)
@@ -28,7 +19,7 @@ extensions = ('xlsx',)
 def detect(stream):
     """Returns True if given stream is a readable excel file."""
     try:
-        openpyxl.reader.excel.load_workbook(BytesIO(stream))
+        openpyxl.reader.excel.load_workbook(format_stream(stream))
         return True
     except openpyxl.shared.exc.InvalidFileException:
         pass
@@ -69,7 +60,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream))
+    xls_book = openpyxl.reader.excel.load_workbook(format_stream(in_stream))
     sheet = xls_book.get_active_sheet()
 
     dset.title = sheet.title
@@ -87,7 +78,7 @@ def import_book(dbook, in_stream, headers=True):
 
     dbook.wipe()
 
-    xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream))
+    xls_book = openpyxl.reader.excel.load_workbook(format_stream(in_stream))
 
     for sheet in xls_book.worksheets:
         data = tablib.Dataset()
@@ -150,3 +141,8 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
 
 
+def format_stream(stream):
+    if sys.version_info[0] > 2:
+        return BytesIO(str.encode(stream))
+    else:
+        return BytesIO(stream)
