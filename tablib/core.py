@@ -9,9 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from collections import Counter
 from copy import copy
-from itertools import izip
 from operator import itemgetter
 
 from tablib import formats
@@ -1044,11 +1042,11 @@ class Dataset(object):
         if self.height != other.height:
             return False
 
-        if Counter(self.headers) != Counter(other.headers):
+        if sorted(self.headers) != sorted(other.headers):
             return False
 
         for header in self.headers:
-            for a, b in izip(self[header], other[header]):
+            for a, b in zip(self[header], other[header]):
                 if a != b:
                     return False
 
