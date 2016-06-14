@@ -952,7 +952,7 @@ class TablibTestCase(unittest.TestCase):
         self.assertTrue(original_data.compare(reordered_data))
         self.assertFalse(original_data.compare(different_data))
         self.assertFalse(reordered_data.compare(different_data))
-        self.assertIsNone(original_data.compare(None))
+        self.assertTrue(original_data.compare(None) is None)
         self.assertRaises(HeadersNeeded, original_data.compare, empty_data)
 
 
