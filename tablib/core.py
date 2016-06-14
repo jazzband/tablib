@@ -9,7 +9,9 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from collections import Counter
 from copy import copy
+from itertools import izip
 from operator import itemgetter
 
 from tablib import formats
@@ -1032,6 +1034,25 @@ class Dataset(object):
 
         return _dset
 
+    def compare(self, other):
+        if not isinstance(other, Dataset):
+            return
+
+        if not self.headers or not other.headers:
+            raise HeadersNeeded
+
+        if self.height != other.height:
+            return False
+
+        if Counter(self.headers) != Counter(other.headers):
+            return False
+
+        for header in self.headers:
+            for a, b in izip(self[header], other[header]):
+                if a != b:
+                    return False
+
+        return True
 
 
 class Databook(object):
