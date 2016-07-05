@@ -91,5 +91,3 @@ def import_set(dset, in_stream, **kwargs):
         dset.append(
             [cell.get_text() for cell in row.find_all('td', recursive=False)])
 
-    print dset
-
