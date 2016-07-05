@@ -71,7 +71,7 @@ def export_book(databook):
     return stream.getvalue().decode('utf-8')
 
 
-def import_set(dset, in_stream, headers=True, **kwargs):
+def import_set(dset, in_stream, **kwargs):
     dset.wipe()
     text = in_stream.read()
     tables = bs4.BeautifulSoup(markup=text).find_all('table')
