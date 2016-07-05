@@ -6,6 +6,9 @@ import json
 import unittest
 import sys
 import os
+
+from StringIO import StringIO
+
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
@@ -295,6 +298,56 @@ class TablibTestCase(unittest.TestCase):
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
+
+    def test_html_import(self):
+        html = markup.page()
+        html.table.open()
+        html.thead.open()
+
+        html.tr(markup.oneliner.th(self.founders.headers))
+        html.thead.close()
+
+        for founder in self.founders:
+            html.tr(markup.oneliner.td(founder))
+
+        html.table.close()
+        html = StringIO(str(html))
+
+        data.html = html
+
+        self.assertEqual(['first_name', 'last_name', 'gpa'], data.headers)
+        self.assertEqual([
+            ('John', 'Adams', '90'),
+            ('George', 'Washington', '67'),
+            ('Thomas', 'Jefferson', '50'),
+        ], data[:])
+
+    def test_html_import_no_headers(self):
+        html = markup.page()
+        html.table.open()
+        html.thead.open()
+
+        for founder in self.founders:
+            html.tr(markup.oneliner.td(founder))
+
+        html.table.close()
+        html = StringIO(str(html))
+
+        data.html = html
+
+        self.assertEqual(None, data.headers)
+        self.assertEqual([
+            ('John', 'Adams', '90'),
+            ('George', 'Washington', '67'),
+            ('Thomas', 'Jefferson', '50'),
+        ], data[:])
+
+    def test_html_import_no_table(self):
+        html = StringIO(str(markup.page()))
+
+        with self.assertRaises(ValueError) as e:
+            data.html = html
+        self.assertEqual('Expected 1 table, found 0', e.exception.message)
 
     def test_latex_export(self):
         """LaTeX export"""

@@ -11,6 +11,7 @@ if sys.version_info[0] > 2:
 else:
     from cStringIO import StringIO
     from tablib.packages import markup
+import bs4
 
 import tablib
 from tablib.compat import unicode
@@ -68,3 +69,27 @@ def export_book(databook):
         wrapper.write('\n')
 
     return stream.getvalue().decode('utf-8')
+
+
+def import_set(dset, in_stream, headers=True, **kwargs):
+    dset.wipe()
+    text = in_stream.read()
+    tables = bs4.BeautifulSoup(markup=text).find_all('table')
+    if len(tables) != 1:
+        raise ValueError('Expected 1 table, found %s' % len(tables))
+    table = tables[0]
+
+    if table.thead.tr:
+        dset.headers = [
+            x.string for x in table.thead.tr.find_all('th', recursive=False)]
+
+    # this finds rows inside <thead>, <tfoot>, <tbody> also.
+    for i, row in enumerate(table.find_all('tr')):
+        # skip first row if it was used for the headers
+        if i == 0 and dset.headers:
+            continue
+        dset.append(
+            [cell.get_text() for cell in row.find_all('td', recursive=False)])
+
+    print dset
+
