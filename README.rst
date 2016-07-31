@@ -6,11 +6,11 @@ Tablib: format-agnostic tabular dataset library
 
 ::
 
-	_____         ______  ___________ ______
-	__  /_______ ____  /_ ___  /___(_)___  /_
-	_  __/_  __ `/__  __ \__  / __  / __  __ \
-	/ /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
-	\__/  \__,_/  /_.___/ /_/   /_/   /_.___/
+    _____         ______  ___________ ______
+    __  /_______ ____  /_ ___  /___(_)___  /_
+    _  __/_  __ `/__  __ \__  / __  / __  __ \
+    / /_  / /_/ / _  /_/ /_  /  _  /  _  /_/ /
+    \__/  \__,_/  /_.___/ /_/   /_/   /_.___/
 
 
 
@@ -33,14 +33,14 @@ Overview
 --------
 
 `tablib.Dataset()`
-	A Dataset is a table of tabular data.
+    A Dataset is a table of tabular data.
     It may or may not have a header row.
     They can be build and manipulated as raw Python datatypes (Lists of tuples|dictionaries).
     Datasets can be imported from JSON, YAML, DBF, and CSV;
     they can be exported to XLSX, XLS, ODS, JSON, YAML, DBF, CSV, TSV, and HTML.
 
 `tablib.Databook()`
-	A Databook is a set of Datasets.
+    A Databook is a set of Datasets.
     The most common form of a Databook is an Excel file with multiple spreadsheets.
     Databooks can be imported from JSON and YAML;
     they can be exported to XLSX, XLS, ODS, JSON, and YAML.
