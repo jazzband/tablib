@@ -1,10 +1,11 @@
 .. _install:
+
 Installation
 ============
 
 This part of the documentation covers the installation of Tablib.
 The first step to using any software package is getting it properly installed.
-Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancements <peed-extensions>`.
+Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancements <speed-extensions>`.
 
 
 .. _installing:
@@ -17,6 +18,7 @@ Distribute & Pip
 ----------------
 
 Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_:
+
 .. code-block:: console
 
     $ pip install tablib
@@ -50,6 +52,7 @@ To download the full source history from Git, see :ref:`Source Control <scm>`.
 
 
 .. _speed-extensions:
+
 Speed Extensions
 ----------------
 
