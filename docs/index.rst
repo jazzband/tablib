@@ -22,7 +22,7 @@ Release v\ |version|. (:ref:`Installation <install>`)
 .. * :ref:`search`
 
 
-Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, written in Python.
+Tablib is an `MIT Licensed <https://mit-license.org/>`_ format-agnostic tabular dataset library, written in Python.
 It allows you to import, export, and manipulate tabular data sets.
 Advanced features include segregation, dynamic columns, tags & filtering,
 and seamless format import & export.
