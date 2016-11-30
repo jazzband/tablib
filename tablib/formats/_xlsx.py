@@ -122,10 +122,7 @@ def dset_sheet(dataset, ws, freeze_panes=True):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
-            if len(str(col)) < 160:
-                column_widths['%s' % col_idx] = median([column_widths.get('%s' % col_idx, 0), len(str(col)) * 2])
-            else:
-                column_widths['%s' % col_idx] = median([column_widths.get('%s' % col_idx, 0), 160])
+            column_widths['%s' % col_idx] = median([column_widths.get('%s' % col_idx, 0), len(str(col)) * 2])
             if (row_number == 1) and dataset.headers:
                 # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                     # '%s' % col, errors='ignore')
