@@ -6,6 +6,9 @@ import json
 import unittest
 import sys
 import os
+
+import datetime
+
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
@@ -368,6 +371,26 @@ class TablibTestCase(unittest.TestCase):
             new_row = ('å', 'é')
         else:
             exec ("new_row = (u'å', u'é')")
+
+        data.append(new_row)
+
+        data.json
+        data.yaml
+        data.csv
+        data.tsv
+        data.xls
+        data.xlsx
+        data.ods
+        data.html
+        data.latex
+
+    def test_datetime_append(self):
+        """Passes in a single datetime and a single date and exports."""
+
+        new_row = (
+            datetime.datetime.now(),
+            datetime.datetime.today(),
+        )
 
         data.append(new_row)
 
