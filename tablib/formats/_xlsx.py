@@ -102,6 +102,12 @@ def import_book(dbook, in_stream, headers=True):
 
         dbook.add_sheet(data)
 
+def median(lst):
+    quotient, remainder = divmod(len(lst), 2)
+    if remainder:
+        return sorted(lst)[quotient]
+    return sum(sorted(lst)[quotient - 1:quotient + 1])
+
 
 def dset_sheet(dataset, ws, freeze_panes=True):
     """Completes given worksheet from given Dataset."""
@@ -111,27 +117,29 @@ def dset_sheet(dataset, ws, freeze_panes=True):
         _offset = i
         _package.insert((sep[0] + _offset), (sep[1],))
 
+    column_widths = {}
     for i, row in enumerate(_package):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
-
-            # bold headers
+            if len(str(col)) < 160:
+                column_widths['%s' % col_idx] = median([column_widths.get('%s' % col_idx, 0), len(str(col)) * 2])
+            else:
+                column_widths['%s' % col_idx] = median([column_widths.get('%s' % col_idx, 0), 160])
             if (row_number == 1) and dataset.headers:
                 # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                     # '%s' % col, errors='ignore')
                 ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
+                ws.column_dimensions['%s' % col_idx].width = int(column_widths['%s' % col_idx])
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
                 if freeze_panes:
                     # As already done in #53, but after Merge lost:
                     #  Export Freeze only after first Line
                     ws.freeze_panes = 'A2'
-                    
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
+                ws.cell('%s%s'%(col_idx, row_number)).value = unicode('%s' % col, errors='ignore')
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
 
@@ -139,14 +147,14 @@ def dset_sheet(dataset, ws, freeze_panes=True):
             else:
                 try:
                     if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode('%s' % col, errors='ignore')
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
                     else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode('%s' % col, errors='ignore')
                 except TypeError:
                     ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
+
+
 
 
