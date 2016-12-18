@@ -26,3 +26,6 @@ junit-py27.xml
 
 # tox noise
 .tox
+
+# pyenv noise
+.python-version
