@@ -2,6 +2,7 @@
 
 """ Tablib - JSON Support
 """
+import decimal
 
 import tablib
 
@@ -16,7 +17,13 @@ extensions = ('json', 'jsn')
 
 
 def date_handler(obj):
-    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+    if isinstance(obj, decimal.Decimal):
+        return str(obj)
+    elif hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        return obj
+    # return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 
 def export_set(dataset):
