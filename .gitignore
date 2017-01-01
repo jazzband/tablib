@@ -17,6 +17,7 @@ profile
 
 # vi noise
 *.swp
+*~
 docs/_build/*
 coverage.xml
 nosetests.xml

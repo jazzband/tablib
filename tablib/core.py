@@ -9,7 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from copy import copy
+from copy import deepcopy
 from operator import itemgetter
 
 from tablib import formats
@@ -27,13 +27,16 @@ __docformat__ = 'restructuredtext'
 
 
 class Row(object):
-    """Internal Row object. Mainly used for filtering."""
+    """Internal Row object. Mainly used for filtering. Note: To allow label
+    based indexing Row needs to be aware of the Dataset it belongs to. This is
+    passed to the constructor's `dset` argument."""
 
-    __slots__ = ['_row', 'tags']
+    __slots__ = ['_row', 'tags', '_dset']
 
-    def __init__(self, row=list(), tags=list()):
+    def __init__(self, row=list(), tags=list(), dset=None):
         self._row = list(row)
         self.tags = list(tags)
+        self._dset = dset
 
     def __iter__(self):
         return (col for col in self._row)
@@ -47,14 +50,47 @@ class Row(object):
     def __getslice__(self, i, j):
         return self._row[i:j]
 
-    def __getitem__(self, i):
-        return self._row[i]
+    def _index(self, key):
+        """Returns index for ``key`` (string or int). Raises TypeError if
+        ``key`` is string bt Dataset has no unique headers set and IndexError
+        if ``key`` is not in headers."""
 
-    def __setitem__(self, i, value):
-        self._row[i] = value
+        if isinstance(key, (str, unicode)):
+            if not self._dset._lblidx:
+                raise TypeError("Cannot access element by key '{}' - Dataset"
+                        " headers not suitable for indexing".format(key))
+            try:
+                i = self._dset.headers.index(key)
+            except ValueError:
+                raise IndexError("'{}' not in Dataset headers".format(key))
+        else:
+            i = key
 
-    def __delitem__(self, i):
-        del self._row[i]
+        return i
+
+    def __getitem__(self, key):
+        return self._row[self._index(key)]
+
+    def __setitem__(self, key, value):
+        self._row[self._index(key)] = value
+
+    def __delitem__(self, key):
+        del self._row[self._index(key)]
+
+    def __add__(self, other):
+        """Returns concatenation as plain list. ``other`` can be Row or a
+        sequence type"""
+        return self._row + list(other)
+
+    def __eq__(self, other):
+        """Requires ``_row`` and ``tags`` attributes to be equal but not
+        headers of respective owning Datasets"""
+        if not isinstance(other, Row):
+            raise TypeError("Can't compare Row to %s" % type(other))
+        return self._row == other._row and self.tags == other.tags
+
+    def __ne__(self, other):
+        return not self == other
 
     def __getstate__(self):
 
@@ -103,8 +139,6 @@ class Row(object):
             return (tag in self.tags)
         else:
             return bool(len(set(tag) & set(self.tags)))
-
-
 
 
 class Dataset(object):
@@ -157,8 +191,9 @@ class Dataset(object):
     _formats = {}
 
     def __init__(self, *args, **kwargs):
-        self._data = list(Row(arg) for arg in args)
+        self._data = list(Row(arg, dset=self) for arg in args)
         self.__headers = None
+        self._lblidx = False
 
         # ('title', index) tuples
         self._separators = []
@@ -172,13 +207,11 @@ class Dataset(object):
 
         self._register_formats()
 
-
     def __len__(self):
         return self.height
 
-
     def __getitem__(self, key):
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, (str, unicode)):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -187,13 +220,13 @@ class Dataset(object):
         else:
             _results = self._data[key]
             if isinstance(_results, Row):
-                return _results.tuple
+                return _results
             else:
-                return [result.tuple for result in _results]
+                return [result for result in _results]
 
     def __setitem__(self, key, value):
         self._validate(value)
-        self._data[key] = Row(value)
+        self._data[key] = Row(value, dset=self)
 
 
     def __delitem__(self, key):
@@ -339,10 +372,13 @@ class Dataset(object):
         if collection:
             try:
                 self.__headers = list(collection)
+                self._lblidx = (len(set(collection)) == len(collection))
             except TypeError:
+                self._lblidx = False
                 raise TypeError
         else:
             self.__headers = None
+            self._lblidx = False
 
     headers = property(_get_headers, _set_headers)
 
@@ -380,14 +416,14 @@ class Dataset(object):
         if isinstance(pickle[0], list):
             self.wipe()
             for row in pickle:
-                self.append(Row(row))
+                self.append(Row(row, dset=self))
 
         # if list of objects
         elif isinstance(pickle[0], dict):
             self.wipe()
             self.headers = list(pickle[0].keys())
             for row in pickle:
-                self.append(Row(list(row.values())))
+                self.append(Row(list(row.values()), dset=self))
         else:
             raise UnsupportedFormat
 
@@ -644,7 +680,7 @@ class Dataset(object):
        """
 
         self._validate(row)
-        self._data.insert(index, Row(row, tags=tags))
+        self._data.insert(index, Row(row, tags=tags, dset=self))
 
 
     def rpush(self, row, tags=list()):
@@ -765,8 +801,7 @@ class Dataset(object):
                 row.insert(index, col[i])
                 self._data[i] = row
         else:
-            self._data = [Row([row]) for row in col]
-
+            self._data = [Row([row], dset=self) for row in col]
 
 
     def rpush_col(self, col, header=None):
@@ -849,7 +884,7 @@ class Dataset(object):
         """Returns a new instance of the :class:`Dataset`, excluding any rows
         that do not contain the given :ref:`tags <tags>`.
         """
-        _dset = copy(self)
+        _dset = self.copy()
         _dset._data = [row for row in _dset._data if row.has_tag(tag)]
 
         return _dset
@@ -918,8 +953,19 @@ class Dataset(object):
             # Adding the column name as now they're a regular column
             # Use `get_col(index)` in case there are repeated values
             row_data = [column] + self.get_col(index)
-            row_data = Row(row_data)
+            row_data = Row(row_data, dset=self)
             _dset.append(row=row_data)
+        return _dset
+
+
+    def copy(self):
+        """Return copy with each Row's Dataset reference set to the new
+        object"""
+
+        _dset = deepcopy(self)
+        for row in _dset._data:
+            row._dset = _dset
+
         return _dset
 
 
@@ -934,14 +980,17 @@ class Dataset(object):
         if self.width != other.width:
             raise InvalidDimensions
 
-        # Copy the source data
-        _dset = copy(self)
+        # Copy the source data (updates Dataset reference in Rows)
+        _dset = self.copy()
+        _dset.extend(other._data)
 
+        """
         rows_to_stack = [row for row in _dset._data]
         other_rows = [row for row in other._data]
 
         rows_to_stack.extend(other_rows)
         _dset._data = rows_to_stack
+        """
 
         return _dset
 
@@ -991,6 +1040,7 @@ class Dataset(object):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
+        self._lblidx = None
 
 
     def subset(self, rows=None, cols=None):
@@ -1028,10 +1078,9 @@ class Dataset(object):
                     raise KeyError
 
             if row_no in rows:
-                _dset.append(row=Row(data_row))
+                _dset.append(row=Row(data_row, dset=_dset))
 
         return _dset
-
 
 
 class Databook(object):
