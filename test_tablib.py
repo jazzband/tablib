@@ -79,7 +79,7 @@ class TablibTestCase(unittest.TestCase):
 
         data.append_col(new_col)
 
-        self.assertEqual(tuple(data[0]), ('kenneth', 'reitz'))
+        self.assertEqual(data[0].tuple, ('kenneth', 'reitz'))
         self.assertEqual(data.width, 2)
 
         # With Headers
@@ -183,20 +183,21 @@ class TablibTestCase(unittest.TestCase):
     def test_label_based_row_item_access(self):
         """Verify label based indexing for Rows works"""
 
+        def label_index_callable(dataset, row_index, col_label):
+            return dataset[row_index][col_label]
+
         self.founders[0]['last_name'] = 'Jay'
         self.assertEqual(self.founders[0]['last_name'], 'Jay')
         self.assertEqual(self.founders[0]['last_name'], self.founders[0][1])
 
-        with self.assertRaises(IndexError,
-                msg="'middle_name' not in Dataset headers"):
-            self.founders[0]['middle_name'] = 'Quincy'
+        self.assertRaises(IndexError, label_index_callable, self.founders, 0,
+                'middle name')
 
         # non-unique headers, missing headers:
         for headers in [('same', 'same', 'different'), None]:
             self.founders.headers = headers
-            with self.assertRaises(TypeError, msg="Cannot access element by"
-                    " key '{}' - Dataset headers not suitable for indexing"):
-                self.founders[0]['same']
+            self.assertRaises(TypeError, label_index_callable, self.founders,
+                    0, 'same')
 
     def test_get_col(self):
         """Verify getting columns by index"""
@@ -853,7 +854,7 @@ class TablibTestCase(unittest.TestCase):
             expected_data = original_data + original_data
             self.assertEqual(row.list, expected_data)
 
-        self.assertEqual(tuple(column_stacked[0]),
+        self.assertEqual(column_stacked[0].tuple,
                          ("John", "Adams", 90, "John", "Adams", 90))
 
         self.assertTrue(all([r._dset is column_stacked
