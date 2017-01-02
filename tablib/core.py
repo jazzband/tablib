@@ -57,12 +57,12 @@ class Row(object):
 
         if isinstance(key, (str, unicode)):
             if not self._dset._lblidx:
-                raise TypeError("Cannot access element by key '{}' - Dataset"
+                raise TypeError("Cannot access element by key '{0}' - Dataset"
                         " headers not suitable for indexing".format(key))
             try:
                 i = self._dset.headers.index(key)
             except ValueError:
-                raise IndexError("'{}' not in Dataset headers".format(key))
+                raise IndexError("'{0}' not in Dataset headers".format(key))
         else:
             i = key
 
