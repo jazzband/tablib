@@ -37,11 +37,11 @@ if is_py3:
 
 else:
     from cStringIO import StringIO as BytesIO
-    from cStringIO import StringIO
+    from StringIO import StringIO
     from tablib.packages import markup
     from itertools import ifilter
 
-    import unicodecsv as csv
+    from backports import csv
     import tablib.packages.dbfpy as dbfpy
 
     unicode = unicode

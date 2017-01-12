@@ -831,7 +831,7 @@ class Dataset(object):
            against each cell value.
         """
 
-        if isinstance(col, str):
+        if isinstance(col, unicode):
             if col in self.headers:
                 col = self.headers.index(col) # get 'key' index from each data
             else:

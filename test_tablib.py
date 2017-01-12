@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Tests for Tablib."""
-
-import json
-import unittest
-import sys
-import os
+from __future__ import unicode_literals
 
 import datetime
+import json
+import sys
+import unittest
 
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
+from tablib.formats import csv as csv_format
 
 
 class TablibTestCase(unittest.TestCase):
@@ -530,6 +530,15 @@ class TablibTestCase(unittest.TestCase):
         data.csv = _csv
 
         self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_with_unicode_str(self):
+        """Import CSV set with non-ascii characters in unicode literal"""
+        csv_text = (
+            "id,givenname,surname,loginname,email,pref_firstname,pref_lastname\n"
+            "13765,Ævar,Arnfjörð,testing,test@example.com,Ævar,Arnfjörð"
+        )
+        data.csv = csv_text
+        self.assertEqual(data.width, 7)
 
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""

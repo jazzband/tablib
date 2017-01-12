@@ -3,15 +3,14 @@
 """ Tablib - *SV Support.
 """
 
-from tablib.compat import is_py3, csv, StringIO
+from tablib.compat import csv, StringIO, unicode
 
 
 title = 'csv'
 extensions = ('csv',)
 
 
-DEFAULT_ENCODING = 'utf-8'
-DEFAULT_DELIMITER = ','
+DEFAULT_DELIMITER = unicode(',')
 
 
 def export_set(dataset, **kwargs):
@@ -19,8 +18,6 @@ def export_set(dataset, **kwargs):
     stream = StringIO()
 
     kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
-    if not is_py3:
-        kwargs.setdefault('encoding', DEFAULT_ENCODING)
 
     _csv = csv.writer(stream, **kwargs)
 
@@ -36,8 +33,6 @@ def import_set(dset, in_stream, headers=True, **kwargs):
     dset.wipe()
 
     kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
-    if not is_py3:
-        kwargs.setdefault('encoding', DEFAULT_ENCODING)
 
     rows = csv.reader(StringIO(in_stream), **kwargs)
     for i, row in enumerate(rows):
