@@ -40,7 +40,6 @@ packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
     'tablib.packages.omnijson',
-    'tablib.packages.unicodecsv',
     'tablib.packages.xlwt',
     'tablib.packages.xlrd',
     'tablib.packages.odf',
@@ -61,6 +60,9 @@ packages = [
     'tablib.packages.dbfpy3'
 ]
 
+install = [
+    'unicodecsv',
+]
 
 setup(
     name='tablib',
@@ -91,4 +93,5 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     tests_require=['pytest'],
+    install_requires=install,
 )
