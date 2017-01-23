@@ -1,10 +1,16 @@
 History
 -------
 
-0.11.4 (???)
-++++++++++++
+0.11.4 (2017-01-23)
++++++++++++++++++++
+
+- Use built-in `json` package if available
+- Support Python 3.5+ in classifiers
+
+** Bugfixes **
 
 - Fixed textual representation for Dataset with no headers
+- Handle decimal types
 
 0.11.3 (2016-02-16)
 +++++++++++++++++++
