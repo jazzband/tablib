@@ -278,6 +278,7 @@
 # 2007-07-07 SJM Logfile arg wasn't being passed from open_workbook to compdoc.CompDoc
 # 2007-05-21 SJM If no CODEPAGE record in pre-8.0 file, assume ascii and keep going.
 # 2007-04-22 SJM Removed antique undocumented Book.get_name_dict method.
+from __future__ import print_function
 
 import sys
 import time
@@ -291,6 +292,7 @@ from .biffh import *
 from .xldate import xldate_as_tuple, XLDateError
 from .formula import *
 from .xfcell import XFCell
+
 
 empty_cell = sheet.empty_cell # for exposure to the world ...
 
