@@ -979,6 +979,11 @@ class TablibTestCase(unittest.TestCase):
         """Test XLSX export with formatter configuration."""
         self.founders.export('xlsx', freeze_panes=False)
 
+    def test_databook_formatter_with_new_lines(self):
+        """Test XLSX export with new line in content."""
+        self.founders.append(('First\nSecond', 'Name', 42))
+        self.founders.export('xlsx')
+
 
 if __name__ == '__main__':
     unittest.main()
