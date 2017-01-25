@@ -1032,6 +1032,25 @@ class Dataset(object):
 
         return _dset
 
+    def compare(self, other):
+        if not isinstance(other, Dataset):
+            return
+
+        if not self.headers or not other.headers:
+            raise HeadersNeeded
+
+        if self.height != other.height:
+            return False
+
+        if sorted(self.headers) != sorted(other.headers):
+            return False
+
+        for header in self.headers:
+            for a, b in zip(self[header], other[header]):
+                if a != b:
+                    return False
+
+        return True
 
 
 class Databook(object):

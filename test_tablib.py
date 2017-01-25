@@ -11,7 +11,7 @@ import datetime
 
 import tablib
 from tablib.compat import markup, unicode, is_py3
-from tablib.core import Row
+from tablib.core import Row, HeadersNeeded
 
 
 class TablibTestCase(unittest.TestCase):
@@ -955,6 +955,28 @@ class TablibTestCase(unittest.TestCase):
     def test_databook_formatter_support_kwargs(self):
         """Test XLSX export with formatter configuration."""
         self.founders.export('xlsx', freeze_panes=False)
+
+    def test_compare(self):
+        empty_data = tablib.Dataset()
+
+        original_data = tablib.Dataset()
+        original_data.headers = ['i', 'b', 's']
+        original_data.append([1, True, "aaa"])
+
+        reordered_data = tablib.Dataset()
+        reordered_data.headers = ['s', 'i', 'b']
+        reordered_data.append(["aaa", 1, True])
+
+        different_data = tablib.Dataset()
+        different_data.headers = ['i', 'b', 's']
+        different_data.append([0, False, "bbb"])
+
+        self.assertTrue(original_data.compare(original_data))
+        self.assertTrue(original_data.compare(reordered_data))
+        self.assertFalse(original_data.compare(different_data))
+        self.assertFalse(reordered_data.compare(different_data))
+        self.assertTrue(original_data.compare(None) is None)
+        self.assertRaises(HeadersNeeded, original_data.compare, empty_data)
 
 
 if __name__ == '__main__':
