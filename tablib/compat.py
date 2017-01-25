@@ -51,7 +51,7 @@ else:
     from tablib.packages import openpyxl
     from tablib.packages.odf import opendocument, style, text, table
 
-    from tablib.packages import unicodecsv as csv
+    import unicodecsv as csv
     import tablib.packages.dbfpy as dbfpy
 
     unicode = unicode

@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import sys
-
-import tablib
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
-
 
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
@@ -40,7 +38,6 @@ packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
     'tablib.packages.omnijson',
-    'tablib.packages.unicodecsv',
     'tablib.packages.xlwt',
     'tablib.packages.xlrd',
     'tablib.packages.odf',
@@ -61,10 +58,17 @@ packages = [
     'tablib.packages.dbfpy3'
 ]
 
+install = [
+    'unicodecsv',
+]
+
+with open('tablib/core.py', 'r') as fd:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        fd.read(), re.MULTILINE).group(1)
 
 setup(
     name='tablib',
-    version=tablib.__version__,
+    version=version,
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(open('README.rst').read() + '\n\n' +
         open('HISTORY.rst').read()),
@@ -91,4 +95,5 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     tests_require=['pytest'],
+    install_requires=install,
 )
