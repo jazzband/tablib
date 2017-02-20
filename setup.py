@@ -37,7 +37,6 @@ if sys.argv[-1] == 'test':
 packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
-    'tablib.packages.omnijson',
     'tablib.packages.odf',
     'tablib.packages.dbfpy',
     'tablib.packages.odf3',
