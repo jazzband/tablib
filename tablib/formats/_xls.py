@@ -5,8 +5,11 @@
 
 import sys
 
-from tablib.compat import BytesIO, xlwt, xlrd, XLRDError, xrange
+from tablib.compat import BytesIO, xrange
 import tablib
+import xlrd
+import xlwt
+from xlrd.biffh import XLRDError
 
 title = 'xls'
 extensions = ('xls',)

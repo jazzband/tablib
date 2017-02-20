@@ -38,13 +38,9 @@ packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
     'tablib.packages.omnijson',
-    'tablib.packages.xlwt',
-    'tablib.packages.xlrd',
     'tablib.packages.odf',
     'tablib.packages.yaml',
     'tablib.packages.dbfpy',
-    'tablib.packages.xlwt3',
-    'tablib.packages.xlrd3',
     'tablib.packages.odf3',
     'tablib.packages.yaml3',
     'tablib.packages.dbfpy3'
@@ -53,6 +49,8 @@ packages = [
 install = [
     'openpyxl',
     'unicodecsv',
+    'xlrd',
+    'xlwt',
 ]
 
 with open('tablib/core.py', 'r') as fd:
