@@ -21,7 +21,7 @@ if sys.argv[-1] == 'speedups':
         print('Pip required.')
         sys.exit(1)
 
-    os.system('pip install ujson pyyaml')
+    os.system('pip install ujson')
     sys.exit()
 
 if sys.argv[-1] == 'test':
@@ -39,10 +39,8 @@ packages = [
     'tablib.packages',
     'tablib.packages.omnijson',
     'tablib.packages.odf',
-    'tablib.packages.yaml',
     'tablib.packages.dbfpy',
     'tablib.packages.odf3',
-    'tablib.packages.yaml3',
     'tablib.packages.dbfpy3'
 ]
 
@@ -51,6 +49,7 @@ install = [
     'unicodecsv',
     'xlrd',
     'xlwt',
+    'pyyaml',
 ]
 
 with open('tablib/core.py', 'r') as fd:

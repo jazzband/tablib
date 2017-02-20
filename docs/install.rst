@@ -46,11 +46,7 @@ Speed Extensions
 
 .. versionadded:: 0.8.5
 
-Tablib is partially dependent on the **pyyaml**, **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib.
-
-However, if performance is important to you (and it should be), you can install  **pyyaml** with C extensions from PyPi. ::
-
-    $ pip install PyYAML
+Tablib is partially dependent on the **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib.
 
 If you're using Python 2.5, you should also install the **simplejson** module (pip will do this for you). If you're using Python 2.6+, the built-in **json** module is already optimized and in use. ::
 
