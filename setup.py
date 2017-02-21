@@ -37,13 +37,12 @@ if sys.argv[-1] == 'test':
 packages = [
     'tablib', 'tablib.formats',
     'tablib.packages',
-    'tablib.packages.odf',
     'tablib.packages.dbfpy',
-    'tablib.packages.odf3',
     'tablib.packages.dbfpy3'
 ]
 
 install = [
+    'odfpy',
     'openpyxl',
     'unicodecsv',
     'xlrd',

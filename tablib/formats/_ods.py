@@ -3,15 +3,8 @@
 """ Tablib - ODF Support.
 """
 
-import sys
-
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-else:
-    from cStringIO import StringIO as BytesIO
-
-from tablib.compat import opendocument, style, table, text, unicode
+from odf import opendocument, style, table, text
+from tablib.compat import BytesIO, unicode
 
 title = 'ods'
 extensions = ('ods',)
