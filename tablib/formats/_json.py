@@ -7,10 +7,9 @@ import decimal
 import tablib
 
 try:
-    import json
+    import ujson as json
 except ImportError:
-    from tablib.packages import omnijson as json
-
+    import json
 
 title = 'json'
 extensions = ('json', 'jsn')
