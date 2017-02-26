@@ -23,7 +23,6 @@ except ImportError:
 if is_py3:
     from io import BytesIO
     from tablib.packages import markup3 as markup
-    from tablib.packages.odf3 import opendocument, style, text, table
     import tablib.packages.dbfpy3 as dbfpy
 
     import csv
@@ -41,7 +40,6 @@ else:
     from cStringIO import StringIO
     from tablib.packages import markup
     from itertools import ifilter
-    from tablib.packages.odf import opendocument, style, text, table
 
     import unicodecsv as csv
     import tablib.packages.dbfpy as dbfpy
