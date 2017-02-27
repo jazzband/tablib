@@ -13,6 +13,7 @@
 #for debugging only
 from math import isnan
 
+from __future__ import print_function
 import time
 from struct import unpack
 from array import array

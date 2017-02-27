@@ -13,6 +13,7 @@
 # 2007-04-22 SJM Missing "<" in a struct.unpack call => can't open files on bigendian platforms.
 
 
+from __future__ import print_function
 import sys
 from struct import unpack
 

@@ -19,6 +19,7 @@
 # 2007-07-11 SJM Allow for BIFF2/3-style FORMAT record in BIFF4/8 file
 
 DEBUG = False
+from __future__ import print_function
 import copy
 import re
 from struct import unpack

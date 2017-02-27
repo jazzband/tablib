@@ -13,6 +13,7 @@
 # 2007-09-08 SJM Avoid crash when zero-length Unicode string missing options byte.
 # 2007-04-22 SJM Remove experimental "trimming" facility.
 
+from __future__ import print_function
 import sys
 from struct import unpack
 
