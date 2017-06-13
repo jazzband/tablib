@@ -18,11 +18,11 @@ from tablib.compat import OrderedDict, unicode
 
 
 __title__ = 'tablib'
-__version__ = '0.11.4'
+__version__ = '0.11.5'
 __build__ = 0x001104
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2016 Kenneth Reitz'
+__copyright__ = 'Copyright 2017 Kenneth Reitz'
 __docformat__ = 'restructuredtext'
 
 
