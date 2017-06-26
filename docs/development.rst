@@ -121,6 +121,10 @@ Tablib features a micro-framework for adding format support. The easiest way to 
 
     If the format excludes support for an import/export mechanism (*eg.* :class:`csv <tablib.Dataset.csv>` excludes :class:`Databook <tablib.Databook>` support), simply don't define the respective functions. Appropriate errors will be raised.
 
+.. note:: If you want to customise delimiter this can be done via additional param in :autofunction:`<tablib.Dataset.export_set>`. 
+
+.. note:: For customise quoting you need a copy of an existing format.
+
 2.
 
     Add your new format module to the :class:`tablib.formats.available` tuple.
@@ -173,7 +177,7 @@ Anyone may view the build status and history at any time.
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Jenkins CI`: https://travis-ci.org/
+.. _`Travis CI`: https://travis-ci.org/
 
 
 .. _docs:
