@@ -36,7 +36,7 @@ Functions
 ---------
 
 
-.. autofunction:: detect
+.. autofunction:: detect_format
 
 .. autofunction:: import_set
 
