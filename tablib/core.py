@@ -1153,7 +1153,7 @@ def import_set(stream, format=None, **kwargs):
 def import_book(stream, format=None, **kwargs):
     """Return dataset of given stream."""
 
-    return Databook().load(stream, format, **kwargs)
+    return Databook().load(format, stream, **kwargs)
 
 
 class InvalidDatasetType(Exception):
