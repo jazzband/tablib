@@ -65,13 +65,13 @@ Intelligently add new columns: ::
 
 Slice rows:  ::
 
-    >>> print data[:2]
+    >>> print(data[:2])
     [('John', 'Adams', 90), ('George', 'Washington', 67)]
 
 
 Slice columns by header: ::
 
-    >>> print data['first_name']
+    >>> print(data['first_name'])
     ['John', 'George', 'Henry']
 
 Easily delete rows: ::
