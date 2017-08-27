@@ -21,6 +21,7 @@ Output formats supported:
 - Excel (Sets + Books)
 - JSON (Sets + Books)
 - YAML (Sets + Books)
+- Pandas DataFrames (Sets)
 - HTML (Sets)
 - TSV (Sets)
 - OSD (Sets)
