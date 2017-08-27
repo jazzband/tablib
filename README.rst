@@ -21,6 +21,7 @@ Output formats supported:
 - Excel (Sets + Books)
 - JSON (Sets + Books)
 - YAML (Sets + Books)
+- Pandas DataFrames (Sets)
 - HTML (Sets)
 - TSV (Sets)
 - OSD (Sets)
@@ -64,13 +65,13 @@ Intelligently add new columns: ::
 
 Slice rows:  ::
 
-    >>> print data[:2]
+    >>> print(data[:2])
     [('John', 'Adams', 90), ('George', 'Washington', 67)]
 
 
 Slice columns by header: ::
 
-    >>> print data['first_name']
+    >>> print(data['first_name'])
     ['John', 'George', 'Henry']
 
 Easily delete rows: ::
@@ -86,7 +87,7 @@ JSON!
 +++++
 ::
 
-	>>> print data.json
+	>>> print(data.json)
 	[
 	  {
 	    "last_name": "Adams",
@@ -105,7 +106,7 @@ YAML!
 +++++
 ::
 
-	>>> print data.yaml
+	>>> print(data.yaml)
 	- {age: 90, first_name: John, last_name: Adams}
 	- {age: 83, first_name: Henry, last_name: Ford}
 
@@ -113,7 +114,7 @@ CSV...
 ++++++
 ::
 
-	>>> print data.csv
+	>>> print(data.csv)
 	first_name,last_name,age
 	John,Adams,90
 	Henry,Ford,83
@@ -131,6 +132,15 @@ DBF!
 
     >>> with open('people.dbf', 'wb') as f:
     ...     f.write(data.dbf)
+    
+Pandas DataFrame!
++++++++++++++++++
+:: 
+
+    >>> print(data.df):
+          first_name last_name  age
+    0       John     Adams   90
+    1      Henry      Ford   83
 
 It's that easy.
 
