@@ -48,6 +48,7 @@ install = [
     'xlrd',
     'xlwt',
     'pyyaml',
+    'pandas',
 ]
 
 with open('tablib/core.py', 'r') as fd:

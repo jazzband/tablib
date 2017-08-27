@@ -570,6 +570,18 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def df():
+        """A DataFrame representation of the :class:`Dataset` object.
+
+        A dataset object can also be imported by setting the :class:`Dataset.df` attribute: ::
+
+            data = tablib.Dataset()
+            data.df = DataFrame(np.random.randn(6,4))
+
+        Import assumes (for now) that headers exist.
+        """
+        pass
 
     @property
     def json():
