@@ -47,9 +47,12 @@ install = [
     'unicodecsv',
     'xlrd',
     'xlwt',
-    'pyyaml',
-    'pandas',
+    'pyyaml'
 ]
+
+# only require Pandas if Python isn't 2.6.
+if not (sys.version_info[0] == 2 and sys.version_info[1] == 6):
+    install.append('pandas')
 
 with open('tablib/core.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
