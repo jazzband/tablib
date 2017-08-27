@@ -139,6 +139,14 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
     <censored binary data>
 
 
+**Pandas DataFrame** ::
+
+    >>> data.df
+      First Name Last Name  Age
+    0    Kenneth     Reitz   22
+    1     Bessie     Monke   21
+
+
 ------------------------
 Selecting Rows & Columns
 ------------------------
