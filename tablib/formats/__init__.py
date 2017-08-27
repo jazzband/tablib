@@ -13,5 +13,6 @@ from . import _xlsx as xlsx
 from . import _ods as ods
 from . import _dbf as dbf
 from . import _latex as latex
+from . import _df as df
 
-available = (json, xls, yaml, csv, dbf, tsv, html, latex, xlsx, ods)
+available = (json, xls, yaml, csv, dbf, tsv, html, latex, xlsx, ods, df)
