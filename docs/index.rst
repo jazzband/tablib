@@ -34,7 +34,7 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
    >>> print(data.export('json'))
    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 21}]
 
-   >>> print(data.yaml)
+   >>> print(data.export('yaml'))
    - {Age: 22, First Name: Kenneth, Last Name: Reitz}
    - {Age: 21, First Name: Bessie, Last Name: Monke}
 
