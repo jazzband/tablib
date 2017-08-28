@@ -87,7 +87,7 @@ JSON!
 +++++
 ::
 
-	>>> print(data.json)
+	>>> print(data.export('json'))
 	[
 	  {
 	    "last_name": "Adams",
@@ -106,7 +106,7 @@ YAML!
 +++++
 ::
 
-	>>> print(data.yaml)
+	>>> print(data.export('yaml'))
 	- {age: 90, first_name: John, last_name: Adams}
 	- {age: 83, first_name: Henry, last_name: Ford}
 
@@ -114,7 +114,7 @@ CSV...
 ++++++
 ::
 
-	>>> print(data.csv)
+	>>> print(data.export('csv'))
 	first_name,last_name,age
 	John,Adams,90
 	Henry,Ford,83
@@ -124,20 +124,20 @@ EXCEL!
 ::
 
 	>>> with open('people.xls', 'wb') as f:
-	...     f.write(data.xls)
+	...     f.write(data.export('xls'))
 
 DBF!
 ++++
 ::
 
     >>> with open('people.dbf', 'wb') as f:
-    ...     f.write(data.dbf)
+    ...     f.write(data.export('dbf'))
     
 Pandas DataFrame!
 +++++++++++++++++
 :: 
 
-    >>> print(data.df):
+    >>> print(data.export('df')):
           first_name last_name  age
     0       John     Adams   90
     1      Henry      Ford   83
