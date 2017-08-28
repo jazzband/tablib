@@ -155,7 +155,7 @@ Once installed, we can generate our xUnit report with a single command. ::
 
 This will generate a **nosetests.xml** file, which can then be analyzed.
 
-.. _Nose: http://somethingaboutorange.com/mrl/projects/nose/
+.. _Nose: https://github.com/nose-devs/nose
 
 
 
