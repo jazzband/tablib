@@ -132,10 +132,10 @@ DBF!
 
     >>> with open('people.dbf', 'wb') as f:
     ...     f.write(data.export('dbf'))
-    
+
 Pandas DataFrame!
 +++++++++++++++++
-:: 
+::
 
     >>> print(data.export('df')):
           first_name last_name  age
@@ -150,7 +150,7 @@ Installation
 
 To install tablib, simply: ::
 
-	$ pip install tablib
+	$ pip install tablib[pandas]
 
 Make sure to check out `Tablib on PyPi <https://pypi.python.org/pypi/tablib/>`_!
 

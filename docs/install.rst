@@ -16,7 +16,7 @@ Distribute & Pip
 
 Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_::
 
-    $ pip install tablib
+    $ pip install tablib[pandas]
 
 
 -------------------
