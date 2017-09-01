@@ -48,7 +48,6 @@ install = [
     'xlrd',
     'xlwt',
     'pyyaml',
-    'pandas'
 ]
 
 
@@ -81,4 +80,7 @@ setup(
     ],
     tests_require=['pytest'],
     install_requires=install,
+    extras_require={
+        'pandas': ['pandas'],
+    },
 )
