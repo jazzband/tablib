@@ -120,33 +120,29 @@ def dset_sheet(dataset, ws, freeze_panes=True):
             if (row_number == 1) and dataset.headers:
                 # ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
                     # '%s' % col, errors='ignore')
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
                 if freeze_panes:
                     # As already done in #53, but after Merge lost:
                     #  Export Freeze only after first Line
                     ws.freeze_panes = 'A2'
-                    
+
             # bold separators
             elif len(row) < dataset.width:
-                ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                    '%s' % col, errors='ignore')
                 style = ws.get_style('%s%s' % (col_idx, row_number))
                 style.font.bold = True
 
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
+                    str_col_value = unicode(col)
+                except TypeError:
+                    str_col_value = ''
+
+                    if '\n' in str_col_value:
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
-                    else:
-                        ws.cell('%s%s'%(col_idx, row_number)).value = unicode(
-                            '%s' % col, errors='ignore')
-                except TypeError:
-                    ws.cell('%s%s'%(col_idx, row_number)).value = unicode(col)
+
+            ws.cell('%s%s' % (col_idx, row_number)).value = col
 
 
