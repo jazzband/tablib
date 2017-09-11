@@ -17,6 +17,7 @@ import tablib
 Workbook = openpyxl.workbook.Workbook
 ExcelWriter = openpyxl.writer.excel.ExcelWriter
 get_column_letter = openpyxl.cell.get_column_letter
+DataTypeException = openpyxl.shared.exc.DataTypeException
 
 from tablib.compat import unicode
 
@@ -143,6 +144,7 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                         style = ws.get_style('%s%s' % (col_idx, row_number))
                         style.alignment.wrap_text
 
-            ws.cell('%s%s' % (col_idx, row_number)).value = col
-
-
+            try:
+                ws.cell('%s%s' % (col_idx, row_number)).value = col
+            except (ValueError, TypeError, DataTypeException):
+                ws.cell('%s%s' % (col_idx, row_number)).value = unicode(col)
