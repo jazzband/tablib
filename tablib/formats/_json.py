@@ -3,13 +3,10 @@
 """ Tablib - JSON Support
 """
 import decimal
+import json
 
 import tablib
 
-try:
-    import ujson as json
-except ImportError:
-    import json
 
 title = 'json'
 extensions = ('json', 'jsn')
@@ -22,7 +19,6 @@ def date_handler(obj):
         return obj.isoformat()
     else:
         return obj
-    # return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 
 def export_set(dataset):
