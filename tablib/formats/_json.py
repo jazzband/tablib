@@ -3,6 +3,7 @@
 """ Tablib - JSON Support
 """
 import decimal
+from uuid import UUID
 
 import tablib
 
@@ -16,7 +17,7 @@ extensions = ('json', 'jsn')
 
 
 def serialize_objects_handler(obj):
-    if isinstance(obj, decimal.Decimal):
+    if isinstance(obj, decimal.Decimal) or isinstance(obj, UUID):
         return str(obj)
     elif hasattr(obj, 'isoformat'):
         return obj.isoformat()
