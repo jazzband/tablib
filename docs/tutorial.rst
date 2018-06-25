@@ -289,6 +289,14 @@ Now that we have extra meta-data on our rows, we can easily filter our :class:`D
 
 It's that simple. The original :class:`Dataset` is untouched.
 
+Open an Excel Workbook and read first sheet
+--------------------------------
+
+To open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet), use the following:
+
+data = tablib.Dataset()
+data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+print(data)
 
 Excel Workbook With Multiple Sheets
 ------------------------------------
