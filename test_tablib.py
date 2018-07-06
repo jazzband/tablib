@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Tests for Tablib."""
 
+import doctest
 import json
 import unittest
 import sys
@@ -383,6 +384,7 @@ class TablibTestCase(unittest.TestCase):
         data.html
         data.latex
         data.df
+        data.rst
 
     def test_datetime_append(self):
         """Passes in a single datetime and a single date and exports."""
@@ -403,6 +405,7 @@ class TablibTestCase(unittest.TestCase):
         data.ods
         data.html
         data.latex
+        data.rst
 
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
@@ -416,6 +419,7 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
         book.html
+        data.rst
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
@@ -960,6 +964,24 @@ class TablibTestCase(unittest.TestCase):
         """Test XLSX export with new line in content."""
         self.founders.append(('First\nSecond', 'Name', 42))
         self.founders.export('xlsx')
+
+    def test_rst_force_grid(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        simple = tablib.formats._rst.export_set(data)
+        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+
+class DocTests(unittest.TestCase):
+
+    def test_rst_formatter_doctests(self):
+        results = doctest.testmod(tablib.formats._rst)
+        self.assertEqual(results.failed, 0)
 
 
 if __name__ == '__main__':
