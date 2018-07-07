@@ -1089,7 +1089,7 @@ class Databook(object):
         """The number of the :class:`Dataset` objects within :class:`Databook`."""
         return len(self._datasets)
 
-    def load(self, format, in_stream, **kwargs):
+    def load(self, in_stream, format, **kwargs):
         """
         Import `in_stream` to the :class:`Databook` object using the `format`.
 
