@@ -806,6 +806,9 @@ class JSONTests(BaseTestCase):
         book.json = _json
 
         self.assertEqual(json.loads(_json), json.loads(book.json))
+        # Same with the load interface
+        book2 = tablib.Databook().load(_json, None)
+        self.assertEqual(json.loads(book.json), json.loads(book2.json))
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
@@ -862,6 +865,9 @@ class YAMLTests(BaseTestCase):
         book.yaml = _yaml
 
         self.assertEqual(_yaml, book.yaml)
+        # Same with the load interface
+        book2 = tablib.Databook().load(_yaml, None)
+        self.assertEqual(_yaml, book2.yaml)
 
     def test_yaml_import_set(self):
         """Generate and import YAML set serialization."""

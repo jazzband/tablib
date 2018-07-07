@@ -1,5 +1,9 @@
 # History
 
+## Unreleased
+
+- Fixed `DataBook().load` parameter ordering (first stream, then format).
+
 ## 0.11.5 (2017-06-13)
 
 - Use `yaml.safe_load` for importing yaml.
