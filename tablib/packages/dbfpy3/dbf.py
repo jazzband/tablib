@@ -66,6 +66,7 @@ from . import header
 from . import record
 from .utils import INVALID_VALUE
 
+
 class Dbf(object):
     """DBF accessor.
 
@@ -82,13 +83,13 @@ class Dbf(object):
     """
 
     __slots__ = ("name", "header", "stream",
-        "_changed", "_new", "_ignore_errors")
+                 "_changed", "_new", "_ignore_errors")
 
     HeaderClass = header.DbfHeader
     RecordClass = record.DbfRecord
     INVALID_VALUE = INVALID_VALUE
 
-    ## initialization and creation helpers
+    # initialization and creation helpers
 
     def __init__(self, f, readOnly=False, new=False, ignoreErrors=False):
         """Initialize instance.
@@ -137,7 +138,7 @@ class Dbf(object):
         self._new = bool(new)
         self._changed = False
 
-    ## properties
+    # properties
 
     closed = property(lambda self: self.stream.closed)
     recordCount = property(lambda self: self.header.recordCount)
@@ -149,6 +150,7 @@ class Dbf(object):
     def ignoreErrors(self, value):
         """Update `ignoreErrors` flag on the header object and self"""
         self.header.ignoreErrors = self._ignore_errors = bool(value)
+
     ignoreErrors = property(
         lambda self: self._ignore_errors,
         ignoreErrors,
@@ -159,7 +161,7 @@ class Dbf(object):
 
         """)
 
-    ## protected methods
+    # protected methods
 
     def _fixIndex(self, index):
         """Return fixed index.
@@ -185,7 +187,7 @@ class Dbf(object):
             raise IndexError("Record index out of range")
         return index
 
-    ## iterface methods
+    # iterface methods
 
     def close(self):
         self.flush()
@@ -227,9 +229,9 @@ class Dbf(object):
             self.header.addField(*defs)
         else:
             raise TypeError("At least one record was added, "
-                "structure can't be changed")
+                            "structure can't be changed")
 
-    ## 'magic' methods (representation and sequence interface)
+    # 'magic' methods (representation and sequence interface)
 
     def __repr__(self):
         return "Dbf stream '%s'\n" % self.stream + repr(self.header)
@@ -249,19 +251,20 @@ class Dbf(object):
         self._changed = True
         self._new = False
 
-    #def __del__(self):
-    #    """Flush stream upon deletion of the object."""
-    #    self.flush()
+        # def __del__(self):
+        #    """Flush stream upon deletion of the object."""
+        #    self.flush()
 
 
-def demoRead(filename):
+def demo_read(filename):
     _dbf = Dbf(filename, True)
     for _rec in _dbf:
         print()
         print(repr(_rec))
     _dbf.close()
 
-def demoCreate(filename):
+
+def demo_create(filename):
     _dbf = Dbf(filename, new=True)
     _dbf.addField(
         ("NAME", "C", 15),
@@ -270,10 +273,10 @@ def demoCreate(filename):
         ("BIRTHDATE", "D"),
     )
     for (_n, _s, _i, _b) in (
-        ("John", "Miller", "YC", (1981, 1, 2)),
-        ("Andy", "Larkin", "AL", (1982, 3, 4)),
-        ("Bill", "Clinth", "", (1983, 5, 6)),
-        ("Bobb", "McNail", "", (1984, 7, 8)),
+            ("John", "Miller", "YC", (1981, 1, 2)),
+            ("Andy", "Larkin", "AL", (1982, 3, 4)),
+            ("Bill", "Clinth", "", (1983, 5, 6)),
+            ("Bobb", "McNail", "", (1984, 7, 8)),
     ):
         _rec = _dbf.newRecord()
         _rec["NAME"] = _n
@@ -284,10 +287,12 @@ def demoCreate(filename):
     print(repr(_dbf))
     _dbf.close()
 
-if (__name__=='__main__'):
+
+if __name__ == '__main__':
     import sys
+
     _name = len(sys.argv) > 1 and sys.argv[1] or "county.dbf"
-    demoCreate(_name)
-    demoRead(_name)
+    demo_create(_name)
+    demo_read(_name)
 
 # vim: set et sw=4 sts=4 :

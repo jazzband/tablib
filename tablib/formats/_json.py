@@ -2,25 +2,37 @@
 
 """ Tablib - JSON Support
 """
+import decimal
 
 import tablib
 
-import sys
-from tablib.packages import omnijson as json
-
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 title = 'json'
 extensions = ('json', 'jsn')
 
 
+def date_handler(obj):
+    if isinstance(obj, decimal.Decimal):
+        return str(obj)
+    elif hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        return obj
+    # return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+
 def export_set(dataset):
     """Returns JSON representation of Dataset."""
-    return json.dumps(dataset.dict)
+    return json.dumps(dataset.dict, default=date_handler)
 
 
 def export_book(databook):
     """Returns JSON representation of Databook."""
-    return json.dumps(databook._package())
+    return json.dumps(databook._package(), default=date_handler)
 
 
 def import_set(dset, in_stream):

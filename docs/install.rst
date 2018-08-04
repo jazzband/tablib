@@ -2,7 +2,7 @@
 Installation
 ============
 
-This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed. Please read this section carefully, or you may miss out on some nice  :ref:`speed enhancements <peed-extensions>`.
+This part of the documentation covers the installation of Tablib. The first step to using any software package is getting it properly installed.
 
 
 .. _installing:
@@ -14,26 +14,9 @@ Installing Tablib
 Distribute & Pip
 ----------------
 
-Installing Tablib is simple with `pip <http://www.pip-installer.org/>`_::
+Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_::
 
-    $ pip install tablib
-
-or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
-
-    $ easy_install tablib
-
-But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
-
-
-
-Cheeseshop Mirror
------------------
-
-If the Cheeseshop is down, you can also install Tablib from Kenneth Reitz's personal `Cheeseshop mirror <pip.kreitz.co/>`_::
-
-    $ pip install -i http://pip.kreitz.co/simple tablib
-
-
+    $ pip install tablib[pandas]
 
 
 -------------------
@@ -61,18 +44,10 @@ To download the full source history from Git, see :ref:`Source Control <scm>`.
 Speed Extensions
 ----------------
 
-.. versionadded:: 0.8.5
+You can gain some speed improvement by optionally installing the ujson_ library.
+Tablib will fallback to the standard `json` module if it doesn't find ``ujson``.
 
-Tablib is partially dependent on the **pyyaml**, **simplejson**, and **xlwt** modules. To reduce installation issues, fully integrated versions of all required libraries are included in Tablib.
-
-However, if performance is important to you (and it should be), you can install  **pyyaml** with C extensions from PyPi. ::
-
-    $ pip install PyYAML
-
-If you're using Python 2.5, you should also install the **simplejson** module (pip will do this for you). If you're using Python 2.6+, the built-in **json** module is already optimized and in use. ::
-
-    $ pip install simplejson
-
+.. _ujson: https://pypi.python.org/pypi/ujson
 
 
 .. _updates:

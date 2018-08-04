@@ -49,7 +49,7 @@ Tablib is released under terms of `The MIT License`_.
 Tablib License
 --------------
 
-Copyright 2011 Kenneth Reitz
+Copyright 2017 Kenneth Reitz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,11 +77,11 @@ Pythons Supported
 
 At this time, the following Python platforms are officially supported:
 
-* cPython 2.5
-* cPython 2.6
 * cPython 2.7
-* cPython 3.1
-* cPython 3.2
+* cPython 3.3
+* cPython 3.4
+* cPython 3.5
+* cPython 3.6
 * PyPy-c 1.4
 * PyPy-c 1.5
 

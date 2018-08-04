@@ -33,7 +33,7 @@ class element:
             self.tag = tag.lower( )
         else:
             self.tag = tag.upper( )
-    
+
     def __call__( self, *args, **kwargs ):
         if len( args ) > 1:
             raise ArgumentError( self.tag )
@@ -42,14 +42,14 @@ class element:
         if self.parent is not None and self.parent.class_ is not None:
             if 'class_' not in kwargs:
                 kwargs['class_'] = self.parent.class_
-            
+
         if self.parent is None and len( args ) == 1:
             x = [ self.render( self.tag, False, myarg, mydict ) for myarg, mydict in _argsdicts( args, kwargs ) ]
             return '\n'.join( x )
         elif self.parent is None and len( args ) == 0:
             x = [ self.render( self.tag, True, myarg, mydict ) for myarg, mydict in _argsdicts( args, kwargs ) ]
             return '\n'.join( x )
-            
+
         if self.tag in self.parent.twotags:
             for myarg, mydict in _argsdicts( args, kwargs ):
                 self.render( self.tag, False, myarg, mydict )
@@ -63,7 +63,7 @@ class element:
             raise DeprecationError( self.tag )
         else:
             raise InvalidElementError( self.tag, self.parent.mode )
-    
+
     def render( self, tag, single, between, kwargs ):
         """Append the actual tags to content."""
 
@@ -71,10 +71,8 @@ class element:
         for key, value in kwargs.iteritems( ):
             if value is not None:               # when value is None that means stuff like <... checked>
                 key = key.strip('_')            # strip this so class_ will mean class, etc.
-                if key == 'http_equiv':         # special cases, maybe change _ to - overall?
-                    key = 'http-equiv'
-                elif key == 'accept_charset':
-                    key = 'accept-charset'
+                if key in ['http_equiv', 'accept_charset']:
+                    key.replace('_','-')
                 out = u"%s %s=\"%s\"" % ( out, key, escape( value ) )
             else:
                 out = u"%s %s" % ( out, key )
@@ -89,7 +87,7 @@ class element:
             self.parent.content.append( out )
         else:
             return out
-    
+
     def close( self ):
         """Append a closing tag unless element has only opening tag."""
 
@@ -128,11 +126,11 @@ class page:
                                 these two keyword arguments may be used to select
                                 the set of valid elements in 'xml' mode
                                 invalid elements will raise appropriate exceptions
-        
+
         separator --            string to place between added elements, defaults to newline
-        
+
         class_ --               a class that will be added to every element if defined"""
-        
+
         valid_onetags = [ "AREA", "BASE", "BR", "COL", "FRAME", "HR", "IMG", "INPUT", "LINK", "META", "PARAM" ]
         valid_twotags = [ "A", "ABBR", "ACRONYM", "ADDRESS", "B", "BDO", "BIG", "BLOCKQUOTE", "BODY", "BUTTON",
                 "CAPTION", "CITE", "CODE", "COLGROUP", "DD", "DEL", "DFN", "DIV", "DL", "DT", "EM", "FIELDSET",
@@ -163,7 +161,7 @@ class page:
             self.deptags += map( string.lower, self.deptags )
             self.mode = 'strict_html'
         elif mode == 'loose_html':
-            self.onetags = valid_onetags + deprecated_onetags 
+            self.onetags = valid_onetags + deprecated_onetags
             self.onetags += map( string.lower, self.onetags )
             self.twotags = valid_twotags + deprecated_twotags
             self.twotags += map( string.lower, self.twotags )
@@ -183,16 +181,16 @@ class page:
 
     def __getattr__( self, attr ):
         if attr.startswith("__") and attr.endswith("__"):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         return element( attr, case=self.case, parent=self )
 
     def __str__( self ):
-        
+
         if self._full and ( self.mode == 'strict_html' or self.mode == 'loose_html' ):
             end = [ '</body>', '</html>' ]
         else:
             end = [ ]
-        
+
         return self.separator.join( self.header + self.content + self.footer + end )
 
     def __call__( self, escape=False ):
@@ -232,7 +230,7 @@ class page:
 
         lang --     language, usually a two character string, will appear
                     as <html lang='en'> in html mode (ignored in xml mode)
-        
+
         css --      Cascading Style Sheet filename as a string or a list of
                     strings for multiple css files (ignored in xml mode)
 
@@ -306,7 +304,7 @@ class page:
     def css( self, filelist ):
         """This convenience function is only useful for html.
         It adds css stylesheet(s) to the document via the <link> element."""
-      
+
         if isinstance( filelist, basestring ):
             self.link( href=filelist, rel='stylesheet', type='text/css', media='all' )
         else:
@@ -322,7 +320,7 @@ class page:
             for name, content in mydict.iteritems( ):
                 self.meta( name=name, content=content )
         else:
-            raise TypeError, "Metainfo should be called with a dictionary argument of name:content pairs."
+            raise TypeError ("Metainfo should be called with a dictionary argument of name:content pairs.")
 
     def scripts( self, mydict ):
         """Only useful in html, mydict is dictionary of src:type pairs will
@@ -332,20 +330,20 @@ class page:
             for src, type in mydict.iteritems( ):
                 self.script( '', src=src, type='text/%s' % type )
         else:
-            raise TypeError, "Script should be given a dictionary of src:type pairs."
+            raise TypeError ("Script should be given a dictionary of src:type pairs.")
 
 
 class _oneliner:
     """An instance of oneliner returns a string corresponding to one element.
     This class can be used to write 'oneliners' that return a string
     immediately so there is no need to instantiate the page class."""
-    
+
     def __init__( self, case='lower' ):
         self.case = case
-    
+
     def __getattr__( self, attr ):
         if attr.startswith("__") and attr.endswith("__"):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         return element( attr, case=self.case, parent=None )
 
 oneliner = _oneliner( case='lower' )
@@ -353,13 +351,13 @@ upper_oneliner = _oneliner( case='upper' )
 
 def _argsdicts( args, mydict ):
     """A utility generator that pads argument list and dictionary values, will only be called with len( args ) = 0, 1."""
-    
+
     if len( args ) == 0:
-        args = None, 
+        args = None,
     elif len( args ) == 1:
         args = _totuple( args[0] )
     else:
-        raise Exception, "We should have never gotten here."
+        raise Exception("We should have never gotten here.")
 
     mykeys = mydict.keys( )
     myvalues = map( _totuple, mydict.values( ) )
@@ -418,7 +416,7 @@ _escape = escape
 
 def unescape( text ):
     """Inverse of escape."""
-    
+
     if isinstance( text, basestring ):
         if '&amp;' in text:
             text = text.replace( '&amp;', '&' )
@@ -481,4 +479,4 @@ class CustomizationError( MarkupError ):
         self.message = "If you customize the allowed elements, you must define both types 'onetags' and 'twotags'."
 
 if __name__ == '__main__':
-    print __doc__
+    print (__doc__)

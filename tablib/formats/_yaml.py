@@ -3,24 +3,11 @@
 """ Tablib - YAML Support.
 """
 
-import sys
-
-try:
-    import yaml
-except ImportError:
-    if sys.version_info[0] > 2:
-        import tablib.packages.yaml3 as yaml
-    else:
-        import tablib.packages.yaml as yaml
-
-
 import tablib
-
-
+import yaml
 
 title = 'yaml'
 extensions = ('yaml', 'yml')
-
 
 
 def export_set(dataset):
@@ -46,11 +33,12 @@ def import_book(dbook, in_stream):
 
     dbook.wipe()
 
-    for sheet in yaml.load(in_stream):
+    for sheet in yaml.safe_load(in_stream):
         data = tablib.Dataset()
         data.title = sheet['title']
         data.dict = sheet['data']
         dbook.add_sheet(data)
+
 
 def detect(stream):
     """Returns True if given stream is valid YAML."""

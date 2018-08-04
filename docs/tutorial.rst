@@ -103,7 +103,7 @@ Importing Data
 --------------
 Creating a :class:`tablib.Dataset` object by importing a pre-existing file is simple. ::
 
-   imported_data = tablib.import_set(open('data.csv').read())
+   imported_data = Dataset().load(open('data.csv').read())
 
 This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
 
@@ -115,28 +115,36 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
 
 **Comma-Separated Values** ::
 
-    >>> data.csv
+    >>> data.export('csv')
     Last Name,First Name,Age
     Reitz,Kenneth,22
     Monke,Bessie,20
 
 **JavaScript Object Notation** ::
 
-    >>> data.json
+    >>> data.export('json')
     [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 20}]
 
 
 **YAML Ain't Markup Language** ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Last Name: Monke}
 
 
 **Microsoft Excel** ::
 
-    >>> data.xls
+    >>> data.export('xls')
     <censored binary data>
+
+
+**Pandas DataFrame** ::
+
+    >>> data.export('df')
+      First Name Last Name  Age
+    0    Kenneth     Reitz   22
+    1     Bessie     Monke   21
 
 
 ------------------------
@@ -158,9 +166,9 @@ To do so, we access the :class:`Dataset` as if it were a standard Python diction
 
 You can also access the column using its index. ::
 
-    >>> d.headers
+    >>> data.headers
     ['Last Name', 'First Name', 'Age']
-    >>> d.get_col(1)
+    >>> data.get_col(1)
     ['Kenneth', 'Bessie']
 
 Let's find the average age. ::
@@ -216,7 +224,7 @@ Let's add a dynamic column to our :class:`Dataset` object. In this example, we h
 
 Let's have a look at our data. ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Grade: 0.6, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Grade: 0.75, Last Name: Monke}
 
@@ -246,7 +254,7 @@ For example, we can use the data available in the row to guess the gender of a s
 
 Adding this function to our dataset as a dynamic column would result in: ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
@@ -346,7 +354,7 @@ When, it's often useful to create a blank row containing information on the upco
 
     # Write spreadsheet to disk
     with open('grades.xls', 'wb') as f:
-        f.write(tests.xls)
+        f.write(tests.export('xls'))
 
 The resulting **tests.xls** will have the following layout:
 

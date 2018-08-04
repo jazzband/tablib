@@ -29,6 +29,7 @@ from .fields import *
 from .header import *
 from .record import *
 
+
 class _FieldDefinition(object):
     """Field definition.
 
@@ -145,28 +146,28 @@ class dbf_new(object):
         _dbfStream.close()
 
 
-if (__name__=='__main__'):
+if __name__ == '__main__':
     # create a new DBF-File
-    dbfn=dbf_new()
-    dbfn.add_field("name",'C',80)
-    dbfn.add_field("price",'N',10,2)
-    dbfn.add_field("date",'D',8)
+    dbfn = dbf_new()
+    dbfn.add_field("name", 'C', 80)
+    dbfn.add_field("price", 'N', 10, 2)
+    dbfn.add_field("date", 'D', 8)
     dbfn.write("tst.dbf")
     # test new dbf
     print("*** created tst.dbf: ***")
     dbft = Dbf('tst.dbf', readOnly=0)
     print(repr(dbft))
     # add a record
-    rec=DbfRecord(dbft)
-    rec['name']='something'
-    rec['price']=10.5
-    rec['date']=(2000,1,12)
+    rec = DbfRecord(dbft)
+    rec['name'] = 'something'
+    rec['price'] = 10.5
+    rec['date'] = (2000, 1, 12)
     rec.store()
     # add another record
-    rec=DbfRecord(dbft)
-    rec['name']='foo and bar'
-    rec['price']=12234
-    rec['date']=(1992,7,15)
+    rec = DbfRecord(dbft)
+    rec['name'] = 'foo and bar'
+    rec['price'] = 12234
+    rec['date'] = (1992, 7, 15)
     rec.store()
 
     # show the records
@@ -175,7 +176,7 @@ if (__name__=='__main__'):
     for i1 in range(len(dbft)):
         rec = dbft[i1]
         for fldName in dbft.fieldNames:
-            print('%s:\t %s'%(fldName, rec[fldName]))
+            print('%s:\t %s' % (fldName, rec[fldName]))
         print()
     dbft.close()
 

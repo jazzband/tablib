@@ -8,11 +8,6 @@ Tablib is under active development, and contributors are welcome.
 If you have a feature request, suggestion, or bug report, please open a new
 issue on GitHub_. To submit patches, please send a pull request on GitHub_.
 
-If you'd like to contribute, there's plenty to do. Here's a short todo list.
-
-    .. include:: ../TODO.rst
-
-
 .. _GitHub: http://github.com/kennethreitz/tablib/
 
 
@@ -66,8 +61,6 @@ Feature / Hotfix / Release branches follow a `Successful Git Branching Model`_ .
     The "next release" branch. Likely unstable.
 ``master``
     Current production release (|version|) on PyPi.
-``gh-pages``
-    Current release of http://docs.python-tablib.org.
 
 Each release is tagged.
 
@@ -87,9 +80,7 @@ Adding New Formats
 
 Tablib welcomes new format additions! Format suggestions include:
 
-* Tab Separated Values
 * MySQL Dump
-* HTML Table
 
 
 Coding by Convention
@@ -207,34 +198,9 @@ Your ``docs/_build/html`` directory will then contain an HTML representation of 
 
 You can also generate the documentation in **epub**, **latex**, **json**, *&c* similarly.
 
-.. admonition:: GitHub Pages
-
-	To push the documentation up to `GitHub Pages`_, you will first need to run `sphinx-to-github`_ against your ``docs/_build/html`` directory.
-
-	GitHub Pages are powered by an HTML generation system called Jekyll_, which is configured to ignore files and folders that begin with "``_``" (*ie.* **_static**).
-
-
-
-
-
-
-	 and `sphinx-to-github`_. ::
-
-	Installing sphinx-to-github is simple. ::
-
-		$ pip install sphinx-to-github
-
-	Running it against the docs is even simpler. ::
-
-		$ sphinx-to-github _build/html
-
-	Move the resulting files to the **gh-pages** branch of your repository, and push it up to GitHub.
-
 .. _`reStructured Text`: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx.pocoo.org
 .. _`GitHub Pages`: http://pages.github.com
-.. _Jekyll: http://github.com/mojombo/jekyll
-.. _`sphinx-to-github`: http://github.com/michaeljones/sphinx-to-github
 
 ----------
 
