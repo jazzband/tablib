@@ -24,7 +24,7 @@ Output formats supported:
 - Pandas DataFrames (Sets)
 - HTML (Sets)
 - TSV (Sets)
-- OSD (Sets)
+- ODS (Sets)
 - CSV (Sets)
 - DBF (Sets)
 
