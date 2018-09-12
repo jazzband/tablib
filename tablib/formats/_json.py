@@ -3,14 +3,11 @@
 """ Tablib - JSON Support
 """
 import decimal
+import json
 from uuid import UUID
 
 import tablib
 
-try:
-    import ujson as json
-except ImportError:
-    import json
 
 title = 'json'
 extensions = ('json', 'jsn')

@@ -14,15 +14,6 @@ if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
     sys.exit()
 
-if sys.argv[-1] == 'speedups':
-    try:
-        __import__('pip')
-    except ImportError:
-        print('Pip required.')
-        sys.exit(1)
-
-    os.system('pip install ujson')
-    sys.exit()
 
 if sys.argv[-1] == 'test':
     try:
