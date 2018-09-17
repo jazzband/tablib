@@ -30,6 +30,8 @@ Output formats supported:
 
 Note that tablib *purposefully* excludes XML support. It always will. (Note: This is a joke. Pull requests are welcome.)
 
+**If you're interested in financially supporting Kenneth Reitz open source, consider [visiting this link](https://cash.me/$KennethReitz). Your support helps tremendously with sustainability of motivation, as Open Source is no longer part of my day job.**
+
 Overview
 --------
 
