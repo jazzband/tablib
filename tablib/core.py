@@ -9,12 +9,13 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from collections import OrderedDict
 from copy import copy
 from operator import itemgetter
 
 from tablib import formats
 
-from tablib.compat import OrderedDict, unicode
+from tablib.compat import unicode
 
 
 __title__ = 'tablib'

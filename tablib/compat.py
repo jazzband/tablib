@@ -13,13 +13,6 @@ import sys
 is_py3 = (sys.version_info[0] > 2)
 
 
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from tablib.packages.ordereddict import OrderedDict
-
-
 if is_py3:
     from io import BytesIO
     from itertools import zip_longest as izip_longest
