@@ -22,19 +22,14 @@ except ImportError:
 
 if is_py3:
     from io import BytesIO
-    from itertools import zip_longest as izip_longest
-    from statistics import median
+    from io import StringIO
     from tablib.packages import markup3 as markup
+    from statistics import median
+    from itertools import zip_longest as izip_longest
+    import csv
     import tablib.packages.dbfpy3 as dbfpy
 
-    import csv
-    from io import StringIO
-    # py3 mappings
-
-    ifilter = filter
     unicode = str
-    bytes = bytes
-    basestring = str
     xrange = range
 
 else:
@@ -42,8 +37,7 @@ else:
     from cStringIO import StringIO
     from tablib.packages import markup
     from tablib.packages.statistics import median
-    from itertools import ifilter, izip_longest
-
+    from itertools import izip_longest
     import unicodecsv as csv
     import tablib.packages.dbfpy as dbfpy
 
