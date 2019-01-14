@@ -77,7 +77,6 @@ Pythons Supported
 At this time, the following Python versions are officially supported:
 
 * CPython 2.7
-* CPython 3.4
 * CPython 3.5
 * CPython 3.6
 * CPython 3.7
