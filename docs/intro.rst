@@ -74,17 +74,12 @@ THE SOFTWARE.
 Pythons Supported
 -----------------
 
-At this time, the following Python platforms are officially supported:
+At this time, the following Python versions are officially supported:
 
-* cPython 2.7
-* cPython 3.3
-* cPython 3.4
-* cPython 3.5
-* cPython 3.6
-
-Support for other Pythons will be rolled out soon.
-
-
-
+* CPython 2.7
+* CPython 3.4
+* CPython 3.5
+* CPython 3.6
+* CPython 3.7
 
 Now, go :ref:`Install Tablib <install>`.
