@@ -316,6 +316,23 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(html, d.html)
 
+    def test_jira_export(self):
+
+        expected = """||first_name||last_name||gpa||
+|John|Adams|90|
+|George|Washington|67|
+|Thomas|Jefferson|50|"""
+        self.assertEqual(expected, self.founders.jira)
+
+    def test_jira_export_no_headers(self):
+        self.assertEqual('|a|b|c|', tablib.Dataset(['a', 'b', 'c']).jira)
+
+    def test_jira_export_none_and_empty_values(self):
+        self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
+
+    def test_jira_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().jira is not None)
+
     def test_latex_export(self):
         """LaTeX export"""
 
@@ -399,6 +416,7 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.jira
         data.latex
         data.df
         data.rst
@@ -421,6 +439,7 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.jira
         data.latex
         data.rst
 

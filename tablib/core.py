@@ -631,7 +631,6 @@ class Dataset(object):
         """
         pass
 
-
     @property
     def latex():
         """A LaTeX booktabs representation of the :class:`Dataset` object. If a
@@ -641,6 +640,13 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def jira():
+        """A Jira table representation of the :class:`Dataset` object.
+
+        .. note:: This method can be used for export only.
+        """
+        pass
 
     # ----
     # Rows
