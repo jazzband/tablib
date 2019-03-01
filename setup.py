@@ -34,7 +34,7 @@ packages = [
 
 install = [
     'odfpy',
-    'openpyxl',
+    'openpyxl>=2.4.0',
     'unicodecsv',
     'xlrd',
     'xlwt',

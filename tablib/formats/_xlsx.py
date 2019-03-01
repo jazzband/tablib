@@ -52,7 +52,7 @@ def export_book(databook, freeze_panes=True):
 
     wb = Workbook()
     for sheet in wb.worksheets:
-        wb.remove_sheet(sheet)
+        wb.remove(sheet)
     for i, dset in enumerate(databook._datasets):
         ws = wb.create_sheet()
         ws.title = dset.title if dset.title else 'Sheet%s' % (i)
