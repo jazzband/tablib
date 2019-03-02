@@ -23,6 +23,7 @@ Output formats supported:
 - YAML (Sets + Books)
 - Pandas DataFrames (Sets)
 - HTML (Sets)
+- Jira (Sets)
 - TSV (Sets)
 - ODS (Sets)
 - CSV (Sets)
