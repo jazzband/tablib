@@ -179,7 +179,7 @@ class Dataset(object):
 
 
     def __getitem__(self, key):
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, (str, unicode)):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -198,7 +198,7 @@ class Dataset(object):
 
 
     def __delitem__(self, key):
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, (str, unicode)):
 
             if key in self.headers:
 
@@ -895,7 +895,7 @@ class Dataset(object):
         sorted.
         """
 
-        if isinstance(col, str) or isinstance(col, unicode):
+        if isinstance(col, (str, unicode)):
 
             if not self.headers:
                 raise HeadersNeeded
