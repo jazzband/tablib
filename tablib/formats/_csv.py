@@ -44,7 +44,7 @@ def import_set(dset, in_stream, headers=True, **kwargs):
 
         if (i == 0) and (headers):
             dset.headers = row
-        else:
+        elif row:
             dset.append(row)
 
 
