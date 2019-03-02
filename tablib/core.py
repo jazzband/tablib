@@ -527,9 +527,9 @@ class Dataset(object):
 
         Import assumes (for now) that headers exist.
 
-        .. admonition:: Binary Warning
+        .. admonition:: Binary Warning for Python 2
 
-             :class:`Dataset.csv` uses \\r\\n line endings by default, so make
+             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 2, make
              sure to write in binary mode::
 
                  with open('output.csv', 'wb') as f:
@@ -537,6 +537,18 @@ class Dataset(object):
 
              If you do not do this, and you export the file on Windows, your
              CSV file will open in Excel with a blank line between each row.
+
+        .. admonition:: Line endings for Python 3
+
+             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 3, make
+             sure to include newline='' otherwise you will get a blank line between each row 
+             when you open the file in Excel::
+
+                 with open('output.csv', 'w', newline='') as f:
+                     f.write(data.csv)
+
+             If you do not do this, and you export the file on Windows, your
+             CSV file will open in Excel with a blank line between each row.             
         """
         pass
 
