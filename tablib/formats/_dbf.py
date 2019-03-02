@@ -89,6 +89,3 @@ def detect(stream):
         # When unpacking a string argument with less than 8 chars, struct.error is
         # raised.
         return False
-
-
-

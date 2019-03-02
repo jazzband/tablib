@@ -254,4 +254,3 @@ History
 * Export Support for XLS, JSON, YAML, and CSV.
 * DataBook Export for XLS, JSON, and YAML.
 * Python Dict Property Support.
-
