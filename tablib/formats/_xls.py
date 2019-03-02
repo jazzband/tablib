@@ -25,7 +25,7 @@ def detect(stream):
         xlrd.open_workbook(file_contents=stream)
         return True
     except (TypeError, XLRDError):
-        pass 
+        pass
     try:
         xlrd.open_workbook(file_contents=stream.read())
         return True

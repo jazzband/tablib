@@ -541,14 +541,14 @@ class Dataset(object):
         .. admonition:: Line endings for Python 3
 
              :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 3, make
-             sure to include newline='' otherwise you will get a blank line between each row 
+             sure to include newline='' otherwise you will get a blank line between each row
              when you open the file in Excel::
 
                  with open('output.csv', 'w', newline='') as f:
                      f.write(data.csv)
 
              If you do not do this, and you export the file on Windows, your
-             CSV file will open in Excel with a blank line between each row.             
+             CSV file will open in Excel with a blank line between each row.
         """
         pass
 

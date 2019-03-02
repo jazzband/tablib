@@ -129,7 +129,7 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                 if freeze_panes:
                     #  Export Freeze only after first Line
                     ws.freeze_panes = 'A2'
-                    
+
             # bold separators
             elif len(row) < dataset.width:
                 cell.value = unicode('%s' % col, errors='ignore')
@@ -145,5 +145,3 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                         cell.value = unicode('%s' % col, errors='ignore')
                 except TypeError:
                     cell.value = unicode(col)
-
-
