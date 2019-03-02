@@ -82,8 +82,6 @@ At this time, the following Python platforms are officially supported:
 * cPython 3.4
 * cPython 3.5
 * cPython 3.6
-* PyPy-c 1.4
-* PyPy-c 1.5
 
 Support for other Pythons will be rolled out soon.
 
