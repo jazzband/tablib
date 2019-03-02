@@ -16,7 +16,7 @@ Distribute & Pip
 
 Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_::
 
-    $ pip install tablib
+    $ pip install tablib[pandas]
 
 
 -------------------
@@ -38,16 +38,6 @@ To download the full source history from Git, see :ref:`Source Control <scm>`.
 
 .. _tarball: http://github.com/kennethreitz/tablib/tarball/master
 .. _zipball: http://github.com/kennethreitz/tablib/zipball/master
-
-
-.. _speed-extensions:
-Speed Extensions
-----------------
-
-You can gain some speed improvement by optionally installing the ujson_ library.
-Tablib will fallback to the standard `json` module if it doesn't find ``ujson``.
-
-.. _ujson: https://pypi.python.org/pypi/ujson
 
 
 .. _updates:

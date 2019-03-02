@@ -33,7 +33,7 @@ def import_book(dbook, in_stream):
 
     dbook.wipe()
 
-    for sheet in yaml.load(in_stream):
+    for sheet in yaml.safe_load(in_stream):
         data = tablib.Dataset()
         data.title = sheet['title']
         data.dict = sheet['data']

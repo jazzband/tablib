@@ -4,9 +4,11 @@
 from __future__ import unicode_literals
 
 import datetime
+import doctest
 import json
 import sys
 import unittest
+from uuid import uuid4
 
 import tablib
 from tablib.compat import markup, unicode, is_py3
@@ -227,6 +229,22 @@ class TablibTestCase(unittest.TestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
+    def test_json_export(self):
+        """Verify exporting dataset object as JSON"""
+
+        address_id = uuid4()
+        headers = self.headers + ('address_id',)
+        founders = tablib.Dataset(headers=headers, title='Founders')
+        founders.append(('John', 'Adams', 90, address_id))
+        founders_json = founders.export('json')
+
+        expected_json = (
+            '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
+            '"address_id": "%s"}]' % str(address_id)
+        )
+
+        self.assertEqual(founders_json, expected_json)
+
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 
@@ -298,6 +316,23 @@ class TablibTestCase(unittest.TestCase):
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
+
+    def test_jira_export(self):
+
+        expected = """||first_name||last_name||gpa||
+|John|Adams|90|
+|George|Washington|67|
+|Thomas|Jefferson|50|"""
+        self.assertEqual(expected, self.founders.jira)
+
+    def test_jira_export_no_headers(self):
+        self.assertEqual('|a|b|c|', tablib.Dataset(['a', 'b', 'c']).jira)
+
+    def test_jira_export_none_and_empty_values(self):
+        self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
+
+    def test_jira_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().jira is not None)
 
     def test_latex_export(self):
         """LaTeX export"""
@@ -382,7 +417,10 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.jira
         data.latex
+        data.df
+        data.rst
 
     def test_datetime_append(self):
         """Passes in a single datetime and a single date and exports."""
@@ -402,7 +440,9 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.jira
         data.latex
+        data.rst
 
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
@@ -416,6 +456,7 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
         book.html
+        data.rst
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
@@ -969,6 +1010,24 @@ class TablibTestCase(unittest.TestCase):
         """Test XLSX export with new line in content."""
         self.founders.append(('First\nSecond', 'Name', 42))
         self.founders.export('xlsx')
+
+    def test_rst_force_grid(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        simple = tablib.formats._rst.export_set(data)
+        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+
+class DocTests(unittest.TestCase):
+
+    def test_rst_formatter_doctests(self):
+        results = doctest.testmod(tablib.formats._rst)
+        self.assertEqual(results.failed, 0)
 
 
 if __name__ == '__main__':

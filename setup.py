@@ -14,15 +14,6 @@ if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
     sys.exit()
 
-if sys.argv[-1] == 'speedups':
-    try:
-        __import__('pip')
-    except ImportError:
-        print('Pip required.')
-        sys.exit(1)
-
-    os.system('pip install ujson')
-    sys.exit()
 
 if sys.argv[-1] == 'test':
     try:
@@ -43,12 +34,13 @@ packages = [
 
 install = [
     'odfpy',
-    'openpyxl',
+    'openpyxl>=2.4.0',
     'backports.csv',
     'xlrd',
     'xlwt',
     'pyyaml',
 ]
+
 
 with open('tablib/core.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
@@ -71,13 +63,14 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
     tests_require=['pytest'],
     install_requires=install,
+    extras_require={
+        'pandas': ['pandas'],
+    },
 )
