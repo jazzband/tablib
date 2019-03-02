@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Tests for Tablib."""
-
-import doctest
-import json
-import unittest
-import sys
-from uuid import uuid4
+from __future__ import unicode_literals
 
 import datetime
+import doctest
+import json
+import sys
+import unittest
+from uuid import uuid4
 
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
+from tablib.formats import csv as csv_format
 
 
 class TablibTestCase(unittest.TestCase):
@@ -227,21 +228,21 @@ class TablibTestCase(unittest.TestCase):
 
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
-            
+
     def test_json_export(self):
         """Verify exporting dataset object as JSON"""
-        
+
         address_id = uuid4()
         headers = self.headers + ('address_id',)
         founders = tablib.Dataset(headers=headers, title='Founders')
         founders.append(('John', 'Adams', 90, address_id))
         founders_json = founders.export('json')
-        
+
         expected_json = (
             '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
             '"address_id": "%s"}]' % str(address_id)
         )
-        
+
         self.assertEqual(founders_json, expected_json)
 
     def test_csv_export(self):
@@ -570,6 +571,15 @@ class TablibTestCase(unittest.TestCase):
         data.csv = _csv
 
         self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_with_unicode_str(self):
+        """Import CSV set with non-ascii characters in unicode literal"""
+        csv_text = (
+            "id,givenname,surname,loginname,email,pref_firstname,pref_lastname\n"
+            "13765,Ævar,Arnfjörð,testing,test@example.com,Ævar,Arnfjörð"
+        )
+        data.csv = csv_text
+        self.assertEqual(data.width, 7)
 
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
