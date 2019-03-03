@@ -14,7 +14,7 @@ extensions = ('json', 'jsn')
 
 
 def serialize_objects_handler(obj):
-    if isinstance(obj, decimal.Decimal) or isinstance(obj, UUID):
+    if isinstance(obj, (decimal.Decimal, UUID)):
         return str(obj)
     elif hasattr(obj, 'isoformat'):
         return obj.isoformat()
