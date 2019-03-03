@@ -121,28 +121,36 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
 
 **Comma-Separated Values** ::
 
-    >>> data.csv
+    >>> data.export('csv')
     Last Name,First Name,Age
     Reitz,Kenneth,22
     Monke,Bessie,20
 
 **JavaScript Object Notation** ::
 
-    >>> data.json
+    >>> data.export('json')
     [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 20}]
 
 
 **YAML Ain't Markup Language** ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Last Name: Monke}
 
 
 **Microsoft Excel** ::
 
-    >>> data.xls
+    >>> data.export('xls')
     <redacted binary data>
+
+
+**Pandas DataFrame** ::
+
+    >>> data.export('df')
+      First Name Last Name  Age
+    0    Kenneth     Reitz   22
+    1     Bessie     Monke   21
 
 
 ------------------------
@@ -224,7 +232,7 @@ In this example, we have a function that generates a random grade for our studen
 
 Let's have a look at our data. ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Grade: 0.6, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Grade: 0.75, Last Name: Monke}
 
@@ -255,7 +263,7 @@ For example, we can use the data available in the row to guess the gender of a s
 
 Adding this function to our dataset as a dynamic column would result in: ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
@@ -292,6 +300,14 @@ Now that we have extra meta-data on our rows, we can easily filter our :class:`D
 
 It's that simple. The original :class:`Dataset` is untouched.
 
+Open an Excel Workbook and read first sheet
+--------------------------------
+
+To open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet), use the following:
+
+data = tablib.Dataset()
+data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+print(data)
 
 Excel Workbook With Multiple Sheets
 ------------------------------------
@@ -358,7 +374,7 @@ it's often useful to create a blank row containing information on the upcoming d
 
     # Write spreadsheet to disk
     with open('grades.xls', 'wb') as f:
-        f.write(tests.xls)
+        f.write(tests.export('xls'))
 
 The resulting **tests.xls** will have the following layout:
 

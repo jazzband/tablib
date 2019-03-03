@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Tests for Tablib."""
+from __future__ import unicode_literals
 
+import datetime
+import doctest
 import json
-import unittest
 import sys
-import os
+import unittest
+from uuid import uuid4
+
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
+from tablib.formats import csv as csv_format
 
 
 class TablibTestCase(unittest.TestCase):
@@ -224,6 +229,22 @@ class TablibTestCase(unittest.TestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
+    def test_json_export(self):
+        """Verify exporting dataset object as JSON"""
+
+        address_id = uuid4()
+        headers = self.headers + ('address_id',)
+        founders = tablib.Dataset(headers=headers, title='Founders')
+        founders.append(('John', 'Adams', 90, address_id))
+        founders_json = founders.export('json')
+
+        expected_json = (
+            '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
+            '"address_id": "%s"}]' % str(address_id)
+        )
+
+        self.assertEqual(founders_json, expected_json)
+
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 
@@ -295,6 +316,23 @@ class TablibTestCase(unittest.TestCase):
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
+
+    def test_jira_export(self):
+
+        expected = """||first_name||last_name||gpa||
+|John|Adams|90|
+|George|Washington|67|
+|Thomas|Jefferson|50|"""
+        self.assertEqual(expected, self.founders.jira)
+
+    def test_jira_export_no_headers(self):
+        self.assertEqual('|a|b|c|', tablib.Dataset(['a', 'b', 'c']).jira)
+
+    def test_jira_export_none_and_empty_values(self):
+        self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
+
+    def test_jira_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().jira is not None)
 
     def test_latex_export(self):
         """LaTeX export"""
@@ -379,7 +417,32 @@ class TablibTestCase(unittest.TestCase):
         data.xlsx
         data.ods
         data.html
+        data.jira
         data.latex
+        data.df
+        data.rst
+
+    def test_datetime_append(self):
+        """Passes in a single datetime and a single date and exports."""
+
+        new_row = (
+            datetime.datetime.now(),
+            datetime.datetime.today(),
+        )
+
+        data.append(new_row)
+
+        data.json
+        data.yaml
+        data.csv
+        data.tsv
+        data.xls
+        data.xlsx
+        data.ods
+        data.html
+        data.jira
+        data.latex
+        data.rst
 
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
@@ -393,6 +456,7 @@ class TablibTestCase(unittest.TestCase):
         book.xlsx
         book.ods
         book.html
+        data.rst
 
     def test_json_import_set(self):
         """Generate and import JSON set serialization."""
@@ -507,6 +571,15 @@ class TablibTestCase(unittest.TestCase):
         data.csv = _csv
 
         self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_with_unicode_str(self):
+        """Import CSV set with non-ascii characters in unicode literal"""
+        csv_text = (
+            "id,givenname,surname,loginname,email,pref_firstname,pref_lastname\n"
+            "13765,Ævar,Arnfjörð,testing,test@example.com,Ævar,Arnfjörð"
+        )
+        data.csv = csv_text
+        self.assertEqual(data.width, 7)
 
     def test_tsv_import_set(self):
         """Generate and import TSV set serialization."""
@@ -932,6 +1005,29 @@ class TablibTestCase(unittest.TestCase):
     def test_databook_formatter_support_kwargs(self):
         """Test XLSX export with formatter configuration."""
         self.founders.export('xlsx', freeze_panes=False)
+
+    def test_databook_formatter_with_new_lines(self):
+        """Test XLSX export with new line in content."""
+        self.founders.append(('First\nSecond', 'Name', 42))
+        self.founders.export('xlsx')
+
+    def test_rst_force_grid(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        simple = tablib.formats._rst.export_set(data)
+        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+
+class DocTests(unittest.TestCase):
+
+    def test_rst_formatter_doctests(self):
+        results = doctest.testmod(tablib.formats._rst)
+        self.assertEqual(results.failed, 0)
 
 
 if __name__ == '__main__':

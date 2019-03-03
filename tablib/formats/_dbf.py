@@ -55,6 +55,7 @@ def export_set(dataset):
     else:
         stream = StringIO(dbf_stream.read())
     dbf_stream.close()
+    os.close(temp_file)
     os.remove(temp_uri)
     return stream.getvalue()
 
@@ -88,6 +89,3 @@ def detect(stream):
         # When unpacking a string argument with less than 8 chars, struct.error is
         # raised.
         return False
-
-
-

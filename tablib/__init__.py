@@ -5,4 +5,3 @@ from tablib.core import (
     InvalidDatasetType, InvalidDimensions, UnsupportedFormat,
     __version__
 )
-

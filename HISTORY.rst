@@ -1,10 +1,21 @@
 History
 -------
 
-0.11.4 (???)
-++++++++++++
+0.11.5 (2017-06-13)
++++++++++++++++++++
+
+- Use ``yaml.safe_load`` for importing yaml.
+
+0.11.4 (2017-01-23)
++++++++++++++++++++
+
+- Use built-in `json` package if available
+- Support Python 3.5+ in classifiers
+
+** Bugfixes **
 
 - Fixed textual representation for Dataset with no headers
+- Handle decimal types
 
 0.11.3 (2016-02-16)
 +++++++++++++++++++
@@ -243,4 +254,3 @@ History
 * Export Support for XLS, JSON, YAML, and CSV.
 * DataBook Export for XLS, JSON, and YAML.
 * Python Dict Property Support.
-
