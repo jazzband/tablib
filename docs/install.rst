@@ -1,4 +1,5 @@
 .. _install:
+
 Installation
 ============
 
@@ -14,7 +15,9 @@ Installing Tablib
 Distribute & Pip
 ----------------
 
-Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_::
+Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_:
+
+.. code-block:: console
 
     $ pip install tablib[pandas]
 
@@ -23,13 +26,19 @@ Of course, the recommended way to install Tablib is with `pip <http://www.pip-in
 Download the Source
 -------------------
 
-You can also install tablib from source. The latest release (|version|) is available from GitHub.
+You can also install tablib from source.
+The latest release (|version|) is available from GitHub.
 
 * tarball_
 * zipball_
 
 .. _
-Once you have a copy of the source, you can embed it in your Python package, or install it into your site-packages easily. ::
+
+Once you have a copy of the source,
+you can embed it in your Python package,
+or install it into your site-packages easily.
+
+.. code-block:: console
 
     $ python setup.py install
 
@@ -41,12 +50,13 @@ To download the full source history from Git, see :ref:`Source Control <scm>`.
 
 
 .. _updates:
+
 Staying Updated
 ---------------
 
 The latest version of Tablib will always be available here:
 
-* PyPi: http://pypi.python.org/pypi/tablib/
+* PyPI: http://pypi.python.org/pypi/tablib/
 * GitHub: http://github.com/kennethreitz/tablib/
 
 When a new version is available, upgrading is simple::

@@ -22,7 +22,10 @@ Release v\ |version|. (:ref:`Installation <install>`)
 .. * :ref:`search`
 
 
-Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, written in Python. It allows you to import, export, and manipulate tabular data sets. Advanced features include, segregation, dynamic columns, tags & filtering, and seamless format import & export.
+Tablib is an `MIT Licensed <https://mit-license.org/>`_ format-agnostic tabular dataset library, written in Python.
+It allows you to import, export, and manipulate tabular data sets.
+Advanced features include segregation, dynamic columns, tags & filtering,
+and seamless format import & export.
 
 ::
 
@@ -39,7 +42,7 @@ Tablib is an :ref:`MIT Licensed <mit>` format-agnostic tabular dataset library, 
    - {Age: 21, First Name: Bessie, Last Name: Monke}
 
    >>> data.export('xlsx')
-   <censored binary data>
+   <redacted binary data>
 
    >>> data.export('df')
      First Name Last Name  Age
@@ -59,16 +62,20 @@ and `The Sunlight Foundation <http://sunlightfoundation.com/>`_ use Tablib inter
 
 
 **Greg Thorton**
-   Tablib by @kennethreitz saved my life. I had to consolidate like 5 huge poorly maintained lists of domains and data. It was a breeze!
+   Tablib by @kennethreitz saved my life.
+   I had to consolidate like 5 huge poorly maintained lists of domains and data.
+   It was a breeze!
 
 **Dave Coutts**
-   It's turning into one of my most used modules of 2010. You really hit a sweet spot for managing tabular data with a minimal amount of code and effort.
+   It's turning into one of my most used modules of 2010.
+   You really hit a sweet spot for managing tabular data with a minimal amount of code and effort.
 
 **Joshua Ourisman**
    Tablib has made it so much easier to deal with the inevitable 'I want an Excel file!' requests from clients...
 
 **Brad Montgomery**
-    I think you nailed the "Python Zen" with tablib. Thanks again for an awesome lib!
+    I think you nailed the "Python Zen" with tablib.
+    Thanks again for an awesome lib!
 
 
 User's Guide
