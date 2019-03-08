@@ -19,7 +19,7 @@ from tablib.compat import unicode
 
 
 __title__ = 'tablib'
-__version__ = '0.12.1'
+__version__ = '0.13.0'
 __build__ = 0x001201
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
