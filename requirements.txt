@@ -1,4 +1,5 @@
 backports.csv; python_version < '3.0'
+MarkupPy
 odfpy
 openpyxl>=2.4.0
 pandas
