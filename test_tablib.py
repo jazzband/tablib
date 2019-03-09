@@ -10,8 +10,9 @@ import sys
 import unittest
 from uuid import uuid4
 
+from MarkupPy import markup
 import tablib
-from tablib.compat import markup, unicode, is_py3
+from tablib.compat import unicode, is_py3
 from tablib.core import Row
 from tablib.formats import _csv as csv_module
 

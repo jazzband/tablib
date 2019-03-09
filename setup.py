@@ -34,6 +34,7 @@ install = [
     'odfpy',
     'openpyxl>=2.4.0',
     'backports.csv;python_version<"3.0"',
+    'markuppy'
     'xlrd',
     'xlwt',
     'pyyaml',

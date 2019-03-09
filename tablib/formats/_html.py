@@ -7,14 +7,13 @@ import sys
 
 if sys.version_info[0] > 2:
     from io import BytesIO as StringIO
-    from tablib.packages import markup3 as markup
 else:
     from cStringIO import StringIO
-    from tablib.packages import markup
 
+import codecs
+from MarkupPy import markup
 import tablib
 from tablib.compat import unicode
-import codecs
 
 BOOK_ENDINGS = 'h3'
 
