@@ -35,7 +35,7 @@ packages = [
 install = [
     'odfpy',
     'openpyxl>=2.4.0',
-    'backports.csv',
+    'backports.csv;python_version<"3.0"',
     'xlrd',
     'xlwt',
     'pyyaml',
