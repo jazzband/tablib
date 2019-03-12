@@ -8,8 +8,9 @@ from __future__ import unicode_literals
 
 from textwrap import TextWrapper
 
+from statistics import median
+
 from tablib.compat import (
-    median,
     unicode,
     izip_longest,
 )
