@@ -19,11 +19,11 @@ from tablib.compat import unicode
 
 
 __title__ = 'tablib'
-__version__ = '0.11.3'
-__build__ = 0x001103
+__version__ = '0.13.0'
+__build__ = 0x001201
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2016 Kenneth Reitz'
+__copyright__ = 'Copyright 2017 Kenneth Reitz'
 __docformat__ = 'restructuredtext'
 
 
@@ -231,7 +231,7 @@ class Dataset(object):
 
 
     def __delitem__(self, key):
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, (str, unicode)):
 
             if key in self.headers:
 
@@ -563,12 +563,24 @@ class Dataset(object):
 
         Import assumes (for now) that headers exist.
 
-        .. admonition:: Binary Warning
+        .. admonition:: Binary Warning for Python 2
 
-             :class:`Dataset.csv` uses \\r\\n line endings by default, so make
+             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 2, make
              sure to write in binary mode::
 
                  with open('output.csv', 'wb') as f:
+                     f.write(data.csv)
+
+             If you do not do this, and you export the file on Windows, your
+             CSV file will open in Excel with a blank line between each row.
+
+        .. admonition:: Line endings for Python 3
+
+             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 3, make
+             sure to include newline='' otherwise you will get a blank line between each row
+             when you open the file in Excel::
+
+                 with open('output.csv', 'w', newline='') as f:
                      f.write(data.csv)
 
              If you do not do this, and you export the file on Windows, your
@@ -607,6 +619,18 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def df():
+        """A DataFrame representation of the :class:`Dataset` object.
+
+        A dataset object can also be imported by setting the :class:`Dataset.df` attribute: ::
+
+            data = tablib.Dataset()
+            data.df = DataFrame(np.random.randn(6,4))
+
+        Import assumes (for now) that headers exist.
+        """
+        pass
 
     @property
     def json():
@@ -656,7 +680,6 @@ class Dataset(object):
         """
         pass
 
-
     @property
     def latex():
         """A LaTeX booktabs representation of the :class:`Dataset` object. If a
@@ -666,6 +689,13 @@ class Dataset(object):
         """
         pass
 
+    @property
+    def jira():
+        """A Jira table representation of the :class:`Dataset` object.
+
+        .. note:: This method can be used for export only.
+        """
+        pass
 
     # ----
     # Rows
@@ -867,7 +897,7 @@ class Dataset(object):
            against each cell value.
         """
 
-        if isinstance(col, str):
+        if isinstance(col, unicode):
             if col in self.headers:
                 col = self.headers.index(col) # get 'key' index from each data
             else:
@@ -900,7 +930,7 @@ class Dataset(object):
         sorted.
         """
 
-        if isinstance(col, str) or isinstance(col, unicode):
+        if isinstance(col, (str, unicode)):
 
             if not self.headers:
                 raise HeadersNeeded

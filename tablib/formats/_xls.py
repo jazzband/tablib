@@ -5,8 +5,11 @@
 
 import sys
 
-from tablib.compat import BytesIO, xlwt, xlrd, XLRDError, xrange
+from tablib.compat import BytesIO, xrange
 import tablib
+import xlrd
+import xlwt
+from xlrd.biffh import XLRDError
 
 title = 'xls'
 extensions = ('xls',)
@@ -22,7 +25,7 @@ def detect(stream):
         xlrd.open_workbook(file_contents=stream)
         return True
     except (TypeError, XLRDError):
-        pass 
+        pass
     try:
         xlrd.open_workbook(file_contents=stream.read())
         return True

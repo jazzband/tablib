@@ -3,6 +3,7 @@
 """ Tablib - TSV (Tab Separated Values) Support.
 """
 
+from tablib.compat import unicode
 from tablib.formats._csv import (
     export_set as export_set_wrapper,
     import_set as import_set_wrapper,
@@ -12,8 +13,7 @@ from tablib.formats._csv import (
 title = 'tsv'
 extensions = ('tsv',)
 
-DEFAULT_ENCODING = 'utf-8'
-DELIMITER = '\t'
+DELIMITER = unicode('\t')
 
 def export_set(dataset):
     """Returns TSV representation of Dataset."""

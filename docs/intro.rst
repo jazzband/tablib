@@ -6,15 +6,14 @@ Introduction
 This part of the documentation covers all the interfaces of Tablib.
 Tablib is a format-agnostic tabular dataset library, written in Python.
 It allows you to Pythonically import, export, and manipulate tabular data sets.
-Advanced features include, segregation, dynamic columns, tags / filtering, and
+Advanced features include segregation, dynamic columns, tags / filtering, and
 seamless format import/export.
 
 
 Philosophy
----------
+----------
 
 Tablib was developed with a few :pep:`20` idioms in mind.
-
 
 #. Beautiful is better than ugly.
 #. Explicit is better than implicit.
@@ -49,7 +48,7 @@ Tablib is released under terms of `The MIT License`_.
 Tablib License
 --------------
 
-Copyright 2016 Kenneth Reitz
+Copyright 2017 Kenneth Reitz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,13 +76,11 @@ Pythons Supported
 
 At this time, the following Python platforms are officially supported:
 
-* cPython 2.5
-* cPython 2.6
 * cPython 2.7
-* cPython 3.1
-* cPython 3.2
-* PyPy-c 1.4
-* PyPy-c 1.5
+* cPython 3.3
+* cPython 3.4
+* cPython 3.5
+* cPython 3.6
 
 Support for other Pythons will be rolled out soon.
 

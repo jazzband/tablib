@@ -8,7 +8,10 @@ Quickstart
 .. module:: tablib
 
 
-Eager to get started? This page gives a good introduction in how to get started with Tablib. This assumes you already have Tablib installed. If you do not, head over to the :ref:`Installation <install>` section.
+Eager to get started?
+This page gives a good introduction in how to get started with Tablib.
+This assumes you already have Tablib installed.
+If you do not, head over to the :ref:`Installation <install>` section.
 
 First, make sure that:
 
@@ -16,7 +19,7 @@ First, make sure that:
 * Tablib is :ref:`up-to-date <updates>`
 
 
-Lets gets started with some simple use cases and examples.
+Let's get started with some simple use cases and examples.
 
 
 
@@ -35,8 +38,8 @@ You can now start filling this :class:`Dataset <tablib.Dataset>` object with dat
 
 .. admonition:: Example Context
 
-     From here on out, if you see ``data``, assume that it's a fresh :class:`Dataset <tablib.Dataset>` object.
-
+    From here on out, if you see ``data``, assume that it's a fresh 
+    :class:`Dataset <tablib.Dataset>` object.
 
 
 
@@ -57,7 +60,7 @@ Let's say you want to collect a simple list of names. ::
         # add names to Dataset
         data.append([fname, lname])
 
-You can get a nice, Pythonic view of the dataset at any time with :class:`Dataset.dict`.
+You can get a nice, Pythonic view of the dataset at any time with :class:`Dataset.dict`::
 
     >>> data.dict
     [('Kenneth', 'Reitz'), ('Bessie', 'Monke')]
@@ -69,14 +72,16 @@ Adding Headers
 --------------
 
 
-It's time to enhance our :class:`Dataset` by giving our columns some titles. To do so, set :class:`Dataset.headers`. ::
+It's time to enhance our :class:`Dataset` by giving our columns some titles.
+To do so, set :class:`Dataset.headers`. ::
 
     data.headers = ['First Name', 'Last Name']
 
 Now our data looks a little different. ::
 
     >>> data.dict
-    [{'Last Name': 'Reitz', 'First Name': 'Kenneth'}, {'Last Name': 'Monke', 'First Name': 'Bessie'}]
+    [{'Last Name': 'Reitz', 'First Name': 'Kenneth'},
+     {'Last Name': 'Monke', 'First Name': 'Bessie'}]
 
 
 
@@ -93,7 +98,8 @@ Now that we have a basic :class:`Dataset` in place, let's add a column of **ages
 Let's view the data now. ::
 
     >>> data.dict
-    [{'Last Name': 'Reitz', 'First Name': 'Kenneth', 'Age': 22}, {'Last Name': 'Monke', 'First Name': 'Bessie', 'Age': 20}]
+    [{'Last Name': 'Reitz', 'First Name': 'Kenneth', 'Age': 22},
+     {'Last Name': 'Monke', 'First Name': 'Bessie', 'Age': 20}]
 
 It's that easy.
 
@@ -115,28 +121,36 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
 
 **Comma-Separated Values** ::
 
-    >>> data.csv
+    >>> data.export('csv')
     Last Name,First Name,Age
     Reitz,Kenneth,22
     Monke,Bessie,20
 
 **JavaScript Object Notation** ::
 
-    >>> data.json
+    >>> data.export('json')
     [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 20}]
 
 
 **YAML Ain't Markup Language** ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Last Name: Monke}
 
 
 **Microsoft Excel** ::
 
-    >>> data.xls
-    <censored binary data>
+    >>> data.export('xls')
+    <redacted binary data>
+
+
+**Pandas DataFrame** ::
+
+    >>> data.export('df')
+      First Name Last Name  Age
+    0    Kenneth     Reitz   22
+    1     Bessie     Monke   21
 
 
 ------------------------
@@ -150,7 +164,8 @@ You can slice and dice your data, just like a standard Python list. ::
     ('Kenneth', 'Reitz', 22)
 
 
-If we had a set of data consisting of thousands of rows, it could be useful to get a list of values in a column.
+If we had a set of data consisting of thousands of rows,
+it could be useful to get a list of values in a column.
 To do so, we access the :class:`Dataset` as if it were a standard Python dictionary.  ::
 
     >>> data['First Name']
@@ -175,11 +190,11 @@ Let's find the average age. ::
 Removing Rows & Columns
 -----------------------
 
-It's easier than you could imagine::
+It's easier than you could imagine. Delete a column::
 
     >>> del data['Col Name']
 
-::
+Delete a range of rows::
 
     >>> del data[0:12]
 
@@ -187,7 +202,6 @@ It's easier than you could imagine::
 ==============
 Advanced Usage
 ==============
-
 
 This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`
 
@@ -202,9 +216,11 @@ Dynamic Columns
 
 .. versionadded:: 0.8.3
 
-Thanks to Josh Ourisman, Tablib now supports adding dynamic columns. A dynamic column is a single callable object (*ie.* a function).
+Thanks to Josh Ourisman, Tablib now supports adding dynamic columns.
+A dynamic column is a single callable object (*e.g.* a function).
 
-Let's add a dynamic column to our :class:`Dataset` object. In this example, we have a function that generates a random grade for our students. ::
+Let's add a dynamic column to our :class:`Dataset` object.
+In this example, we have a function that generates a random grade for our students. ::
 
     import random
 
@@ -216,7 +232,7 @@ Let's add a dynamic column to our :class:`Dataset` object. In this example, we h
 
 Let's have a look at our data. ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Grade: 0.6, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Grade: 0.75, Last Name: Monke}
 
@@ -226,7 +242,8 @@ Let's remove that column.  ::
     >>> del data['Grade']
 
 
-When you add a dynamic column, the first argument that is passed in to the given callable is the current data row. You can use this to perform calculations against your data row.
+When you add a dynamic column, the first argument that is passed in to the given callable is the current data row.
+You can use this to perform calculations against your data row.
 
 For example, we can use the data available in the row to guess the gender of a student. ::
 
@@ -246,7 +263,7 @@ For example, we can use the data available in the row to guess the gender of a s
 
 Adding this function to our dataset as a dynamic column would result in: ::
 
-    >>> data.yaml
+    >>> data.export('yaml')
     - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
@@ -260,9 +277,11 @@ Filtering Datasets with Tags
 .. versionadded:: 0.9.0
 
 
-When constructing a :class:`Dataset` object, you can add tags to rows by specifying the ``tags`` parameter.
-This allows you to filter your :class:`Dataset` later. This can be useful to separate rows of data based on
-arbitrary criteria (*e.g.* origin) that you don't want to include in your :class:`Dataset`.
+When constructing a :class:`Dataset` object,
+you can add tags to rows by specifying the ``tags`` parameter.
+This allows you to filter your :class:`Dataset` later.
+This can be useful to separate rows of data based on arbitrary criteria
+(*e.g.* origin) that you don't want to include in your :class:`Dataset`.
 
 Let's tag some students. ::
 
@@ -281,14 +300,24 @@ Now that we have extra meta-data on our rows, we can easily filter our :class:`D
 
 It's that simple. The original :class:`Dataset` is untouched.
 
+Open an Excel Workbook and read first sheet
+--------------------------------
+
+To open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet), use the following:
+
+data = tablib.Dataset()
+data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+print(data)
 
 Excel Workbook With Multiple Sheets
 ------------------------------------
 
-When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet format, it's quite common to group multiple spreadsheets into a single Excel file, known as a Workbook. Tablib makes it extremely easy to build workbooks with the handy, :class:`Databook` class.
+When dealing with a large number of :class:`Datasets <Dataset>` in spreadsheet format,
+it's quite common to group multiple spreadsheets into a single Excel file, known as a Workbook.
+Tablib makes it extremely easy to build workbooks with the handy :class:`Databook` class.
 
-
-Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is add then to a :class:`Databook` object... ::
+Let's say we have 3 different :class:`Datasets <Dataset>`.
+All we have to do is add them to a :class:`Databook` object... ::
 
     book = tablib.Databook((data1, data2, data3))
 
@@ -297,7 +326,7 @@ Let's say we have 3 different :class:`Datasets <Dataset>`. All we have to do is 
     with open('students.xls', 'wb') as f:
         f.write(book.xls)
 
-The resulting **students.xls** file will contain a separate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
+The resulting ``students.xls`` file will contain a separate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
 
 .. admonition:: Binary Warning
 
@@ -312,9 +341,8 @@ Separators
 
 .. versionadded:: 0.8.2
 
-When, it's often useful to create a blank row containing information on the upcoming data. So,
-
-
+When constructing a spreadsheet,
+it's often useful to create a blank row containing information on the upcoming data. So,
 
 ::
 
@@ -346,7 +374,7 @@ When, it's often useful to create a blank row containing information on the upco
 
     # Write spreadsheet to disk
     with open('grades.xls', 'wb') as f:
-        f.write(tests.xls)
+        f.write(tests.export('xls'))
 
 The resulting **tests.xls** will have the following layout:
 
