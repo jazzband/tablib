@@ -136,10 +136,8 @@ class Row(object):
 
         if tag == None:
             return False
-        elif isinstance(tag, str):
-            return (tag in self.tags)
         else:
-            return bool(len(set(tag) & set(self.tags)))
+            return (tag in self.tags)
 
 
 class Dataset(object):
