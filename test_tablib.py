@@ -13,7 +13,7 @@ from uuid import uuid4
 import tablib
 from tablib.compat import markup, unicode, is_py3
 from tablib.core import Row
-from tablib.formats import csv as csv_format
+from tablib.formats import _csv as csv_module
 
 
 class TablibTestCase(unittest.TestCase):
@@ -261,6 +261,24 @@ class TablibTestCase(unittest.TestCase):
             csv = csv.strip(',') + '\r\n'
 
         self.assertEqual(csv, self.founders.csv)
+
+    def test_csv_stream_export(self):
+        """Verify exporting dataset object as CSV from file object."""
+
+        # Build up the csv string with headers first, followed by each row
+        csv = ''
+        for col in self.headers:
+            csv += col + ','
+
+        csv = csv.strip(',') + '\r\n'
+
+        for founder in self.founders:
+            for col in founder:
+                csv += str(col) + ','
+            csv = csv.strip(',') + '\r\n'
+
+        csv_stream = csv_module.export_stream_set(self.founders)
+        self.assertEqual(csv, csv_stream.getvalue())
 
     def test_tsv_export(self):
         """Verify exporting dataset object as TSV."""

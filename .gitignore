@@ -29,3 +29,4 @@ junit-py27.xml
 
 # pyenv noise
 .python-version
+tablib.egg-info/*
