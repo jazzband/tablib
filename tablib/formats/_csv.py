@@ -13,8 +13,8 @@ extensions = ('csv',)
 DEFAULT_DELIMITER = unicode(',')
 
 
-def export_set(dataset, **kwargs):
-    """Returns CSV representation of Dataset."""
+def export_stream_set(dataset, **kwargs):
+    """Returns CSV representation of Dataset as file-like."""
     stream = StringIO()
 
     kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
@@ -24,6 +24,13 @@ def export_set(dataset, **kwargs):
     for row in dataset._package(dicts=False):
         _csv.writerow(row)
 
+    stream.seek(0)
+    return stream
+
+
+def export_set(dataset, **kwargs):
+    """Returns CSV representation of Dataset."""
+    stream = export_stream_set(dataset, **kwargs)
     return stream.getvalue()
 
 
