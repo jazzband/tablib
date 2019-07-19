@@ -137,7 +137,7 @@ class TablibTestCase(unittest.TestCase):
         data.headers = self.headers
         data.append(self.john)
 
-        new_col = [10];
+        new_col = [10]
 
         data.append_col(new_col, header='age')
 
