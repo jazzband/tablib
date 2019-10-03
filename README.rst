@@ -1,8 +1,8 @@
 Tablib: format-agnostic tabular dataset library
 ===============================================
 
-.. image:: https://travis-ci.org/kennethreitz/tablib.svg?branch=master
-    :target: https://travis-ci.org/kennethreitz/tablib
+.. image:: https://travis-ci.org/jazzband/tablib.svg?branch=master
+    :target: https://travis-ci.org/jazzband/tablib
 
 ::
 
@@ -174,6 +174,5 @@ request. Make sure you add yourself to AUTHORS_.
 
 
 
-
-.. _`the repository`: http://github.com/kennethreitz/tablib
-.. _AUTHORS: http://github.com/kennethreitz/tablib/blob/master/AUTHORS
+.. _`the repository`: http://github.com/jazzband/tablib
+.. _AUTHORS: http://github.com/jazzband/tablib/blob/master/AUTHORS

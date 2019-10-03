@@ -8,7 +8,7 @@ Tablib is under active development, and contributors are welcome.
 If you have a feature request, suggestion, or bug report, please open a new
 issue on GitHub_. To submit patches, please send a pull request on GitHub_.
 
-.. _GitHub: http://github.com/kennethreitz/tablib/
+.. _GitHub: http://github.com/jazzband/tablib/
 
 
 
@@ -45,12 +45,12 @@ The repository is publicly accessible.
 
 .. code-block:: console
 
-    git clone git://github.com/kennethreitz/tablib.git
+    git clone git://github.com/jazzband/tablib.git
 
 The project is hosted on **GitHub**.
 
     GitHub:
-        http://github.com/kennethreitz/tablib
+        http://github.com/jazzband/tablib
 
 
 Git Branch Structure
@@ -186,7 +186,7 @@ you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
-    https://travis-ci.org/kennethreitz/tablib
+    https://travis-ci.org/jazzband/tablib
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 

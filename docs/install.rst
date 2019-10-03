@@ -45,8 +45,8 @@ or install it into your site-packages easily.
 
 To download the full source history from Git, see :ref:`Source Control <scm>`.
 
-.. _tarball: http://github.com/kennethreitz/tablib/tarball/master
-.. _zipball: http://github.com/kennethreitz/tablib/zipball/master
+.. _tarball: http://github.com/jazzband/tablib/tarball/master
+.. _zipball: http://github.com/jazzband/tablib/zipball/master
 
 
 .. _updates:
@@ -57,7 +57,7 @@ Staying Updated
 The latest version of Tablib will always be available here:
 
 * PyPI: http://pypi.python.org/pypi/tablib/
-* GitHub: http://github.com/kennethreitz/tablib/
+* GitHub: http://github.com/jazzband/tablib/
 
 When a new version is available, upgrading is simple::
 
