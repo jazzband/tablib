@@ -17,9 +17,7 @@ from tablib.core import Row
 from tablib.formats import _csv as csv_module
 
 
-class TablibTestCase(unittest.TestCase):
-    """Tablib test cases."""
-
+class BaseTestCase(unittest.TestCase):
     def setUp(self):
         """Create simple data set with headers."""
 
@@ -38,9 +36,9 @@ class TablibTestCase(unittest.TestCase):
         self.founders.append(self.george)
         self.founders.append(self.tom)
 
-    def tearDown(self):
-        """Teardown."""
-        pass
+
+class TablibTestCase(BaseTestCase):
+    """Tablib test cases."""
 
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
@@ -230,184 +228,6 @@ class TablibTestCase(unittest.TestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
-    def test_json_export(self):
-        """Verify exporting dataset object as JSON"""
-
-        address_id = uuid4()
-        headers = self.headers + ('address_id',)
-        founders = tablib.Dataset(headers=headers, title='Founders')
-        founders.append(('John', 'Adams', 90, address_id))
-        founders_json = founders.export('json')
-
-        expected_json = (
-            '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
-            '"address_id": "%s"}]' % str(address_id)
-        )
-
-        self.assertEqual(founders_json, expected_json)
-
-    def test_csv_export(self):
-        """Verify exporting dataset object as CSV."""
-
-        # Build up the csv string with headers first, followed by each row
-        csv = ''
-        for col in self.headers:
-            csv += col + ','
-
-        csv = csv.strip(',') + '\r\n'
-
-        for founder in self.founders:
-            for col in founder:
-                csv += str(col) + ','
-            csv = csv.strip(',') + '\r\n'
-
-        self.assertEqual(csv, self.founders.csv)
-
-    def test_csv_stream_export(self):
-        """Verify exporting dataset object as CSV from file object."""
-
-        # Build up the csv string with headers first, followed by each row
-        csv = ''
-        for col in self.headers:
-            csv += col + ','
-
-        csv = csv.strip(',') + '\r\n'
-
-        for founder in self.founders:
-            for col in founder:
-                csv += str(col) + ','
-            csv = csv.strip(',') + '\r\n'
-
-        csv_stream = csv_module.export_stream_set(self.founders)
-        self.assertEqual(csv, csv_stream.getvalue())
-
-    def test_tsv_export(self):
-        """Verify exporting dataset object as TSV."""
-
-        # Build up the tsv string with headers first, followed by each row
-        tsv = ''
-        for col in self.headers:
-            tsv += col + '\t'
-
-        tsv = tsv.strip('\t') + '\r\n'
-
-        for founder in self.founders:
-            for col in founder:
-                tsv += str(col) + '\t'
-            tsv = tsv.strip('\t') + '\r\n'
-
-        self.assertEqual(tsv, self.founders.tsv)
-
-    def test_html_export(self):
-        """HTML export"""
-
-        html = markup.page()
-        html.table.open()
-        html.thead.open()
-
-        html.tr(markup.oneliner.th(self.founders.headers))
-        html.thead.close()
-
-        for founder in self.founders:
-            html.tr(markup.oneliner.td(founder))
-
-        html.table.close()
-        html = str(html)
-
-        self.assertEqual(html, self.founders.html)
-
-    def test_html_export_none_value(self):
-        """HTML export"""
-
-        html = markup.page()
-        html.table.open()
-        html.thead.open()
-
-        html.tr(markup.oneliner.th(['foo', '', 'bar']))
-        html.thead.close()
-
-        html.tr(markup.oneliner.td(['foo', '', 'bar']))
-
-        html.table.close()
-        html = str(html)
-
-        headers = ['foo', None, 'bar'];
-        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
-
-        self.assertEqual(html, d.html)
-
-    def test_jira_export(self):
-
-        expected = """||first_name||last_name||gpa||
-|John|Adams|90|
-|George|Washington|67|
-|Thomas|Jefferson|50|"""
-        self.assertEqual(expected, self.founders.jira)
-
-    def test_jira_export_no_headers(self):
-        self.assertEqual('|a|b|c|', tablib.Dataset(['a', 'b', 'c']).jira)
-
-    def test_jira_export_none_and_empty_values(self):
-        self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
-
-    def test_jira_export_empty_dataset(self):
-        self.assertTrue(tablib.Dataset().jira is not None)
-
-    def test_latex_export(self):
-        """LaTeX export"""
-
-        expected = """\
-% Note: add \\usepackage{booktabs} to your preamble
-%
-\\begin{table}[!htbp]
-  \\centering
-  \\caption{Founders}
-  \\begin{tabular}{lrr}
-    \\toprule
-      first\\_name & last\\_name & gpa \\\\
-    \\cmidrule(r){1-1} \\cmidrule(lr){2-2} \\cmidrule(l){3-3}
-      John & Adams & 90 \\\\
-      George & Washington & 67 \\\\
-      Thomas & Jefferson & 50 \\\\
-    \\bottomrule
-  \\end{tabular}
-\\end{table}
-"""
-        output = self.founders.latex
-        self.assertEqual(output, expected)
-
-    def test_latex_export_empty_dataset(self):
-        self.assertTrue(tablib.Dataset().latex is not None)
-
-    def test_latex_export_no_headers(self):
-        d = tablib.Dataset()
-        d.append(('one', 'two', 'three'))
-        self.assertTrue('one' in d.latex)
-
-    def test_latex_export_caption(self):
-        d = tablib.Dataset()
-        d.append(('one', 'two', 'three'))
-        self.assertFalse('caption' in d.latex)
-
-        d.title = 'Title'
-        self.assertTrue('\\caption{Title}' in d.latex)
-
-    def test_latex_export_none_values(self):
-        headers = ['foo', None, 'bar']
-        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
-        output = d.latex
-        self.assertTrue('foo' in output)
-        self.assertFalse('None' in output)
-
-    def test_latex_escaping(self):
-        d = tablib.Dataset(['~', '^'])
-        output = d.latex
-
-        self.assertFalse('~' in output)
-        self.assertTrue('textasciitilde' in output)
-        self.assertFalse('^' in output)
-        self.assertTrue('textasciicircum' in output)
-
     def test_str_no_columns(self):
         d = tablib.Dataset(['a', 1], ['b', 2], ['c', 3])
         output = '%s' % d
@@ -476,297 +296,6 @@ class TablibTestCase(unittest.TestCase):
         book.ods
         book.html
         data.rst
-
-    def test_json_import_set(self):
-        """Generate and import JSON set serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _json = data.json
-
-        data.json = _json
-
-        self.assertEqual(json.loads(_json), json.loads(data.json))
-
-    def test_json_import_book(self):
-        """Generate and import JSON book serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        book.add_sheet(data)
-        _json = book.json
-
-        book.json = _json
-
-        self.assertEqual(json.loads(_json), json.loads(book.json))
-
-    def test_yaml_import_set(self):
-        """Generate and import YAML set serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _yaml = data.yaml
-
-        data.yaml = _yaml
-
-        self.assertEqual(_yaml, data.yaml)
-
-    def test_yaml_import_book(self):
-        """Generate and import YAML book serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        book.add_sheet(data)
-        _yaml = book.yaml
-
-        book.yaml = _yaml
-
-        self.assertEqual(_yaml, book.yaml)
-
-    def test_csv_import_set(self):
-        """Generate and import CSV set serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _csv = data.csv
-
-        data.csv = _csv
-
-        self.assertEqual(_csv, data.csv)
-
-    def test_csv_import_set_semicolons(self):
-        """Test for proper output with semicolon separated CSV."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _csv = data.get_csv(delimiter=';')
-
-        data.set_csv(_csv, delimiter=';')
-
-        self.assertEqual(_csv, data.get_csv(delimiter=';'))
-
-    def test_csv_import_set_with_spaces(self):
-        """Generate and import CSV set serialization when row values have
-        spaces."""
-        data.append(('Bill Gates', 'Microsoft'))
-        data.append(('Steve Jobs', 'Apple'))
-        data.headers = ('Name', 'Company')
-
-        _csv = data.csv
-
-        data.csv = _csv
-
-        self.assertEqual(_csv, data.csv)
-
-    def test_csv_import_set_semicolon_with_spaces(self):
-        """Generate and import semicolon separated CSV set serialization when row values have
-        spaces."""
-        data.append(('Bill Gates', 'Microsoft'))
-        data.append(('Steve Jobs', 'Apple'))
-        data.headers = ('Name', 'Company')
-
-        _csv = data.get_csv(delimiter=';')
-
-        data.set_csv(_csv, delimiter=';')
-
-        self.assertEqual(_csv, data.get_csv(delimiter=';'))
-
-    def test_csv_import_set_with_newlines(self):
-        """Generate and import CSV set serialization when row values have
-        newlines."""
-        data.append(('Markdown\n=======',
-                     'A cool language\n\nwith paragraphs'))
-        data.append(('reStructedText\n==============',
-                     'Another cool language\n\nwith paragraphs'))
-        data.headers = ('title', 'body')
-
-        _csv = data.csv
-        data.csv = _csv
-
-        self.assertEqual(_csv, data.csv)
-
-    def test_csv_import_set_with_unicode_str(self):
-        """Import CSV set with non-ascii characters in unicode literal"""
-        csv_text = (
-            "id,givenname,surname,loginname,email,pref_firstname,pref_lastname\n"
-            "13765,Ævar,Arnfjörð,testing,test@example.com,Ævar,Arnfjörð"
-        )
-        data.csv = csv_text
-        self.assertEqual(data.width, 7)
-
-    def test_tsv_import_set(self):
-        """Generate and import TSV set serialization."""
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _tsv = data.tsv
-
-        data.tsv = _tsv
-
-        self.assertEqual(_tsv, data.tsv)
-
-    def test_dbf_import_set(self):
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        _dbf = data.dbf
-        data.dbf = _dbf
-
-        # self.assertEqual(_dbf, data.dbf)
-        try:
-            self.assertEqual(_dbf, data.dbf)
-        except AssertionError:
-            index = 0
-            so_far = ''
-            for reg_char, data_char in zip(_dbf, data.dbf):
-                so_far += chr(data_char)
-                if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
-                        index, reg_char, data_char, so_far))
-                index += 1
-
-    def test_dbf_export_set(self):
-        """Test DBF import."""
-        data.append(self.john)
-        data.append(self.george)
-        data.append(self.tom)
-        data.headers = self.headers
-
-        _regression_dbf = (b'\x03r\x06\x06\x03\x00\x00\x00\x81\x00\xab\x00\x00'
-                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                           b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
-                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
-                           b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                           b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
-                           b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
-                           )
-        _regression_dbf += b' John' + (b' ' * 75)
-        _regression_dbf += b' Adams' + (b' ' * 74)
-        _regression_dbf += b' 90.0000000'
-        _regression_dbf += b' George' + (b' ' * 73)
-        _regression_dbf += b' Washington' + (b' ' * 69)
-        _regression_dbf += b' 67.0000000'
-        _regression_dbf += b' Thomas' + (b' ' * 73)
-        _regression_dbf += b' Jefferson' + (b' ' * 70)
-        _regression_dbf += b' 50.0000000'
-        _regression_dbf += b'\x1a'
-
-        if is_py3:
-            # If in python3, decode regression string to binary.
-            # _regression_dbf = bytes(_regression_dbf, 'utf-8')
-            # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
-            pass
-
-        try:
-            self.assertEqual(_regression_dbf, data.dbf)
-        except AssertionError:
-            index = 0
-            found_so_far = ''
-            for reg_char, data_char in zip(_regression_dbf, data.dbf):
-                # found_so_far += chr(data_char)
-                if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError(
-                        'Failing at char %s: %s vs %s (found %s)' % (
-                            index, reg_char, data_char, found_so_far))
-                index += 1
-
-    def test_dbf_format_detect(self):
-        """Test the DBF format detection."""
-        _dbf = (b'\x03r\x06\x03\x03\x00\x00\x00\x81\x00\xab\x00\x00'
-                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
-                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
-                b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
-                b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
-                )
-        _dbf += b' John' + (b' ' * 75)
-        _dbf += b' Adams' + (b' ' * 74)
-        _dbf += b' 90.0000000'
-        _dbf += b' George' + (b' ' * 73)
-        _dbf += b' Washington' + (b' ' * 69)
-        _dbf += b' 67.0000000'
-        _dbf += b' Thomas' + (b' ' * 73)
-        _dbf += b' Jefferson' + (b' ' * 70)
-        _dbf += b' 50.0000000'
-        _dbf += b'\x1a'
-
-        _yaml = '- {age: 90, first_name: John, last_name: Adams}'
-        _tsv = 'foo\tbar'
-        _csv = '1,2,3\n4,5,6\n7,8,9\n'
-        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
-
-        _bunk = (
-            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-        )
-        self.assertTrue(tablib.formats.dbf.detect(_dbf))
-        self.assertFalse(tablib.formats.dbf.detect(_yaml))
-        self.assertFalse(tablib.formats.dbf.detect(_tsv))
-        self.assertFalse(tablib.formats.dbf.detect(_csv))
-        self.assertFalse(tablib.formats.dbf.detect(_json))
-        self.assertFalse(tablib.formats.dbf.detect(_bunk))
-
-    def test_csv_format_detect(self):
-        """Test CSV format detection."""
-
-        _csv = (
-            '1,2,3\n'
-            '4,5,6\n'
-            '7,8,9\n'
-        )
-        _bunk = (
-            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-        )
-
-        self.assertTrue(tablib.formats.csv.detect(_csv))
-        self.assertFalse(tablib.formats.csv.detect(_bunk))
-
-    def test_tsv_format_detect(self):
-        """Test TSV format detection."""
-
-        _tsv = (
-            '1\t2\t3\n'
-            '4\t5\t6\n'
-            '7\t8\t9\n'
-        )
-        _bunk = (
-            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-        )
-
-        self.assertTrue(tablib.formats.tsv.detect(_tsv))
-        self.assertFalse(tablib.formats.tsv.detect(_bunk))
-
-    def test_json_format_detect(self):
-        """Test JSON format detection."""
-
-        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
-        _bunk = (
-            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-        )
-
-        self.assertTrue(tablib.formats.json.detect(_json))
-        self.assertFalse(tablib.formats.json.detect(_bunk))
-
-    def test_yaml_format_detect(self):
-        """Test YAML format detection."""
-
-        _yaml = '- {age: 90, first_name: John, last_name: Adams}'
-        _tsv = 'foo\tbar'
-        _bunk = (
-            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-        )
-
-        self.assertTrue(tablib.formats.yaml.detect(_yaml))
-        self.assertFalse(tablib.formats.yaml.detect(_bunk))
-        self.assertFalse(tablib.formats.yaml.detect(_tsv))
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
@@ -920,6 +449,221 @@ class TablibTestCase(unittest.TestCase):
         for name in [r['last_name'] for r in self.founders.dict]:
             self.assertTrue(name.isupper())
 
+    def test_unicode_renders_markdown_table(self):
+        # add another entry to test right field width for
+        # integer
+        self.founders.append(('Old', 'Man', 100500))
+        self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
+
+    def test_databook_add_sheet_accepts_only_dataset_instances(self):
+        class NotDataset(object):
+            def append(self, item):
+                pass
+
+        dataset = NotDataset()
+        dataset.append(self.john)
+
+        self.assertRaises(tablib.InvalidDatasetType, book.add_sheet, dataset)
+
+    def test_databook_add_sheet_accepts_dataset_subclasses(self):
+        class DatasetSubclass(tablib.Dataset):
+            pass
+
+        # just checking if subclass of tablib.Dataset can be added to Databook
+        dataset = DatasetSubclass()
+        dataset.append(self.john)
+        dataset.append(self.tom)
+
+        try:
+            book.add_sheet(dataset)
+        except tablib.InvalidDatasetType:
+            self.fail("Subclass of tablib.Dataset should be accepted by Databook.add_sheet")
+
+    def test_databook_formatter_support_kwargs(self):
+        """Test XLSX export with formatter configuration."""
+        self.founders.export('xlsx', freeze_panes=False)
+
+    def test_databook_formatter_with_new_lines(self):
+        """Test XLSX export with new line in content."""
+        self.founders.append(('First\nSecond', 'Name', 42))
+        self.founders.export('xlsx')
+
+    def test_rst_force_grid(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        simple = tablib.formats._rst.export_set(data)
+        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+
+class HTMLTests(BaseTestCase):
+    def test_html_export(self):
+        """HTML export"""
+
+        html = markup.page()
+        html.table.open()
+        html.thead.open()
+
+        html.tr(markup.oneliner.th(self.founders.headers))
+        html.thead.close()
+
+        for founder in self.founders:
+            html.tr(markup.oneliner.td(founder))
+
+        html.table.close()
+        html = str(html)
+
+        self.assertEqual(html, self.founders.html)
+
+    def test_html_export_none_value(self):
+        """HTML export"""
+
+        html = markup.page()
+        html.table.open()
+        html.thead.open()
+
+        html.tr(markup.oneliner.th(['foo', '', 'bar']))
+        html.thead.close()
+
+        html.tr(markup.oneliner.td(['foo', '', 'bar']))
+
+        html.table.close()
+        html = str(html)
+
+        headers = ['foo', None, 'bar'];
+        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
+
+        self.assertEqual(html, d.html)
+
+
+class CSVTests(BaseTestCase):
+    def test_csv_format_detect(self):
+        """Test CSV format detection."""
+
+        _csv = (
+            '1,2,3\n'
+            '4,5,6\n'
+            '7,8,9\n'
+        )
+        _bunk = (
+            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+
+        self.assertTrue(tablib.formats.csv.detect(_csv))
+        self.assertFalse(tablib.formats.csv.detect(_bunk))
+
+    def test_csv_import_set(self):
+        """Generate and import CSV set serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _csv = data.csv
+
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_semicolons(self):
+        """Test for proper output with semicolon separated CSV."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _csv = data.get_csv(delimiter=';')
+
+        data.set_csv(_csv, delimiter=';')
+
+        self.assertEqual(_csv, data.get_csv(delimiter=';'))
+
+    def test_csv_import_set_with_spaces(self):
+        """Generate and import CSV set serialization when row values have
+        spaces."""
+        data.append(('Bill Gates', 'Microsoft'))
+        data.append(('Steve Jobs', 'Apple'))
+        data.headers = ('Name', 'Company')
+
+        _csv = data.csv
+
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_semicolon_with_spaces(self):
+        """Generate and import semicolon separated CSV set serialization when row values have
+        spaces."""
+        data.append(('Bill Gates', 'Microsoft'))
+        data.append(('Steve Jobs', 'Apple'))
+        data.headers = ('Name', 'Company')
+
+        _csv = data.get_csv(delimiter=';')
+
+        data.set_csv(_csv, delimiter=';')
+
+        self.assertEqual(_csv, data.get_csv(delimiter=';'))
+
+    def test_csv_import_set_with_newlines(self):
+        """Generate and import CSV set serialization when row values have
+        newlines."""
+        data.append(('Markdown\n=======',
+                     'A cool language\n\nwith paragraphs'))
+        data.append(('reStructedText\n==============',
+                     'Another cool language\n\nwith paragraphs'))
+        data.headers = ('title', 'body')
+
+        _csv = data.csv
+        data.csv = _csv
+
+        self.assertEqual(_csv, data.csv)
+
+    def test_csv_import_set_with_unicode_str(self):
+        """Import CSV set with non-ascii characters in unicode literal"""
+        csv_text = (
+            "id,givenname,surname,loginname,email,pref_firstname,pref_lastname\n"
+            "13765,Ævar,Arnfjörð,testing,test@example.com,Ævar,Arnfjörð"
+        )
+        data.csv = csv_text
+        self.assertEqual(data.width, 7)
+
+    def test_csv_export(self):
+        """Verify exporting dataset object as CSV."""
+
+        # Build up the csv string with headers first, followed by each row
+        csv = ''
+        for col in self.headers:
+            csv += col + ','
+
+        csv = csv.strip(',') + '\r\n'
+
+        for founder in self.founders:
+            for col in founder:
+                csv += str(col) + ','
+            csv = csv.strip(',') + '\r\n'
+
+        self.assertEqual(csv, self.founders.csv)
+
+    def test_csv_stream_export(self):
+        """Verify exporting dataset object as CSV from file object."""
+
+        # Build up the csv string with headers first, followed by each row
+        csv = ''
+        for col in self.headers:
+            csv += col + ','
+
+        csv = csv.strip(',') + '\r\n'
+
+        for founder in self.founders:
+            for col in founder:
+                csv += str(col) + ','
+            csv = csv.strip(',') + '\r\n'
+
+        csv_stream = csv_module.export_stream_set(self.founders)
+        self.assertEqual(csv, csv_stream.getvalue())
+
     def test_unicode_csv(self):
         """Check if unicode in csv export doesn't raise."""
 
@@ -972,36 +716,6 @@ class TablibTestCase(unittest.TestCase):
 
         self.assertEqual(self.founders[orig_target_header], data[target_header])
 
-    def test_unicode_renders_markdown_table(self):
-        # add another entry to test right field width for
-        # integer
-        self.founders.append(('Old', 'Man', 100500))
-        self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
-
-    def test_databook_add_sheet_accepts_only_dataset_instances(self):
-        class NotDataset(object):
-            def append(self, item):
-                pass
-
-        dataset = NotDataset()
-        dataset.append(self.john)
-
-        self.assertRaises(tablib.InvalidDatasetType, book.add_sheet, dataset)
-
-    def test_databook_add_sheet_accepts_dataset_subclasses(self):
-        class DatasetSubclass(tablib.Dataset):
-            pass
-
-        # just checking if subclass of tablib.Dataset can be added to Databook
-        dataset = DatasetSubclass()
-        dataset.append(self.john)
-        dataset.append(self.tom)
-
-        try:
-            book.add_sheet(dataset)
-        except tablib.InvalidDatasetType:
-            self.fail("Subclass of tablib.Dataset should be accepted by Databook.add_sheet")
-
     def test_csv_formatter_support_kwargs(self):
         """Test CSV import and export with formatter configuration."""
         data.append(self.john)
@@ -1021,25 +735,324 @@ class TablibTestCase(unittest.TestCase):
         d2 = tablib.import_set(_csv, format="csv", **kwargs)
         self.assertEqual(3, len(d2.headers))
 
-    def test_databook_formatter_support_kwargs(self):
-        """Test XLSX export with formatter configuration."""
-        self.founders.export('xlsx', freeze_panes=False)
 
-    def test_databook_formatter_with_new_lines(self):
-        """Test XLSX export with new line in content."""
-        self.founders.append(('First\nSecond', 'Name', 42))
-        self.founders.export('xlsx')
-
-    def test_rst_force_grid(self):
+class TSVTests(BaseTestCase):
+    def test_tsv_import_set(self):
+        """Generate and import TSV set serialization."""
         data.append(self.john)
         data.append(self.george)
         data.headers = self.headers
 
-        simple = tablib.formats._rst.export_set(data)
-        grid = tablib.formats._rst.export_set(data, force_grid=True)
-        self.assertNotEqual(simple, grid)
-        self.assertNotIn('+', simple)
-        self.assertIn('+', grid)
+        _tsv = data.tsv
+
+        data.tsv = _tsv
+
+        self.assertEqual(_tsv, data.tsv)
+
+    def test_tsv_format_detect(self):
+        """Test TSV format detection."""
+
+        _tsv = (
+            '1\t2\t3\n'
+            '4\t5\t6\n'
+            '7\t8\t9\n'
+        )
+        _bunk = (
+            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+
+        self.assertTrue(tablib.formats.tsv.detect(_tsv))
+        self.assertFalse(tablib.formats.tsv.detect(_bunk))
+
+    def test_tsv_export(self):
+        """Verify exporting dataset object as TSV."""
+
+        # Build up the tsv string with headers first, followed by each row
+        tsv = ''
+        for col in self.headers:
+            tsv += col + '\t'
+
+        tsv = tsv.strip('\t') + '\r\n'
+
+        for founder in self.founders:
+            for col in founder:
+                tsv += str(col) + '\t'
+            tsv = tsv.strip('\t') + '\r\n'
+
+        self.assertEqual(tsv, self.founders.tsv)
+
+
+class JSONTests(BaseTestCase):
+    def test_json_format_detect(self):
+        """Test JSON format detection."""
+
+        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+        _bunk = (
+            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+
+        self.assertTrue(tablib.formats.json.detect(_json))
+        self.assertFalse(tablib.formats.json.detect(_bunk))
+
+    def test_json_import_book(self):
+        """Generate and import JSON book serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        book.add_sheet(data)
+        _json = book.json
+
+        book.json = _json
+
+        self.assertEqual(json.loads(_json), json.loads(book.json))
+
+    def test_json_import_set(self):
+        """Generate and import JSON set serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _json = data.json
+
+        data.json = _json
+
+        self.assertEqual(json.loads(_json), json.loads(data.json))
+
+    def test_json_export(self):
+        """Verify exporting dataset object as JSON"""
+
+        address_id = uuid4()
+        headers = self.headers + ('address_id',)
+        founders = tablib.Dataset(headers=headers, title='Founders')
+        founders.append(('John', 'Adams', 90, address_id))
+        founders_json = founders.export('json')
+
+        expected_json = (
+            '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
+            '"address_id": "%s"}]' % str(address_id)
+        )
+
+        self.assertEqual(founders_json, expected_json)
+
+
+class YAMLTests(BaseTestCase):
+    def test_yaml_format_detect(self):
+        """Test YAML format detection."""
+
+        _yaml = '- {age: 90, first_name: John, last_name: Adams}'
+        _tsv = 'foo\tbar'
+        _bunk = (
+            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+
+        self.assertTrue(tablib.formats.yaml.detect(_yaml))
+        self.assertFalse(tablib.formats.yaml.detect(_bunk))
+        self.assertFalse(tablib.formats.yaml.detect(_tsv))
+
+    def test_yaml_import_book(self):
+        """Generate and import YAML book serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        book.add_sheet(data)
+        _yaml = book.yaml
+
+        book.yaml = _yaml
+
+        self.assertEqual(_yaml, book.yaml)
+
+    def test_yaml_import_set(self):
+        """Generate and import YAML set serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _yaml = data.yaml
+
+        data.yaml = _yaml
+
+        self.assertEqual(_yaml, data.yaml)
+
+
+class LatexTests(BaseTestCase):
+    def test_latex_export(self):
+        """LaTeX export"""
+
+        expected = """\
+% Note: add \\usepackage{booktabs} to your preamble
+%
+\\begin{table}[!htbp]
+  \\centering
+  \\caption{Founders}
+  \\begin{tabular}{lrr}
+    \\toprule
+      first\\_name & last\\_name & gpa \\\\
+    \\cmidrule(r){1-1} \\cmidrule(lr){2-2} \\cmidrule(l){3-3}
+      John & Adams & 90 \\\\
+      George & Washington & 67 \\\\
+      Thomas & Jefferson & 50 \\\\
+    \\bottomrule
+  \\end{tabular}
+\\end{table}
+"""
+        output = self.founders.latex
+        self.assertEqual(output, expected)
+
+    def test_latex_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().latex is not None)
+
+    def test_latex_export_no_headers(self):
+        d = tablib.Dataset()
+        d.append(('one', 'two', 'three'))
+        self.assertTrue('one' in d.latex)
+
+    def test_latex_export_caption(self):
+        d = tablib.Dataset()
+        d.append(('one', 'two', 'three'))
+        self.assertFalse('caption' in d.latex)
+
+        d.title = 'Title'
+        self.assertTrue('\\caption{Title}' in d.latex)
+
+    def test_latex_export_none_values(self):
+        headers = ['foo', None, 'bar']
+        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
+        output = d.latex
+        self.assertTrue('foo' in output)
+        self.assertFalse('None' in output)
+
+    def test_latex_escaping(self):
+        d = tablib.Dataset(['~', '^'])
+        output = d.latex
+
+        self.assertFalse('~' in output)
+        self.assertTrue('textasciitilde' in output)
+        self.assertFalse('^' in output)
+        self.assertTrue('textasciicircum' in output)
+
+
+class DBFTests(BaseTestCase):
+    def test_dbf_import_set(self):
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        _dbf = data.dbf
+        data.dbf = _dbf
+
+        # self.assertEqual(_dbf, data.dbf)
+        try:
+            self.assertEqual(_dbf, data.dbf)
+        except AssertionError:
+            index = 0
+            so_far = ''
+            for reg_char, data_char in zip(_dbf, data.dbf):
+                so_far += chr(data_char)
+                if reg_char != data_char and index not in [1, 2, 3]:
+                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                        index, reg_char, data_char, so_far))
+                index += 1
+
+    def test_dbf_export_set(self):
+        """Test DBF import."""
+        data.append(self.john)
+        data.append(self.george)
+        data.append(self.tom)
+        data.headers = self.headers
+
+        _regression_dbf = (b'\x03r\x06\x06\x03\x00\x00\x00\x81\x00\xab\x00\x00'
+                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                           b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+                           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+                           b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                           b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+                           b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+                           )
+        _regression_dbf += b' John' + (b' ' * 75)
+        _regression_dbf += b' Adams' + (b' ' * 74)
+        _regression_dbf += b' 90.0000000'
+        _regression_dbf += b' George' + (b' ' * 73)
+        _regression_dbf += b' Washington' + (b' ' * 69)
+        _regression_dbf += b' 67.0000000'
+        _regression_dbf += b' Thomas' + (b' ' * 73)
+        _regression_dbf += b' Jefferson' + (b' ' * 70)
+        _regression_dbf += b' 50.0000000'
+        _regression_dbf += b'\x1a'
+
+        if is_py3:
+            # If in python3, decode regression string to binary.
+            # _regression_dbf = bytes(_regression_dbf, 'utf-8')
+            # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
+            pass
+
+        try:
+            self.assertEqual(_regression_dbf, data.dbf)
+        except AssertionError:
+            index = 0
+            found_so_far = ''
+            for reg_char, data_char in zip(_regression_dbf, data.dbf):
+                # found_so_far += chr(data_char)
+                if reg_char != data_char and index not in [1, 2, 3]:
+                    raise AssertionError(
+                        'Failing at char %s: %s vs %s (found %s)' % (
+                            index, reg_char, data_char, found_so_far))
+                index += 1
+
+    def test_dbf_format_detect(self):
+        """Test the DBF format detection."""
+        _dbf = (b'\x03r\x06\x03\x03\x00\x00\x00\x81\x00\xab\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00FIRST_NAME\x00C\x00\x00\x00\x00P\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00LAST_NAME\x00\x00C\x00'
+                b'\x00\x00\x00P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00GPA\x00\x00\x00\x00\x00\x00\x00\x00N\x00\x00\x00\x00\n'
+                b'\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r'
+                )
+        _dbf += b' John' + (b' ' * 75)
+        _dbf += b' Adams' + (b' ' * 74)
+        _dbf += b' 90.0000000'
+        _dbf += b' George' + (b' ' * 73)
+        _dbf += b' Washington' + (b' ' * 69)
+        _dbf += b' 67.0000000'
+        _dbf += b' Thomas' + (b' ' * 73)
+        _dbf += b' Jefferson' + (b' ' * 70)
+        _dbf += b' 50.0000000'
+        _dbf += b'\x1a'
+
+        _yaml = '- {age: 90, first_name: John, last_name: Adams}'
+        _tsv = 'foo\tbar'
+        _csv = '1,2,3\n4,5,6\n7,8,9\n'
+        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
+
+        _bunk = (
+            '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
+        self.assertTrue(tablib.formats.dbf.detect(_dbf))
+        self.assertFalse(tablib.formats.dbf.detect(_yaml))
+        self.assertFalse(tablib.formats.dbf.detect(_tsv))
+        self.assertFalse(tablib.formats.dbf.detect(_csv))
+        self.assertFalse(tablib.formats.dbf.detect(_json))
+        self.assertFalse(tablib.formats.dbf.detect(_bunk))
+
+
+class JiraTests(BaseTestCase):
+    def test_jira_export(self):
+        expected = """||first_name||last_name||gpa||
+|John|Adams|90|
+|George|Washington|67|
+|Thomas|Jefferson|50|"""
+        self.assertEqual(expected, self.founders.jira)
+
+    def test_jira_export_no_headers(self):
+        self.assertEqual('|a|b|c|', tablib.Dataset(['a', 'b', 'c']).jira)
+
+    def test_jira_export_none_and_empty_values(self):
+        self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
+
+    def test_jira_export_empty_dataset(self):
+        self.assertTrue(tablib.Dataset().jira is not None)
 
 
 class DocTests(unittest.TestCase):
