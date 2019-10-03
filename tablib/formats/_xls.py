@@ -4,8 +4,9 @@
 """
 
 import sys
+from io import BytesIO
 
-from tablib.compat import BytesIO, xrange
+from tablib.compat import xrange
 import tablib
 import xlrd
 import xlwt

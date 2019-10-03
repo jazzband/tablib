@@ -1,14 +1,8 @@
 """ Tablib - DataFrame Support.
 """
 
-
 import sys
-
-
-if sys.version_info[0] > 2:
-    from io import BytesIO
-else:
-    from cStringIO import StringIO as BytesIO
+from io import BytesIO
 
 try:
     from pandas import DataFrame

@@ -3,14 +3,10 @@
 """ Tablib - HTML export support.
 """
 
-import sys
-
-if sys.version_info[0] > 2:
-    from io import BytesIO as StringIO
-else:
-    from cStringIO import StringIO
-
 import codecs
+import sys
+from io import BytesIO
+
 from MarkupPy import markup
 import tablib
 from tablib.compat import unicode
@@ -24,7 +20,7 @@ extensions = ('html', )
 def export_set(dataset):
     """HTML representation of a Dataset."""
 
-    stream = StringIO()
+    stream = BytesIO()
 
     page = markup.page()
     page.table.open()
@@ -55,7 +51,7 @@ def export_set(dataset):
 def export_book(databook):
     """HTML representation of a Databook."""
 
-    stream = StringIO()
+    stream = BytesIO()
 
     # Allow unicode characters in output
     wrapper = codecs.getwriter("utf8")(stream)

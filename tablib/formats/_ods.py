@@ -3,8 +3,9 @@
 """ Tablib - ODF Support.
 """
 
+from io import BytesIO
 from odf import opendocument, style, table, text
-from tablib.compat import BytesIO, unicode
+from tablib.compat import unicode
 
 title = 'ods'
 extensions = ('ods',)
