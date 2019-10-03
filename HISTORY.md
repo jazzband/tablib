@@ -4,6 +4,8 @@
 
 - The project is now maintained by the Jazzband team, https://jazzband.co
 - Fixed `DataBook().load` parameter ordering (first stream, then format).
+- Fixed a regression for xlsx exports where non-string values were forced to
+  strings (#314).
 - Added search to all documentation pages
 - Open xlsx workbooks in read-only mode (#316)
 - Unpin requirements

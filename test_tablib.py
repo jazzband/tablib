@@ -782,6 +782,25 @@ class TSVTests(BaseTestCase):
         self.assertEqual(tsv, self.founders.tsv)
 
 
+class XLSXTests(BaseTestCase):
+    def test_xlsx_import_set(self):
+        data.append(('string', 42, 21.55))
+        data.headers = ('string', 'integer', 'float')
+        _xlsx = data.xlsx
+        data.xlsx = _xlsx
+        self.assertEqual(data.dict[0]['string'], 'string')
+        self.assertEqual(data.dict[0]['integer'], 42)
+        self.assertEqual(data.dict[0]['float'], 21.55)
+
+    def test_xlsx_wrong_char(self):
+        """Bad characters are not silently ignored. We let the exception bubble up."""
+        from openpyxl.utils.exceptions import IllegalCharacterError
+
+        with self.assertRaises(IllegalCharacterError):
+            data.append(('string', b'\x0cf'))
+            data.xlsx
+
+
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
         """Test JSON format detection."""
