@@ -59,7 +59,6 @@ def export_book(databook, freeze_panes=True):
 
         dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
-
     stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()

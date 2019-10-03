@@ -38,7 +38,6 @@ def export_book(databook):
         wb.spreadsheet.addElement(ws)
         dset_sheet(dset, ws)
 
-
     stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()

@@ -61,7 +61,6 @@ def export_book(databook):
 
         dset_sheet(dset, ws)
 
-
     stream = BytesIO()
     wb.save(stream)
     return stream.getvalue()
@@ -121,7 +120,6 @@ def dset_sheet(dataset, ws):
                 # frozen header row
                 ws.panes_frozen = True
                 ws.horz_split_pos = 1
-
 
             # bold separators
             elif len(row) < dataset.width:

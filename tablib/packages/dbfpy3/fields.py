@@ -56,7 +56,6 @@ class DbfFieldDef(object):
 
     """
 
-
     __slots__ = ("name", "decimalCount",
         "start", "end", "ignoreErrors")
 

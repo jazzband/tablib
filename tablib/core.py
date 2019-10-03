@@ -106,8 +106,6 @@ class Row(object):
             return bool(len(set(tag) & set(self.tags)))
 
 
-
-
 class Dataset(object):
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
@@ -173,10 +171,8 @@ class Dataset(object):
 
         self._register_formats()
 
-
     def __len__(self):
         return self.height
-
 
     def __getitem__(self, key):
         if isinstance(key, (str, unicode)):
@@ -196,7 +192,6 @@ class Dataset(object):
         self._validate(value)
         self._data[key] = Row(value)
 
-
     def __delitem__(self, key):
         if isinstance(key, (str, unicode)):
 
@@ -213,7 +208,6 @@ class Dataset(object):
                 raise KeyError
         else:
             del self._data[key]
-
 
     def __repr__(self):
         try:
@@ -267,7 +261,6 @@ class Dataset(object):
             except AttributeError:
                 cls._formats[fmt.title] = (None, None)
 
-
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
         if row:
@@ -286,7 +279,6 @@ class Dataset(object):
             if not safety:
                 raise InvalidDimensions
             return False
-
 
     def _package(self, dicts=True, ordered=True):
         """Packages Dataset into lists of dictionaries for transmission."""
@@ -312,7 +304,6 @@ class Dataset(object):
                     except IndexError:
                         raise InvalidDatasetIndex
 
-
         if self.headers:
             if dicts:
                 data = [dict_pack(list(zip(self.headers, data_row))) for data_row in _data]
@@ -323,8 +314,6 @@ class Dataset(object):
 
         return data
 
-
-
     def _get_headers(self):
         """An *optional* list of strings to be used for header rows and attribute names.
 
@@ -332,7 +321,6 @@ class Dataset(object):
 
         """
         return self.__headers
-
 
     def _set_headers(self, collection):
         """Validating headers setter."""
@@ -347,7 +335,6 @@ class Dataset(object):
 
     headers = property(_get_headers, _set_headers)
 
-
     def _get_dict(self):
         """A native Python representation of the :class:`Dataset` object. If headers have
         been set, a list of Python dictionaries will be returned. If no headers have been set,
@@ -360,7 +347,6 @@ class Dataset(object):
 
         """
         return self._package()
-
 
     def _set_dict(self, pickle):
         """A native Python representation of the Dataset object. If headers have been
@@ -394,7 +380,6 @@ class Dataset(object):
 
     dict = property(_get_dict, _set_dict)
 
-
     def _clean_col(self, col):
         """Prepares the given column for insert/append."""
 
@@ -412,14 +397,12 @@ class Dataset(object):
 
         return col
 
-
     @property
     def height(self):
         """The number of rows currently in the :class:`Dataset`.
            Cannot be directly modified.
         """
         return len(self._data)
-
 
     @property
     def width(self):
@@ -434,7 +417,6 @@ class Dataset(object):
                 return len(self.headers)
             except TypeError:
                 return 0
-
 
     def load(self, in_stream, format=None, **kwargs):
         """
@@ -452,8 +434,6 @@ class Dataset(object):
 
         import_set(self, in_stream, **kwargs)
         return self
-
-
 
     def export(self, format, **kwargs):
         """
@@ -551,7 +531,6 @@ class Dataset(object):
              CSV file will open in Excel with a blank line between each row.
         """
         pass
-
 
     @property
     def tsv():
@@ -677,7 +656,6 @@ class Dataset(object):
         self._validate(row)
         self._data.insert(index, Row(row, tags=tags))
 
-
     def rpush(self, row, tags=list()):
         """Adds a row to the end of the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
@@ -685,14 +663,12 @@ class Dataset(object):
 
         self.insert(self.height, row=row, tags=tags)
 
-
     def lpush(self, row, tags=list()):
         """Adds a row to the top of the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
         """
 
         self.insert(0, row=row, tags=tags)
-
 
     def append(self, row, tags=list()):
         """Adds a row to the :class:`Dataset`.
@@ -709,7 +685,6 @@ class Dataset(object):
         for row in rows:
             self.append(row, tags)
 
-
     def lpop(self):
         """Removes and returns the first row of the :class:`Dataset`."""
 
@@ -717,7 +692,6 @@ class Dataset(object):
         del self[0]
 
         return cache
-
 
     def rpop(self):
         """Removes and returns the last row of the :class:`Dataset`."""
@@ -727,12 +701,10 @@ class Dataset(object):
 
         return cache
 
-
     def pop(self):
         """Removes and returns the last row of the :class:`Dataset`."""
 
         return self.rpop()
-
 
     # -------
     # Columns
@@ -788,7 +760,6 @@ class Dataset(object):
 
             self.headers.insert(index, header)
 
-
         if self.height and self.width:
 
             for i, row in enumerate(self._data):
@@ -798,15 +769,12 @@ class Dataset(object):
         else:
             self._data = [Row([row]) for row in col]
 
-
-
     def rpush_col(self, col, header=None):
         """Adds a column to the end of the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
         """
 
         self.insert_col(self.width, col, header=header)
-
 
     def lpush_col(self, col, header=None):
         """Adds a column to the top of the :class:`Dataset`.
@@ -815,13 +783,11 @@ class Dataset(object):
 
         self.insert_col(0, col, header=header)
 
-
     def insert_separator(self, index, text='-'):
         """Adds a separator to :class:`Dataset` at given index."""
 
         sep = (index, text)
         self._separators.append(sep)
-
 
     def append_separator(self, text='-'):
         """Adds a :ref:`separator <separators>` to the :class:`Dataset`."""
@@ -834,7 +800,6 @@ class Dataset(object):
 
         self.insert_separator(index, text)
 
-
     def append_col(self, col, header=None):
         """Adds a column to the :class:`Dataset`.
         See :class:`Dataset.insert_col` for additional documentation.
@@ -842,12 +807,10 @@ class Dataset(object):
 
         self.rpush_col(col, header)
 
-
     def get_col(self, index):
         """Returns the column from the :class:`Dataset` at the given index."""
 
         return [row[index] for row in self._data]
-
 
     # ----
     # Misc
@@ -875,7 +838,6 @@ class Dataset(object):
 
         return True
 
-
     def filter(self, tag):
         """Returns a new instance of the :class:`Dataset`, excluding any rows
         that do not contain the given :ref:`tags <tags>`.
@@ -884,7 +846,6 @@ class Dataset(object):
         _dset._data = [row for row in _dset._data if row.has_tag(tag)]
 
         return _dset
-
 
     def sort(self, col, reverse=False):
         """Sort a :class:`Dataset` by a specific column, given string (for
@@ -921,9 +882,7 @@ class Dataset(object):
                     row = item
                 _dset.append(row=row)
 
-
         return _dset
-
 
     def transpose(self):
         """Transpose a :class:`Dataset`, turning rows into columns and vice
@@ -953,7 +912,6 @@ class Dataset(object):
             _dset.append(row=row_data)
         return _dset
 
-
     def stack(self, other):
         """Stack two :class:`Dataset` instances together by
         joining at the row level, and return new combined
@@ -975,7 +933,6 @@ class Dataset(object):
         _dset._data = rows_to_stack
 
         return _dset
-
 
     def stack_cols(self, other):
         """Stack two :class:`Dataset` instances together by
@@ -1010,19 +967,16 @@ class Dataset(object):
 
         return _dset
 
-
     def remove_duplicates(self):
         """Removes all duplicate rows from the :class:`Dataset` object
         while maintaining the original order."""
         seen = set()
         self._data[:] = [row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))]
 
-
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = list()
         self.__headers = None
-
 
     def subset(self, rows=None, cols=None):
         """Returns a new instance of the :class:`Dataset`,
@@ -1064,7 +1018,6 @@ class Dataset(object):
         return _dset
 
 
-
 class Databook(object):
     """A book of :class:`Dataset` objects.
     """
@@ -1089,7 +1042,6 @@ class Databook(object):
     def wipe(self):
         """Removes all :class:`Dataset` objects from the :class:`Databook`."""
         self._datasets = []
-
 
     @classmethod
     def _register_formats(cls):
@@ -1116,7 +1068,6 @@ class Databook(object):
         else:
             raise InvalidDatasetType
 
-
     def _package(self, ordered=True):
         """Packages :class:`Databook` for delivery."""
         collector = []
@@ -1132,7 +1083,6 @@ class Databook(object):
                 data = dset._package(ordered=ordered)
             ))
         return collector
-
 
     @property
     def size(self):
@@ -1178,6 +1128,7 @@ def detect_format(stream):
         except AttributeError:
             pass
 
+
 def import_set(stream, format=None, **kwargs):
     """Return dataset of given stream."""
 
@@ -1197,11 +1148,14 @@ class InvalidDatasetType(Exception):
 class InvalidDimensions(Exception):
     "Invalid size"
 
+
 class InvalidDatasetIndex(Exception):
     "Outside of Dataset size"
 
+
 class HeadersNeeded(Exception):
     "Header parameter must be given when appending a column in this Dataset."
+
 
 class UnsupportedFormat(NotImplementedError):
     "Format is not supported"
