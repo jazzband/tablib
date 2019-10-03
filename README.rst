@@ -1,6 +1,10 @@
 Tablib: format-agnostic tabular dataset library
 ===============================================
 
+.. image:: https://jazzband.co/static/img/badge.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
+
 .. image:: https://travis-ci.org/jazzband/tablib.svg?branch=master
     :target: https://travis-ci.org/jazzband/tablib
 
