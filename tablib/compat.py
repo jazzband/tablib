@@ -14,7 +14,6 @@ is_py3 = (sys.version_info[0] > 2)
 
 
 if is_py3:
-    from io import BytesIO
     from io import StringIO
     from statistics import median
     from itertools import zip_longest as izip_longest
@@ -25,7 +24,6 @@ if is_py3:
     xrange = range
 
 else:
-    from cStringIO import StringIO as BytesIO
     from StringIO import StringIO
     from tablib.packages.statistics import median
     from itertools import izip_longest
