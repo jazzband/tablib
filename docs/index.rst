@@ -53,11 +53,11 @@ and seamless format import & export.
 Testimonials
 ------------
 
-`National Geographic <http://www.nationalgeographic.com/>`_,
-`Digg, Inc <http://digg.com/>`_,
-`Northrop Grumman <http://www.northropgrumman.com/>`_,
-`Discovery Channel <http://dsc.discovery.com/>`_,
-and `The Sunlight Foundation <http://sunlightfoundation.com/>`_ use Tablib internally.
+`National Geographic <https://www.nationalgeographic.com/>`_,
+`Digg, Inc <https://digg.com/>`_,
+`Northrop Grumman <https://www.northropgrumman.com/>`_,
+`Discovery Channel <https://dsc.discovery.com/>`_,
+and `The Sunlight Foundation <https://sunlightfoundation.com/>`_ use Tablib internally.
 
 
 

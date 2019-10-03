@@ -39,8 +39,8 @@ software to be used in proprietary, closed-source software.
 
 Tablib is released under terms of `The MIT License`_.
 
-.. _`GPL Licensed`: http://www.opensource.org/licenses/gpl-license.php
-.. _`The MIT License`: http://www.opensource.org/licenses/mit-license.php
+.. _`GPL Licensed`: https://opensource.org/licenses/gpl-license.php
+.. _`The MIT License`: https://opensource.org/licenses/mit-license.php
 
 
 .. _license:

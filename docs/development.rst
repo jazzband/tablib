@@ -8,7 +8,7 @@ Tablib is under active development, and contributors are welcome.
 If you have a feature request, suggestion, or bug report, please open a new
 issue on GitHub_. To submit patches, please send a pull request on GitHub_.
 
-.. _GitHub: http://github.com/jazzband/tablib/
+.. _GitHub: https://github.com/jazzband/tablib/
 
 
 
@@ -50,7 +50,7 @@ The repository is publicly accessible.
 The project is hosted on **GitHub**.
 
     GitHub:
-        http://github.com/jazzband/tablib
+        https://github.com/jazzband/tablib
 
 
 Git Branch Structure
@@ -67,9 +67,9 @@ Each release is tagged.
 When submitting patches, please place your feature/change in its own branch prior to opening a pull request on GitHub_.
 
 
-.. _Git: http://git-scm.org
-.. _`Successful Git Branching Model`: http://nvie.com/posts/a-successful-git-branching-model/
-.. _git-flow: http://github.com/nvie/gitflow
+.. _Git: https://git-scm.org
+.. _`Successful Git Branching Model`: https://nvie.com/posts/a-successful-git-branching-model/
+.. _git-flow: https://github.com/nvie/gitflow
 
 
 .. _newformats:
@@ -225,7 +225,7 @@ You can also generate the documentation in **epub**, **latex**, **json**, *&c* s
 
 .. _`reStructured Text`: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx.pocoo.org
-.. _`GitHub Pages`: http://pages.github.com
+.. _`GitHub Pages`: https://pages.github.com
 
 ----------
 

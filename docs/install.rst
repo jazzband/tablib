@@ -15,7 +15,7 @@ Installing Tablib
 Distribute & Pip
 ----------------
 
-Of course, the recommended way to install Tablib is with `pip <http://www.pip-installer.org/>`_:
+Of course, the recommended way to install Tablib is with `pip <https://pip.pypa.io>`_:
 
 .. code-block:: console
 
@@ -45,8 +45,8 @@ or install it into your site-packages easily.
 
 To download the full source history from Git, see :ref:`Source Control <scm>`.
 
-.. _tarball: http://github.com/jazzband/tablib/tarball/master
-.. _zipball: http://github.com/jazzband/tablib/zipball/master
+.. _tarball: https://github.com/jazzband/tablib/tarball/master
+.. _zipball: https://github.com/jazzband/tablib/zipball/master
 
 
 .. _updates:
@@ -56,8 +56,8 @@ Staying Updated
 
 The latest version of Tablib will always be available here:
 
-* PyPI: http://pypi.python.org/pypi/tablib/
-* GitHub: http://github.com/jazzband/tablib/
+* PyPI: https://pypi.org/project/tablib/
+* GitHub: https://github.com/jazzband/tablib/
 
 When a new version is available, upgrading is simple::
 

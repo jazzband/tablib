@@ -172,7 +172,7 @@ To install tablib, simply:
 $ pip install tablib[pandas]
 ```
 
-Make sure to check out [Tablib on PyPI](https://pypi.python.org/pypi/tablib/)!
+Make sure to check out [Tablib on PyPI](https://pypi.org/project/tablib/)!
 
 
 ## Contribute
