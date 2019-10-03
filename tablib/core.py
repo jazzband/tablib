@@ -142,7 +142,7 @@ class Dataset(object):
 
         data = tablib.Dataset(*data, headers=headers)
 
-    :param \*args: (optional) list of rows to populate Dataset
+    :param \\*args: (optional) list of rows to populate Dataset
     :param headers: (optional) list strings for Dataset header row
     :param title: (optional) string to use as title of the Dataset
 
@@ -440,7 +440,7 @@ class Dataset(object):
         """
         Import `in_stream` to the :class:`Dataset` object using the `format`.
 
-        :param \*\*kwargs: (optional) custom configuration to the format `import_set`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format `import_set`.
         """
 
         if not format:
@@ -459,7 +459,7 @@ class Dataset(object):
         """
         Export :class:`Dataset` object to `format`.
 
-        :param \*\*kwargs: (optional) custom configuration to the format `export_set`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format `export_set`.
         """
         export_set, import_set = self._formats.get(format, (None, None))
         if not export_set:
@@ -1143,7 +1143,7 @@ class Databook(object):
         """
         Import `in_stream` to the :class:`Databook` object using the `format`.
 
-        :param \*\*kwargs: (optional) custom configuration to the format `import_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format `import_book`.
         """
 
         if not format:
@@ -1160,7 +1160,7 @@ class Databook(object):
         """
         Export :class:`Databook` object to `format`.
 
-        :param \*\*kwargs: (optional) custom configuration to the format `export_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format `export_book`.
         """
         export_book, import_book = self._formats.get(format, (None, None))
         if not export_book:
