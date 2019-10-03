@@ -53,7 +53,7 @@ setup(
     long_description_content_type="text/markdown",
     author='Kenneth Reitz',
     author_email='me@kennethreitz.org',
-    url='http://python-tablib.org',
+    url='https://tablib.readthedocs.io',
     packages=packages,
     license='MIT',
     classifiers=[
