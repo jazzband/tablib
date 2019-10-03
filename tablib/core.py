@@ -608,7 +608,7 @@ class Dataset(object):
 
             # To import data from an existing DBF file:
             data = tablib.Dataset()
-            data.dbf = open('existing_table.dbf').read()
+            data.dbf = open('existing_table.dbf', mode='rb').read()
 
             # to import data from an ASCII-encoded bytestring:
             data = tablib.Dataset()
