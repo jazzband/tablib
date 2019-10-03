@@ -117,8 +117,6 @@ def dset_sheet(dataset, ws, freeze_panes=True):
 
             # bold headers
             if (row_number == 1) and dataset.headers:
-                # cell.value = unicode('%s' % col, errors='ignore')
-                cell.value = unicode(col)
                 cell.font = bold
                 if freeze_panes:
                     #  Export Freeze only after first Line
@@ -126,16 +124,18 @@ def dset_sheet(dataset, ws, freeze_panes=True):
 
             # bold separators
             elif len(row) < dataset.width:
-                cell.value = unicode('%s' % col, errors='ignore')
                 cell.font = bold
 
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
-                        cell.value = unicode('%s' % col, errors='ignore')
-                        cell.alignment = wrap_text
-                    else:
-                        cell.value = unicode('%s' % col, errors='ignore')
+                    str_col_value = unicode(col)
                 except TypeError:
-                    cell.value = unicode(col)
+                    str_col_value = ''
+                if '\n' in str_col_value:
+                    cell.alignment = wrap_text
+
+            try:
+                cell.value = col
+            except (ValueError, TypeError):
+                cell.value = unicode(col)
