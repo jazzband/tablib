@@ -2,7 +2,35 @@
 
 ## Unreleased
 
+- The project is now maintained by the Jazzband team, https://jazzband.co
 - Fixed `DataBook().load` parameter ordering (first stream, then format).
+- Added search to all documentation pages
+- Open xlsx workbooks in read-only mode (#316)
+- Unpin requirements
+- Only install backports.csv on Python 2
+- Added Python 3.7 support
+- Dropped Python 3.4 support
+
+## 0.13.0 (2019-03-08)
+
+- Added reStructuredText output capability (#336)
+- Added Jira output capability
+- Stopped calling openpyxl deprecated methods (accessing cells, removing sheets)
+  (openpyxl minimal version is now 2.4.0)
+- Fixed a circular dependency issue in JSON output (#332)
+- Fixed Unicode error for the CSV export on Python 2 (#215)
+- Removed usage of optional `ujson` (#311)
+- Dropped Python 3.3 support
+
+## 0.12.1 (2017-09-01)
+
+- Favor `Dataset.export(<format>)` over `Dataset.<format>` syntax in docs
+- Make Panda dependency optional
+
+## 0.12.0 (2017-08-27)
+
+- Add initial Panda DataFrame support
+- Dropped Python 2.6 support
 
 ## 0.11.5 (2017-06-13)
 
