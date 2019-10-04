@@ -180,9 +180,8 @@ This will generate a **nosetests.xml** file, which can then be analyzed.
 Continuous Integration
 ----------------------
 
-Every commit made to the **develop** branch is automatically tested and inspected upon receipt with `Travis CI`_.
-If you have access to the main repository and broke the build,
-you will receive an email accordingly.
+Every pull request is automatically tested and inspected upon receipt with `Travis CI`_.
+If you broke the build, you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
@@ -190,7 +189,7 @@ Anyone may view the build status and history at any time.
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Jenkins CI`: https://travis-ci.org/
+.. _`Travis CI`: https://travis-ci.org/
 
 
 .. _docs:
