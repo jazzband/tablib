@@ -7,6 +7,7 @@
 - Fixed a regression for xlsx exports where non-string values were forced to
   strings (#314).
 - Fixed xlsx format detection (which was often detected as `xls` format).
+- Improved format autodetection and added autodetection for the odf format.
 - Added search to all documentation pages
 - Open xlsx workbooks in read-only mode (#316)
 - Unpin requirements

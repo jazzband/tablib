@@ -55,5 +55,5 @@ def detect(stream, delimiter=DEFAULT_DELIMITER):
     try:
         csv.Sniffer().sniff(stream, delimiters=delimiter)
         return True
-    except (csv.Error, TypeError):
+    except Exception:
         return False

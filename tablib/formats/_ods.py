@@ -91,3 +91,14 @@ def dset_sheet(dataset, ws):
                     cell = table.TableCell()
                     cell.addElement(text.P(text=col))
                     odf_row.addElement(cell)
+
+
+def detect(stream):
+    if isinstance(stream, bytes):
+        # load expects a file-like object.
+        stream = BytesIO(stream)
+    try:
+        opendocument.load(stream)
+        return True
+    except Exception:
+        return False

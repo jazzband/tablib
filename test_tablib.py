@@ -288,17 +288,33 @@ class TablibTestCase(BaseTestCase):
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
+        # html, jira, latex, rst are export only.
+
+        _xls = self.founders.export('xls')
+        self.assertEqual(tablib.detect_format(_xls), 'xls')
+
+        _xlsx = self.founders.export('xlsx')
+        self.assertEqual(tablib.detect_format(_xlsx), 'xlsx')
+
+        _ods = self.founders.export('ods')
+        self.assertEqual(tablib.detect_format(_ods), 'ods')
+
+        _df = self.founders.export('df')
+        self.assertEqual(tablib.detect_format(_df), 'df')
 
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
-        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
-        _csv = '1,2,3\n4,5,6\n7,8,9\n'
-        _tsv = '1\t2\t3\n4\t5\t6\n7\t8\t9\n'
-        _bunk = '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
-
         self.assertEqual(tablib.detect_format(_yaml), 'yaml')
-        self.assertEqual(tablib.detect_format(_csv), 'csv')
-        self.assertEqual(tablib.detect_format(_tsv), 'tsv')
+
+        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
         self.assertEqual(tablib.detect_format(_json), 'json')
+
+        _csv = '1,2,3\n4,5,6\n7,8,9\n'
+        self.assertEqual(tablib.detect_format(_csv), 'csv')
+
+        _tsv = '1\t2\t3\n4\t5\t6\n7\t8\t9\n'
+        self.assertEqual(tablib.detect_format(_tsv), 'tsv')
+
+        _bunk = '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         self.assertEqual(tablib.detect_format(_bunk), None)
 
     def test_transpose(self):
