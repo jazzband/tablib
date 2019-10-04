@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - JSON Support
 """
 import decimal

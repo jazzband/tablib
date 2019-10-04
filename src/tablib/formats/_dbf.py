@@ -1,24 +1,13 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - DBF Support.
 """
-import tempfile
-import struct
+import io
 import os
+import struct
+import tempfile
 
-from tablib.compat import StringIO
-from tablib.compat import dbfpy
-from tablib.compat import is_py3
-
-if is_py3:
-    from tablib.packages.dbfpy3 import dbf
-    from tablib.packages.dbfpy3 import dbfnew
-    from tablib.packages.dbfpy3 import record as dbfrecord
-    import io
-else:
-    from tablib.packages.dbfpy import dbf
-    from tablib.packages.dbfpy import dbfnew
-    from tablib.packages.dbfpy import record as dbfrecord
+from tablib.packages.dbfpy import dbf
+from tablib.packages.dbfpy import dbfnew
+from tablib.packages.dbfpy import record as dbfrecord
 
 
 title = 'dbf'
@@ -50,10 +39,7 @@ def export_set(dataset):
 
     dbf_file.close()
     dbf_stream = open(temp_uri, 'rb')
-    if is_py3:
-        stream = io.BytesIO(dbf_stream.read())
-    else:
-        stream = StringIO(dbf_stream.read())
+    stream = io.BytesIO(dbf_stream.read())
     dbf_stream.close()
     os.close(temp_file)
     os.remove(temp_uri)
@@ -63,10 +49,7 @@ def import_set(dset, in_stream, headers=True):
     """Returns a dataset from a DBF stream."""
 
     dset.wipe()
-    if is_py3:
-        _dbf = dbf.Dbf(io.BytesIO(in_stream))
-    else:
-        _dbf = dbf.Dbf(StringIO(in_stream))
+    _dbf = dbf.Dbf(io.BytesIO(in_stream))
     dset.headers = _dbf.fieldNames
     for record in range(_dbf.recordCount):
         row = [_dbf[record][f] for f in _dbf.fieldNames]
@@ -76,12 +59,9 @@ def detect(stream):
     """Returns True if the given stream is valid DBF"""
     #_dbf = dbf.Table(StringIO(stream))
     try:
-        if is_py3:
-            if type(stream) is not bytes:
-                stream = bytes(stream, 'utf-8')
-            _dbf = dbf.Dbf(io.BytesIO(stream), readOnly=True)
-        else:
-            _dbf = dbf.Dbf(StringIO(stream), readOnly=True)
+        if type(stream) is not bytes:
+            stream = bytes(stream, 'utf-8')
+        _dbf = dbf.Dbf(io.BytesIO(stream), readOnly=True)
         return True
     except Exception:
         return False

@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """Tablib - LaTeX table export support.
 
    Generates a LaTeX booktabs-style table from the dataset.
 """
 import re
 
-from tablib.compat import unicode
 
 title = 'latex'
 extensions = ('tex',)
@@ -119,7 +116,7 @@ def _serialize_row(row):
     :param row: single dataset row
     """
 
-    new_row = [_escape_tex_reserved_symbols(unicode(item)) if item else '' for
+    new_row = [_escape_tex_reserved_symbols(str(item)) if item else '' for
                item in row]
     return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
 

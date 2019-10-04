@@ -1,18 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - reStructuredText Support
 """
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
+from itertools import zip_longest
+from statistics import median
 from textwrap import TextWrapper
-
-from tablib.compat import (
-    median,
-    unicode,
-    izip_longest,
-)
 
 
 title = 'rst'
@@ -28,10 +19,10 @@ JUSTIFY_RIGHT = 'right'
 JUSTIFY_VALUES = (JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT)
 
 
-def to_unicode(value):
+def to_str(value):
     if isinstance(value, bytes):
         return value.decode('utf-8')
-    return unicode(value)
+    return str(value)
 
 
 def _max_word_len(text):
@@ -60,7 +51,7 @@ def _get_column_string_lengths(dataset):
     for row in dataset.dict:
         values = iter(row.values() if hasattr(row, 'values') else row)
         for i, val in enumerate(values):
-            text = to_unicode(val)
+            text = to_str(val)
             column_lengths[i].append(len(text))
             word_lens[i] = max(word_lens[i], _max_word_len(text))
     return column_lengths, word_lens
@@ -86,10 +77,10 @@ def _row_to_lines(values, widths, wrapper, sep='|', justify=JUSTIFY_LEFT):
     cells = []
     for value, width in zip(values, widths):
         wrapper.width = width
-        text = to_unicode(value)
+        text = to_str(value)
         cell = wrapper.wrap(text)
         cells.append(cell)
-    lines = izip_longest(*cells, fillvalue='')
+    lines = zip_longest(*cells, fillvalue='')
     lines = (
         (just(cell_line, widths[i]) for i, cell_line in enumerate(line))
         for line in lines
@@ -206,11 +197,11 @@ def _use_simple_table(head0, col0, width0):
 
     """
     if head0 is not None:
-        head0 = to_unicode(head0)
+        head0 = to_str(head0)
         if len(head0) > width0:
             return False
     for cell in col0:
-        cell = to_unicode(cell)
+        cell = to_str(cell)
         if len(cell) > width0:
             return False
     return True

@@ -1,5 +1,11 @@
 # History
 
+## Unreleased
+
+### Breaking changes
+
+- Dropped Python 2 support
+
 ## 0.14.0 (2019-10-19)
 
 ### Deprecations

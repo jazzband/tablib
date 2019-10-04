@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     tablib.core
     ~~~~~~~~~~~
@@ -15,8 +14,6 @@ from operator import itemgetter
 
 from tablib import formats
 
-from tablib.compat import unicode
-
 
 __title__ = 'tablib'
 __author__ = 'Kenneth Reitz'
@@ -25,7 +22,7 @@ __copyright__ = 'Copyright 2017 Kenneth Reitz. 2019 Jazzband.'
 __docformat__ = 'restructuredtext'
 
 
-class Row(object):
+class Row:
     """Internal Row object. Mainly used for filtering."""
 
     __slots__ = ['_row', 'tags']
@@ -104,7 +101,7 @@ class Row(object):
             return bool(len(set(tag) & set(self.tags)))
 
 
-class Dataset(object):
+class Dataset:
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
 
@@ -173,7 +170,7 @@ class Dataset(object):
         return self.height
 
     def __getitem__(self, key):
-        if isinstance(key, (str, unicode)):
+        if isinstance(key, str):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -191,7 +188,7 @@ class Dataset(object):
         self._data[key] = Row(value)
 
     def __delitem__(self, key):
-        if isinstance(key, (str, unicode)):
+        if isinstance(key, str):
 
             if key in self.headers:
 
@@ -213,15 +210,15 @@ class Dataset(object):
         except AttributeError:
             return '<dataset object>'
 
-    def __unicode__(self):
+    def __str__(self):
         result = []
 
-        # Add unicode representation of headers.
+        # Add str representation of headers.
         if self.__headers:
-            result.append([unicode(h) for h in self.__headers])
+            result.append([str(h) for h in self.__headers])
 
-        # Add unicode representation of rows.
-        result.extend(list(map(unicode, row)) for row in self._data)
+        # Add str representation of rows.
+        result.extend(list(map(str, row)) for row in self._data)
 
         lens = [list(map(len, row)) for row in result]
         field_lens = list(map(max, zip(*lens)))
@@ -233,9 +230,6 @@ class Dataset(object):
         format_string = '|'.join('{%s:%s}' % item for item in enumerate(field_lens))
 
         return '\n'.join(format_string.format(*row) for row in result)
-
-    def __str__(self):
-        return self.__unicode__()
 
     # ---------
     # Internals
@@ -824,7 +818,7 @@ class Dataset(object):
                         each cell value.
         """
 
-        if isinstance(col, unicode):
+        if isinstance(col, str):
             if col in self.headers:
                 col = self.headers.index(col) # get 'key' index from each data
             else:
@@ -855,7 +849,7 @@ class Dataset(object):
         sorted.
         """
 
-        if isinstance(col, (str, unicode)):
+        if isinstance(col, str):
 
             if not self.headers:
                 raise HeadersNeeded
@@ -1017,7 +1011,7 @@ class Dataset(object):
         return _dset
 
 
-class Databook(object):
+class Databook:
     """A book of :class:`Dataset` objects.
     """
 

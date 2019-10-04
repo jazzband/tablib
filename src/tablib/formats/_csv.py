@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - *SV Support.
 """
 
-from tablib.compat import csv, StringIO, unicode
+import csv
+from io import StringIO
 
 
 title = 'csv'
 extensions = ('csv',)
 
 
-DEFAULT_DELIMITER = unicode(',')
+DEFAULT_DELIMITER = ','
 
 
 def export_stream_set(dataset, **kwargs):

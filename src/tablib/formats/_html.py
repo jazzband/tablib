@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - HTML export support.
 """
 
@@ -9,7 +7,6 @@ from io import BytesIO
 
 from MarkupPy import markup
 import tablib
-from tablib.compat import unicode
 
 BOOK_ENDINGS = 'h3'
 
@@ -43,7 +40,7 @@ def export_set(dataset):
 
     # Allow unicode characters in output
     wrapper = codecs.getwriter("utf8")(stream)
-    wrapper.writelines(unicode(page))
+    wrapper.writelines(str(page))
 
     return stream.getvalue().decode('utf-8')
 

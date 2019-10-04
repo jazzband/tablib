@@ -38,7 +38,7 @@ from . import utils
 
 ## abstract definitions
 
-class DbfFieldDef(object):
+class DbfFieldDef:
     """Abstract field definition.
 
     Child classes must override ``type`` class attribute to provide datatype
@@ -56,7 +56,7 @@ class DbfFieldDef(object):
 
     """
 
-    __slots__ = ("name", "length", "decimalCount",
+    __slots__ = ("name", "decimalCount",
         "start", "end", "ignoreErrors")
 
     # length of the field, None in case of variable-length field,
@@ -123,9 +123,9 @@ class DbfFieldDef(object):
 
         """
         assert len(string) == 32
-        _length = ord(string[16])
-        return cls(utils.unzfill(string)[:11], _length, ord(string[17]),
-            start, start + _length, ignoreErrors=ignoreErrors)
+        _length = string[16]
+        return cls(utils.unzfill(string)[:11].decode('utf-8'), _length,
+            string[17], start, start + _length, ignoreErrors=ignoreErrors)
     fromString = classmethod(fromString)
 
     def toString(self):
@@ -200,7 +200,7 @@ class DbfCharacterFieldDef(DbfFieldDef):
     """Definition of the character field."""
 
     typeCode = "C"
-    defaultValue = ""
+    defaultValue = b''
 
     def decodeValue(self, value):
         """Return string object.
@@ -208,7 +208,7 @@ class DbfCharacterFieldDef(DbfFieldDef):
         Return value is a ``value`` argument with stripped right spaces.
 
         """
-        return value.rstrip(" ")
+        return value.rstrip(b' ').decode('utf-8')
 
     def encodeValue(self, value):
         """Return raw data string encoded from a ``value``."""
@@ -235,8 +235,8 @@ class DbfNumericFieldDef(DbfFieldDef):
             Return value is a int (long) or float instance.
 
         """
-        value = value.strip(" \0")
-        if "." in value:
+        value = value.strip(b' \0')
+        if b'.' in value:
             # a float (has decimal separator)
             return float(value)
         elif value:
@@ -452,11 +452,11 @@ def lookupFor(typeCode):
     """
     # XXX: use typeCode.upper()? in case of any decign don't
     # forget to look to the same comment in ``registerField``
-    return _fieldsRegistry[typeCode]
+    return _fieldsRegistry[chr(typeCode)]
 
 ## register generic types
 
-for (_name, _val) in globals().items():
+for (_name, _val) in list(globals().items()):
     if isinstance(_val, type) and issubclass(_val, DbfFieldDef) \
     and (_name != "DbfFieldDef"):
         __all__.append(_name)

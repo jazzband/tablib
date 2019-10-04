@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Tests for Tablib."""
-from __future__ import unicode_literals
 
 import datetime
 import doctest
@@ -12,7 +10,6 @@ from uuid import uuid4
 
 from MarkupPy import markup
 import tablib
-from tablib.compat import unicode, is_py3
 from tablib.core import Row, detect_format
 from tablib.formats import _csv as csv_module
 
@@ -251,10 +248,7 @@ class TablibTestCase(BaseTestCase):
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
-        if is_py3:
-            new_row = ('å', 'é')
-        else:
-            exec ("new_row = (u'å', u'é')")
+        new_row = ('å', 'é')
 
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
@@ -458,10 +452,10 @@ class TablibTestCase(BaseTestCase):
         # add another entry to test right field width for
         # integer
         self.founders.append(('Old', 'Man', 100500))
-        self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
+        self.assertEqual('first_name|last_name |gpa   ', str(self.founders).split('\n')[0])
 
     def test_databook_add_sheet_accepts_only_dataset_instances(self):
-        class NotDataset(object):
+        class NotDataset:
             def append(self, item):
                 pass
 
@@ -684,10 +678,7 @@ class CSVTests(BaseTestCase):
 
         data = tablib.Dataset()
 
-        if sys.version_info[0] > 2:
-            data.append(['\xfc', '\xfd'])
-        else:
-            exec ("data.append([u'\xfc', u'\xfd'])")
+        data.append(['\xfc', '\xfd'])
 
         data.csv
 
@@ -698,7 +689,7 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         headers = data.headers
-        self.assertTrue(isinstance(headers[0], unicode))
+        self.assertTrue(isinstance(headers[0], str))
 
         orig_first_name = self.founders[self.headers[0]]
         csv_first_name = data[headers[0]]
@@ -711,7 +702,7 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         target_header = data.headers[0]
-        self.assertTrue(isinstance(target_header, unicode))
+        self.assertTrue(isinstance(target_header, str))
 
         del data[target_header]
 
@@ -1034,11 +1025,9 @@ class DBFTests(BaseTestCase):
         _regression_dbf += b' 50.0000000'
         _regression_dbf += b'\x1a'
 
-        if is_py3:
-            # If in python3, decode regression string to binary.
-            # _regression_dbf = bytes(_regression_dbf, 'utf-8')
-            # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
-            pass
+        # If in python3, decode regression string to binary.
+        # _regression_dbf = bytes(_regression_dbf, 'utf-8')
+        # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
 
         try:
             self.assertEqual(_regression_dbf, data.dbf)

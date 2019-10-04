@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - XLS Support.
 """
 
 import sys
 from io import BytesIO
 
-from tablib.compat import xrange
 import tablib
 import xlrd
 import xlwt
@@ -77,7 +74,7 @@ def import_set(dset, in_stream, headers=True):
 
     dset.title = sheet.name
 
-    for i in xrange(sheet.nrows):
+    for i in range(sheet.nrows):
         if (i == 0) and (headers):
             dset.headers = sheet.row_values(0)
         else:
@@ -94,7 +91,7 @@ def import_book(dbook, in_stream, headers=True):
         data = tablib.Dataset()
         data.title = sheet.name
 
-        for i in xrange(sheet.nrows):
+        for i in range(sheet.nrows):
             if (i == 0) and (headers):
                 data.headers = sheet.row_values(0)
             else:

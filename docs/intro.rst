@@ -74,6 +74,7 @@ THE SOFTWARE.
 Pythons Supported
 -----------------
 
-Python 2.7 and 3.5+ are officially supported.
+Python 3.5+ are officially supported.
 
 Now, go :ref:`install Tablib <install>`.
+
