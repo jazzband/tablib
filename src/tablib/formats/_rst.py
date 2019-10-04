@@ -1,8 +1,8 @@
 """ Tablib - reStructuredText Support
 """
 
-from textwrap import TextWrapper
 from statistics import median
+from textwrap import TextWrapper
 from itertools import zip_longest
 
 

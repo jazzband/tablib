@@ -1,7 +1,6 @@
 """ Tablib - XLSX Support.
 """
 
-import sys
 from io import BytesIO
 
 import openpyxl
@@ -26,6 +25,7 @@ def detect(stream):
         return True
     except Exception:
         return False
+
 
 def export_set(dataset, freeze_panes=True):
     """Returns XLSX representation of Dataset."""

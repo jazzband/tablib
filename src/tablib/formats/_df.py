@@ -1,9 +1,6 @@
 """ Tablib - DataFrame Support.
 """
 
-import sys
-from io import BytesIO
-
 try:
     from pandas import DataFrame
 except ImportError:
@@ -14,6 +11,7 @@ import tablib
 
 title = 'df'
 extensions = ('df', )
+
 
 def detect(stream):
     """Returns True if given stream is a DataFrame."""

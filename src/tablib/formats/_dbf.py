@@ -1,19 +1,20 @@
 """ Tablib - DBF Support.
 """
-import tempfile
-import struct
+import io
 import os
+import struct
+import tempfile
 
 from tablib.packages.dbfpy import dbf
 from tablib.packages.dbfpy import dbfnew
 from tablib.packages.dbfpy import record as dbfrecord
-import io
 
 
 title = 'dbf'
 extensions = ('csv',)
 
 DEFAULT_ENCODING = 'utf-8'
+
 
 def export_set(dataset):
     """Returns DBF representation of a Dataset"""
@@ -45,6 +46,7 @@ def export_set(dataset):
     os.remove(temp_uri)
     return stream.getvalue()
 
+
 def import_set(dset, in_stream, headers=True):
     """Returns a dataset from a DBF stream."""
 
@@ -55,9 +57,10 @@ def import_set(dset, in_stream, headers=True):
         row = [_dbf[record][f] for f in _dbf.fieldNames]
         dset.append(row)
 
+
 def detect(stream):
     """Returns True if the given stream is valid DBF"""
-    #_dbf = dbf.Table(StringIO(stream))
+    #  _dbf = dbf.Table(StringIO(stream))
     try:
         if type(stream) is not bytes:
             stream = bytes(stream, 'utf-8')

@@ -1,8 +1,8 @@
 """ Tablib - *SV Support.
 """
 
-import csv
 from io import StringIO
+import csv
 
 
 title = 'csv'

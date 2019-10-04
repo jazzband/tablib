@@ -171,7 +171,7 @@ class Dataset:
         return self.height
 
     def __getitem__(self, key):
-        if isinstance(key, (str, str)):
+        if isinstance(key, str):
             if key in self.headers:
                 pos = self.headers.index(key) # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -189,7 +189,7 @@ class Dataset:
         self._data[key] = Row(value)
 
     def __delitem__(self, key):
-        if isinstance(key, (str, str)):
+        if isinstance(key, str):
 
             if key in self.headers:
 
@@ -821,7 +821,7 @@ class Dataset:
 
         if isinstance(col, str):
             if col in self.headers:
-                col = self.headers.index(col) # get 'key' index from each data
+                col = self.headers.index(col)  # get 'key' index from each data
             else:
                 raise KeyError
 
@@ -850,7 +850,7 @@ class Dataset:
         sorted.
         """
 
-        if isinstance(col, (str, str)):
+        if isinstance(col, str):
 
             if not self.headers:
                 raise HeadersNeeded
@@ -987,13 +987,13 @@ class Dataset:
         if cols is None:
             cols = list(self.headers)
 
-        #filter out impossible rows and columns
+        # filter out impossible rows and columns
         rows = [row for row in rows if row in range(self.height)]
         cols = [header for header in cols if header in self.headers]
 
         _dset = Dataset()
 
-        #filtering rows and columns
+        # filtering rows and columns
         _dset.headers = list(cols)
 
         _dset._data = []
@@ -1073,8 +1073,8 @@ class Databook:
 
         for dset in self._datasets:
             collector.append(dict_pack(
-                title = dset.title,
-                data = dset._package(ordered=ordered)
+                title=dset.title,
+                data=dset._package(ordered=ordered)
             ))
         return collector
 
