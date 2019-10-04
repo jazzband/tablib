@@ -40,6 +40,16 @@ class BaseTestCase(unittest.TestCase):
 class TablibTestCase(BaseTestCase):
     """Tablib test cases."""
 
+    def _test_export_data_in_all_formats(self, dataset, exclude=()):
+        all_formats = [
+            'json', 'yaml', 'csv', 'tsv', 'xls', 'xlsx', 'ods', 'html', 'jira',
+            'latex', 'df', 'rst',
+        ]
+        for format_ in all_formats:
+            if format_ in exclude:
+                continue
+            dataset.export(format_)
+
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
         new_row = (1, 2, 3)
@@ -247,19 +257,7 @@ class TablibTestCase(BaseTestCase):
             exec ("new_row = (u'å', u'é')")
 
         data.append(new_row)
-
-        data.json
-        data.yaml
-        data.csv
-        data.tsv
-        data.xls
-        data.xlsx
-        data.ods
-        data.html
-        data.jira
-        data.latex
-        data.df
-        data.rst
+        self._test_export_data_in_all_formats(data)
 
     def test_datetime_append(self):
         """Passes in a single datetime and a single date and exports."""
@@ -270,32 +268,16 @@ class TablibTestCase(BaseTestCase):
         )
 
         data.append(new_row)
-
-        data.json
-        data.yaml
-        data.csv
-        data.tsv
-        data.xls
-        data.xlsx
-        data.ods
-        data.html
-        data.jira
-        data.latex
-        data.rst
+        self._test_export_data_in_all_formats(data)
 
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
 
         book = tablib.Databook()
         book.add_sheet(data)
-
-        book.json
-        book.yaml
-        book.xls
-        book.xlsx
-        book.ods
-        book.html
-        data.rst
+        # These formats don't implement the book abstraction.
+        unsupported = ['csv', 'tsv', 'jira', 'latex', 'df']
+        self._test_export_data_in_all_formats(book, exclude=unsupported)
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
