@@ -270,6 +270,13 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
 
+    def test_separator_append(self):
+        for a in range(3):
+            data.append_separator('foobar')
+            for a in range(5):
+                data.append(['asdf', 'asdf', 'asdf'])
+        self._test_export_data_in_all_formats(data)
+
     def test_book_export_no_exceptions(self):
         """Test that various exports don't error out."""
 
