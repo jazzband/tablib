@@ -784,13 +784,15 @@ class TSVTests(BaseTestCase):
 
 class XLSXTests(BaseTestCase):
     def test_xlsx_import_set(self):
-        data.append(('string', 42, 21.55))
-        data.headers = ('string', 'integer', 'float')
+        date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
+        data.append(('string', 42, 21.55, date_time))
+        data.headers = ('string', 'integer', 'float', 'date/time')
         _xlsx = data.xlsx
         data.xlsx = _xlsx
         self.assertEqual(data.dict[0]['string'], 'string')
         self.assertEqual(data.dict[0]['integer'], 42)
         self.assertEqual(data.dict[0]['float'], 21.55)
+        self.assertEqual(data.dict[0]['date/time'], date_time)
 
     def test_xlsx_wrong_char(self):
         """Bad characters are not silently ignored. We let the exception bubble up."""
