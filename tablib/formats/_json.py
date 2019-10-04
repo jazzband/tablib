@@ -55,5 +55,5 @@ def detect(stream):
     try:
         json.loads(stream)
         return True
-    except ValueError:
+    except (TypeError, ValueError):
         return False

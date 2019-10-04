@@ -13,7 +13,7 @@ from uuid import uuid4
 from MarkupPy import markup
 import tablib
 from tablib.compat import unicode, is_py3
-from tablib.core import Row
+from tablib.core import Row, detect_format
 from tablib.formats import _csv as csv_module
 
 
@@ -783,6 +783,16 @@ class TSVTests(BaseTestCase):
 
 
 class XLSXTests(BaseTestCase):
+    def test_xlsx_format_detect(self):
+        """Test the XLSX format detection."""
+        in_stream = self.founders.xlsx
+        self.assertEqual(detect_format(in_stream), 'xlsx')
+
+    def test_xls_format_detect(self):
+        """Test the XLS format detection."""
+        in_stream = self.founders.xls
+        self.assertEqual(detect_format(in_stream), 'xls')
+
     def test_xlsx_import_set(self):
         date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
         data.append(('string', 42, 21.55, date_time))
