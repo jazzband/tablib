@@ -25,17 +25,17 @@ def detect(stream):
     try:
         xlrd.open_workbook(file_contents=stream)
         return True
-    except (TypeError, XLRDError):
+    except Exception:
         pass
     try:
         xlrd.open_workbook(file_contents=stream.read())
         return True
-    except (AttributeError, XLRDError):
+    except Exception:
         pass
     try:
         xlrd.open_workbook(filename=stream)
         return True
-    except:
+    except Exception:
         return False
 
 

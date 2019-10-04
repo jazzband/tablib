@@ -28,8 +28,8 @@ def detect(stream):
     try:
         openpyxl.reader.excel.load_workbook(stream, read_only=True)
         return True
-    except openpyxl.shared.exc.InvalidFileException:
-        pass
+    except Exception:
+        return False
 
 def export_set(dataset, freeze_panes=True):
     """Returns XLSX representation of Dataset."""
