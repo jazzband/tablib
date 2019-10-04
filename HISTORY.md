@@ -6,6 +6,7 @@
 - Fixed `DataBook().load` parameter ordering (first stream, then format).
 - Fixed a regression for xlsx exports where non-string values were forced to
   strings (#314).
+- Fixed xlsx format detection (which was often detected as `xls` format).
 - Added search to all documentation pages
 - Open xlsx workbooks in read-only mode (#316)
 - Unpin requirements

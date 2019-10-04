@@ -17,4 +17,5 @@ from . import _df as df
 from . import _rst as rst
 from . import _jira as jira
 
-available = (json, xls, yaml, csv, dbf, tsv, html, jira, latex, xlsx, ods, df, rst)
+# xlsx before as xls (xlrd) can also read xlsx
+available = (json, xlsx, xls, yaml, csv, dbf, tsv, html, jira, latex, ods, df, rst)
