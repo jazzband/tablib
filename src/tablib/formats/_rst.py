@@ -1,9 +1,9 @@
 """ Tablib - reStructuredText Support
 """
 
+from itertools import zip_longest
 from statistics import median
 from textwrap import TextWrapper
-from itertools import zip_longest
 
 
 title = 'rst'
