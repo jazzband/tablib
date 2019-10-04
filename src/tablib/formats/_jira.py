@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-
 """Tablib - Jira table export support.
 
    Generates a Jira table from the dataset.
 """
-from tablib.compat import unicode
 
 title = 'jira'
 
@@ -35,5 +32,5 @@ def _get_header(headers):
 
 def _serialize_row(row, delimiter='|'):
     return '%s%s%s' % (delimiter,
-                       delimiter.join([unicode(item) if item else ' ' for item in row]),
+                       delimiter.join([str(item) if item else ' ' for item in row]),
                        delimiter)

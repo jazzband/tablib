@@ -1,6 +1,5 @@
 language: python
 python:
-- 2.7
 - 3.6
 - 3.7
 - 3.8
@@ -20,3 +19,4 @@ deploy:
     tags: true
     repo: jazzband/tablib
     python: 3.7
+

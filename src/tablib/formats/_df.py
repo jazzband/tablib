@@ -11,7 +11,6 @@ except ImportError:
 
 import tablib
 
-from tablib.compat import unicode
 
 title = 'df'
 extensions = ('df', )

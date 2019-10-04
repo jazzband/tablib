@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - XLSX Support.
 """
 
@@ -12,8 +10,6 @@ import tablib
 Workbook = openpyxl.workbook.Workbook
 ExcelWriter = openpyxl.writer.excel.ExcelWriter
 get_column_letter = openpyxl.utils.get_column_letter
-
-from tablib.compat import unicode
 
 
 title = 'xlsx'
@@ -132,7 +128,7 @@ def dset_sheet(dataset, ws, freeze_panes=True):
             # wrap the rest
             else:
                 try:
-                    str_col_value = unicode(col)
+                    str_col_value = str(col)
                 except TypeError:
                     str_col_value = ''
                 if '\n' in str_col_value:
@@ -141,4 +137,4 @@ def dset_sheet(dataset, ws, freeze_panes=True):
             try:
                 cell.value = col
             except (ValueError, TypeError):
-                cell.value = unicode(col)
+                cell.value = str(col)

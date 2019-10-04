@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - ODF Support.
 """
 
 from io import BytesIO
 from odf import opendocument, style, table, text
-from tablib.compat import unicode
 
 title = 'ods'
 extensions = ('ods',)
@@ -57,9 +54,9 @@ def dset_sheet(dataset, ws):
         odf_row = table.TableRow(stylename=bold, defaultcellstylename='bold')
         for j, col in enumerate(row):
             try:
-                col = unicode(col, errors='ignore')
+                col = str(col, errors='ignore')
             except TypeError:
-                ## col is already unicode
+                ## col is already str
                 pass
             ws.addElement(table.TableColumn())
 
