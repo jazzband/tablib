@@ -13,6 +13,7 @@ from copy import copy
 from operator import itemgetter
 
 from tablib import formats
+from tablib.formats import registry
 
 __title__ = 'tablib'
 __author__ = 'Kenneth Reitz'
@@ -145,8 +146,6 @@ class Dataset:
 
     """
 
-    _formats = {}
-
     def __init__(self, *args, **kwargs):
         self._data = list(Row(arg) for arg in args)
         self.__headers = None
@@ -160,8 +159,6 @@ class Dataset:
         self.headers = kwargs.get('headers')
 
         self.title = kwargs.get('title')
-
-        self._register_formats()
 
     def __len__(self):
         return self.height
@@ -232,23 +229,11 @@ class Dataset:
     # Internals
     # ---------
 
-    @classmethod
-    def _register_formats(cls):
-        """Adds format properties."""
-        for fmt in formats.available:
-            try:
-                try:
-                    setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
-                    setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
-                    setattr(cls, 'set_%s' % fmt.title, fmt.import_set)
-                    cls._formats[fmt.title] = (fmt.export_set, fmt.import_set)
-                except AttributeError:
-                    setattr(cls, fmt.title, property(fmt.export_set))
-                    setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
-                    cls._formats[fmt.title] = (fmt.export_set, None)
+    def _get_in_format(self, fmt, **kwargs):
+        return fmt.export_set(self, **kwargs)
 
-            except AttributeError:
-                cls._formats[fmt.title] = (None, None)
+    def _set_in_format(self, fmt, *args, **kwargs):
+        return fmt.import_set(self, *args, **kwargs)
 
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
@@ -417,11 +402,14 @@ class Dataset:
         if not format:
             format = detect_format(in_stream)
 
-        export_set, import_set = self._formats.get(format, (None, None))
+        fmt = registry.get_format(format)
+        if not hasattr(fmt, 'import_set'):
+            raise UnsupportedFormat('Format {0} cannot be imported.'.format(format))
+            
         if not import_set:
             raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
 
-        import_set(self, in_stream, **kwargs)
+        fmt.import_set(self, in_stream, **kwargs)
         return self
 
     def export(self, format, **kwargs):
@@ -430,11 +418,11 @@ class Dataset:
 
         :param \\*\\*kwargs: (optional) custom configuration to the format `export_set`.
         """
-        export_set, import_set = self._formats.get(format, (None, None))
-        if not export_set:
+        fmt = registry.get_format(format)
+        if not hasattr(fmt, 'export_set'):
             raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
 
-        return export_set(self, **kwargs)
+        return fmt.export_set(self, **kwargs)
 
     # -------
     # Formats
@@ -1012,16 +1000,8 @@ class Databook:
     """A book of :class:`Dataset` objects.
     """
 
-    _formats = {}
-
     def __init__(self, sets=None):
-
-        if sets is None:
-            self._datasets = list()
-        else:
-            self._datasets = sets
-
-        self._register_formats()
+        self._datasets = sets or []
 
     def __repr__(self):
         try:
@@ -1032,21 +1012,6 @@ class Databook:
     def wipe(self):
         """Removes all :class:`Dataset` objects from the :class:`Databook`."""
         self._datasets = []
-
-    @classmethod
-    def _register_formats(cls):
-        """Adds format properties."""
-        for fmt in formats.available:
-            try:
-                try:
-                    setattr(cls, fmt.title, property(fmt.export_book, fmt.import_book))
-                    cls._formats[fmt.title] = (fmt.export_book, fmt.import_book)
-                except AttributeError:
-                    setattr(cls, fmt.title, property(fmt.export_book))
-                    cls._formats[fmt.title] = (fmt.export_book, None)
-
-            except AttributeError:
-                cls._formats[fmt.title] = (None, None)
 
     def sheets(self):
         return self._datasets
@@ -1089,11 +1054,11 @@ class Databook:
         if not format:
             format = detect_format(in_stream)
 
-        export_book, import_book = self._formats.get(format, (None, None))
-        if not import_book:
+        fmt = registry.get_format(format)
+        if not hasattr(fmt, 'import_book'):
             raise UnsupportedFormat('Format {} cannot be loaded.'.format(format))
 
-        import_book(self, in_stream, **kwargs)
+        fmt.import_book(self, in_stream, **kwargs)
         return self
 
     def export(self, format, **kwargs):
@@ -1102,16 +1067,16 @@ class Databook:
 
         :param \\*\\*kwargs: (optional) custom configuration to the format `export_book`.
         """
-        export_book, import_book = self._formats.get(format, (None, None))
-        if not export_book:
+        fmt = registry.get_format(format)
+        if not hasattr(fmt, 'export_book'):
             raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
 
-        return export_book(self, **kwargs)
+        return fmt.export_book(self, **kwargs)
 
 
 def detect_format(stream):
     """Return format name of given stream."""
-    for fmt in formats.available:
+    for fmt in registry.formats():
         try:
             if fmt.detect(stream):
                 return fmt.title
@@ -1149,3 +1114,6 @@ class HeadersNeeded(Exception):
 
 class UnsupportedFormat(NotImplementedError):
     "Format is not supported"
+
+
+registry.register_builtins()

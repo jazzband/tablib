@@ -12,8 +12,8 @@ from uuid import uuid4
 
 import tablib
 from MarkupPy import markup
-from tablib.core import Row, detect_format
-from tablib.formats import _csv as csv_module
+from tablib.core import Row, UnsupportedFormat, detect_format
+from tablib.formats import registry
 
 
 class BaseTestCase(unittest.TestCase):
@@ -281,6 +281,15 @@ class TablibTestCase(BaseTestCase):
         # These formats don't implement the book abstraction.
         unsupported = ['csv', 'tsv', 'jira', 'latex', 'df']
         self._test_export_data_in_all_formats(book, exclude=unsupported)
+
+    def test_book_unsupported_loading(self):
+        with self.assertRaises(UnsupportedFormat):
+            tablib.Databook().load('Any stream', 'csv')
+
+    def test_book_unsupported_export(self):
+        book = tablib.Databook().load('[{"title": "first", "data": [{"first_name": "John"}]}]', 'json')
+        with self.assertRaises(UnsupportedFormat):
+            book.export('csv')
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
@@ -618,8 +627,9 @@ class RSTTests(BaseTestCase):
         data.append(self.george)
         data.headers = self.headers
 
-        simple = tablib.formats._rst.export_set(data)
-        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        fmt = registry.get_format('rst')
+        simple = fmt.export_set(data)
+        grid = fmt.export_set(data, force_grid=True)
         self.assertNotEqual(simple, grid)
         self.assertNotIn('+', simple)
         self.assertIn('+', grid)
@@ -653,8 +663,9 @@ class CSVTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.csv.detect(_csv))
-        self.assertFalse(tablib.formats.csv.detect(_bunk))
+        fmt = registry.get_format('csv')
+        self.assertTrue(fmt.detect(_csv))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_csv_import_set(self):
         """Generate and import CSV set serialization."""
@@ -771,7 +782,8 @@ class CSVTests(BaseTestCase):
                 csv += str(col) + ','
             csv = csv.strip(',') + '\r\n'
 
-        csv_stream = csv_module.export_stream_set(self.founders)
+        frm = registry.get_format('csv')
+        csv_stream = frm.export_stream_set(self.founders)
         self.assertEqual(csv, csv_stream.getvalue())
 
     def test_unicode_csv(self):
@@ -868,8 +880,9 @@ class TSVTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.tsv.detect(_tsv))
-        self.assertFalse(tablib.formats.tsv.detect(_bunk))
+        fmt = registry.get_format('tsv')
+        self.assertTrue(fmt.detect(_tsv))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_tsv_export(self):
         """Verify exporting dataset object as TSV."""
@@ -947,8 +960,9 @@ class JSONTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.json.detect(_json))
-        self.assertFalse(tablib.formats.json.detect(_bunk))
+        fmt = registry.get_format('json')
+        self.assertTrue(fmt.detect(_json))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_json_import_book(self):
         """Generate and import JSON book serialization."""
@@ -1002,12 +1016,14 @@ class YAMLTests(BaseTestCase):
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
         _tsv = 'foo\tbar'
         _bunk = (
-            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†'
+            'ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.yaml.detect(_yaml))
-        self.assertFalse(tablib.formats.yaml.detect(_bunk))
-        self.assertFalse(tablib.formats.yaml.detect(_tsv))
+        fmt = registry.get_format('yaml')
+        self.assertTrue(fmt.detect(_yaml))
+        self.assertFalse(fmt.detect(_bunk))
+        self.assertFalse(fmt.detect(_tsv))
 
     def test_yaml_import_book(self):
         """Generate and import YAML book serialization."""
@@ -1189,12 +1205,13 @@ class DBFTests(BaseTestCase):
         _bunk = (
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
-        self.assertTrue(tablib.formats.dbf.detect(_dbf))
-        self.assertFalse(tablib.formats.dbf.detect(_yaml))
-        self.assertFalse(tablib.formats.dbf.detect(_tsv))
-        self.assertFalse(tablib.formats.dbf.detect(_csv))
-        self.assertFalse(tablib.formats.dbf.detect(_json))
-        self.assertFalse(tablib.formats.dbf.detect(_bunk))
+        fmt = registry.get_format('dbf')
+        self.assertTrue(fmt.detect(_dbf))
+        self.assertFalse(fmt.detect(_yaml))
+        self.assertFalse(fmt.detect(_tsv))
+        self.assertFalse(fmt.detect(_csv))
+        self.assertFalse(fmt.detect(_json))
+        self.assertFalse(fmt.detect(_bunk))
 
 
 class JiraTests(BaseTestCase):
