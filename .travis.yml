@@ -1,5 +1,6 @@
 language: python
 cache: pip
+
 matrix:
   include:
     - python: 2.7
@@ -7,6 +8,13 @@ matrix:
     - python: 3.6
     - python: 3.7
     - python: 3.8-dev
+
 install:
   - pip install -r requirements.txt
-script: python test_tablib.py
+  - pip install -U pytest pytest-cov
+
+script: pytest --cov tablib
+
+after_success:
+  - pip install -U codecov
+  - codecov

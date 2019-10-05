@@ -2,6 +2,7 @@
 
 [![Jazzband](https://jazzband.co/static/img/badge.svg)](https://jazzband.co/)
 [![Build Status](https://travis-ci.org/jazzband/tablib.svg?branch=master)](https://travis-ci.org/jazzband/tablib)
+[![codecov](https://codecov.io/gh/jazzband/tablib/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/tablib)
 
     _____         ______  ___________ ______
     __  /_______ ____  /_ ___  /___(_)___  /_
