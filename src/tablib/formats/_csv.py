@@ -4,54 +4,54 @@
 import csv
 from io import StringIO
 
-title = 'csv'
-extensions = ('csv',)
 
+class CSVFormat:
+    title = 'csv'
+    extensions = ('csv',)
 
-DEFAULT_DELIMITER = ','
+    DEFAULT_DELIMITER = ','
 
+    @classmethod
+    def export_stream_set(cls, dataset, **kwargs):
+        """Returns CSV representation of Dataset as file-like."""
+        stream = StringIO()
 
-def export_stream_set(dataset, **kwargs):
-    """Returns CSV representation of Dataset as file-like."""
-    stream = StringIO()
+        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
-    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
+        _csv = csv.writer(stream, **kwargs)
 
-    _csv = csv.writer(stream, **kwargs)
+        for row in dataset._package(dicts=False):
+            _csv.writerow(row)
 
-    for row in dataset._package(dicts=False):
-        _csv.writerow(row)
+        stream.seek(0)
+        return stream
 
-    stream.seek(0)
-    return stream
+    @classmethod
+    def export_set(cls, dataset, **kwargs):
+        """Returns CSV representation of Dataset."""
+        stream = cls.export_stream_set(dataset, **kwargs)
+        return stream.getvalue()
 
+    @classmethod
+    def import_set(cls, dset, in_stream, headers=True, **kwargs):
+        """Returns dataset from CSV stream."""
 
-def export_set(dataset, **kwargs):
-    """Returns CSV representation of Dataset."""
-    stream = export_stream_set(dataset, **kwargs)
-    return stream.getvalue()
+        dset.wipe()
 
+        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
-def import_set(dset, in_stream, headers=True, **kwargs):
-    """Returns dataset from CSV stream."""
+        rows = csv.reader(StringIO(in_stream), **kwargs)
+        for i, row in enumerate(rows):
 
-    dset.wipe()
+            if (i == 0) and (headers):
+                dset.headers = row
+            elif row:
+                dset.append(row)
 
-    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
-
-    rows = csv.reader(StringIO(in_stream), **kwargs)
-    for i, row in enumerate(rows):
-
-        if (i == 0) and (headers):
-            dset.headers = row
-        elif row:
-            dset.append(row)
-
-
-def detect(stream, delimiter=DEFAULT_DELIMITER):
-    """Returns True if given stream is valid CSV."""
-    try:
-        csv.Sniffer().sniff(stream[:1024], delimiters=delimiter)
-        return True
-    except Exception:
-        return False
+    def detect(cls, stream, delimiter=None):
+        """Returns True if given stream is valid CSV."""
+        try:
+            csv.Sniffer().sniff(stream[:1024], delimiters=delimiter or cls.DEFAULT_DELIMITER)
+            return True
+        except Exception:
+            return False

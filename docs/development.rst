@@ -90,32 +90,36 @@ Tablib features a micro-framework for adding format support.
 The easiest way to understand it is to use it.
 So, let's define our own format, named *xxx*.
 
-1. Write a new format interface.
+From version 1.0, Tablib formats are class-based and can be dynamically
+registered.
 
-    :class:`tablib.core` follows a simple pattern for automatically utilizing your format throughout Tablib.
-    Function names are crucial.
+1. Write your custom format class::
 
-    Example **tablib/formats/_xxx.py**: ::
-
+    class MyXXXFormatClass:
         title = 'xxx'
 
-        def export_set(dset):
+        @classmethod
+        def export_set(cls, dset):
             ....
             # returns string representation of given dataset
 
-        def export_book(dbook):
+        @classmethod
+        def export_book(cls, dbook):
             ....
             # returns string representation of given databook
 
-        def import_set(dset, in_stream):
+        @classmethod
+        def import_set(cls, dset, in_stream):
             ...
             # populates given Dataset with given datastream
 
-        def import_book(dbook, in_stream):
+        @classmethod
+        def import_book(cls, dbook, in_stream):
             ...
             # returns Databook instance
 
-        def detect(stream):
+        @classmethod
+        def detect(cls, stream):
             ...
             # returns True if given stream is parsable as xxx
 
@@ -124,15 +128,18 @@ So, let's define our own format, named *xxx*.
        If the format excludes support for an import/export mechanism (*e.g.* 
        :class:`csv <tablib.Dataset.csv>` excludes 
        :class:`Databook <tablib.Databook>` support),
-       simply don't define the respective functions.
+       simply don't define the respective class methods.
        Appropriate errors will be raised.
 
-2. Add your new format module to the :class:`tablib.formats.available` tuple.
+2. Register your class::
 
-3. Add a mock property to the :class:`Dataset <tablib.Dataset>` class with verbose `reStructured Text`_ docstring. 
-   This alleviates IDE confusion, and allows for pretty auto-generated Sphinx_ documentation.
+    from tablib.formats import registry
 
-4. Write respective :ref:`tests <testing>`.
+    registry.register('xxx', MyXXXFormatClass())
+
+3. From then on, you should be able to use your new custom format as if it were
+a built-in Tablib format, e.g. using ``dataset.export('xxx')`` will use the 
+``MyXXXFormatClass.export_set`` method.
 
 .. _testing:
 

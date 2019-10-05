@@ -338,7 +338,7 @@ All we have to do is add them to a :class:`Databook` object... ::
 ... and export to Excel just like :class:`Datasets <Dataset>`. ::
 
     with open('students.xls', 'wb') as f:
-        f.write(book.xls)
+        f.write(book.export('xls'))
 
 The resulting ``students.xls`` file will contain a separate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
 

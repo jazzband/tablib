@@ -6,6 +6,11 @@
 
 - Dropped Python 2 support
 
+### Improvements
+
+- Formats can now be dynamically registered through the
+  `tablib.formats.registry.refister` API (#256).
+
 ### Bugfixes
 
 - Fixed a crash when exporting an empty string with the ReST format (#368)
