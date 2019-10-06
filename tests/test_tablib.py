@@ -455,7 +455,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual('first_name|last_name |gpa   ', str(self.founders).split('\n')[0])
 
     def test_databook_add_sheet_accepts_only_dataset_instances(self):
-        class NotDataset(object):
+        class NotDataset:
             def append(self, item):
                 pass
 
@@ -995,7 +995,7 @@ class DBFTests(BaseTestCase):
             for reg_char, data_char in zip(_dbf, data.dbf):
                 so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                    raise AssertionError('Failing at char {}: {} vs {} {}'.format(
                         index, reg_char, data_char, so_far))
                 index += 1
 
@@ -1038,7 +1038,7 @@ class DBFTests(BaseTestCase):
                 # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
-                        'Failing at char %s: %s vs %s (found %s)' % (
+                        'Failing at char {}: {} vs {} (found {})'.format(
                             index, reg_char, data_char, found_so_far))
                 index += 1
 

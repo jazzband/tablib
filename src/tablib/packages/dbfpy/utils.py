@@ -125,7 +125,7 @@ class classproperty(property):
         return self.fget(cls)
 
 
-class _InvalidValue(object):
+class _InvalidValue:
 
     """Value returned from DBF records when field validation fails
 
