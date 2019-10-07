@@ -52,3 +52,4 @@ setup(
         'pandas': ['pandas'],
     },
 )
+
