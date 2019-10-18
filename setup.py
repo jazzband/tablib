@@ -5,21 +5,8 @@ import os
 import re
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
-
-if sys.argv[-1] == 'publish':
-    os.system("python setup.py sdist upload")
-    sys.exit()
-
-
-packages = [
-    'tablib',
-    'tablib.formats',
-    'tablib.packages',
-    'tablib.packages.dbfpy',
-    'tablib.packages.dbfpy3'
-]
 
 install = [
     'odfpy',
@@ -32,13 +19,10 @@ install = [
 ]
 
 
-with open('tablib/core.py', 'r') as fd:
-    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                        fd.read(), re.MULTILINE).group(1)
-
 setup(
     name='tablib',
-    version=version,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(open('README.md').read() + '\n\n' +
         open('HISTORY.md').read()),
@@ -46,7 +30,8 @@ setup(
     author='Kenneth Reitz',
     author_email='me@kennethreitz.org',
     url='https://tablib.readthedocs.io',
-    packages=packages,
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

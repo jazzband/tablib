@@ -34,3 +34,4 @@ tablib.egg-info/*
 # Coverage
 .coverage
 htmlcov
+.eggs
