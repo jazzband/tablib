@@ -5,7 +5,7 @@
 
     This module implements the central Tablib objects.
 
-    :copyright: (c) 2016 by Kenneth Reitz.
+    :copyright: (c) 2016 by Kenneth Reitz. 2019 Jazzband.
     :license: MIT, see LICENSE for more details.
 """
 
@@ -19,11 +19,9 @@ from tablib.compat import unicode
 
 
 __title__ = 'tablib'
-__version__ = '0.13.0'
-__build__ = 0x001201
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2017 Kenneth Reitz'
+__copyright__ = 'Copyright 2017 Kenneth Reitz. 2019 Jazzband.'
 __docformat__ = 'restructuredtext'
 
 
@@ -817,12 +815,13 @@ class Dataset(object):
     # ----
 
     def add_formatter(self, col, handler):
-        """Adds a :ref:`formatter` to the :class:`Dataset`.
+        """Adds a formatter to the :class:`Dataset`.
 
         .. versionadded:: 0.9.5
-           :param col: column to. Accepts index int or header str.
-           :param handler: reference to callback function to execute
-           against each cell value.
+
+        :param col: column to. Accepts index int or header str.
+        :param handler: reference to callback function to execute against
+                        each cell value.
         """
 
         if isinstance(col, unicode):

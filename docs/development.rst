@@ -150,31 +150,7 @@ the easiest way to test your changes for potential issues is to simply run the t
 
 .. code-block:: console
 
-    $ ./test_tablib.py
-
-
-`Jenkins CI`_, amongst other tools, supports Java's xUnit testing report format.
-Nose_ allows us to generate our own xUnit reports.
-
-Installing nose is simple.
-
-.. code-block:: console
-
-    $ pip install nose
-
-Once installed, we can generate our xUnit report with a single command.
-
-.. code-block:: console
-
-    $ nosetests test_tablib.py --with-xunit
-
-This will generate a **nosetests.xml** file, which can then be analyzed.
-
-.. _Nose: https://github.com/nose-devs/nose
-
-
-
-.. _jenkins:
+    $ tox
 
 ----------------------
 Continuous Integration

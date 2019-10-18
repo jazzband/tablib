@@ -34,3 +34,7 @@ tablib.egg-info/*
 # Coverage
 .coverage
 htmlcov
+
+# setuptools noise
+.eggs
+*.egg-info
