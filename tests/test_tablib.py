@@ -1103,7 +1103,3 @@ class DocTests(unittest.TestCase):
     def test_rst_formatter_doctests(self):
         results = doctest.testmod(tablib.formats._rst)
         self.assertEqual(results.failed, 0)
-
-
-if __name__ == '__main__':
-    unittest.main()

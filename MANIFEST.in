@@ -1,1 +1,6 @@
-include HISTORY.md README.md LICENSE AUTHORS test_tablib.py
+recursive-include docs *
+recursive-include tests *
+include pytest.ini tox.ini .isort.cfg .coveragerc HISTORY.md README.md LICENSE AUTHORS
+prune docs/_build
+prune *.pyc
+prune __pycache__

@@ -8,27 +8,15 @@ cache: pip
 dist: xenial
 install: travis_retry pip install tox-travis
 script: tox
-stages:
-- test
-- name: deploy
-  if: repo = jazzband/tablib AND tag IS present
-jobs:
-  include:
-  - stage: test
-    after_success:
-    - pip install -U codecov
-    - codecov
-  - stage: deploy
-    install: skip
-    script: skip
+after_success: bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: pypi
+  user: jazzband
+  server: https://jazzband.co/projects/tablib/upload
+  distributions: sdist bdist_wheel
+  password:
+    secure: svV4fYtodwW+iTyFOm5ISEfhVwcA+6vTskD3x6peznc40TdMV9Ek8nT3Q/NB4lCbXoUw2qR4H6uhLCjesnv/VvVk/qbitCyD8ySlgwOV5n7NzJs8lC8EYaHSjGQjatTwJAokfGVYkPawkI7HXDqtDggLUQBK+Ag8HDW+XBSbQIU=
+  on:
+    tags: true
+    repo: jazzband/tablib
     python: 3.7
-    deploy:
-      provider: pypi
-      user: jazzband
-      server: https://jazzband.co/projects/tablib/upload
-      distributions: sdist bdist_wheel
-      password:
-        secure: svV4fYtodwW+iTyFOm5ISEfhVwcA+6vTskD3x6peznc40TdMV9Ek8nT3Q/NB4lCbXoUw2qR4H6uhLCjesnv/VvVk/qbitCyD8ySlgwOV5n7NzJs8lC8EYaHSjGQjatTwJAokfGVYkPawkI7HXDqtDggLUQBK+Ag8HDW+XBSbQIU=
-      on:
-        tags: true
-        repo: jazzband/tablib

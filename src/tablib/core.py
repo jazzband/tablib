@@ -815,12 +815,13 @@ class Dataset(object):
     # ----
 
     def add_formatter(self, col, handler):
-        """Adds a :ref:`formatter` to the :class:`Dataset`.
+        """Adds a formatter to the :class:`Dataset`.
 
         .. versionadded:: 0.9.5
-           :param col: column to. Accepts index int or header str.
-           :param handler: reference to callback function to execute
-           against each cell value.
+
+        :param col: column to. Accepts index int or header str.
+        :param handler: reference to callback function to execute
+        against each cell value.
         """
 
         if isinstance(col, unicode):
