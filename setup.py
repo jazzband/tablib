@@ -29,6 +29,8 @@ setup(
     long_description_content_type="text/markdown",
     author='Kenneth Reitz',
     author_email='me@kennethreitz.org',
+    maintainer='Jazzband',
+    maintainer_email='roadies@jazzband.co',
     url='https://tablib.readthedocs.io',
     packages=find_packages(where="src"),
     package_dir={"": "src"},

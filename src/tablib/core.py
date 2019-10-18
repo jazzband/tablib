@@ -5,7 +5,7 @@
 
     This module implements the central Tablib objects.
 
-    :copyright: (c) 2016 by Kenneth Reitz.
+    :copyright: (c) 2016 by Kenneth Reitz. 2019 Jazzband.
     :license: MIT, see LICENSE for more details.
 """
 
@@ -21,7 +21,7 @@ from tablib.compat import unicode
 __title__ = 'tablib'
 __author__ = 'Kenneth Reitz'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2017 Kenneth Reitz'
+__copyright__ = 'Copyright 2017 Kenneth Reitz. 2019 Jazzband.'
 __docformat__ = 'restructuredtext'
 
 
@@ -820,8 +820,8 @@ class Dataset(object):
         .. versionadded:: 0.9.5
 
         :param col: column to. Accepts index int or header str.
-        :param handler: reference to callback function to execute
-        against each cell value.
+        :param handler: reference to callback function to execute against
+                        each cell value.
         """
 
         if isinstance(col, unicode):
