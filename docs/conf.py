@@ -188,10 +188,8 @@ latex_documents = [
 latex_use_modindex = False
 
 latex_elements = {
-    'fontpkg':      r'\usepackage{mathpazo}',
     'papersize':    'a4paper',
     'pointsize':    '12pt',
-    'preamble':     r'\usepackage{krstyle}'
 }
 latex_use_parts = True
 
