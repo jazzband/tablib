@@ -31,9 +31,9 @@ Examples:
         dbf = Dbf(filename, True)
         for rec in dbf:
             for fldName in dbf.fieldNames:
-                print '%s:\t %s (%s)' % (fldName, rec[fldName],
-                    type(rec[fldName]))
-            print
+                print('%s:\t %s (%s)' % (fldName, rec[fldName],
+                    type(rec[fldName])))
+            print()
         dbf.close()
 
 """
@@ -258,7 +258,7 @@ class Dbf(object):
 def demo_read(filename):
     _dbf = Dbf(filename, True)
     for _rec in _dbf:
-        print
+        print()
         print(repr(_rec))
     _dbf.close()
 

@@ -13,18 +13,9 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 
-if sys.argv[-1] == 'test':
-    try:
-        __import__('py')
-    except ImportError:
-        print('py.test required.')
-        sys.exit(1)
-
-    errors = os.system('py.test test_tablib.py')
-    sys.exit(bool(errors))
-
 packages = [
-    'tablib', 'tablib.formats',
+    'tablib',
+    'tablib.formats',
     'tablib.packages',
     'tablib.packages.dbfpy',
     'tablib.packages.dbfpy3'
@@ -71,7 +62,6 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
-    tests_require=['pytest'],
     install_requires=install,
     extras_require={
         'pandas': ['pandas'],

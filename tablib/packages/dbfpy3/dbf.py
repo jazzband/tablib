@@ -31,9 +31,8 @@ Examples:
         dbf = Dbf(filename, True)
         for rec in dbf:
             for fldName in dbf.fieldNames:
-                print '%s:\t %s (%s)' % (fldName, rec[fldName],
-                    type(rec[fldName]))
-            print
+                print('%s:\t %s (%s)' % (fldName, rec[fldName],
+                    type(rec[fldName])))
         dbf.close()
 
 """
