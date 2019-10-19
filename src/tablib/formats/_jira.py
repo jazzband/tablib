@@ -19,7 +19,7 @@ def export_set(dataset):
 
     header = _get_header(dataset.headers) if dataset.headers else ''
     body = _get_body(dataset)
-    return '%s\n%s' % (header, body) if header else body
+    return '{}\n{}'.format(header, body) if header else body
 
 
 def _get_body(dataset):
@@ -31,6 +31,6 @@ def _get_header(headers):
 
 
 def _serialize_row(row, delimiter='|'):
-    return '%s%s%s' % (delimiter,
-                       delimiter.join([str(item) if item else ' ' for item in row]),
-                       delimiter)
+    return '{}{}{}'.format(delimiter,
+                           delimiter.join([str(item) if item else ' ' for item in row]),
+                           delimiter)

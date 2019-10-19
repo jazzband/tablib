@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Tablib documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct  5 15:25:21 2010.
@@ -38,8 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Tablib'
-copyright = u'2019 Jazzband'
+project = 'Tablib'
+copyright = '2019 Jazzband'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -181,8 +180,8 @@ htmlhelp_basename = 'Tablibdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Tablib.tex', u'Tablib Documentation',
-   u'Jazzband', 'manual'),
+  ('index', 'Tablib.tex', 'Tablib Documentation',
+   'Jazzband', 'manual'),
 ]
 
 latex_use_modindex = False
@@ -222,6 +221,6 @@ latex_use_parts = True
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'tablib', u'Tablib Documentation',
-     [u'Jazzband'], 1)
+    ('index', 'tablib', 'Tablib Documentation',
+     ['Jazzband'], 1)
 ]

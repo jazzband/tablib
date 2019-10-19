@@ -1012,7 +1012,7 @@ class DBFTests(BaseTestCase):
             for reg_char, data_char in zip(_dbf, data.dbf):
                 so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                    raise AssertionError('Failing at char {}: {} vs {} {}'.format(
                         index, reg_char, data_char, so_far))
                 index += 1
 
@@ -1055,7 +1055,7 @@ class DBFTests(BaseTestCase):
                 # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
-                        'Failing at char %s: %s vs %s (found %s)' % (
+                        'Failing at char {}: {} vs {} (found {})'.format(
                             index, reg_char, data_char, found_so_far))
                 index += 1
 
