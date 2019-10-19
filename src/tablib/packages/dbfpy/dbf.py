@@ -123,7 +123,7 @@ class Dbf:
                 self.stream = open(f, "w+b")
             else:
                 # table file must exist
-                self.stream = file(f, ("r+b", "rb")[bool(readOnly)])
+                self.stream = open(f, ("r+b", "rb")[bool(readOnly)])
         else:
             # a stream
             self.name = getattr(f, "name", "")
