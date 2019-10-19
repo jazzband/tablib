@@ -164,6 +164,7 @@ class _InvalidValue:
     def __repr__(self):
         return "<INVALID>"
 
+
 # invalid value is a constant singleton
 INVALID_VALUE = _InvalidValue()
 

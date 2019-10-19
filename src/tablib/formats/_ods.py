@@ -10,6 +10,7 @@ extensions = ('ods',)
 bold = style.Style(name="bold", family="paragraph")
 bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))
 
+
 def export_set(dataset):
     """Returns ODF representation of Dataset."""
 

@@ -63,7 +63,8 @@ class Row:
         return slots
 
     def __setstate__(self, state):
-        for (k, v) in list(state.items()): setattr(self, k, v)
+        for (k, v) in list(state.items()):
+            setattr(self, k, v)
 
     def rpush(self, value):
         self.insert(0, value)
@@ -93,7 +94,7 @@ class Row:
     def has_tag(self, tag):
         """Returns true if current row contains tag."""
 
-        if tag == None:
+        if tag is None:
             return False
         elif isinstance(tag, str):
             return (tag in self.tags)
@@ -172,7 +173,7 @@ class Dataset:
     def __getitem__(self, key):
         if isinstance(key, str):
             if key in self.headers:
-                pos = self.headers.index(key) # get 'key' index from each data
+                pos = self.headers.index(key)  # get 'key' index from each data
                 return [row[pos] for row in self._data]
             else:
                 raise KeyError
@@ -820,7 +821,7 @@ class Dataset:
 
         if isinstance(col, str):
             if col in self.headers:
-                col = self.headers.index(col) # get 'key' index from each data
+                col = self.headers.index(col)  # get 'key' index from each data
             else:
                 raise KeyError
 
@@ -986,13 +987,13 @@ class Dataset:
         if cols is None:
             cols = list(self.headers)
 
-        #filter out impossible rows and columns
+        # filter out impossible rows and columns
         rows = [row for row in rows if row in range(self.height)]
         cols = [header for header in cols if header in self.headers]
 
         _dset = Dataset()
 
-        #filtering rows and columns
+        # filtering rows and columns
         _dset.headers = list(cols)
 
         _dset._data = []
@@ -1072,8 +1073,8 @@ class Databook:
 
         for dset in self._datasets:
             collector.append(dict_pack(
-                title = dset.title,
-                data = dset._package(ordered=ordered)
+                title=dset.title,
+                data=dset._package(ordered=ordered)
             ))
         return collector
 

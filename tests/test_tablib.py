@@ -4,7 +4,6 @@
 import datetime
 import doctest
 import json
-import sys
 import unittest
 from uuid import uuid4
 
@@ -533,7 +532,7 @@ class HTMLTests(BaseTestCase):
         html.table.close()
         html = str(html)
 
-        headers = ['foo', None, 'bar'];
+        headers = ['foo', None, 'bar']
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)

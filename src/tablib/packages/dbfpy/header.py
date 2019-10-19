@@ -51,13 +51,12 @@ class DbfHeader:
     """
 
     __slots__ = ("signature", "fields", "lastUpdate", "recordLength",
-        "recordCount", "headerLength", "changed", "_ignore_errors")
+                 "recordCount", "headerLength", "changed", "_ignore_errors")
 
-    ## instance construction and initialization methods
+    # instance construction and initialization methods
 
     def __init__(self, fields=None, headerLength=0, recordLength=0,
-        recordCount=0, signature=0x03, lastUpdate=None, ignoreErrors=False,
-    ):
+                 recordCount=0, signature=0x03, lastUpdate=None, ignoreErrors=False):
         """Initialize instance.
 
         Arguments:
@@ -111,7 +110,7 @@ class DbfHeader:
             _data = bytes(first_32, sys.getfilesystemencoding())
         _data = first_32
         (_cnt, _hdrLen, _recLen) = struct.unpack("<I2H", _data[4:12])
-        #reserved = _data[12:32]
+        # reserved = _data[12:32]
         _year = _data[1]
         if _year < 80:
             # dBase II started at 1980.  It is quite unlikely
@@ -119,10 +118,10 @@ class DbfHeader:
             _year += 2000
         else:
             _year += 1900
-        ## create header object
+        # create header object
         _obj = cls(None, _hdrLen, _recLen, _cnt, _data[0],
-            (_year, _data[2], _data[3]))
-        ## append field definitions
+                   (_year, _data[2], _data[3]))
+        # append field definitions
         # position 0 is for the deletion flag
         _pos = 1
         _data = stream.read(1)
@@ -135,7 +134,7 @@ class DbfHeader:
         return _obj
     fromStream = classmethod(fromStream)
 
-    ## properties
+    # properties
 
     year = property(lambda self: self.lastUpdate.year)
     month = property(lambda self: self.lastUpdate.month)
@@ -156,7 +155,7 @@ class DbfHeader:
 
         """)
 
-    ## object representation
+    # object representation
 
     def __repr__(self):
         _rv = """\
@@ -173,7 +172,7 @@ Version (signature): 0x%02x
         )
         return _rv
 
-    ## internal methods
+    # internal methods
 
     def _addField(self, *defs):
         """Internal variant of the `addField` method.
@@ -197,8 +196,7 @@ Version (signature): 0x%02x
             else:
                 (_name, _type, _len, _dec) = (tuple(_def) + (None,) * 4)[:4]
                 _cls = fields.lookupFor(_type)
-                _obj = _cls(_name, _len, _dec,
-                    ignoreErrors=self._ignore_errors)
+                _obj = _cls(_name, _len, _dec, ignoreErrors=self._ignore_errors)
             _recordLength += _obj.length
             _defs.append(_obj)
         # and now extend field definitions and
@@ -206,7 +204,7 @@ Version (signature): 0x%02x
         self.fields += _defs
         return _recordLength
 
-    ## interface methods
+    # interface methods
 
     def addField(self, *defs):
         """Add field definition to the header.
@@ -251,7 +249,7 @@ Version (signature): 0x%02x
             self.recordCount,
             self.headerLength,
             self.recordLength) + (b'\x00' * 20)
-        #TODO: figure out if bytes(utf-8) is correct here.
+        # TODO: figure out if bytes(utf-8) is correct here.
 
     def setCurrentDate(self):
         """Update ``self.lastUpdate`` field with current date value."""

@@ -1,7 +1,6 @@
 """ Tablib - XLS Support.
 """
 
-import sys
 from io import BytesIO
 
 import tablib
@@ -79,6 +78,7 @@ def import_set(dset, in_stream, headers=True):
             dset.headers = sheet.row_values(0)
         else:
             dset.append(sheet.row_values(i))
+
 
 def import_book(dbook, in_stream, headers=True):
     """Returns databook from XLS stream."""

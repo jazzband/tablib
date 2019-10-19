@@ -52,7 +52,7 @@ class DbfRecord:
 
     __slots__ = "dbf", "index", "deleted", "fieldData"
 
-    ## creation and initialization
+    # creation and initialization
 
     def __init__(self, dbf, index=None, deleted=False, data=None):
         """Instance initialization.
@@ -82,7 +82,7 @@ class DbfRecord:
 
     # XXX: validate self.index before calculating position?
     position = property(lambda self: self.dbf.header.headerLength + \
-        self.index * self.dbf.header.recordLength)
+                        self.index * self.dbf.header.recordLength)
 
     def rawFromStream(cls, dbf, index):
         """Return raw record contents read from the stream.
@@ -137,10 +137,10 @@ class DbfRecord:
 
         """
         return cls(dbf, index, string[0]=="*",
-            [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
+                   [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
     fromString = classmethod(fromString)
 
-    ## object representation
+    # object representation
 
     def __repr__(self):
         _template = "%%%ds: %%s (%%s)" % max([len(_fld)
@@ -155,7 +155,7 @@ class DbfRecord:
                 _rv.append(_template % (_fld, _val, type(_val)))
         return "\n".join(_rv)
 
-    ## protected methods
+    # protected methods
 
     def _write(self):
         """Write data to the dbf stream.
@@ -171,7 +171,7 @@ class DbfRecord:
         self._validateIndex(False)
         self.dbf.stream.seek(self.position)
         self.dbf.stream.write(bytes(self.toString(),
-            sys.getfilesystemencoding()))
+                              sys.getfilesystemencoding()))
         # FIXME: may be move this write somewhere else?
         # why we should check this condition for each record?
         if self.index == len(self.dbf):
@@ -179,7 +179,7 @@ class DbfRecord:
             # we should write SUB (ASCII 26)
             self.dbf.stream.write(b"\x1A")
 
-    ## utility methods
+    # utility methods
 
     def _validateIndex(self, allowUndefined=True, checkRange=False):
         """Valid ``self.index`` value.
@@ -195,9 +195,9 @@ class DbfRecord:
             raise ValueError("Index can't be negative (%s)" % self.index)
         elif checkRange and self.index <= self.dbf.header.recordCount:
             raise ValueError("There are only %d records in the DBF" %
-                self.dbf.header.recordCount)
+                             self.dbf.header.recordCount)
 
-    ## interface methods
+    # interface methods
 
     def store(self):
         """Store current record in the DBF.

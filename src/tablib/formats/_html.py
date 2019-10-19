@@ -2,11 +2,9 @@
 """
 
 import codecs
-import sys
 from io import BytesIO
 
 from MarkupPy import markup
-import tablib
 
 BOOK_ENDINGS = 'h3'
 
