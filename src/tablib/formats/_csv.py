@@ -52,7 +52,7 @@ def import_set(dset, in_stream, headers=True, **kwargs):
 def detect(stream, delimiter=DEFAULT_DELIMITER):
     """Returns True if given stream is valid CSV."""
     try:
-        csv.Sniffer().sniff(stream, delimiters=delimiter)
+        csv.Sniffer().sniff(stream[:1024], delimiters=delimiter)
         return True
     except Exception:
         return False
