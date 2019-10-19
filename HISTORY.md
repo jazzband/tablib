@@ -1,19 +1,31 @@
 # History
 
-## Unreleased
+## 0.14.0 (2019-10-19)
 
+### Deprecations
+
+- The 0.14.x series will be the last to support Python 2
+
+### Breaking changes
+
+- Dropped Python 3.4 support
+
+### Improvements
+
+- Added Python 3.7 and 3.8 support
 - The project is now maintained by the Jazzband team, https://jazzband.co
-- Fixed `DataBook().load` parameter ordering (first stream, then format).
-- Fixed a regression for xlsx exports where non-string values were forced to
-  strings (#314).
-- Fixed xlsx format detection (which was often detected as `xls` format).
 - Improved format autodetection and added autodetection for the odf format.
 - Added search to all documentation pages
 - Open xlsx workbooks in read-only mode (#316)
 - Unpin requirements
 - Only install backports.csv on Python 2
-- Added Python 3.7 support
-- Dropped Python 3.4 support
+
+### Bugfixes
+
+- Fixed `DataBook().load` parameter ordering (first stream, then format).
+- Fixed a regression for xlsx exports where non-string values were forced to
+  strings (#314)
+- Fixed xlsx format detection (which was often detected as `xls` format)
 
 ## 0.13.0 (2019-03-08)
 
