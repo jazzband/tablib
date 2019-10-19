@@ -26,7 +26,7 @@ Of course, the recommended way to install Tablib is with `pip <https://pip.pypa.
 Download the Source
 -------------------
 
-You can also install tablib from source.
+You can also install Tablib from source.
 The latest release (|version|) is available from GitHub.
 
 * tarball_

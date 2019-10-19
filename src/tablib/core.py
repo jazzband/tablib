@@ -119,7 +119,7 @@ class Dataset(object):
 
 
     Setting columns is similar. The column data length must equal the
-    current height of the data and headers must be set ::
+    current height of the data and headers must be set. ::
 
         data = tablib.Dataset()
         data.headers = ('first_name', 'last_name')
@@ -593,7 +593,7 @@ class Dataset(object):
         """A HTML table representation of the :class:`Dataset` object. If
         headers have been set, they will be used as table headers.
 
-        ..notice:: This method can be used for export only.
+        .. notice:: This method can be used for export only.
         """
         pass
 
