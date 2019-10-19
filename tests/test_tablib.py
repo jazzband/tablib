@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import datetime
 import doctest
 import json
+import pickle
 import sys
 import unittest
 from uuid import uuid4
@@ -459,6 +460,11 @@ class TablibTestCase(BaseTestCase):
         # integer
         self.founders.append(('Old', 'Man', 100500))
         self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
+
+    def test_pickle_unpickle_dataset(self):
+        before_pickle = self.founders.export('json')
+        founders = pickle.loads(pickle.dumps(self.founders))
+        self.assertEqual(founders.export('json'), before_pickle)
 
     def test_databook_add_sheet_accepts_only_dataset_instances(self):
         class NotDataset(object):
