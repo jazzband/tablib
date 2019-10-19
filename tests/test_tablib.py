@@ -202,7 +202,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders[2:], [self.tom])
 
     def test_row_slicing(self):
-        """Verify Row's __getslice__ method. Issue #184."""
+        """Verify Row slicing. Issue #184."""
 
         john = Row(self.john)
 
