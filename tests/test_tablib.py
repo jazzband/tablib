@@ -486,17 +486,6 @@ class TablibTestCase(BaseTestCase):
         self.founders.append(('First\nSecond', 'Name', 42))
         self.founders.export('xlsx')
 
-    def test_rst_force_grid(self):
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
-
-        simple = tablib.formats._rst.export_set(data)
-        grid = tablib.formats._rst.export_set(data, force_grid=True)
-        self.assertNotEqual(simple, grid)
-        self.assertNotIn('+', simple)
-        self.assertIn('+', grid)
-
 
 class HTMLTests(BaseTestCase):
     def test_html_export(self):
@@ -536,6 +525,35 @@ class HTMLTests(BaseTestCase):
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
+
+
+class RSTTests(BaseTestCase):
+    def test_rst_force_grid(self):
+        data = tablib.Dataset()
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        simple = tablib.formats._rst.export_set(data)
+        grid = tablib.formats._rst.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+    def test_empty_string(self):
+        data = tablib.Dataset()
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(('Wendy', '', 43))
+        self.assertEqual(
+            data.export('rst'),
+            '==========  =========  ===\n'
+            'first_name  last_name  gpa\n'
+            '==========  =========  ===\n'
+            'John        Adams      90 \n'
+            'Wendy                  43 \n'
+            '==========  =========  ==='
+        )
 
 
 class CSVTests(BaseTestCase):

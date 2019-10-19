@@ -6,6 +6,10 @@
 
 - Dropped Python 2 support
 
+### Bugfixes
+
+- Fixed a crash when exporting an empty string with the ReST format (#368)
+
 ## 0.14.0 (2019-10-19)
 
 ### Deprecations
