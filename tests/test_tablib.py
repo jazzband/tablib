@@ -625,6 +625,16 @@ class CSVTests(BaseTestCase):
 
         self.assertEqual(_csv, data.csv)
 
+    def test_csv_import_set_commas_embedded(self):
+        """Comma-separated CSV can include commas inside quoted string."""
+        csv_text = (
+            'id,name,description,count\r\n'
+            '12,Smith,"Red, rounded",4\r\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(data[0][2], 'Red, rounded')
+        self.assertEqual(data.csv, csv_text)
+
     def test_csv_import_set_with_unicode_str(self):
         """Import CSV set with non-ascii characters in unicode literal"""
         csv_text = (
