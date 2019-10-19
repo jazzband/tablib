@@ -4,7 +4,7 @@
 tablib.compat
 ~~~~~~~~~~~~~
 
-Tablib compatiblity module.
+Tablib compatibility module.
 
 """
 

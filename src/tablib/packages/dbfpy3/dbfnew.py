@@ -6,7 +6,7 @@ Note: this is a legacy interface.  New code should use Dbf class
 
 TODO:
   - handle Memo fields.
-  - check length of the fields accoring to the
+  - check length of the fields according to the
     `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
 
 """
@@ -37,7 +37,7 @@ class _FieldDefinition(object):
     ``len``, ``dec`` and ``cls`` fields.
 
     Objects also implement get/setitem magic functions, so fields
-    could be accessed via sequence iterface, where 'name' has
+    could be accessed via sequence interface, where 'name' has
     index 0, 'type' index 1, 'len' index 2, 'dec' index 3 and
     'cls' could be located at index 4.
 
