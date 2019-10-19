@@ -134,11 +134,7 @@ class DbfFieldDef:
             definition of this field.
 
         """
-        if sys.version_info < (2, 4):
-            # earlier versions did not support padding character
-            _name = self.name[:11] + "\0" * (11 - len(self.name))
-        else:
-            _name = self.name.ljust(11, '\0')
+        _name = self.name.ljust(11, '\0')
         return (
             _name +
             self.typeCode +
