@@ -200,7 +200,7 @@ Delete a range of rows::
 Advanced Usage
 ==============
 
-This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`
+This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`.
 
 And now for something completely different.
 
@@ -300,11 +300,11 @@ It's that simple. The original :class:`Dataset` is untouched.
 Open an Excel Workbook and read first sheet
 -------------------------------------------
 
-To open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet), use the following:
+Open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet). ::
 
-data = tablib.Dataset()
-data.xlsx = open('my_excel_file.xlsx', 'rb').read()
-print(data)
+    data = tablib.Dataset()
+    data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+    print(data)
 
 Excel Workbook With Multiple Sheets
 ------------------------------------
