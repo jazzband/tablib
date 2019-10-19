@@ -121,7 +121,7 @@ class Dbf(object):
                 # created or opened and truncated)
                 self.stream = open(f, "w+b")
             else:
-                # tabe file must exist
+                # table file must exist
                 self.stream = open(f, ("r+b", "rb")[bool(readOnly)])
         else:
             # a stream
@@ -186,7 +186,7 @@ class Dbf(object):
             raise IndexError("Record index out of range")
         return index
 
-    # iterface methods
+    # interface methods
 
     def close(self):
         self.flush()

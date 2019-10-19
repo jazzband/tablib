@@ -42,14 +42,14 @@ class DbfFieldDef(object):
     """Abstract field definition.
 
     Child classes must override ``type`` class attribute to provide datatype
-    infromation of the field definition. For more info about types visit
+    information of the field definition. For more info about types visit
     `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
 
     Also child classes must override ``defaultValue`` field to provide
     default value for the field value.
 
     If child class has fixed length ``length`` class attribute must be
-    overriden and set to the valid value. None value means, that field
+    overridden and set to the valid value. None value means, that field
     isn't of fixed length.
 
     Note: ``name`` field must not be changed after instantiation.
@@ -65,19 +65,19 @@ class DbfFieldDef(object):
 
     # field type. for more information about fields types visit
     # `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
-    # must be overriden in child classes
+    # must be overridden in child classes
     typeCode = None
 
     # default value for the field. this field must be
-    # overriden in child classes
+    # overridden in child classes
     defaultValue = None
 
     def __init__(self, name, length=None, decimalCount=None,
         start=None, stop=None, ignoreErrors=False,
     ):
         """Initialize instance."""
-        assert self.typeCode is not None, "Type code must be overriden"
-        assert self.defaultValue is not None, "Default value must be overriden"
+        assert self.typeCode is not None, "Type code must be overridden"
+        assert self.defaultValue is not None, "Default value must be overridden"
         ## fix arguments
         if len(name) >10:
             raise ValueError("Field name \"%s\" is too long" % name)
@@ -190,7 +190,7 @@ class DbfFieldDef(object):
     def encodeValue(self, value):
         """Return str object containing encoded field value.
 
-        This is an abstract method and it must be overriden in child classes.
+        This is an abstract method and it must be overridden in child classes.
         """
         raise NotImplementedError
 
@@ -328,7 +328,7 @@ class DbfLogicalFieldDef(DbfFieldDef):
 class DbfMemoFieldDef(DbfFieldDef):
     """Definition of the memo field.
 
-    Note: memos aren't currenly completely supported.
+    Note: memos aren't currently completely supported.
 
     """
 

@@ -20,7 +20,7 @@ import time
 def unzfill(str):
     """Return a string without ASCII NULs.
 
-    This function searchers for the first NUL (ASCII 0) occurance
+    This function searchers for the first NUL (ASCII 0) occurrence
     and truncates string till that position.
 
     """
@@ -48,7 +48,7 @@ def getDate(date=None):
         sequence:
             assuming (year, month, day, ...) sequence;
 
-    Additionaly, if ``date`` has callable ``ticks`` attribute,
+    Additionally, if ``date`` has callable ``ticks`` attribute,
     it will be used and result of the called would be treated
     as a timestamp value.
 
@@ -95,7 +95,7 @@ def getDateTime(value=None):
         sequence:
             assuming (year, month, day, ...) sequence;
 
-    Additionaly, if ``value`` has callable ``ticks`` attribute,
+    Additionally, if ``value`` has callable ``ticks`` attribute,
     it will be used and result of the called would be treated
     as a timestamp value.
 

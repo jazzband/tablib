@@ -23,12 +23,12 @@ from . import utils
 class DbfRecord(object):
     """DBF record.
 
-    Instances of this class shouldn't be created manualy,
+    Instances of this class shouldn't be created manually,
     use `dbf.Dbf.newRecord` instead.
 
     Class implements mapping/sequence interface, so
     fields could be accessed via their names or indexes
-    (names is a preffered way to access fields).
+    (names is a preferred way to access fields).
 
     Hint:
         Use `store` method to save modified record.
@@ -55,7 +55,7 @@ class DbfRecord(object):
     ## creation and initialization
 
     def __init__(self, dbf, index=None, deleted=False, data=None):
-        """Instance initialiation.
+        """Instance initialization.
 
         Arguments:
             dbf:
@@ -162,7 +162,7 @@ class DbfRecord(object):
 
         Note:
             This isn't a public method, it's better to
-            use 'store' instead publically.
+            use 'store' instead publicly.
             Be design ``_write`` method should be called
             only from the `Dbf` instance.
 
