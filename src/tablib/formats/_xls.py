@@ -6,7 +6,6 @@ from io import BytesIO
 import tablib
 import xlrd
 import xlwt
-from xlrd.biffh import XLRDError
 
 title = 'xls'
 extensions = ('xls',)

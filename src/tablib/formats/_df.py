@@ -6,8 +6,6 @@ try:
 except ImportError:
     DataFrame = None
 
-import tablib
-
 
 title = 'df'
 extensions = ('df', )

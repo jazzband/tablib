@@ -22,7 +22,6 @@ __all__ = ["DbfHeader"]
 import io
 import datetime
 import struct
-import time
 import sys
 
 from . import fields
