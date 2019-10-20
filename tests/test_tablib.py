@@ -4,6 +4,7 @@
 import datetime
 import doctest
 import json
+import pickle
 import unittest
 from uuid import uuid4
 
@@ -202,7 +203,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders[2:], [self.tom])
 
     def test_row_slicing(self):
-        """Verify Row's __getslice__ method. Issue #184."""
+        """Verify Row slicing. Issue #184."""
 
         john = Row(self.john)
 
@@ -485,6 +486,87 @@ class TablibTestCase(BaseTestCase):
         """Test XLSX export with new line in content."""
         self.founders.append(('First\nSecond', 'Name', 42))
         self.founders.export('xlsx')
+
+    def test_row_repr(self):
+        """Row repr."""
+        # Arrange
+        john = Row(self.john)
+
+        # Act
+        output = str(john)
+
+        # Assert
+        self.assertEqual(output, "['John', 'Adams', 90]")
+
+    def test_row_pickle_unpickle(self):
+        """Row __setstate__ and __getstate__."""
+        # Arrange
+        before_pickle = Row(self.john)
+
+        # Act
+        output = pickle.loads(pickle.dumps(before_pickle))
+
+        # Assert
+        self.assertEqual(output[0], before_pickle[0])
+        self.assertEqual(output[1], before_pickle[1])
+        self.assertEqual(output[2], before_pickle[2])
+
+    def test_row_lpush(self):
+        """Row lpush."""
+        # Arrange
+        john = Row(self.john)
+        george = Row(self.george)
+
+        # Act
+        john.lpush(george)
+
+        # Assert
+        self.assertEqual(john[-1], george)
+
+    def test_row_append(self):
+        """Row append."""
+        # Arrange
+        john = Row(self.john)
+        george = Row(self.george)
+
+        # Act
+        john.append(george)
+
+        # Assert
+        self.assertEqual(john[0], george)
+
+    def test_row_contains(self):
+        """Row __contains__."""
+        # Arrange
+        john = Row(self.john)
+
+        # Act / Assert
+        self.assertIn("John", john)
+
+    def test_row_no_tag(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john)
+
+        # Act / Assert
+        self.assertFalse(john.has_tag("not found"))
+        self.assertFalse(john.has_tag(None))
+
+    def test_row_has_tag(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john, tags=["tag1"])
+
+        # Act / Assert
+        self.assertTrue(john.has_tag("tag1"))
+
+    def test_row_has_tags(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john, tags=["tag1", "tag2"])
+
+        # Act / Assert
+        self.assertTrue(john.has_tag(["tag2", "tag1"]))
 
 
 class HTMLTests(BaseTestCase):
@@ -1012,7 +1094,7 @@ class DBFTests(BaseTestCase):
             for reg_char, data_char in zip(_dbf, data.dbf):
                 so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                    raise AssertionError('Failing at char {}: {} vs {} {}'.format(
                         index, reg_char, data_char, so_far))
                 index += 1
 
@@ -1055,7 +1137,7 @@ class DBFTests(BaseTestCase):
                 # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
-                        'Failing at char %s: %s vs %s (found %s)' % (
+                        'Failing at char {}: {} vs {} (found {})'.format(
                             index, reg_char, data_char, found_so_far))
                 index += 1
 

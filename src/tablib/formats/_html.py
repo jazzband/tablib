@@ -53,7 +53,7 @@ def export_book(databook):
 
     for i, dset in enumerate(databook._datasets):
         title = (dset.title if dset.title else 'Set %s' % (i))
-        wrapper.write('<%s>%s</%s>\n' % (BOOK_ENDINGS, title, BOOK_ENDINGS))
+        wrapper.write('<{}>{}</{}>\n'.format(BOOK_ENDINGS, title, BOOK_ENDINGS))
         wrapper.write(dset.html)
         wrapper.write('\n')
 

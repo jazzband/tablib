@@ -40,9 +40,6 @@ class Row:
     def __repr__(self):
         return repr(self._row)
 
-    def __getslice__(self, i, j):
-        return self._row[i:j]
-
     def __getitem__(self, i):
         return self._row[i]
 
@@ -264,7 +261,7 @@ class Dataset:
             else:
                 is_valid = (len(col) == self.height) if self.height else True
         else:
-            is_valid = all((len(x) == self.width for x in self._data))
+            is_valid = all(len(x) == self.width for x in self._data)
 
         if is_valid:
             return True
@@ -423,7 +420,7 @@ class Dataset:
 
         export_set, import_set = self._formats.get(format, (None, None))
         if not import_set:
-            raise UnsupportedFormat('Format {0} cannot be imported.'.format(format))
+            raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
 
         import_set(self, in_stream, **kwargs)
         return self
@@ -436,7 +433,7 @@ class Dataset:
         """
         export_set, import_set = self._formats.get(format, (None, None))
         if not export_set:
-            raise UnsupportedFormat('Format {0} cannot be exported.'.format(format))
+            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
 
         return export_set(self, **kwargs)
 
@@ -1095,7 +1092,7 @@ class Databook:
 
         export_book, import_book = self._formats.get(format, (None, None))
         if not import_book:
-            raise UnsupportedFormat('Format {0} cannot be loaded.'.format(format))
+            raise UnsupportedFormat('Format {} cannot be loaded.'.format(format))
 
         import_book(self, in_stream, **kwargs)
         return self
@@ -1108,7 +1105,7 @@ class Databook:
         """
         export_book, import_book = self._formats.get(format, (None, None))
         if not export_book:
-            raise UnsupportedFormat('Format {0} cannot be exported.'.format(format))
+            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
 
         return export_book(self, **kwargs)
 
