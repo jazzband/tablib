@@ -19,8 +19,8 @@ __date__ = "$Date: 2010/09/16 05:06:39 $"[7:-2]
 
 __all__ = ["DbfHeader"]
 
-import io
 import datetime
+import io
 import struct
 import sys
 

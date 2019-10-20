@@ -5,7 +5,6 @@ from itertools import zip_longest
 from statistics import median
 from textwrap import TextWrapper
 
-
 title = "rst"
 extensions = ("rst",)
 

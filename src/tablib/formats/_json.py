@@ -6,7 +6,6 @@ from uuid import UUID
 
 import tablib
 
-
 title = "json"
 extensions = ("json", "jsn")
 

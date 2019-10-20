@@ -14,7 +14,6 @@ from operator import itemgetter
 
 from tablib import formats
 
-
 __title__ = "tablib"
 __author__ = "Kenneth Reitz"
 __license__ = "MIT"

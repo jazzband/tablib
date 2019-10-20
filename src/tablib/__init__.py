@@ -1,15 +1,15 @@
 """ Tablib. """
-from pkg_resources import get_distribution, DistributionNotFound
+from pkg_resources import DistributionNotFound, get_distribution
 
 from tablib.core import (
     Databook,
     Dataset,
-    detect_format,
-    import_set,
-    import_book,
     InvalidDatasetType,
     InvalidDimensions,
     UnsupportedFormat,
+    detect_format,
+    import_book,
+    import_set,
 )
 
 try:

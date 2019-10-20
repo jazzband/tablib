@@ -9,6 +9,7 @@ import unittest
 from uuid import uuid4
 
 from MarkupPy import markup
+
 import tablib
 from tablib.core import Row, detect_format
 from tablib.formats import _csv as csv_module

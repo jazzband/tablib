@@ -62,8 +62,7 @@ __author__ = "Jeff Kunce <kuncej@mail.conservation.state.mo.us>"
 
 __all__ = ["Dbf"]
 
-from . import header
-from . import record
+from . import header, record
 from .utils import INVALID_VALUE
 
 
