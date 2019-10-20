@@ -65,11 +65,20 @@ def _row_to_lines(values, widths, wrapper, sep="|", justify=JUSTIFY_LEFT):
             'Value of "justify" must be one of "{}"'.format('", "'.join(JUSTIFY_VALUES))
         )
     if justify == JUSTIFY_LEFT:
-        just = lambda text, width: text.ljust(width)
+
+        def just(text, width):
+            return text.ljust(width)
+
     elif justify == JUSTIFY_CENTER:
-        just = lambda text, width: text.center(width)
+
+        def just(text, width):
+            return text.center(width)
+
     else:
-        just = lambda text, width: text.rjust(width)
+
+        def just(text, width):
+            return text.rjust(width)
+
     lpad = sep + " " if sep else ""
     rpad = " " + sep if sep else ""
     pad = " " + sep + " "

@@ -1,7 +1,7 @@
 """ Tablib. """
 from pkg_resources import DistributionNotFound, get_distribution
 
-from tablib.core import (
+from tablib.core import (  # noqa: F401
     Databook,
     Dataset,
     InvalidDatasetType,

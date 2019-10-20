@@ -308,7 +308,8 @@ class Dataset:
     def _get_headers(self):
         """An *optional* list of strings to be used for header rows and attribute names.
 
-        This must be set manually. The given list length must equal :class:`Dataset.width`.
+        This must be set manually. The given list length must equal
+        :class:`Dataset.width`.
 
         """
         return self.__headers
@@ -327,11 +328,12 @@ class Dataset:
     headers = property(_get_headers, _set_headers)
 
     def _get_dict(self):
-        """A native Python representation of the :class:`Dataset` object. If headers have
-        been set, a list of Python dictionaries will be returned. If no headers have been set,
-        a list of tuples (rows) will be returned instead.
+        """A native Python representation of the :class:`Dataset` object. If headers
+        have been set, a list of Python dictionaries will be returned. If no headers
+        have been set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
+        A dataset object can also be imported by setting the `Dataset.dict`
+        attribute: ::
 
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -344,7 +346,8 @@ class Dataset:
         set, a list of Python dictionaries will be returned. If no headers have been
         set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.dict` attribute. ::
+        A dataset object can also be imported by setting the :class:`Dataset.dict`
+        attribute. ::
 
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -444,15 +447,18 @@ class Dataset:
 
     @property
     def xls():
-        """A Legacy Excel Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """A Legacy Excel Spreadsheet representation of the :class:`Dataset` object,
+        with :ref:`separators`. Cannot be set.
 
         .. note::
 
-            XLS files are limited to a maximum of 65,000 rows. Use :class:`Dataset.xlsx` to avoid this limitation.
+            XLS files are limited to a maximum of 65,000 rows. Use :class:`Dataset.xlsx`
+            to avoid this limitation.
 
          .. admonition:: Binary Warning
 
-             :class:`Dataset.xls` contains binary data, so make sure to write in binary mode::
+             :class:`Dataset.xls` contains binary data, so make sure to write in binary
+             mode::
 
                 with open('output.xls', 'wb') as f:
                     f.write(data.xls)
@@ -461,11 +467,13 @@ class Dataset:
 
     @property
     def xlsx():
-        """An Excel '07+ Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """An Excel '07+ Spreadsheet representation of the :class:`Dataset` object, with
+        :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
 
-             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary mode::
+             :class:`Dataset.xlsx` contains binary data, so make sure to write in binary
+             mode::
 
                 with open('output.xlsx', 'wb') as f:
                     f.write(data.xlsx)
@@ -474,11 +482,13 @@ class Dataset:
 
     @property
     def ods():
-        """An OpenDocument Spreadsheet representation of the :class:`Dataset` object, with :ref:`separators`. Cannot be set.
+        """An OpenDocument Spreadsheet representation of the :class:`Dataset` object,
+        with :ref:`separators`. Cannot be set.
 
          .. admonition:: Binary Warning
 
-             :class:`Dataset.ods` contains binary data, so make sure to write in binary mode::
+             :class:`Dataset.ods` contains binary data, so make sure to write in binary
+             mode::
 
                 with open('output.ods', 'wb') as f:
                     f.write(data.ods)
@@ -491,28 +501,18 @@ class Dataset:
         headers, if they have been set. Otherwise, the top row will contain
         the first row of the dataset.
 
-        A dataset object can also be imported by setting the :class:`Dataset.csv` attribute. ::
+        A dataset object can also be imported by setting the :class:`Dataset.csv`
+        attribute. ::
 
             data = tablib.Dataset()
             data.csv = 'age, first_name, last_name\\n90, John, Adams'
 
         Import assumes (for now) that headers exist.
 
-        .. admonition:: Binary Warning for Python 2
+        .. admonition:: Line endings
 
-             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 2, make
-             sure to write in binary mode::
-
-                 with open('output.csv', 'wb') as f:
-                     f.write(data.csv)
-
-             If you do not do this, and you export the file on Windows, your
-             CSV file will open in Excel with a blank line between each row.
-
-        .. admonition:: Line endings for Python 3
-
-             :class:`Dataset.csv` uses \\r\\n line endings by default so, in Python 3, make
-             sure to include newline='' otherwise you will get a blank line between each row
+             :class:`Dataset.csv` uses \\r\\n line endings by default so make sure to
+             include newline='' otherwise you will get a blank line between each row
              when you open the file in Excel::
 
                  with open('output.csv', 'w', newline='') as f:
@@ -529,7 +529,8 @@ class Dataset:
         headers, if they have been set. Otherwise, the top row will contain
         the first row of the dataset.
 
-        A dataset object can also be imported by setting the :class:`Dataset.tsv` attribute. ::
+        A dataset object can also be imported by setting the :class:`Dataset.tsv`
+        attribute. ::
 
             data = tablib.Dataset()
             data.tsv = 'age\tfirst_name\tlast_name\\n90\tJohn\tAdams'
@@ -544,7 +545,8 @@ class Dataset:
         set, a YAML list of objects will be returned. If no headers have
         been set, a YAML list of lists (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.yaml` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.yaml`
+        attribute: ::
 
             data = tablib.Dataset()
             data.yaml = '- {age: 90, first_name: John, last_name: Adams}'
@@ -557,7 +559,8 @@ class Dataset:
     def df():
         """A DataFrame representation of the :class:`Dataset` object.
 
-        A dataset object can also be imported by setting the :class:`Dataset.df` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.df`
+        attribute: ::
 
             data = tablib.Dataset()
             data.df = DataFrame(np.random.randn(6,4))
@@ -572,7 +575,8 @@ class Dataset:
         set, a JSON list of objects will be returned. If no headers have
         been set, a JSON list of lists (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.json` attribute: ::
+        A dataset object can also be imported by setting the :class:`Dataset.json`
+        attribute: ::
 
             data = tablib.Dataset()
             data.json = '[{"age": 90, "first_name": "John", "last_name": "Adams"}]'
@@ -607,7 +611,8 @@ class Dataset:
 
         .. admonition:: Binary Warning
 
-            :class:`Dataset.dbf` contains binary data, so make sure to write in binary mode::
+            :class:`Dataset.dbf` contains binary data, so make sure to write in binary
+            mode::
 
                 with open('output.dbf', 'wb') as f:
                     f.write(data.dbf)
@@ -724,9 +729,9 @@ class Dataset:
            that row.
 
         .. versionadded:: 0.9.0
-           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
-           This gives you the ability to :class:`filter <Dataset.filter>` your
-           :class:`Dataset` later.
+           If inserting a row, you can add :ref:`tags <tags>` to the row you are
+           inserting. This gives you the ability to :class:`filter <Dataset.filter>`
+           your :class:`Dataset` later.
 
         """
 
@@ -1088,7 +1093,8 @@ class Databook:
         """
         Import `in_stream` to the :class:`Databook` object using the `format`.
 
-        :param \\*\\*kwargs: (optional) custom configuration to the format `import_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format
+        `import_book`.
         """
 
         if not format:
@@ -1105,7 +1111,8 @@ class Databook:
         """
         Export :class:`Databook` object to `format`.
 
-        :param \\*\\*kwargs: (optional) custom configuration to the format `export_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format
+        `export_book`.
         """
         export_book, import_book = self._formats.get(format, (None, None))
         if not export_book:

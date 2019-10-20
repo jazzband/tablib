@@ -10,6 +10,17 @@ TODO:
     `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
 
 """
+from .dbf import Dbf
+from .fields import (
+    DbfCharacterFieldDef,
+    DbfDateFieldDef,
+    DbfDateTimeFieldDef,
+    DbfLogicalFieldDef,
+    DbfNumericFieldDef,
+)
+from .header import DbfHeader
+from .record import DbfRecord
+
 """History (most recent first)
 04-jul-2006 [als]   added export declaration;
                     updated for dbfpy 2.0
@@ -23,11 +34,6 @@ __version__ = "$Revision: 1.4 $"[11:-2]
 __date__ = "$Date: 2006/07/04 08:18:18 $"[7:-2]
 
 __all__ = ["dbf_new"]
-
-from .dbf import *
-from .fields import *
-from .header import *
-from .record import *
 
 
 class _FieldDefinition:

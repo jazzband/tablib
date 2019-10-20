@@ -37,6 +37,9 @@ Examples:
         dbf.close()
 
 """
+from . import header, record
+from .utils import INVALID_VALUE
+
 """History (most recent first):
 11-feb-2007 [als]   export INVALID_VALUE;
                     Dbf: added .ignoreErrors, .INVALID_VALUE
@@ -61,9 +64,6 @@ __date__ = "$Date: 2007/02/11 09:23:13 $"[7:-2]
 __author__ = "Jeff Kunce <kuncej@mail.conservation.state.mo.us>"
 
 __all__ = ["Dbf"]
-
-from . import header, record
-from .utils import INVALID_VALUE
 
 
 class Dbf:

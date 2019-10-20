@@ -3,6 +3,11 @@
 TODO:
   - make memos work
 """
+import datetime
+import struct
+
+from . import utils
+
 """History (most recent first):
 26-may-2009 [als]   DbfNumericFieldDef.decodeValue: strip zero bytes
 05-feb-2009 [als]   DbfDateFieldDef.encodeValue: empty arg produces empty date
@@ -30,11 +35,6 @@ __date__ = "$Date: 2009/05/26 05:16:51 $"[7:-2]
 
 __all__ = ["lookupFor"]  # field classes added at the end of the module
 
-import datetime
-import struct
-import sys
-
-from . import utils
 
 # abstract definitions
 
@@ -149,9 +149,7 @@ class DbfFieldDef:
         return (
             _name
             + self.typeCode
-            +
-            # data address
-            chr(0) * 4
+            + chr(0) * 4  # data address
             + chr(self.length)
             + chr(self.decimalCount)
             + chr(0) * 14

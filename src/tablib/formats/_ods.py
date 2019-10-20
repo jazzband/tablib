@@ -62,7 +62,7 @@ def dset_sheet(dataset, ws):
             try:
                 col = str(col, errors="ignore")
             except TypeError:
-                ## col is already str
+                # col is already str
                 pass
             ws.addElement(table.TableColumn())
 
