@@ -158,9 +158,6 @@ class _InvalidValue:
     def __str__(self):
         return ""
 
-    def __unicode__(self):
-        return ""
-
     def __repr__(self):
         return "<INVALID>"
 
