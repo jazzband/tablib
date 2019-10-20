@@ -7,14 +7,14 @@ from uuid import UUID
 import tablib
 
 
-title = 'json'
-extensions = ('json', 'jsn')
+title = "json"
+extensions = ("json", "jsn")
 
 
 def serialize_objects_handler(obj):
     if isinstance(obj, (decimal.Decimal, UUID)):
         return str(obj)
-    elif hasattr(obj, 'isoformat'):
+    elif hasattr(obj, "isoformat"):
         return obj.isoformat()
     else:
         return obj
@@ -43,8 +43,8 @@ def import_book(dbook, in_stream):
     dbook.wipe()
     for sheet in json.loads(in_stream):
         data = tablib.Dataset()
-        data.title = sheet['title']
-        data.dict = sheet['data']
+        data.title = sheet["title"]
+        data.dict = sheet["data"]
         dbook.add_sheet(data)
 
 

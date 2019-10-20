@@ -11,8 +11,8 @@ ExcelWriter = openpyxl.writer.excel.ExcelWriter
 get_column_letter = openpyxl.utils.get_column_letter
 
 
-title = 'xlsx'
-extensions = ('xlsx',)
+title = "xlsx"
+extensions = ("xlsx",)
 
 
 def detect(stream):
@@ -32,7 +32,7 @@ def export_set(dataset, freeze_panes=True):
 
     wb = Workbook()
     ws = wb.worksheets[0]
-    ws.title = dataset.title if dataset.title else 'Tablib Dataset'
+    ws.title = dataset.title if dataset.title else "Tablib Dataset"
 
     dset_sheet(dataset, ws, freeze_panes=freeze_panes)
 
@@ -49,7 +49,7 @@ def export_book(databook, freeze_panes=True):
         wb.remove(sheet)
     for i, dset in enumerate(databook._datasets):
         ws = wb.create_sheet()
-        ws.title = dset.title if dset.title else 'Sheet%s' % (i)
+        ws.title = dset.title if dset.title else "Sheet%s" % (i)
 
         dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
@@ -112,14 +112,14 @@ def dset_sheet(dataset, ws, freeze_panes=True):
         row_number = i + 1
         for j, col in enumerate(row):
             col_idx = get_column_letter(j + 1)
-            cell = ws['{}{}'.format(col_idx, row_number)]
+            cell = ws["{}{}".format(col_idx, row_number)]
 
             # bold headers
             if (row_number == 1) and dataset.headers:
                 cell.font = bold
                 if freeze_panes:
                     #  Export Freeze only after first Line
-                    ws.freeze_panes = 'A2'
+                    ws.freeze_panes = "A2"
 
             # bold separators
             elif len(row) < dataset.width:
@@ -130,8 +130,8 @@ def dset_sheet(dataset, ws, freeze_panes=True):
                 try:
                     str_col_value = str(col)
                 except TypeError:
-                    str_col_value = ''
-                if '\n' in str_col_value:
+                    str_col_value = ""
+                if "\n" in str_col_value:
                     cell.alignment = wrap_text
 
             try:

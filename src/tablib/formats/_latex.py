@@ -5,8 +5,8 @@
 import re
 
 
-title = 'latex'
-extensions = ('tex',)
+title = "latex"
+extensions = ("tex",)
 
 TABLE_TEMPLATE = """\
 %% Note: add \\usepackage{booktabs} to your preamble
@@ -24,21 +24,24 @@ TABLE_TEMPLATE = """\
 \\end{table}
 """
 
-TEX_RESERVED_SYMBOLS_MAP = dict([
-    ('\\', '\\textbackslash{}'),
-    ('{', '\\{'),
-    ('}', '\\}'),
-    ('$', '\\$'),
-    ('&', '\\&'),
-    ('#', '\\#'),
-    ('^', '\\textasciicircum{}'),
-    ('_', '\\_'),
-    ('~', '\\textasciitilde{}'),
-    ('%', '\\%'),
-])
+TEX_RESERVED_SYMBOLS_MAP = dict(
+    [
+        ("\\", "\\textbackslash{}"),
+        ("{", "\\{"),
+        ("}", "\\}"),
+        ("$", "\\$"),
+        ("&", "\\&"),
+        ("#", "\\#"),
+        ("^", "\\textasciicircum{}"),
+        ("_", "\\_"),
+        ("~", "\\textasciitilde{}"),
+        ("%", "\\%"),
+    ]
+)
 
 TEX_RESERVED_SYMBOLS_RE = re.compile(
-    '(%s)' % '|'.join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys())))
+    "(%s)" % "|".join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys()))
+)
 
 
 def export_set(dataset):
@@ -48,13 +51,14 @@ def export_set(dataset):
     :type dataset: tablib.core.Dataset
     """
 
-    caption = '\\caption{%s}' % dataset.title if dataset.title else '%'
+    caption = "\\caption{%s}" % dataset.title if dataset.title else "%"
     colspec = _colspec(dataset.width)
-    header = _serialize_row(dataset.headers) if dataset.headers else ''
+    header = _serialize_row(dataset.headers) if dataset.headers else ""
     midrule = _midrule(dataset.width)
-    body = '\n'.join([_serialize_row(row) for row in dataset])
-    return TABLE_TEMPLATE % dict(CAPTION=caption, COLSPEC=colspec,
-                                 HEADER=header, MIDRULE=midrule, BODY=body)
+    body = "\n".join([_serialize_row(row) for row in dataset])
+    return TABLE_TEMPLATE % dict(
+        CAPTION=caption, COLSPEC=colspec, HEADER=header, MIDRULE=midrule, BODY=body
+    )
 
 
 def _colspec(dataset_width):
@@ -72,9 +76,9 @@ def _colspec(dataset_width):
     :param dataset_width: width of the dataset
     """
 
-    spec = 'l'
+    spec = "l"
     for _ in range(1, dataset_width):
-        spec += 'r'
+        spec += "r"
     return spec
 
 
@@ -86,9 +90,10 @@ def _midrule(dataset_width):
     """
 
     if not dataset_width or dataset_width == 1:
-        return '\\midrule'
-    return ' '.join([_cmidrule(colindex, dataset_width) for colindex in
-                     range(1, dataset_width + 1)])
+        return "\\midrule"
+    return " ".join(
+        [_cmidrule(colindex, dataset_width) for colindex in range(1, dataset_width + 1)]
+    )
 
 
 def _cmidrule(colindex, dataset_width):
@@ -99,15 +104,15 @@ def _cmidrule(colindex, dataset_width):
     :param dataset_width: width of the dataset
     """
 
-    rule = '\\cmidrule(%s){%d-%d}'
+    rule = "\\cmidrule(%s){%d-%d}"
     if colindex == 1:
         # Rule of first column is trimmed on the right
-        return rule % ('r', colindex, colindex)
+        return rule % ("r", colindex, colindex)
     if colindex == dataset_width:
         # Rule of last column is trimmed on the left
-        return rule % ('l', colindex, colindex)
+        return rule % ("l", colindex, colindex)
     # Inner columns are trimmed on the left and right
-    return rule % ('lr', colindex, colindex)
+    return rule % ("lr", colindex, colindex)
 
 
 def _serialize_row(row):
@@ -116,9 +121,8 @@ def _serialize_row(row):
     :param row: single dataset row
     """
 
-    new_row = [_escape_tex_reserved_symbols(str(item)) if item else '' for
-               item in row]
-    return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
+    new_row = [_escape_tex_reserved_symbols(str(item)) if item else "" for item in row]
+    return 6 * " " + " & ".join(new_row) + " \\\\"
 
 
 def _escape_tex_reserved_symbols(input):
@@ -126,6 +130,8 @@ def _escape_tex_reserved_symbols(input):
 
     :param input: String to escape
     """
+
     def replace(match):
         return TEX_RESERVED_SYMBOLS_MAP[match.group()]
+
     return TEX_RESERVED_SYMBOLS_RE.sub(replace, input)

@@ -4,11 +4,15 @@
 from io import BytesIO
 from odf import opendocument, style, table, text
 
-title = 'ods'
-extensions = ('ods',)
+title = "ods"
+extensions = ("ods",)
 
 bold = style.Style(name="bold", family="paragraph")
-bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))
+bold.addElement(
+    style.TextProperties(
+        fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"
+    )
+)
 
 
 def export_set(dataset):
@@ -17,7 +21,7 @@ def export_set(dataset):
     wb = opendocument.OpenDocumentSpreadsheet()
     wb.automaticstyles.addElement(bold)
 
-    ws = table.Table(name=dataset.title if dataset.title else 'Tablib Dataset')
+    ws = table.Table(name=dataset.title if dataset.title else "Tablib Dataset")
     wb.spreadsheet.addElement(ws)
     dset_sheet(dataset, ws)
 
@@ -33,7 +37,7 @@ def export_book(databook):
     wb.automaticstyles.addElement(bold)
 
     for i, dset in enumerate(databook._datasets):
-        ws = table.Table(name=dset.title if dset.title else 'Sheet%s' % (i))
+        ws = table.Table(name=dset.title if dset.title else "Sheet%s" % (i))
         wb.spreadsheet.addElement(ws)
         dset_sheet(dset, ws)
 
@@ -52,10 +56,10 @@ def dset_sheet(dataset, ws):
 
     for i, row in enumerate(_package):
         row_number = i + 1
-        odf_row = table.TableRow(stylename=bold, defaultcellstylename='bold')
+        odf_row = table.TableRow(stylename=bold, defaultcellstylename="bold")
         for j, col in enumerate(row):
             try:
-                col = str(col, errors='ignore')
+                col = str(col, errors="ignore")
             except TypeError:
                 ## col is already str
                 pass
@@ -63,7 +67,7 @@ def dset_sheet(dataset, ws):
 
             # bold headers
             if (row_number == 1) and dataset.headers:
-                odf_row.setAttribute('stylename', bold)
+                odf_row.setAttribute("stylename", bold)
                 ws.addElement(odf_row)
                 cell = table.TableCell()
                 p = text.P()
@@ -74,7 +78,7 @@ def dset_sheet(dataset, ws):
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
+                    if "\n" in col:
                         ws.addElement(odf_row)
                         cell = table.TableCell()
                         cell.addElement(text.P(text=col))

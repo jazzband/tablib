@@ -7,8 +7,8 @@ import tablib
 import xlrd
 import xlwt
 
-title = 'xls'
-extensions = ('xls',)
+title = "xls"
+extensions = ("xls",)
 
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")
@@ -37,8 +37,8 @@ def detect(stream):
 def export_set(dataset):
     """Returns XLS representation of Dataset."""
 
-    wb = xlwt.Workbook(encoding='utf8')
-    ws = wb.add_sheet(dataset.title if dataset.title else 'Tablib Dataset')
+    wb = xlwt.Workbook(encoding="utf8")
+    ws = wb.add_sheet(dataset.title if dataset.title else "Tablib Dataset")
 
     dset_sheet(dataset, ws)
 
@@ -50,10 +50,10 @@ def export_set(dataset):
 def export_book(databook):
     """Returns XLS representation of DataBook."""
 
-    wb = xlwt.Workbook(encoding='utf8')
+    wb = xlwt.Workbook(encoding="utf8")
 
     for i, dset in enumerate(databook._datasets):
-        ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
+        ws = wb.add_sheet(dset.title if dset.title else "Sheet%s" % (i))
 
         dset_sheet(dset, ws)
 
@@ -125,7 +125,7 @@ def dset_sheet(dataset, ws):
             # wrap the rest
             else:
                 try:
-                    if '\n' in col:
+                    if "\n" in col:
                         ws.write(i, j, col, wrap)
                     else:
                         ws.write(i, j, col)

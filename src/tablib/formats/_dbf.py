@@ -9,10 +9,10 @@ from tablib.packages.dbfpy import dbfnew
 from tablib.packages.dbfpy import record as dbfrecord
 
 
-title = 'dbf'
-extensions = ('csv',)
+title = "dbf"
+extensions = ("csv",)
 
-DEFAULT_ENCODING = 'utf-8'
+DEFAULT_ENCODING = "utf-8"
 
 
 def export_set(dataset):
@@ -24,9 +24,9 @@ def export_set(dataset):
     first_row = dataset[0]
     for fieldname, field_value in zip(dataset.headers, first_row):
         if type(field_value) in [int, float]:
-            new_dbf.add_field(fieldname, 'N', 10, 8)
+            new_dbf.add_field(fieldname, "N", 10, 8)
         else:
-            new_dbf.add_field(fieldname, 'C', 80)
+            new_dbf.add_field(fieldname, "C", 80)
 
     new_dbf.write(temp_uri)
 
@@ -38,7 +38,7 @@ def export_set(dataset):
         record.store()
 
     dbf_file.close()
-    dbf_stream = open(temp_uri, 'rb')
+    dbf_stream = open(temp_uri, "rb")
     stream = io.BytesIO(dbf_stream.read())
     dbf_stream.close()
     os.close(temp_file)
@@ -62,7 +62,7 @@ def detect(stream):
     # _dbf = dbf.Table(StringIO(stream))
     try:
         if type(stream) is not bytes:
-            stream = bytes(stream, 'utf-8')
+            stream = bytes(stream, "utf-8")
         dbf.Dbf(io.BytesIO(stream), readOnly=True)
         return True
     except Exception:

@@ -6,10 +6,10 @@ from io import BytesIO
 
 from MarkupPy import markup
 
-BOOK_ENDINGS = 'h3'
+BOOK_ENDINGS = "h3"
 
-title = 'html'
-extensions = ('html', )
+title = "html"
+extensions = ("html",)
 
 
 def export_set(dataset):
@@ -21,7 +21,7 @@ def export_set(dataset):
     page.table.open()
 
     if dataset.headers is not None:
-        new_header = [item if item is not None else '' for item in dataset.headers]
+        new_header = [item if item is not None else "" for item in dataset.headers]
 
         page.thead.open()
         headers = markup.oneliner.th(new_header)
@@ -29,7 +29,7 @@ def export_set(dataset):
         page.thead.close()
 
     for row in dataset:
-        new_row = [item if item is not None else '' for item in row]
+        new_row = [item if item is not None else "" for item in row]
 
         html_row = markup.oneliner.td(new_row)
         page.tr(html_row)
@@ -40,7 +40,7 @@ def export_set(dataset):
     wrapper = codecs.getwriter("utf8")(stream)
     wrapper.writelines(str(page))
 
-    return stream.getvalue().decode('utf-8')
+    return stream.getvalue().decode("utf-8")
 
 
 def export_book(databook):
@@ -52,9 +52,9 @@ def export_book(databook):
     wrapper = codecs.getwriter("utf8")(stream)
 
     for i, dset in enumerate(databook._datasets):
-        title = (dset.title if dset.title else 'Set %s' % (i))
-        wrapper.write('<{}>{}</{}>\n'.format(BOOK_ENDINGS, title, BOOK_ENDINGS))
+        title = dset.title if dset.title else "Set %s" % (i)
+        wrapper.write("<{}>{}</{}>\n".format(BOOK_ENDINGS, title, BOOK_ENDINGS))
         wrapper.write(dset.html)
-        wrapper.write('\n')
+        wrapper.write("\n")
 
-    return stream.getvalue().decode('utf-8')
+    return stream.getvalue().decode("utf-8")

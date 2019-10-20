@@ -3,7 +3,7 @@
    Generates a Jira table from the dataset.
 """
 
-title = 'jira'
+title = "jira"
 
 
 def export_set(dataset):
@@ -17,20 +17,22 @@ def export_set(dataset):
     :type dataset: tablib.core.Dataset
     """
 
-    header = _get_header(dataset.headers) if dataset.headers else ''
+    header = _get_header(dataset.headers) if dataset.headers else ""
     body = _get_body(dataset)
-    return '{}\n{}'.format(header, body) if header else body
+    return "{}\n{}".format(header, body) if header else body
 
 
 def _get_body(dataset):
-    return '\n'.join([_serialize_row(row) for row in dataset])
+    return "\n".join([_serialize_row(row) for row in dataset])
 
 
 def _get_header(headers):
-    return _serialize_row(headers, delimiter='||')
+    return _serialize_row(headers, delimiter="||")
 
 
-def _serialize_row(row, delimiter='|'):
-    return '{}{}{}'.format(delimiter,
-                           delimiter.join([str(item) if item else ' ' for item in row]),
-                           delimiter)
+def _serialize_row(row, delimiter="|"):
+    return "{}{}{}".format(
+        delimiter,
+        delimiter.join([str(item) if item else " " for item in row]),
+        delimiter,
+    )

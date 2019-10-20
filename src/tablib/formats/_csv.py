@@ -5,18 +5,18 @@ import csv
 from io import StringIO
 
 
-title = 'csv'
-extensions = ('csv',)
+title = "csv"
+extensions = ("csv",)
 
 
-DEFAULT_DELIMITER = ','
+DEFAULT_DELIMITER = ","
 
 
 def export_stream_set(dataset, **kwargs):
     """Returns CSV representation of Dataset as file-like."""
     stream = StringIO()
 
-    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
+    kwargs.setdefault("delimiter", DEFAULT_DELIMITER)
 
     _csv = csv.writer(stream, **kwargs)
 
@@ -38,7 +38,7 @@ def import_set(dset, in_stream, headers=True, **kwargs):
 
     dset.wipe()
 
-    kwargs.setdefault('delimiter', DEFAULT_DELIMITER)
+    kwargs.setdefault("delimiter", DEFAULT_DELIMITER)
 
     rows = csv.reader(StringIO(in_stream), **kwargs)
     for i, row in enumerate(rows):

@@ -15,17 +15,17 @@ from operator import itemgetter
 from tablib import formats
 
 
-__title__ = 'tablib'
-__author__ = 'Kenneth Reitz'
-__license__ = 'MIT'
-__copyright__ = 'Copyright 2017 Kenneth Reitz. 2019 Jazzband.'
-__docformat__ = 'restructuredtext'
+__title__ = "tablib"
+__author__ = "Kenneth Reitz"
+__license__ = "MIT"
+__copyright__ = "Copyright 2017 Kenneth Reitz. 2019 Jazzband."
+__docformat__ = "restructuredtext"
 
 
 class Row:
     """Internal Row object. Mainly used for filtering."""
 
-    __slots__ = ['_row', 'tags']
+    __slots__ = ["_row", "tags"]
 
     def __init__(self, row=list(), tags=list()):
         self._row = list(row)
@@ -76,7 +76,7 @@ class Row:
         self._row.insert(index, value)
 
     def __contains__(self, item):
-        return (item in self._row)
+        return item in self._row
 
     @property
     def tuple(self):
@@ -94,7 +94,7 @@ class Row:
         if tag is None:
             return False
         elif isinstance(tag, str):
-            return (tag in self.tags)
+            return tag in self.tags
         else:
             return bool(len(set(tag) & set(self.tags)))
 
@@ -158,9 +158,9 @@ class Dataset:
         # (column, callback) tuples
         self._formatters = []
 
-        self.headers = kwargs.get('headers')
+        self.headers = kwargs.get("headers")
 
-        self.title = kwargs.get('title')
+        self.title = kwargs.get("title")
 
         self._register_formats()
 
@@ -204,9 +204,9 @@ class Dataset:
 
     def __repr__(self):
         try:
-            return '<%s dataset>' % (self.title.lower())
+            return "<%s dataset>" % (self.title.lower())
         except AttributeError:
-            return '<dataset object>'
+            return "<dataset object>"
 
     def __str__(self):
         result = []
@@ -223,11 +223,11 @@ class Dataset:
 
         # delimiter between header and data
         if self.__headers:
-            result.insert(1, ['-' * length for length in field_lens])
+            result.insert(1, ["-" * length for length in field_lens])
 
-        format_string = '|'.join('{%s:%s}' % item for item in enumerate(field_lens))
+        format_string = "|".join("{%s:%s}" % item for item in enumerate(field_lens))
 
-        return '\n'.join(format_string.format(*row) for row in result)
+        return "\n".join(format_string.format(*row) for row in result)
 
     # ---------
     # Internals
@@ -240,12 +240,12 @@ class Dataset:
             try:
                 try:
                     setattr(cls, fmt.title, property(fmt.export_set, fmt.import_set))
-                    setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
-                    setattr(cls, 'set_%s' % fmt.title, fmt.import_set)
+                    setattr(cls, "get_%s" % fmt.title, fmt.export_set)
+                    setattr(cls, "set_%s" % fmt.title, fmt.import_set)
                     cls._formats[fmt.title] = (fmt.export_set, fmt.import_set)
                 except AttributeError:
                     setattr(cls, fmt.title, property(fmt.export_set))
-                    setattr(cls, 'get_%s' % fmt.title, fmt.export_set)
+                    setattr(cls, "get_%s" % fmt.title, fmt.export_set)
                     cls._formats[fmt.title] = (fmt.export_set, None)
 
             except AttributeError:
@@ -296,7 +296,9 @@ class Dataset:
 
         if self.headers:
             if dicts:
-                data = [dict_pack(list(zip(self.headers, data_row))) for data_row in _data]
+                data = [
+                    dict_pack(list(zip(self.headers, data_row))) for data_row in _data
+                ]
             else:
                 data = [list(self.headers)] + list(_data)
         else:
@@ -380,7 +382,7 @@ class Dataset:
         else:
             header = []
 
-        if len(col) == 1 and hasattr(col[0], '__call__'):
+        if len(col) == 1 and hasattr(col[0], "__call__"):
 
             col = list(map(col[0], self._data))
         col = tuple(header + col)
@@ -420,7 +422,7 @@ class Dataset:
 
         export_set, import_set = self._formats.get(format, (None, None))
         if not import_set:
-            raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
+            raise UnsupportedFormat("Format {} cannot be imported.".format(format))
 
         import_set(self, in_stream, **kwargs)
         return self
@@ -433,7 +435,7 @@ class Dataset:
         """
         export_set, import_set = self._formats.get(format, (None, None))
         if not export_set:
-            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
+            raise UnsupportedFormat("Format {} cannot be exported.".format(format))
 
         return export_set(self, **kwargs)
 
@@ -733,7 +735,7 @@ class Dataset:
             col = []
 
         # Callable Columns...
-        if hasattr(col, '__call__'):
+        if hasattr(col, "__call__"):
             col = list(map(col, self._data))
 
         col = self._clean_col(col)
@@ -773,13 +775,13 @@ class Dataset:
 
         self.insert_col(0, col, header=header)
 
-    def insert_separator(self, index, text='-'):
+    def insert_separator(self, index, text="-"):
         """Adds a separator to :class:`Dataset` at given index."""
 
         sep = (index, text)
         self._separators.append(sep)
 
-    def append_separator(self, text='-'):
+    def append_separator(self, text="-"):
         """Adds a :ref:`separator <separators>` to the :class:`Dataset`."""
 
         # change offsets if headers are or aren't defined
@@ -962,7 +964,11 @@ class Dataset:
         """Removes all duplicate rows from the :class:`Dataset` object
         while maintaining the original order."""
         seen = set()
-        self._data[:] = [row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))]
+        self._data[:] = [
+            row
+            for row in self._data
+            if not (tuple(row) in seen or seen.add(tuple(row)))
+        ]
 
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
@@ -1026,9 +1032,9 @@ class Databook:
 
     def __repr__(self):
         try:
-            return '<%s databook>' % (self.title.lower())
+            return "<%s databook>" % (self.title.lower())
         except AttributeError:
-            return '<databook object>'
+            return "<databook object>"
 
     def wipe(self):
         """Removes all :class:`Dataset` objects from the :class:`Databook`."""
@@ -1069,10 +1075,9 @@ class Databook:
             dict_pack = dict
 
         for dset in self._datasets:
-            collector.append(dict_pack(
-                title=dset.title,
-                data=dset._package(ordered=ordered)
-            ))
+            collector.append(
+                dict_pack(title=dset.title, data=dset._package(ordered=ordered))
+            )
         return collector
 
     @property
@@ -1092,7 +1097,7 @@ class Databook:
 
         export_book, import_book = self._formats.get(format, (None, None))
         if not import_book:
-            raise UnsupportedFormat('Format {} cannot be loaded.'.format(format))
+            raise UnsupportedFormat("Format {} cannot be loaded.".format(format))
 
         import_book(self, in_stream, **kwargs)
         return self
@@ -1105,7 +1110,7 @@ class Databook:
         """
         export_book, import_book = self._formats.get(format, (None, None))
         if not export_book:
-            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
+            raise UnsupportedFormat("Format {} cannot be exported.".format(format))
 
         return export_book(self, **kwargs)
 

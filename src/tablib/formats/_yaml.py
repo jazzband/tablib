@@ -4,8 +4,8 @@
 import tablib
 import yaml
 
-title = 'yaml'
-extensions = ('yaml', 'yml')
+title = "yaml"
+extensions = ("yaml", "yml")
 
 
 def export_set(dataset):
@@ -33,8 +33,8 @@ def import_book(dbook, in_stream):
 
     for sheet in yaml.safe_load(in_stream):
         data = tablib.Dataset()
-        data.title = sheet['title']
-        data.dict = sheet['data']
+        data.title = sheet["title"]
+        data.dict = sheet["data"]
         dbook.add_sheet(data)
 
 
@@ -46,6 +46,9 @@ def detect(stream):
             return True
         else:
             return False
-    except (yaml.parser.ParserError, yaml.reader.ReaderError,
-            yaml.scanner.ScannerError):
+    except (
+        yaml.parser.ParserError,
+        yaml.reader.ReaderError,
+        yaml.scanner.ScannerError,
+    ):
         return False

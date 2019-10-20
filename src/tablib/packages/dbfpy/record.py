@@ -20,6 +20,7 @@ import sys
 
 from . import utils
 
+
 class DbfRecord:
     """DBF record.
 
@@ -81,8 +82,10 @@ class DbfRecord:
             self.fieldData = list(data)
 
     # XXX: validate self.index before calculating position?
-    position = property(lambda self: self.dbf.header.headerLength + \
-                        self.index * self.dbf.header.recordLength)
+    position = property(
+        lambda self: self.dbf.header.headerLength
+        + self.index * self.dbf.header.recordLength
+    )
 
     def rawFromStream(cls, dbf, index):
         """Return raw record contents read from the stream.
@@ -100,9 +103,9 @@ class DbfRecord:
         # XXX: may be write smth assuming, that current stream
         # position is the required one? it could save some
         # time required to calculate where to seek in the file
-        dbf.stream.seek(dbf.header.headerLength +
-            index * dbf.header.recordLength)
+        dbf.stream.seek(dbf.header.headerLength + index * dbf.header.recordLength)
         return dbf.stream.read(dbf.header.recordLength)
+
     rawFromStream = classmethod(rawFromStream)
 
     def fromStream(cls, dbf, index):
@@ -119,6 +122,7 @@ class DbfRecord:
 
         """
         return cls.fromString(dbf, cls.rawFromStream(dbf, index), index)
+
     fromStream = classmethod(fromStream)
 
     def fromString(cls, dbf, string, index=None):
@@ -136,21 +140,26 @@ class DbfRecord:
         Return value is an instance of the current class.
 
         """
-        return cls(dbf, index, string[0]=="*",
-                   [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
+        return cls(
+            dbf,
+            index,
+            string[0] == "*",
+            [_fd.decodeFromRecord(string) for _fd in dbf.header.fields],
+        )
+
     fromString = classmethod(fromString)
 
     # object representation
 
     def __repr__(self):
-        _template = "%%%ds: %%s (%%s)" % max([len(_fld)
-            for _fld in self.dbf.fieldNames])
+        _template = "%%%ds: %%s (%%s)" % max(
+            [len(_fld) for _fld in self.dbf.fieldNames]
+        )
         _rv = []
         for _fld in self.dbf.fieldNames:
             _val = self[_fld]
             if _val is utils.INVALID_VALUE:
-                _rv.append(_template %
-                    (_fld, "None", "value cannot be decoded"))
+                _rv.append(_template % (_fld, "None", "value cannot be decoded"))
             else:
                 _rv.append(_template % (_fld, _val, type(_val)))
         return "\n".join(_rv)
@@ -170,8 +179,7 @@ class DbfRecord:
         """
         self._validateIndex(False)
         self.dbf.stream.seek(self.position)
-        self.dbf.stream.write(bytes(self.toString(),
-                              sys.getfilesystemencoding()))
+        self.dbf.stream.write(bytes(self.toString(), sys.getfilesystemencoding()))
         # FIXME: may be move this write somewhere else?
         # why we should check this condition for each record?
         if self.index == len(self.dbf):
@@ -194,8 +202,9 @@ class DbfRecord:
         elif self.index < 0:
             raise ValueError("Index can't be negative (%s)" % self.index)
         elif checkRange and self.index <= self.dbf.header.recordCount:
-            raise ValueError("There are only %d records in the DBF" %
-                             self.dbf.header.recordCount)
+            raise ValueError(
+                "There are only %d records in the DBF" % self.dbf.header.recordCount
+            )
 
     # interface methods
 
@@ -219,13 +228,16 @@ class DbfRecord:
 
     def toString(self):
         """Return string packed record values."""
-#        for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData):
-#
+        #        for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData):
+        #
 
-        return "".join([" *"[self.deleted]] + [
-           _def.encodeValue(_dat)
-            for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData)
-        ])
+        return "".join(
+            [" *"[self.deleted]]
+            + [
+                _def.encodeValue(_dat)
+                for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData)
+            ]
+        )
 
     def asList(self):
         """Return a flat list of fields.
@@ -262,5 +274,6 @@ class DbfRecord:
             return self.fieldData[key]
         # assuming string field name
         self.fieldData[self.dbf.indexOfFieldName(key)] = value
+
 
 # vim: et sts=4 sw=4 :

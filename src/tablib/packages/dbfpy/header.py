@@ -49,13 +49,29 @@ class DbfHeader:
 
     """
 
-    __slots__ = ("signature", "fields", "lastUpdate", "recordLength",
-                 "recordCount", "headerLength", "changed", "_ignore_errors")
+    __slots__ = (
+        "signature",
+        "fields",
+        "lastUpdate",
+        "recordLength",
+        "recordCount",
+        "headerLength",
+        "changed",
+        "_ignore_errors",
+    )
 
     # instance construction and initialization methods
 
-    def __init__(self, fields=None, headerLength=0, recordLength=0,
-                 recordCount=0, signature=0x03, lastUpdate=None, ignoreErrors=False):
+    def __init__(
+        self,
+        fields=None,
+        headerLength=0,
+        recordLength=0,
+        recordCount=0,
+        signature=0x03,
+        lastUpdate=None,
+        ignoreErrors=False,
+    ):
         """Initialize instance.
 
         Arguments:
@@ -98,6 +114,7 @@ class DbfHeader:
     def fromString(cls, string):
         """Return header instance from the string object."""
         return cls.fromStream(io.StringIO(str(string)))
+
     fromString = classmethod(fromString)
 
     # @classmethod
@@ -118,19 +135,19 @@ class DbfHeader:
         else:
             _year += 1900
         # create header object
-        _obj = cls(None, _hdrLen, _recLen, _cnt, _data[0],
-                   (_year, _data[2], _data[3]))
+        _obj = cls(None, _hdrLen, _recLen, _cnt, _data[0], (_year, _data[2], _data[3]))
         # append field definitions
         # position 0 is for the deletion flag
         _pos = 1
         _data = stream.read(1)
-        while _data != b'\r':
+        while _data != b"\r":
             _data += stream.read(31)
             _fld = fields.lookupFor(_data[11]).fromString(_data, _pos)
             _obj._addField(_fld)
             _pos = _fld.end
             _data = stream.read(1)
         return _obj
+
     fromStream = classmethod(fromStream)
 
     # properties
@@ -144,6 +161,7 @@ class DbfHeader:
         self._ignore_errors = value = bool(value)
         for _field in self.fields:
             _field.ignoreErrors = value
+
     ignoreErrors = property(
         lambda self: self._ignore_errors,
         ignoreErrors,
@@ -152,7 +170,8 @@ class DbfHeader:
         if set, failing field value conversion will return
         ``INVALID_VALUE`` instead of raising conversion error.
 
-        """)
+        """,
+    )
 
     # object representation
 
@@ -164,8 +183,13 @@ Version (signature): 0x%02x
       Record length: %d
        Record count: %d
  FieldName Type Len Dec
-""" % (self.signature, self.lastUpdate, self.headerLength,
-    self.recordLength, self.recordCount)
+""" % (
+            self.signature,
+            self.lastUpdate,
+            self.headerLength,
+            self.recordLength,
+            self.recordCount,
+        )
         _rv += "\n".join(
             ["%10s %4s %3s %3s" % _fld.fieldInfo() for _fld in self.fields]
         )
@@ -234,20 +258,22 @@ Version (signature): 0x%02x
         stream.seek(0)
         stream.write(self.toString())
         fields = [_fld.toString() for _fld in self.fields]
-        stream.write(''.join(fields).encode(sys.getfilesystemencoding()))
-        stream.write(b'\x0D')   # cr at end of all header data
+        stream.write("".join(fields).encode(sys.getfilesystemencoding()))
+        stream.write(b"\x0D")  # cr at end of all header data
         self.changed = False
 
     def toString(self):
         """Returned 32 chars length string with encoded header."""
-        return struct.pack("<4BI2H",
+        return struct.pack(
+            "<4BI2H",
             self.signature,
             self.year - 1900,
             self.month,
             self.day,
             self.recordCount,
             self.headerLength,
-            self.recordLength) + (b'\x00' * 20)
+            self.recordLength,
+        ) + (b"\x00" * 20)
         # TODO: figure out if bytes(utf-8) is correct here.
 
     def setCurrentDate(self):
@@ -266,5 +292,6 @@ Version (signature): 0x%02x
         else:
             # item must be field index
             return self.fields[item]
+
 
 # vim: et sts=4 sw=4 :

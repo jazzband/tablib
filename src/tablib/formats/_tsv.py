@@ -7,10 +7,10 @@ from tablib.formats._csv import (
     detect as detect_wrapper,
 )
 
-title = 'tsv'
-extensions = ('tsv',)
+title = "tsv"
+extensions = ("tsv",)
 
-DELIMITER = '\t'
+DELIMITER = "\t"
 
 
 def export_set(dataset):
