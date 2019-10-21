@@ -4,7 +4,6 @@
 from io import BytesIO
 
 import openpyxl
-
 import tablib
 
 Workbook = openpyxl.workbook.Workbook

@@ -3,10 +3,9 @@
 
 from io import BytesIO
 
+import tablib
 import xlrd
 import xlwt
-
-import tablib
 
 title = "xls"
 extensions = ("xls",)
