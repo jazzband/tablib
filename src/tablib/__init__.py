@@ -1,6 +1,5 @@
 """ Tablib. """
 from pkg_resources import DistributionNotFound, get_distribution
-
 from tablib.core import (
     Databook,
     Dataset,
