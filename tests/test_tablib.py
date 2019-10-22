@@ -6,6 +6,8 @@ import doctest
 import json
 import pickle
 import unittest
+from collections import OrderedDict
+from pathlib import Path
 from uuid import uuid4
 
 import tablib
@@ -887,16 +889,33 @@ class TSVTests(BaseTestCase):
         self.assertEqual(tsv, self.founders.tsv)
 
 
+class XLSTests(BaseTestCase):
+    def test_xls_format_detect(self):
+        """Test the XLS format detection."""
+        in_stream = self.founders.xls
+        self.assertEqual(detect_format(in_stream), 'xls')
+
+    def test_xls_import_with_errors(self):
+        """Errors from imported files are kept as errors."""
+        xls_source = Path(__file__).parent / 'files' / 'errors.xls'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh.read())
+        self.assertEqual(
+            data.dict[0],
+            OrderedDict([
+                ('div by 0', '#DIV/0!'),
+                ('name unknown', '#NAME?'),
+                ('not available (formula)', '#N/A'),
+                ('not available (static)', '#N/A')
+            ])
+        )
+
+
 class XLSXTests(BaseTestCase):
     def test_xlsx_format_detect(self):
         """Test the XLSX format detection."""
         in_stream = self.founders.xlsx
         self.assertEqual(detect_format(in_stream), 'xlsx')
-
-    def test_xls_format_detect(self):
-        """Test the XLS format detection."""
-        in_stream = self.founders.xls
-        self.assertEqual(detect_format(in_stream), 'xls')
 
     def test_xlsx_import_set(self):
         date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)

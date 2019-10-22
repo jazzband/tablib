@@ -76,7 +76,10 @@ def import_set(dset, in_stream, headers=True):
         if (i == 0) and (headers):
             dset.headers = sheet.row_values(0)
         else:
-            dset.append(sheet.row_values(i))
+            dset.append([
+                val if typ != xlrd.XL_CELL_ERROR else xlrd.error_text_from_code[val]
+                for val, typ in zip(sheet.row_values(i), sheet.row_types(i))
+            ])
 
 
 def import_book(dbook, in_stream, headers=True):

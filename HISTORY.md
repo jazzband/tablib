@@ -9,6 +9,7 @@
 ### Bugfixes
 
 - Fixed a crash when exporting an empty string with the ReST format (#368)
+- Error cells from imported .xls files contain now the error string (#202)
 
 ## 0.14.0 (2019-10-19)
 
