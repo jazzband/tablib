@@ -3,11 +3,13 @@
 
 import datetime
 import doctest
+import io
 import json
 import pickle
 import unittest
 from uuid import uuid4
 
+import openpyxl
 import tablib
 from MarkupPy import markup
 from tablib.core import Row, detect_format
@@ -917,6 +919,23 @@ class XLSXTests(BaseTestCase):
         with self.assertRaises(IllegalCharacterError):
             data.append(('string', b'\x0cf'))
             data.xlsx
+
+    def test_xlsx_import_set_serializaton(self):
+        """Generate and import XLSX set serialization."""
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+        expected = data.dict
+
+        wb = openpyxl.workbook.Workbook()
+        ws = wb.worksheets[0]
+        ws.append(self.headers)
+        ws.append(self.john)
+        ws.append(self.george)
+        xlsx = io.BytesIO()
+        wb.save(xlsx)
+        data.xlsx = xlsx.getvalue()
+        self.assertEqual(data.dict, expected)
 
 
 class JSONTests(BaseTestCase):
