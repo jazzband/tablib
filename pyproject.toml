@@ -1,0 +1,7 @@
+[tool.isort]
+force_grid_wrap = 0
+include_trailing_comma = true
+known_third_party = ["MarkupPy", "odf", "openpyxl", "pkg_resources", "setuptools", "tablib", "xlrd", "xlwt", "yaml"]
+line_length = 88
+multi_line_output = 3
+use_parentheses = true

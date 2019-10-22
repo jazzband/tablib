@@ -1,1 +1,6 @@
-include HISTORY.rst README.rst LICENSE AUTHORS NOTICE test_tablib.py
+recursive-include docs *
+recursive-include tests *
+include pyproject.toml pytest.ini tox.ini .coveragerc *.md LICENSE AUTHORS
+prune docs/_build
+prune *.pyc
+prune __pycache__

@@ -1,36 +1,31 @@
-Tablib is written and maintained by Kenneth Reitz and
-various contributors:
+Tablib was originally written by Kenneth Reitz and is now maintained
+by the Jazzband GitHub team.
 
-Development Lead
-````````````````
+Here is a list of passed and present much-appreciated contributors:
 
-- Kenneth Reitz <me@kennethreitz.org>
-
-
-Core Contributors
-`````````````````
-
-- Iuri de Silvio <iurisilvio@gmail.com>
-
-Patches and Suggestions
-```````````````````````
-
-- Luke Lee
-- Josh Ourisman
-- Luca Beltrame
-- Benjamin Wohlwend
-- Erik Youngren
-- Mark Rogers
-- Mark Walling
-- Mike Waldner
-- Joel Friedly
-- Jakub Janoszek
-- Marc Abramowitz
-- Alex Gaynor
-- James Douglass
-- Tommy Anthony
-- Rabin Nankhwa
-- Marco Dallagiacoma
-- Mathias Loesch
-- Tushar Makkar
-- Andrii Soldatenko
+    Alex Gaynor
+    Andrii Soldatenko
+    Benjamin Wohlwend
+    Bruno Soares
+    Claude Paroz
+    Erik Youngren
+    Hugo van Kemenade
+    Iuri de Silvio
+    Jakub Janoszek
+    James Douglass
+    Joel Friedly
+    Josh Ourisman
+    Kenneth Reitz
+    Luca Beltrame
+    Luke Lee
+    Marc Abramowitz
+    Marco Dallagiacoma
+    Mark Rogers
+    Mark Walling
+    Mathias Loesch
+    Mike Waldner
+    Peyman Salehi
+    Rabin Nankhwa
+    Tommy Anthony
+    Tsuyoshi Hombashi
+    Tushar Makkar

@@ -1,11 +1,21 @@
 language: python
 python:
-  - 2.6
-  - 2.7
-  - 3.3
-  - 3.4
-  - 3.5
-  - 3.6
-install:
-  - python setup.py install
-script: python test_tablib.py
+- 3.6
+- 3.7
+- 3.8
+cache: pip
+dist: xenial
+install: travis_retry pip install tox-travis
+script: tox
+after_success: bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: pypi
+  user: jazzband
+  server: https://jazzband.co/projects/tablib/upload
+  distributions: sdist bdist_wheel
+  password:
+    secure: svV4fYtodwW+iTyFOm5ISEfhVwcA+6vTskD3x6peznc40TdMV9Ek8nT3Q/NB4lCbXoUw2qR4H6uhLCjesnv/VvVk/qbitCyD8ySlgwOV5n7NzJs8lC8EYaHSjGQjatTwJAokfGVYkPawkI7HXDqtDggLUQBK+Ag8HDW+XBSbQIU=
+  on:
+    tags: true
+    repo: jazzband/tablib
+    python: 3.7

@@ -29,3 +29,12 @@ junit-py27.xml
 
 # pyenv noise
 .python-version
+tablib.egg-info/*
+
+# Coverage
+.coverage
+htmlcov
+
+# setuptools noise
+.eggs
+*.egg-info

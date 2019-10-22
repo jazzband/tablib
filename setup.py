@@ -1,69 +1,32 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import os
-import re
-import sys
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-if sys.argv[-1] == 'publish':
-    os.system("python setup.py sdist upload")
-    sys.exit()
-
-if sys.argv[-1] == 'speedups':
-    try:
-        __import__('pip')
-    except ImportError:
-        print('Pip required.')
-        sys.exit(1)
-
-    os.system('pip install ujson')
-    sys.exit()
-
-if sys.argv[-1] == 'test':
-    try:
-        __import__('py')
-    except ImportError:
-        print('py.test required.')
-        sys.exit(1)
-
-    errors = os.system('py.test test_tablib.py')
-    sys.exit(bool(errors))
-
-packages = [
-    'tablib', 'tablib.formats',
-    'tablib.packages',
-    'tablib.packages.dbfpy',
-    'tablib.packages.dbfpy3'
-]
+from setuptools import find_packages, setup
 
 install = [
     'odfpy',
-    'openpyxl',
-    'unicodecsv',
+    'openpyxl>=2.4.0',
+    'markuppy',
     'xlrd',
     'xlwt',
     'pyyaml',
 ]
 
-with open('tablib/core.py', 'r') as fd:
-    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                        fd.read(), re.MULTILINE).group(1)
 
 setup(
     name='tablib',
-    version=version,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
-    long_description=(open('README.rst').read() + '\n\n' +
-        open('HISTORY.rst').read()),
+    long_description=(open('README.md').read() + '\n\n' +
+        open('HISTORY.md').read()),
+    long_description_content_type="text/markdown",
     author='Kenneth Reitz',
     author_email='me@kennethreitz.org',
-    url='http://python-tablib.org',
-    packages=packages,
+    maintainer='Jazzband',
+    maintainer_email='roadies@jazzband.co',
+    url='https://tablib.readthedocs.io',
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -71,13 +34,16 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
-    tests_require=['pytest'],
+    python_requires='>=3.5',
     install_requires=install,
+    extras_require={
+        'pandas': ['pandas'],
+    },
 )
