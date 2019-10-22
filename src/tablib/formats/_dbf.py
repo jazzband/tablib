@@ -4,10 +4,8 @@ import io
 import os
 import tempfile
 
-from tablib.packages.dbfpy import dbf
-from tablib.packages.dbfpy import dbfnew
+from tablib.packages.dbfpy import dbf, dbfnew
 from tablib.packages.dbfpy import record as dbfrecord
-
 
 title = 'dbf'
 extensions = ('csv',)

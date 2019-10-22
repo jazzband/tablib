@@ -1,11 +1,9 @@
 """ Tablib - TSV (Tab Separated Values) Support.
 """
 
-from tablib.formats._csv import (
-    export_set as export_set_wrapper,
-    import_set as import_set_wrapper,
-    detect as detect_wrapper,
-)
+from tablib.formats._csv import detect as detect_wrapper
+from tablib.formats._csv import export_set as export_set_wrapper
+from tablib.formats._csv import import_set as import_set_wrapper
 
 title = 'tsv'
 extensions = ('tsv',)

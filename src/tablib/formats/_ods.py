@@ -2,6 +2,7 @@
 """
 
 from io import BytesIO
+
 from odf import opendocument, style, table, text
 
 title = 'ods'

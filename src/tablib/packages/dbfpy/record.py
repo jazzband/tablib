@@ -20,6 +20,7 @@ import sys
 
 from . import utils
 
+
 class DbfRecord:
     """DBF record.
 

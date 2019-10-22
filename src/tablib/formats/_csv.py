@@ -4,7 +4,6 @@
 import csv
 from io import StringIO
 
-
 title = 'csv'
 extensions = ('csv',)
 

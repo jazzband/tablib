@@ -2,7 +2,6 @@
 
 from setuptools import find_packages, setup
 
-
 install = [
     'odfpy',
     'openpyxl>=2.4.0',

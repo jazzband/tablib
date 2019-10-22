@@ -4,7 +4,6 @@
 """
 import re
 
-
 title = 'latex'
 extensions = ('tex',)
 
