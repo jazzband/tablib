@@ -1,9 +1,8 @@
 """ Tablib - YAML Support.
 """
 
-import yaml
-
 import tablib
+import yaml
 
 title = 'yaml'
 extensions = ('yaml', 'yml')
