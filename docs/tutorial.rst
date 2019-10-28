@@ -112,9 +112,10 @@ This detects what sort of data is being passed in, and uses an appropriate forma
 
 .. admonition::
 
-    When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and this does not have headers, the import  should be done as follows ::
+    When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and the data source does not have headers, the import should be done as follows ::
 
     imported_data = Dataset().load(open('data.csv').read(), headers=False)
+
 --------------
 Exporting Data
 --------------
