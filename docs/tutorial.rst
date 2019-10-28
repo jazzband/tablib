@@ -35,7 +35,7 @@ You can now start filling this :class:`Dataset <tablib.Dataset>` object with dat
 
 .. admonition:: Example Context
 
-    From here on out, if you see ``data``, assume that it's a fresh 
+    From here on out, if you see ``data``, assume that it's a fresh
     :class:`Dataset <tablib.Dataset>` object.
 
 
@@ -109,6 +109,12 @@ Creating a :class:`tablib.Dataset` object by importing a pre-existing file is si
    imported_data = Dataset().load(open('data.csv').read())
 
 This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
+
+.. admonition::
+
+    When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and the data source does not have headers, the import should be done as follows ::
+
+    imported_data = Dataset().load(open('data.csv').read(), headers=False)
 
 --------------
 Exporting Data
