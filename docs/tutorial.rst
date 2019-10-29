@@ -313,6 +313,7 @@ Using chaining you can get a filter type and. ::
     - {first: Bessie, Last: Monke}
 
 It's that simple. The original :class:`Dataset` is untouched.
+
 Open an Excel Workbook and read first sheet
 -------------------------------------------
 
