@@ -293,16 +293,26 @@ Let's tag some students. ::
     students.headers = ['first', 'last']
 
     students.rpush(['Kenneth', 'Reitz'], tags=['male', 'technical'])
+    students.rpush(['Daniel', 'Dupont'], tags=['male', 'creative' ])
     students.rpush(['Bessie', 'Monke'], tags=['female', 'creative'])
 
-Now that we have extra meta-data on our rows, we can easily filter our :class:`Dataset`. Let's just see Male students. ::
+Now that we have extra meta-data on our rows, we can easily filter our :class:`Dataset`. Let's just see Female students. ::
 
+    >>> students.filter(['female']).yaml
+    - {first: Bessie, Last: Monke}
 
-    >>> students.filter(['male']).yaml
-    - {first: Kenneth, Last: Reitz}
+By default, when you pass a list of tags you get filter type or. :: 
+
+    >>> students.filter(['female', 'creative']).yaml
+    - {first: Daniel, Last: Dupont}
+    - {first: Bessie, Last: Monke}
+
+Using chaining you can get a filter type and. ::
+
+    >>> students.filter(['female']).filter(['creative']).yaml
+    - {first: Bessie, Last: Monke}
 
 It's that simple. The original :class:`Dataset` is untouched.
-
 Open an Excel Workbook and read first sheet
 -------------------------------------------
 
