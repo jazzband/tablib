@@ -9,7 +9,6 @@ install = [
     'xlrd',
     'xlwt',
     'pyyaml',
-    'tabulate',
 ]
 
 

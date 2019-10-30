@@ -14,7 +14,6 @@ from . import _tsv as tsv
 from . import _xls as xls
 from . import _xlsx as xlsx
 from . import _yaml as yaml
-from . import _cli as cli
 
 # xlsx before as xls (xlrd) can also read xlsx
-available = (json, xlsx, xls, yaml, csv, dbf, tsv, html, jira, latex, ods, df, rst, cli)
+available = (json, xlsx, xls, yaml, csv, dbf, tsv, html, jira, latex, ods, df, rst)
