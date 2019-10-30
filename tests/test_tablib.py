@@ -42,7 +42,7 @@ class TablibTestCase(BaseTestCase):
     def _test_export_data_in_all_formats(self, dataset, exclude=()):
         all_formats = [
             'json', 'yaml', 'csv', 'tsv', 'xls', 'xlsx', 'ods', 'html', 'jira',
-            'latex', 'df', 'rst',
+            'latex', 'df', 'rst', 'cli',
         ]
         for format_ in all_formats:
             if format_ in exclude:
@@ -1214,6 +1214,12 @@ class JiraTests(BaseTestCase):
     def test_jira_export_empty_dataset(self):
         self.assertTrue(tablib.Dataset().jira is not None)
 
+class CliTests(BasetTestCase):
+    def test_cli_export(self):
+        self.assertEqual('a  b  c', tablib.Dataset(['a', 'b', 'c']).cli)
+
+    def test_cli_export_github(self):
+        self.assertEqual('|---|---|---|\n| a | b | c |', tablib.Dataset(['a','b','c']).export('cli',tablefmt='github'))
 
 class DocTests(unittest.TestCase):
 
