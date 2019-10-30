@@ -1214,7 +1214,7 @@ class JiraTests(BaseTestCase):
     def test_jira_export_empty_dataset(self):
         self.assertTrue(tablib.Dataset().jira is not None)
 
-class CliTests(BasetTestCase):
+class CliTests(BaseTestCase):
     def test_cli_export(self):
         self.assertEqual('a  b  c', tablib.Dataset(['a', 'b', 'c']).cli)
 
