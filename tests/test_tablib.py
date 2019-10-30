@@ -42,7 +42,7 @@ class TablibTestCase(BaseTestCase):
     def _test_export_data_in_all_formats(self, dataset, exclude=()):
         all_formats = [
             'json', 'yaml', 'csv', 'tsv', 'xls', 'xlsx', 'ods', 'html', 'jira',
-            'latex', 'df', 'rst', 'cli',
+            'latex', 'df', 'rst',
         ]
         for format_ in all_formats:
             if format_ in exclude:
