@@ -622,6 +622,14 @@ class Dataset:
         pass
 
     @property
+    def cli():
+        """A CLI table representation of the :class:`Dataset` object.
+
+        .. note:: This method can be used for export only.
+        """
+        pass
+
+    @property
     def jira():
         """A Jira table representation of the :class:`Dataset` object.
 
