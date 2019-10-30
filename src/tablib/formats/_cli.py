@@ -16,7 +16,5 @@ def export_set(dataset, **kwargs):
 
 def export_book(dataset, **kwargs):
     """Returns CLI representation of Dataset."""
-    if( dataset.headers is not None ):
-        kwargs.setdefault('headers', dataset.headers)
     kwargs.setdefault('tablefmt', DEFAULT_FORMAT)
     return tabulate( dataset, **kwargs)
