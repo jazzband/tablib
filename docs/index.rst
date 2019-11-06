@@ -101,6 +101,11 @@ This part of the documentation, which is mostly prose, begins with some backgrou
 .. toctree::
    :maxdepth: 2
 
+   formats
+
+.. toctree::
+   :maxdepth: 2
+
    development
 
 
