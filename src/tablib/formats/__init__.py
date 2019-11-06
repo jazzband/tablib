@@ -3,6 +3,7 @@
 from collections import OrderedDict
 from functools import partialmethod
 
+from ._cli import CLIFormat
 from ._csv import CSVFormat
 from ._dbf import DBFFormat
 from ._df import DataFrameFormat
@@ -65,6 +66,7 @@ class Registry:
         self.register('latex', LATEXFormat())
         self.register('df', DataFrameFormat())
         self.register('rst', ReSTFormat())
+        self.register('cli', CLIFormat())
 
     def formats(self):
         for frm in self._formats.values():

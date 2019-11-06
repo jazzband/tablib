@@ -617,6 +617,13 @@ class Dataset:
         """
         pass
 
+    @property
+    def cli():
+        """ Command-line Interface (CLI) representation of the :class:`Dataset` object.
+
+        ..note:: This method can be used for export only.
+        """
+
     # ----
     # Rows
     # ----

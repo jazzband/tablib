@@ -1231,6 +1231,12 @@ class JiraTests(BaseTestCase):
     def test_jira_export_empty_dataset(self):
         self.assertTrue(tablib.Dataset().jira is not None)
 
+class CliTests(BaseTestCase):
+    def test_cli_export(self):
+        self.assertEqual('a  b  c', tablib.Dataset(['a', 'b', 'c']).cli)
+
+    def test_cli_export_github(self):
+        self.assertEqual('|---|---|---|\n| a | b | c |', tablib.Dataset(['a','b','c']).export('cli',tablefmt='github'))
 
 class DocTests(unittest.TestCase):
 
