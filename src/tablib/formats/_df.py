@@ -16,8 +16,10 @@ class DataFrameFormat:
         """Returns True if given stream is a DataFrame."""
         if DataFrame is None:
             return False
+        elif isinstance(stream, DataFrame):
+            return True
         try:
-            DataFrame(stream)
+            DataFrame(stream.read())
             return True
         except ValueError:
             return False

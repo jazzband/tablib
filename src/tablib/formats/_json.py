@@ -35,14 +35,14 @@ class JSONFormat:
         """Returns dataset from JSON stream."""
 
         dset.wipe()
-        dset.dict = json.loads(in_stream)
+        dset.dict = json.load(in_stream)
 
     @classmethod
     def import_book(cls, dbook, in_stream):
         """Returns databook from JSON stream."""
 
         dbook.wipe()
-        for sheet in json.loads(in_stream):
+        for sheet in json.load(in_stream):
             data = tablib.Dataset()
             data.title = sheet['title']
             data.dict = sheet['data']
@@ -52,7 +52,7 @@ class JSONFormat:
     def detect(cls, stream):
         """Returns True if given stream is valid JSON."""
         try:
-            json.loads(stream)
+            json.load(stream)
             return True
         except (TypeError, ValueError):
             return False

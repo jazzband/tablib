@@ -70,7 +70,7 @@ class XLSFormat:
 
         dset.wipe()
 
-        xls_book = xlrd.open_workbook(file_contents=in_stream)
+        xls_book = xlrd.open_workbook(file_contents=in_stream.read())
         sheet = xls_book.sheet_by_index(0)
 
         dset.title = sheet.name

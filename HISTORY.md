@@ -12,6 +12,9 @@
 
 - Formats can now be dynamically registered through the
   `tablib.formats.registry.refister` API (#256).
+- Tablib methods expecting data input (`detect_format`, `import_set`,
+  `Dataset.load`, `Databook.load`) now accepts file-like objects in addition
+  to raw strings and bytestrings (#440).
 
 ### Bugfixes
 

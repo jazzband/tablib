@@ -7,6 +7,7 @@ import json
 import pickle
 import unittest
 from collections import OrderedDict
+from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
 
@@ -302,6 +303,18 @@ class TablibTestCase(BaseTestCase):
         with self.assertRaises(UnsupportedFormat):
             book.export('csv')
 
+    def test_book_import_from_file(self):
+        xlsx_source = Path(__file__).parent / 'files' / 'founders.xlsx'
+        with open(str(xlsx_source), mode='rb') as fh:
+            book = tablib.Databook().load(fh, 'xlsx')
+        self.assertEqual(eval(book.json)[0]['title'], 'Feuille1')
+
+    def test_dataset_import_from_file(self):
+        xlsx_source = Path(__file__).parent / 'files' / 'founders.xlsx'
+        with open(str(xlsx_source), mode='rb') as fh:
+            dset = tablib.Dataset().load(fh, 'xlsx')
+        self.assertEqual(eval(dset.json)[0]['last_name'], 'Adams')
+
     def test_auto_format_detect(self):
         """Test auto format detection."""
         # html, jira, latex, rst are export only.
@@ -330,7 +343,9 @@ class TablibTestCase(BaseTestCase):
         _tsv = '1\t2\t3\n4\t5\t6\n7\t8\t9\n'
         self.assertEqual(tablib.detect_format(_tsv), 'tsv')
 
-        _bunk = '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        _bunk = StringIO(
+            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+        )
         self.assertEqual(tablib.detect_format(_bunk), None)
 
     def test_transpose(self):
@@ -692,12 +707,12 @@ class CSVTests(BaseTestCase):
     def test_csv_format_detect(self):
         """Test CSV format detection."""
 
-        _csv = (
+        _csv = StringIO(
             '1,2,3\n'
             '4,5,6\n'
             '7,8,9\n'
         )
-        _bunk = (
+        _bunk = StringIO(
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
@@ -915,12 +930,12 @@ class TSVTests(BaseTestCase):
     def test_tsv_format_detect(self):
         """Test TSV format detection."""
 
-        _tsv = (
+        _tsv = StringIO(
             '1\t2\t3\n'
             '4\t5\t6\n'
             '7\t8\t9\n'
         )
-        _bunk = (
+        _bunk = StringIO(
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
@@ -999,8 +1014,8 @@ class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
         """Test JSON format detection."""
 
-        _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
-        _bunk = (
+        _json = StringIO('[{"last_name": "Adams","age": 90,"first_name": "John"}]')
+        _bunk = StringIO(
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
@@ -1251,6 +1266,7 @@ class DBFTests(BaseTestCase):
         _dbf += b' Jefferson' + (b' ' * 70)
         _dbf += b' 50.0000000'
         _dbf += b'\x1a'
+        _dbf = BytesIO(_dbf)
 
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
         _tsv = 'foo\tbar'

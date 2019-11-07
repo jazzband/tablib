@@ -50,7 +50,7 @@ class DBFFormat:
         """Returns a dataset from a DBF stream."""
 
         dset.wipe()
-        _dbf = dbf.Dbf(io.BytesIO(in_stream))
+        _dbf = dbf.Dbf(in_stream)
         dset.headers = _dbf.fieldNames
         for record in range(_dbf.recordCount):
             row = [_dbf[record][f] for f in _dbf.fieldNames]
@@ -59,11 +59,8 @@ class DBFFormat:
     @classmethod
     def detect(cls, stream):
         """Returns True if the given stream is valid DBF"""
-        #_dbf = dbf.Table(StringIO(stream))
         try:
-            if type(stream) is not bytes:
-                stream = bytes(stream, 'utf-8')
-            _dbf = dbf.Dbf(io.BytesIO(stream), readOnly=True)
+            _dbf = dbf.Dbf(stream, readOnly=True)
             return True
         except Exception:
             return False
