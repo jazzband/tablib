@@ -2,16 +2,6 @@
 
 from setuptools import find_packages, setup
 
-install = [
-    'odfpy',
-    'openpyxl>=2.4.0',
-    'markuppy',
-    'xlrd',
-    'xlwt',
-    'pyyaml',
-]
-
-
 setup(
     name='tablib',
     use_scm_version=True,
@@ -42,8 +32,13 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     python_requires='>=3.5',
-    install_requires=install,
     extras_require={
+        'all': ['markuppy', 'odfpy', 'openpyxl>=2.4.0', 'pandas', 'pyyaml', 'xlrd', 'xlwt'],
+        'html': ['markuppy'],
+        'ods': ['odfpy'],
         'pandas': ['pandas'],
+        'xls': ['xlrd', 'xlwt'],
+        'xlsx': ['openpyxl>=2.4.0'],
+        'yaml': ['pyyaml'],
     },
 )

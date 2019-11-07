@@ -13,6 +13,13 @@ from copy import copy
 from operator import itemgetter
 
 from tablib import formats
+from tablib.exceptions import (
+    HeadersNeeded,
+    InvalidDatasetIndex,
+    InvalidDatasetType,
+    InvalidDimensions,
+    UnsupportedFormat,
+)
 from tablib.formats import registry
 
 __title__ = 'tablib'
@@ -901,26 +908,6 @@ def import_book(stream, format=None, **kwargs):
     """Return dataset of given stream."""
 
     return Databook().load(stream, format, **kwargs)
-
-
-class InvalidDatasetType(Exception):
-    "Only Datasets can be added to a DataBook"
-
-
-class InvalidDimensions(Exception):
-    "Invalid size"
-
-
-class InvalidDatasetIndex(Exception):
-    "Outside of Dataset size"
-
-
-class HeadersNeeded(Exception):
-    "Header parameter must be given when appending a column in this Dataset."
-
-
-class UnsupportedFormat(NotImplementedError):
-    "Format is not supported"
 
 
 registry.register_builtins()

@@ -19,8 +19,26 @@ Of course, the recommended way to install Tablib is with `pip <https://pip.pypa.
 
 .. code-block:: console
 
-    $ pip install tablib[pandas]
+    $ pip install tablib
 
+You can also choose to install more dependencies to have more import/export
+formats available:
+
+.. code-block:: console
+
+    $ pip install tablib[xlsx]
+
+Or all possible formats:
+
+.. code-block:: console
+
+    $ pip install tablib[all]
+
+which is equivalent to:
+
+.. code-block:: console
+
+    $ pip install tablib[html, pandas, ods, xls, xlsx, yaml]
 
 -------------------
 Download the Source
