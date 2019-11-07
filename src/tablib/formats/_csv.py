@@ -40,7 +40,7 @@ class CSVFormat:
 
         kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
-        rows = csv.reader(StringIO(in_stream), **kwargs)
+        rows = csv.reader(in_stream, **kwargs)
         for i, row in enumerate(rows):
 
             if (i == 0) and (headers):
@@ -52,7 +52,7 @@ class CSVFormat:
     def detect(cls, stream, delimiter=None):
         """Returns True if given stream is valid CSV."""
         try:
-            csv.Sniffer().sniff(stream[:1024], delimiters=delimiter or cls.DEFAULT_DELIMITER)
+            csv.Sniffer().sniff(stream.read(1024), delimiters=delimiter or cls.DEFAULT_DELIMITER)
             return True
         except Exception:
             return False

@@ -18,9 +18,6 @@ class XLSXFormat:
     @classmethod
     def detect(cls, stream):
         """Returns True if given stream is a readable excel file."""
-        if isinstance(stream, bytes):
-            # load_workbook expects a file-like object.
-            stream = BytesIO(stream)
         try:
             openpyxl.reader.excel.load_workbook(stream, read_only=True)
             return True
@@ -63,7 +60,7 @@ class XLSXFormat:
 
         dset.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream), read_only=True)
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream, read_only=True)
         sheet = xls_book.active
 
         dset.title = sheet.title
@@ -81,7 +78,7 @@ class XLSXFormat:
 
         dbook.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream), read_only=True)
+        xls_book = openpyxl.reader.excel.load_workbook(in_stream, read_only=True)
 
         for sheet in xls_book.worksheets:
             data = tablib.Dataset()

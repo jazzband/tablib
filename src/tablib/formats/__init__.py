@@ -6,6 +6,7 @@ from importlib import import_module
 from importlib.util import find_spec
 
 from tablib.exceptions import UnsupportedFormat
+from tablib.utils import normalize_input
 
 from ._csv import CSVFormat
 from ._json import JSONFormat
@@ -52,7 +53,7 @@ class ImportExportBookDescriptor(FormatDescriptorBase):
 
     def __set__(self, obj, val):
         self.ensure_format_loaded()
-        return self._format.import_book(obj, val)
+        return self._format.import_book(obj, normalize_input(val))
 
 
 class ImportExportSetDescriptor(FormatDescriptorBase):
@@ -62,7 +63,7 @@ class ImportExportSetDescriptor(FormatDescriptorBase):
 
     def __set__(self, obj, val):
         self.ensure_format_loaded()
-        return self._format.import_set(obj, val)
+        return self._format.import_set(obj, normalize_input(val))
 
 
 class Registry:

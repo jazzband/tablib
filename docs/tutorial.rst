@@ -106,7 +106,8 @@ Importing Data
 --------------
 Creating a :class:`tablib.Dataset` object by importing a pre-existing file is simple. ::
 
-   imported_data = Dataset().load(open('data.csv').read())
+    with open('data.csv', 'r') as fh:
+        imported_data = Dataset().load(fh)
 
 This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
 
@@ -114,7 +115,8 @@ This detects what sort of data is being passed in, and uses an appropriate forma
 
     When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and the data source does not have headers, the import should be done as follows ::
 
-    imported_data = Dataset().load(open('data.csv').read(), headers=False)
+    with open('data.csv', 'r') as fh:
+        imported_data = Dataset().load(fh, headers=False)
 
 --------------
 Exporting Data
@@ -320,7 +322,8 @@ Open an Excel Workbook and read first sheet
 Open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet). ::
 
     data = tablib.Dataset()
-    data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+    with open('my_excel_file.xlsx', 'rb') as fh:
+        data.load(fh, 'xlsx')
     print(data)
 
 Excel Workbook With Multiple Sheets

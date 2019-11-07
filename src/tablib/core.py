@@ -21,6 +21,7 @@ from tablib.exceptions import (
     UnsupportedFormat,
 )
 from tablib.formats import registry
+from tablib.utils import normalize_input
 
 __title__ = 'tablib'
 __author__ = 'Kenneth Reitz'
@@ -239,8 +240,9 @@ class Dataset:
     def _get_in_format(self, fmt_key, **kwargs):
         return registry.get_format(fmt_key).export_set(self, **kwargs)
 
-    def _set_in_format(self, fmt_key, *args, **kwargs):
-        return registry.get_format(fmt_key).import_set(self, *args, **kwargs)
+    def _set_in_format(self, fmt_key, in_stream, **kwargs):
+        in_stream = normalize_input(in_stream)
+        return registry.get_format(fmt_key).import_set(self, in_stream, **kwargs)
 
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
@@ -402,12 +404,14 @@ class Dataset:
     def load(self, in_stream, format=None, **kwargs):
         """
         Import `in_stream` to the :class:`Dataset` object using the `format`.
+        `in_stream` can be a file-like object, a string, or a bytestring.
 
         :param \\*\\*kwargs: (optional) custom configuration to the format `import_set`.
         """
 
+        stream = normalize_input(in_stream)
         if not format:
-            format = detect_format(in_stream)
+            format = detect_format(stream)
 
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_set'):
@@ -416,7 +420,7 @@ class Dataset:
         if not import_set:
             raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
 
-        fmt.import_set(self, in_stream, **kwargs)
+        fmt.import_set(self, stream, **kwargs)
         return self
 
     def export(self, format, **kwargs):
@@ -861,18 +865,20 @@ class Databook:
     def load(self, in_stream, format, **kwargs):
         """
         Import `in_stream` to the :class:`Databook` object using the `format`.
+        `in_stream` can be a file-like object, a string, or a bytestring.
 
         :param \\*\\*kwargs: (optional) custom configuration to the format `import_book`.
         """
 
+        stream = normalize_input(in_stream)
         if not format:
-            format = detect_format(in_stream)
+            format = detect_format(stream)
 
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_book'):
             raise UnsupportedFormat('Format {} cannot be loaded.'.format(format))
 
-        fmt.import_book(self, in_stream, **kwargs)
+        fmt.import_book(self, stream, **kwargs)
         return self
 
     def export(self, format, **kwargs):
@@ -889,25 +895,32 @@ class Databook:
 
 
 def detect_format(stream):
-    """Return format name of given stream."""
+    """Return format name of given stream (file-like object, string, or bytestring)."""
+    stream = normalize_input(stream)
+    fmt_title = None
     for fmt in registry.formats():
         try:
             if fmt.detect(stream):
-                return fmt.title
+                fmt_title = fmt.title
+                break
         except AttributeError:
             pass
+        finally:
+            if hasattr(stream, 'seek'):
+                stream.seek(0)
+    return fmt_title
 
 
 def import_set(stream, format=None, **kwargs):
-    """Return dataset of given stream."""
+    """Return dataset of given stream (file-like object, string, or bytestring)."""
 
-    return Dataset().load(stream, format, **kwargs)
+    return Dataset().load(normalize_input(stream), format, **kwargs)
 
 
 def import_book(stream, format=None, **kwargs):
-    """Return dataset of given stream."""
+    """Return dataset of given stream (file-like object, string, or bytestring)."""
 
-    return Databook().load(stream, format, **kwargs)
+    return Databook().load(normalize_input(stream), format, **kwargs)
 
 
 registry.register_builtins()
