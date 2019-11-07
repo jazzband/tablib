@@ -51,7 +51,8 @@ Import/export using the dBASE_ format.
 df (DataFrame)
 ==============
 
-Import/export using the pandas_ DataFrame format.
+Import/export using the pandas_ DataFrame format. This format is optional,
+install Tablib with ``pip install tablib[pandas]`` to make the format available.
 
 .. _pandas: https://pandas.pydata.org/
 
@@ -61,6 +62,9 @@ html
 The ``html`` format is currently export-only. The exports produce an HTML page
 with the data in a ``<table>``. If headers have been set, they will be used as
 table headers.
+
+This format is optional, install Tablib with ``pip install tablib[html]`` to
+make the format available.
 
 jira
 ====
@@ -96,6 +100,9 @@ ods
 
 Export data in OpenDocument Spreadsheet format. The ``ods`` format is currently
 export-only.
+
+This format is optional, install Tablib with ``pip install tablib[ods]`` to
+make the format available.
 
 .. admonition:: Binary Warning
 
@@ -145,6 +152,9 @@ xls
 
 Import/export data in Legacy Excel Spreadsheet representation.
 
+This format is optional, install Tablib with ``pip install tablib[xls]`` to
+make the format available.
+
 .. note::
 
     XLS files are limited to a maximum of 65,000 rows. Use xlsx_ to avoid this
@@ -162,6 +172,9 @@ xlsx
 
 Import/export data in Excel 07+ Spreadsheet representation.
 
+This format is optional, install Tablib with ``pip install tablib[xlsx]`` to
+make the format available.
+
 .. admonition:: Binary Warning
 
     The `xlsx` file format is binary, so make sure to write in binary mode::
@@ -178,5 +191,8 @@ returned. If no headers have been set, a YAML list of lists (rows) will be
 returned instead.
 
 Import assumes (for now) that headers exist.
+
+This format is optional, install Tablib with ``pip install tablib[yaml]`` to
+make the format available.
 
 .. _YAML: https://yaml.org

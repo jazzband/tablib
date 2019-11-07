@@ -5,6 +5,8 @@
 ### Breaking changes
 
 - Dropped Python 2 support
+- Dependencies are now all optional. To install `tablib` as before with all
+  possible supported formats, run `pip install tablib[all]`
 
 ### Improvements
 

@@ -12,7 +12,8 @@ from uuid import uuid4
 
 import tablib
 from MarkupPy import markup
-from tablib.core import Row, UnsupportedFormat, detect_format
+from tablib.core import Row, detect_format
+from tablib.exceptions import UnsupportedFormat
 from tablib.formats import registry
 
 
@@ -48,6 +49,16 @@ class TablibTestCase(BaseTestCase):
             if format_ in exclude:
                 continue
             dataset.export(format_)
+
+    def test_unknown_format(self):
+        with self.assertRaises(UnsupportedFormat):
+            data.export('??')
+        # A known format but uninstalled
+        del registry._formats['ods']
+        msg = (r"The 'ods' format is not available. You may want to install the "
+               "odfpy package \\(or `pip install tablib\\[ods\\]`\\).")
+        with self.assertRaisesRegex(UnsupportedFormat, msg):
+            data.export('ods')
 
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
