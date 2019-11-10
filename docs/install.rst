@@ -26,6 +26,12 @@ formats available:
 
 .. code-block:: console
 
+    $ pip install tablib[xlsx]
+
+Or all possible formats:
+
+.. code-block:: console
+
     $ pip install tablib[all]
 
 which is equivalent to:
