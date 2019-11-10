@@ -162,7 +162,7 @@ make the format available.
 
 .. admonition:: Binary Warning
 
-    The `xls` file format is binary, so make sure to write in binary mode::
+    The ``xls`` file format is binary, so make sure to write in binary mode::
 
         with open('output.xls', 'wb') as f:
             f.write(data.export('xls'))
@@ -177,7 +177,7 @@ make the format available.
 
 .. admonition:: Binary Warning
 
-    The `xlsx` file format is binary, so make sure to write in binary mode::
+    The ``xlsx`` file format is binary, so make sure to write in binary mode::
 
         with open('output.xlsx', 'wb') as f:
             f.write(data.export('xlsx'))

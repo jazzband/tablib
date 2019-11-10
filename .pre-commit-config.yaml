@@ -9,6 +9,7 @@ repos:
     rev: v1.4.2
     hooks:
       - id: python-check-blanket-noqa
+      - id: rst-backticks
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.4.0
