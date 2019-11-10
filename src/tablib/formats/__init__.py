@@ -103,8 +103,7 @@ class Registry:
         self.register('rst', ReSTFormat())
 
     def formats(self):
-        for frm in self._formats.values():
-            yield frm
+        yield from self._formats.values()
 
     def get_format(self, key):
         if key not in self._formats:

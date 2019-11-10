@@ -411,7 +411,7 @@ class Dataset:
 
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_set'):
-            raise UnsupportedFormat('Format {0} cannot be imported.'.format(format))
+            raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
             
         if not import_set:
             raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
