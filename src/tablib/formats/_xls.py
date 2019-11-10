@@ -13,8 +13,8 @@ bold = xlwt.easyxf("font: bold on")
 
 
 class XLSFormat:
-    title = 'xls'
-    extensions = ('xls',)
+    title = "xls"
+    extensions = ("xls",)
 
     @classmethod
     def detect(cls, stream):
@@ -39,8 +39,8 @@ class XLSFormat:
     def export_set(cls, dataset):
         """Returns XLS representation of Dataset."""
 
-        wb = xlwt.Workbook(encoding='utf8')
-        ws = wb.add_sheet(dataset.title if dataset.title else 'Tablib Dataset')
+        wb = xlwt.Workbook(encoding="utf8")
+        ws = wb.add_sheet(dataset.title if dataset.title else "Tablib Dataset")
 
         cls.dset_sheet(dataset, ws)
 
@@ -52,17 +52,16 @@ class XLSFormat:
     def export_book(cls, databook):
         """Returns XLS representation of DataBook."""
 
-        wb = xlwt.Workbook(encoding='utf8')
+        wb = xlwt.Workbook(encoding="utf8")
 
         for i, dset in enumerate(databook._datasets):
-            ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
+            ws = wb.add_sheet(dset.title if dset.title else "Sheet%s" % (i))
 
             cls.dset_sheet(dset, ws)
 
         stream = BytesIO()
         wb.save(stream)
         return stream.getvalue()
-
 
     @classmethod
     def import_set(cls, dset, in_stream, headers=True):
@@ -79,10 +78,14 @@ class XLSFormat:
             if i == 0 and headers:
                 dset.headers = sheet.row_values(0)
             else:
-                dset.append([
-                    val if typ != xlrd.XL_CELL_ERROR else xlrd.error_text_from_code[val]
-                    for val, typ in zip(sheet.row_values(i), sheet.row_types(i))
-                ])
+                dset.append(
+                    [
+                        val
+                        if typ != xlrd.XL_CELL_ERROR
+                        else xlrd.error_text_from_code[val]
+                        for val, typ in zip(sheet.row_values(i), sheet.row_types(i))
+                    ]
+                )
 
     @classmethod
     def import_book(cls, dbook, in_stream, headers=True):
@@ -131,7 +134,7 @@ class XLSFormat:
                 # wrap the rest
                 else:
                     try:
-                        if '\n' in col:
+                        if "\n" in col:
                             ws.write(i, j, col, wrap)
                         else:
                             ws.write(i, j, col)

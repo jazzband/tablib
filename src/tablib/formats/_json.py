@@ -10,15 +10,15 @@ import tablib
 def serialize_objects_handler(obj):
     if isinstance(obj, (decimal.Decimal, UUID)):
         return str(obj)
-    elif hasattr(obj, 'isoformat'):
+    elif hasattr(obj, "isoformat"):
         return obj.isoformat()
     else:
         return obj
 
 
 class JSONFormat:
-    title = 'json'
-    extensions = ('json', 'jsn')
+    title = "json"
+    extensions = ("json", "jsn")
 
     @classmethod
     def export_set(cls, dataset):
@@ -44,8 +44,8 @@ class JSONFormat:
         dbook.wipe()
         for sheet in json.loads(in_stream):
             data = tablib.Dataset()
-            data.title = sheet['title']
-            data.dict = sheet['data']
+            data.title = sheet["title"]
+            data.dict = sheet["data"]
             dbook.add_sheet(data)
 
     @classmethod

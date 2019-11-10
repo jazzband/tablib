@@ -5,7 +5,7 @@
 
 
 class JIRAFormat:
-    title = 'jira'
+    title = "jira"
 
     @classmethod
     def export_set(cls, dataset):
@@ -19,22 +19,22 @@ class JIRAFormat:
         :type dataset: tablib.core.Dataset
         """
 
-        header = cls._get_header(dataset.headers) if dataset.headers else ''
+        header = cls._get_header(dataset.headers) if dataset.headers else ""
         body = cls._get_body(dataset)
-        return '{}\n{}'.format(header, body) if header else body
+        return "{}\n{}".format(header, body) if header else body
 
     @classmethod
     def _get_body(cls, dataset):
-        return '\n'.join([cls._serialize_row(row) for row in dataset])
+        return "\n".join([cls._serialize_row(row) for row in dataset])
 
     @classmethod
     def _get_header(cls, headers):
-        return cls._serialize_row(headers, delimiter='||')
+        return cls._serialize_row(headers, delimiter="||")
 
     @classmethod
-    def _serialize_row(cls, row, delimiter='|'):
-        return '{}{}{}'.format(
+    def _serialize_row(cls, row, delimiter="|"):
+        return "{}{}{}".format(
             delimiter,
-            delimiter.join([str(item) if item else ' ' for item in row]),
-            delimiter
+            delimiter.join([str(item) if item else " " for item in row]),
+            delimiter,
         )

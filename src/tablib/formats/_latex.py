@@ -6,8 +6,8 @@ import re
 
 
 class LATEXFormat:
-    title = 'latex'
-    extensions = ('tex',)
+    title = "latex"
+    extensions = ("tex",)
 
     TABLE_TEMPLATE = """\
 %% Note: add \\usepackage{booktabs} to your preamble
@@ -25,21 +25,24 @@ class LATEXFormat:
 \\end{table}
 """
 
-    TEX_RESERVED_SYMBOLS_MAP = dict([
-        ('\\', '\\textbackslash{}'),
-        ('{', '\\{'),
-        ('}', '\\}'),
-        ('$', '\\$'),
-        ('&', '\\&'),
-        ('#', '\\#'),
-        ('^', '\\textasciicircum{}'),
-        ('_', '\\_'),
-        ('~', '\\textasciitilde{}'),
-        ('%', '\\%'),
-    ])
+    TEX_RESERVED_SYMBOLS_MAP = dict(
+        [
+            ("\\", "\\textbackslash{}"),
+            ("{", "\\{"),
+            ("}", "\\}"),
+            ("$", "\\$"),
+            ("&", "\\&"),
+            ("#", "\\#"),
+            ("^", "\\textasciicircum{}"),
+            ("_", "\\_"),
+            ("~", "\\textasciitilde{}"),
+            ("%", "\\%"),
+        ]
+    )
 
     TEX_RESERVED_SYMBOLS_RE = re.compile(
-        '(%s)' % '|'.join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys())))
+        "(%s)" % "|".join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys()))
+    )
 
     @classmethod
     def export_set(cls, dataset):
@@ -49,13 +52,14 @@ class LATEXFormat:
         :type dataset: tablib.core.Dataset
         """
 
-        caption = '\\caption{%s}' % dataset.title if dataset.title else '%'
+        caption = "\\caption{%s}" % dataset.title if dataset.title else "%"
         colspec = cls._colspec(dataset.width)
-        header = cls._serialize_row(dataset.headers) if dataset.headers else ''
+        header = cls._serialize_row(dataset.headers) if dataset.headers else ""
         midrule = cls._midrule(dataset.width)
-        body = '\n'.join([cls._serialize_row(row) for row in dataset])
-        return cls.TABLE_TEMPLATE % dict(CAPTION=caption, COLSPEC=colspec,
-                                     HEADER=header, MIDRULE=midrule, BODY=body)
+        body = "\n".join([cls._serialize_row(row) for row in dataset])
+        return cls.TABLE_TEMPLATE % dict(
+            CAPTION=caption, COLSPEC=colspec, HEADER=header, MIDRULE=midrule, BODY=body
+        )
 
     @classmethod
     def _colspec(cls, dataset_width):
@@ -73,9 +77,9 @@ class LATEXFormat:
         :param dataset_width: width of the dataset
         """
 
-        spec = 'l'
+        spec = "l"
         for _ in range(1, dataset_width):
-            spec += 'r'
+            spec += "r"
         return spec
 
     @classmethod
@@ -87,9 +91,13 @@ class LATEXFormat:
         """
 
         if not dataset_width or dataset_width == 1:
-            return '\\midrule'
-        return ' '.join([cls._cmidrule(colindex, dataset_width) for colindex in
-                         range(1, dataset_width + 1)])
+            return "\\midrule"
+        return " ".join(
+            [
+                cls._cmidrule(colindex, dataset_width)
+                for colindex in range(1, dataset_width + 1)
+            ]
+        )
 
     @classmethod
     def _cmidrule(cls, colindex, dataset_width):
@@ -100,15 +108,15 @@ class LATEXFormat:
         :param dataset_width: width of the dataset
         """
 
-        rule = '\\cmidrule(%s){%d-%d}'
+        rule = "\\cmidrule(%s){%d-%d}"
         if colindex == 1:
             # Rule of first column is trimmed on the right
-            return rule % ('r', colindex, colindex)
+            return rule % ("r", colindex, colindex)
         if colindex == dataset_width:
             # Rule of last column is trimmed on the left
-            return rule % ('l', colindex, colindex)
+            return rule % ("l", colindex, colindex)
         # Inner columns are trimmed on the left and right
-        return rule % ('lr', colindex, colindex)
+        return rule % ("lr", colindex, colindex)
 
     @classmethod
     def _serialize_row(cls, row):
@@ -117,9 +125,10 @@ class LATEXFormat:
         :param row: single dataset row
         """
 
-        new_row = [cls._escape_tex_reserved_symbols(str(item)) if item else ''
-                   for item in row]
-        return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
+        new_row = [
+            cls._escape_tex_reserved_symbols(str(item)) if item else "" for item in row
+        ]
+        return 6 * " " + " & ".join(new_row) + " \\\\"
 
     @classmethod
     def _escape_tex_reserved_symbols(cls, input):
@@ -127,6 +136,8 @@ class LATEXFormat:
 
         :param input: String to escape
         """
+
         def replace(match):
             return cls.TEX_RESERVED_SYMBOLS_MAP[match.group()]
+
         return cls.TEX_RESERVED_SYMBOLS_RE.sub(replace, input)

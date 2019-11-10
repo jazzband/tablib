@@ -5,7 +5,7 @@ from ._csv import CSVFormat
 
 
 class TSVFormat(CSVFormat):
-    title = 'tsv'
-    extensions = ('tsv',)
+    title = "tsv"
+    extensions = ("tsv",)
 
-    DEFAULT_DELIMITER = '\t'
+    DEFAULT_DELIMITER = "\t"

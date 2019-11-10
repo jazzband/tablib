@@ -81,8 +81,7 @@ class Dbf:
 
     """
 
-    __slots__ = ("name", "header", "stream",
-                 "_changed", "_new", "_ignore_errors")
+    __slots__ = ("name", "header", "stream", "_changed", "_new", "_ignore_errors")
 
     HeaderClass = header.DbfHeader
     RecordClass = record.DbfRecord
@@ -141,8 +140,7 @@ class Dbf:
 
     closed = property(lambda self: self.stream.closed)
     recordCount = property(lambda self: self.header.recordCount)
-    fieldNames = property(
-        lambda self: [_fld.name for _fld in self.header.fields])
+    fieldNames = property(lambda self: [_fld.name for _fld in self.header.fields])
     fieldDefs = property(lambda self: self.header.fields)
     changed = property(lambda self: self._changed or self.header.changed)
 
@@ -158,7 +156,8 @@ class Dbf:
         if set, failing field value conversion will return
         ``INVALID_VALUE`` instead of raising conversion error.
 
-        """)
+        """,
+    )
 
     # protected methods
 
@@ -227,8 +226,7 @@ class Dbf:
         if self._new:
             self.header.addField(*defs)
         else:
-            raise TypeError("At least one record was added, "
-                            "structure can't be changed")
+            raise TypeError("At least one record was added, structure can't be changed")
 
     # 'magic' methods (representation and sequence interface)
 
@@ -272,10 +270,10 @@ def demo_create(filename):
         ("BIRTHDATE", "D"),
     )
     for (_n, _s, _i, _b) in (
-            ("John", "Miller", "YC", (1981, 1, 2)),
-            ("Andy", "Larkin", "AL", (1982, 3, 4)),
-            ("Bill", "Clinth", "", (1983, 5, 6)),
-            ("Bobb", "McNail", "", (1984, 7, 8)),
+        ("John", "Miller", "YC", (1981, 1, 2)),
+        ("Andy", "Larkin", "AL", (1982, 3, 4)),
+        ("Bill", "Clinth", "", (1983, 5, 6)),
+        ("Bobb", "McNail", "", (1984, 7, 8)),
     ):
         _rec = _dbf.newRecord()
         _rec["NAME"] = _n
@@ -287,7 +285,7 @@ def demo_create(filename):
     _dbf.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     _name = len(sys.argv) > 1 and sys.argv[1] or "county.dbf"

@@ -6,8 +6,8 @@ import yaml
 
 
 class YAMLFormat:
-    title = 'yaml'
-    extensions = ('yaml', 'yml')
+    title = "yaml"
+    extensions = ("yaml", "yml")
 
     @classmethod
     def export_set(cls, dataset):
@@ -35,8 +35,8 @@ class YAMLFormat:
 
         for sheet in yaml.safe_load(in_stream):
             data = tablib.Dataset()
-            data.title = sheet['title']
-            data.dict = sheet['data']
+            data.title = sheet["title"]
+            data.dict = sheet["data"]
             dbook.add_sheet(data)
 
     @classmethod
@@ -48,6 +48,9 @@ class YAMLFormat:
                 return True
             else:
                 return False
-        except (yaml.parser.ParserError, yaml.reader.ReaderError,
-                yaml.scanner.ScannerError):
+        except (
+            yaml.parser.ParserError,
+            yaml.reader.ReaderError,
+            yaml.scanner.ScannerError,
+        ):
             return False

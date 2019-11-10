@@ -6,17 +6,17 @@ from io import StringIO
 
 
 class CSVFormat:
-    title = 'csv'
-    extensions = ('csv',)
+    title = "csv"
+    extensions = ("csv",)
 
-    DEFAULT_DELIMITER = ','
+    DEFAULT_DELIMITER = ","
 
     @classmethod
     def export_stream_set(cls, dataset, **kwargs):
         """Returns CSV representation of Dataset as file-like."""
         stream = StringIO()
 
-        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
+        kwargs.setdefault("delimiter", cls.DEFAULT_DELIMITER)
 
         _csv = csv.writer(stream, **kwargs)
 
@@ -38,7 +38,7 @@ class CSVFormat:
 
         dset.wipe()
 
-        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
+        kwargs.setdefault("delimiter", cls.DEFAULT_DELIMITER)
 
         rows = csv.reader(StringIO(in_stream), **kwargs)
         for i, row in enumerate(rows):
@@ -51,7 +51,9 @@ class CSVFormat:
     def detect(cls, stream, delimiter=None):
         """Returns True if given stream is valid CSV."""
         try:
-            csv.Sniffer().sniff(stream[:1024], delimiters=delimiter or cls.DEFAULT_DELIMITER)
+            csv.Sniffer().sniff(
+                stream[:1024], delimiters=delimiter or cls.DEFAULT_DELIMITER
+            )
             return True
         except Exception:
             return False

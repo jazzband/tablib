@@ -25,7 +25,7 @@ def unzfill(str):
 
     """
     try:
-        return str[:str.index(b'\0')]
+        return str[: str.index(b"\0")]
     except ValueError:
         return str
 
@@ -150,6 +150,7 @@ class _InvalidValue:
 
     def __int__(self):
         return 0
+
     __long__ = __int__
 
     def __float__(self):

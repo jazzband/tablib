@@ -12,8 +12,8 @@ get_column_letter = openpyxl.utils.get_column_letter
 
 
 class XLSXFormat:
-    title = 'xlsx'
-    extensions = ('xlsx',)
+    title = "xlsx"
+    extensions = ("xlsx",)
 
     @classmethod
     def detect(cls, stream):
@@ -32,7 +32,7 @@ class XLSXFormat:
         """Returns XLSX representation of Dataset."""
         wb = Workbook()
         ws = wb.worksheets[0]
-        ws.title = dataset.title if dataset.title else 'Tablib Dataset'
+        ws.title = dataset.title if dataset.title else "Tablib Dataset"
 
         cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes)
 
@@ -49,7 +49,7 @@ class XLSXFormat:
             wb.remove(sheet)
         for i, dset in enumerate(databook._datasets):
             ws = wb.create_sheet()
-            ws.title = dset.title if dset.title else 'Sheet%s' % (i)
+            ws.title = dset.title if dset.title else "Sheet%s" % (i)
 
             cls.dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
@@ -63,7 +63,9 @@ class XLSXFormat:
 
         dset.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream), read_only=True)
+        xls_book = openpyxl.reader.excel.load_workbook(
+            BytesIO(in_stream), read_only=True
+        )
         sheet = xls_book.active
 
         dset.title = sheet.title
@@ -81,7 +83,9 @@ class XLSXFormat:
 
         dbook.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(BytesIO(in_stream), read_only=True)
+        xls_book = openpyxl.reader.excel.load_workbook(
+            BytesIO(in_stream), read_only=True
+        )
 
         for sheet in xls_book.worksheets:
             data = tablib.Dataset()
@@ -112,14 +116,14 @@ class XLSXFormat:
             row_number = i + 1
             for j, col in enumerate(row):
                 col_idx = get_column_letter(j + 1)
-                cell = ws['{}{}'.format(col_idx, row_number)]
+                cell = ws["{}{}".format(col_idx, row_number)]
 
                 # bold headers
                 if (row_number == 1) and dataset.headers:
                     cell.font = bold
                     if freeze_panes:
                         #  Export Freeze only after first Line
-                        ws.freeze_panes = 'A2'
+                        ws.freeze_panes = "A2"
 
                 # bold separators
                 elif len(row) < dataset.width:
@@ -130,8 +134,8 @@ class XLSXFormat:
                     try:
                         str_col_value = str(col)
                     except TypeError:
-                        str_col_value = ''
-                    if '\n' in str_col_value:
+                        str_col_value = ""
+                    if "\n" in str_col_value:
                         cell.alignment = wrap_text
 
                 try:

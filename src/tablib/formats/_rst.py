@@ -5,15 +5,15 @@ from itertools import zip_longest
 from statistics import median
 from textwrap import TextWrapper
 
-JUSTIFY_LEFT = 'left'
-JUSTIFY_CENTER = 'center'
-JUSTIFY_RIGHT = 'right'
+JUSTIFY_LEFT = "left"
+JUSTIFY_CENTER = "center"
+JUSTIFY_RIGHT = "right"
 JUSTIFY_VALUES = (JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT)
 
 
 def to_str(value):
     if isinstance(value, bytes):
-        return value.decode('utf-8')
+        return value.decode("utf-8")
     return str(value)
 
 
@@ -28,8 +28,8 @@ def _max_word_len(text):
 
 
 class ReSTFormat:
-    title = 'rst'
-    extensions = ('rst',)
+    title = "rst"
+    extensions = ("rst",)
 
     MAX_TABLE_WIDTH = 80  # Roughly. It may be wider to avoid breaking words.
 
@@ -46,7 +46,7 @@ class ReSTFormat:
             column_lengths = [[] for _ in range(dataset.width)]
             word_lens = [0 for _ in range(dataset.width)]
         for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
+            values = iter(row.values() if hasattr(row, "values") else row)
             for i, val in enumerate(values):
                 text = to_str(val)
                 column_lengths[i].append(len(text))
@@ -54,37 +54,38 @@ class ReSTFormat:
         return column_lengths, word_lens
 
     @classmethod
-    def _row_to_lines(cls, values, widths, wrapper, sep='|', justify=JUSTIFY_LEFT):
+    def _row_to_lines(cls, values, widths, wrapper, sep="|", justify=JUSTIFY_LEFT):
         """
         Returns a table row of wrapped values as a list of lines
         """
         if justify not in JUSTIFY_VALUES:
-            raise ValueError('Value of "justify" must be one of "{}"'.format(
-                '", "'.join(JUSTIFY_VALUES)
-            ))
+            raise ValueError(
+                'Value of "justify" must be one of "{}"'.format(
+                    '", "'.join(JUSTIFY_VALUES)
+                )
+            )
         if justify == JUSTIFY_LEFT:
             just = lambda text, width: text.ljust(width)
         elif justify == JUSTIFY_CENTER:
             just = lambda text, width: text.center(width)
         else:
             just = lambda text, width: text.rjust(width)
-        lpad = sep + ' ' if sep else ''
-        rpad = ' ' + sep if sep else ''
-        pad = ' ' + sep + ' '
+        lpad = sep + " " if sep else ""
+        rpad = " " + sep if sep else ""
+        pad = " " + sep + " "
         cells = []
         for value, width in zip(values, widths):
             wrapper.width = width
             text = to_str(value)
             cell = wrapper.wrap(text)
             cells.append(cell)
-        lines = zip_longest(*cells, fillvalue='')
+        lines = zip_longest(*cells, fillvalue="")
         lines = (
             (just(cell_line, widths[i]) for i, cell_line in enumerate(line))
             for line in lines
         )
-        lines = [''.join((lpad, pad.join(line), rpad)) for line in lines]
+        lines = ["".join((lpad, pad.join(line), rpad)) for line in lines]
         return lines
-
 
     @classmethod
     def _get_column_widths(cls, dataset, max_table_width=MAX_TABLE_WIDTH, pad_len=3):
@@ -114,23 +115,25 @@ class ReSTFormat:
         wrapper = TextWrapper()
         if column_widths is None:
             column_widths = _get_column_widths(dataset, pad_len=2)
-        border = '  '.join(['=' * w for w in column_widths])
+        border = "  ".join(["=" * w for w in column_widths])
 
         lines.append(border)
         if dataset.headers:
-            lines.extend(cls._row_to_lines(
-                dataset.headers,
-                column_widths,
-                wrapper,
-                sep='',
-                justify=JUSTIFY_CENTER,
-            ))
+            lines.extend(
+                cls._row_to_lines(
+                    dataset.headers,
+                    column_widths,
+                    wrapper,
+                    sep="",
+                    justify=JUSTIFY_CENTER,
+                )
+            )
             lines.append(border)
         for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
-            lines.extend(cls._row_to_lines(values, column_widths, wrapper, ''))
+            values = iter(row.values() if hasattr(row, "values") else row)
+            lines.extend(cls._row_to_lines(values, column_widths, wrapper, ""))
         lines.append(border)
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     @classmethod
     def export_set_as_grid_table(cls, dataset, column_widths=None):
@@ -165,25 +168,23 @@ class ReSTFormat:
         wrapper = TextWrapper()
         if column_widths is None:
             column_widths = cls._get_column_widths(dataset)
-        header_sep = '+=' + '=+='.join(['=' * w for w in column_widths]) + '=+'
-        row_sep = '+-' + '-+-'.join(['-' * w for w in column_widths]) + '-+'
+        header_sep = "+=" + "=+=".join(["=" * w for w in column_widths]) + "=+"
+        row_sep = "+-" + "-+-".join(["-" * w for w in column_widths]) + "-+"
 
         lines.append(row_sep)
 
         if dataset.headers:
-            lines.extend(cls._row_to_lines(
-                dataset.headers,
-                column_widths,
-                wrapper,
-                justify=JUSTIFY_CENTER,
-            ))
+            lines.extend(
+                cls._row_to_lines(
+                    dataset.headers, column_widths, wrapper, justify=JUSTIFY_CENTER,
+                )
+            )
             lines.append(header_sep)
         for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
+            values = iter(row.values() if hasattr(row, "values") else row)
             lines.extend(cls._row_to_lines(values, column_widths, wrapper))
             lines.append(row_sep)
-        return '\n'.join(lines)
-
+        return "\n".join(lines)
 
     @classmethod
     def _use_simple_table(cls, head0, col0, width0):
@@ -240,9 +241,9 @@ class ReSTFormat:
 
         """
         if not dataset.dict:
-            return ''
-        force_grid = kwargs.get('force_grid', False)
-        max_table_width = kwargs.get('max_table_width', cls.MAX_TABLE_WIDTH)
+            return ""
+        force_grid = kwargs.get("force_grid", False)
+        max_table_width = kwargs.get("max_table_width", cls.MAX_TABLE_WIDTH)
         column_widths = cls._get_column_widths(dataset, max_table_width)
 
         use_simple_table = cls._use_simple_table(
@@ -263,5 +264,6 @@ class ReSTFormat:
         Tables are separated by a blank line. All tables use the grid
         format.
         """
-        return '\n\n'.join(cls.export_set(dataset, force_grid=True)
-                           for dataset in databook._datasets)
+        return "\n\n".join(
+            cls.export_set(dataset, force_grid=True) for dataset in databook._datasets
+        )

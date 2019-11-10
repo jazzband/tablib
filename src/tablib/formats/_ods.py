@@ -6,12 +6,16 @@ from io import BytesIO
 from odf import opendocument, style, table, text
 
 bold = style.Style(name="bold", family="paragraph")
-bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))
+bold.addElement(
+    style.TextProperties(
+        fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"
+    )
+)
 
 
 class ODSFormat:
-    title = 'ods'
-    extensions = ('ods',)
+    title = "ods"
+    extensions = ("ods",)
 
     @classmethod
     def export_set(cls, dataset):
@@ -20,7 +24,7 @@ class ODSFormat:
         wb = opendocument.OpenDocumentSpreadsheet()
         wb.automaticstyles.addElement(bold)
 
-        ws = table.Table(name=dataset.title if dataset.title else 'Tablib Dataset')
+        ws = table.Table(name=dataset.title if dataset.title else "Tablib Dataset")
         wb.spreadsheet.addElement(ws)
         cls.dset_sheet(dataset, ws)
 
@@ -36,7 +40,7 @@ class ODSFormat:
         wb.automaticstyles.addElement(bold)
 
         for i, dset in enumerate(databook._datasets):
-            ws = table.Table(name=dset.title if dset.title else 'Sheet%s' % (i))
+            ws = table.Table(name=dset.title if dset.title else "Sheet%s" % (i))
             wb.spreadsheet.addElement(ws)
             cls.dset_sheet(dset, ws)
 
@@ -55,10 +59,10 @@ class ODSFormat:
 
         for i, row in enumerate(_package):
             row_number = i + 1
-            odf_row = table.TableRow(stylename=bold, defaultcellstylename='bold')
+            odf_row = table.TableRow(stylename=bold, defaultcellstylename="bold")
             for j, col in enumerate(row):
                 try:
-                    col = str(col, errors='ignore')
+                    col = str(col, errors="ignore")
                 except TypeError:
                     ## col is already str
                     pass
@@ -66,7 +70,7 @@ class ODSFormat:
 
                 # bold headers
                 if (row_number == 1) and dataset.headers:
-                    odf_row.setAttribute('stylename', bold)
+                    odf_row.setAttribute("stylename", bold)
                     ws.addElement(odf_row)
                     cell = table.TableCell()
                     p = text.P()
@@ -77,7 +81,7 @@ class ODSFormat:
                 # wrap the rest
                 else:
                     try:
-                        if '\n' in col:
+                        if "\n" in col:
                             ws.addElement(odf_row)
                             cell = table.TableCell()
                             cell.addElement(text.P(text=col))
