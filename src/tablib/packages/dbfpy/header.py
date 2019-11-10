@@ -5,6 +5,14 @@ TODO:
     (encoding information stored in the DBF header)
 
 """
+import datetime
+import io
+import struct
+import sys
+
+from . import fields
+from .utils import getDate
+
 """History (most recent first):
 16-sep-2010 [als]   fromStream: fix century of the last update field
 11-feb-2007 [als]   added .ignoreErrors
@@ -18,14 +26,6 @@ __version__ = "$Revision: 1.6 $"[11:-2]
 __date__ = "$Date: 2010/09/16 05:06:39 $"[7:-2]
 
 __all__ = ["DbfHeader"]
-
-import datetime
-import io
-import struct
-import sys
-
-from . import fields
-from .utils import getDate
 
 
 class DbfHeader:

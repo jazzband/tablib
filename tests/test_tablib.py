@@ -180,7 +180,8 @@ class TablibTestCase(BaseTestCase):
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
 
-        new_col = lambda x: x[0]
+        def new_col(x):
+            return x[0]
 
         self.founders.append_col(new_col, header="first_again")
 
@@ -346,7 +347,10 @@ class TablibTestCase(BaseTestCase):
         _tsv = "1\t2\t3\n4\t5\t6\n7\t8\t9\n"
         self.assertEqual(tablib.detect_format(_tsv), "tsv")
 
-        _bunk = "¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        _bunk = (
+            "¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†"
+            "•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        )
         self.assertEqual(tablib.detect_format(_bunk), None)
 
     def test_transpose(self):
@@ -684,7 +688,10 @@ class CSVTests(BaseTestCase):
         """Test CSV format detection."""
 
         _csv = "1,2,3\n4,5,6\n7,8,9\n"
-        _bunk = "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        _bunk = (
+            "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†"
+            "¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        )
 
         fmt = registry.get_format("csv")
         self.assertTrue(fmt.detect(_csv))
@@ -895,7 +902,10 @@ class TSVTests(BaseTestCase):
         """Test TSV format detection."""
 
         _tsv = "1\t2\t3\n4\t5\t6\n7\t8\t9\n"
-        _bunk = "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        _bunk = (
+            "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†"
+            "¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        )
 
         fmt = registry.get_format("tsv")
         self.assertTrue(fmt.detect(_tsv))
@@ -975,7 +985,10 @@ class JSONTests(BaseTestCase):
         """Test JSON format detection."""
 
         _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
-        _bunk = "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        _bunk = (
+            "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†"
+            "¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        )
 
         fmt = registry.get_format("json")
         self.assertTrue(fmt.detect(_json))
@@ -1033,8 +1046,8 @@ class YAMLTests(BaseTestCase):
         _yaml = "- {age: 90, first_name: John, last_name: Adams}"
         _tsv = "foo\tbar"
         _bunk = (
-            "¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†"
-            "ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+            "¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†"
+            "•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
         )
 
         fmt = registry.get_format("yaml")
@@ -1226,7 +1239,10 @@ class DBFTests(BaseTestCase):
         _csv = "1,2,3\n4,5,6\n7,8,9\n"
         _json = '[{"last_name": "Adams","age": 90,"first_name": "John"}]'
 
-        _bunk = "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        _bunk = (
+            "¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†"
+            "¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶"
+        )
         fmt = registry.get_format("dbf")
         self.assertTrue(fmt.detect(_dbf))
         self.assertFalse(fmt.detect(_yaml))

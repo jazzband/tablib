@@ -63,7 +63,7 @@ class DBFFormat:
         try:
             if type(stream) is not bytes:
                 stream = bytes(stream, "utf-8")
-            _dbf = dbf.Dbf(io.BytesIO(stream), readOnly=True)
+            dbf.Dbf(io.BytesIO(stream), readOnly=True)
             return True
         except Exception:
             return False

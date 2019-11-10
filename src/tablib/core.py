@@ -12,7 +12,6 @@ from collections import OrderedDict
 from copy import copy
 from operator import itemgetter
 
-from tablib import formats
 from tablib.exceptions import (
     HeadersNeeded,
     InvalidDatasetIndex,
@@ -300,7 +299,8 @@ class Dataset:
     def _get_headers(self):
         """An *optional* list of strings to be used for header rows and attribute names.
 
-        This must be set manually. The given list length must equal :class:`Dataset.width`.
+        This must be set manually. The given list length must equal
+        :class:`Dataset.width`.
 
         """
         return self.__headers
@@ -319,11 +319,12 @@ class Dataset:
     headers = property(_get_headers, _set_headers)
 
     def _get_dict(self):
-        """A native Python representation of the :class:`Dataset` object. If headers have
-        been set, a list of Python dictionaries will be returned. If no headers have been set,
-        a list of tuples (rows) will be returned instead.
+        """A native Python representation of the :class:`Dataset` object. If headers
+        have been set, a list of Python dictionaries will be returned. If no headers
+        have been set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the `Dataset.dict` attribute: ::
+        A dataset object can also be imported by setting the `Dataset.dict`
+        attribute: ::
 
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -336,7 +337,8 @@ class Dataset:
         set, a list of Python dictionaries will be returned. If no headers have been
         set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.dict` attribute. ::
+        A dataset object can also be imported by setting the :class:`Dataset.dict`
+        attribute. ::
 
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -526,9 +528,9 @@ class Dataset:
            that row.
 
         .. versionadded:: 0.9.0
-           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
-           This gives you the ability to :class:`filter <Dataset.filter>` your
-           :class:`Dataset` later.
+           If inserting a row, you can add :ref:`tags <tags>` to the row you are
+           inserting. This gives you the ability to :class:`filter <Dataset.filter>`
+           your :class:`Dataset` later.
 
         """
 
@@ -867,7 +869,8 @@ class Databook:
         """
         Import `in_stream` to the :class:`Databook` object using the `format`.
 
-        :param \\*\\*kwargs: (optional) custom configuration to the format `import_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format
+        `import_book`.
         """
 
         if not format:
@@ -884,7 +887,8 @@ class Databook:
         """
         Export :class:`Databook` object to `format`.
 
-        :param \\*\\*kwargs: (optional) custom configuration to the format `export_book`.
+        :param \\*\\*kwargs: (optional) custom configuration to the format
+        `export_book`.
         """
         fmt = registry.get_format(format)
         if not hasattr(fmt, "export_book"):

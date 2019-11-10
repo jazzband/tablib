@@ -1,6 +1,10 @@
 """DBF record definition.
 
 """
+import sys
+
+from . import utils
+
 """History (most recent first):
 11-feb-2007 [als]   __repr__: added special case for invalid field values
 10-feb-2007 [als]   added .rawFromStream()
@@ -15,10 +19,6 @@ __version__ = "$Revision: 1.7 $"[11:-2]
 __date__ = "$Date: 2007/02/11 09:05:49 $"[7:-2]
 
 __all__ = ["DbfRecord"]
-
-import sys
-
-from . import utils
 
 
 class DbfRecord:

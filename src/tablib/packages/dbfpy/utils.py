@@ -3,6 +3,9 @@
 TODO:
   - allow strings in getDateTime routine;
 """
+import datetime
+import time
+
 """History (most recent first):
 11-feb-2007 [als]   added INVALID_VALUE
 10-feb-2007 [als]   allow date strings padded with spaces instead of zeroes
@@ -12,9 +15,6 @@ TODO:
 
 __version__ = "$Revision: 1.4 $"[11:-2]
 __date__ = "$Date: 2007/02/11 08:57:17 $"[7:-2]
-
-import datetime
-import time
 
 
 def unzfill(str):
