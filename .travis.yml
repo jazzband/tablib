@@ -17,7 +17,11 @@ install: travis_retry pip install tox-travis
 
 script: tox
 
-after_success: bash <(curl -s https://codecov.io/bash)
+after_success:
+  - |
+    if [[ "$TOXENV" != "docs" && "$TOXENV" != "lint" ]]; then
+      bash <(curl -s https://codecov.io/bash)
+    fi
 
 deploy:
   provider: pypi
