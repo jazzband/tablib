@@ -4,3 +4,15 @@ repos:
     hooks:
       - id: isort
         additional_dependencies: [toml]
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.4.2
+    hooks:
+      - id: python-check-blanket-noqa
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
