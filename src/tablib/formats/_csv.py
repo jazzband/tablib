@@ -48,6 +48,7 @@ class CSVFormat:
             elif row:
                 dset.append(row)
 
+    @classmethod
     def detect(cls, stream, delimiter=None):
         """Returns True if given stream is valid CSV."""
         try:

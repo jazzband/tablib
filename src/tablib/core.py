@@ -236,11 +236,11 @@ class Dataset:
     # Internals
     # ---------
 
-    def _get_in_format(self, fmt, **kwargs):
-        return fmt.export_set(self, **kwargs)
+    def _get_in_format(self, fmt_key, **kwargs):
+        return registry.get_format(fmt_key).export_set(self, **kwargs)
 
-    def _set_in_format(self, fmt, *args, **kwargs):
-        return fmt.import_set(self, *args, **kwargs)
+    def _set_in_format(self, fmt_key, *args, **kwargs):
+        return registry.get_format(fmt_key).import_set(self, *args, **kwargs)
 
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""

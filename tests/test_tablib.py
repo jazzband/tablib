@@ -1246,5 +1246,6 @@ class JiraTests(BaseTestCase):
 class DocTests(unittest.TestCase):
 
     def test_rst_formatter_doctests(self):
+        import tablib.formats._rst
         results = doctest.testmod(tablib.formats._rst)
         self.assertEqual(results.failed, 0)
