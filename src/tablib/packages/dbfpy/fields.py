@@ -33,12 +33,14 @@ __all__ = ["lookupFor"]  # field classes added at the end of the module
 import datetime
 import struct
 import sys
+from functools import total_ordering
 
 from . import utils
 
 # abstract definitions
 
 
+@total_ordering
 class DbfFieldDef:
     """Abstract field definition.
 
@@ -101,8 +103,14 @@ class DbfFieldDef:
         self.start = start
         self.end = stop
 
-    def __cmp__(self, other):
-        return cmp(self.name, str(other).upper())
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __lt__(self, other):
+        return repr(self) < repr(other)
 
     def __hash__(self):
         return hash(self.name)
