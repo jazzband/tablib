@@ -101,6 +101,24 @@ class DbfFieldDef:
         self.start = start
         self.end = stop
 
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __lt__(self, other):
+        return repr(self) < repr(other)
+
+    def __le__(self, other):
+        return repr(self) <= repr(other)
+
+    def __gt__(self, other):
+        return repr(self) > repr(other)
+
+    def __ge__(self, other):
+        return repr(self) >= repr(other)
+
     def __hash__(self):
         return hash(self.name)
 
