@@ -660,7 +660,7 @@ class RSTTests(BaseTestCase):
             '==========  =========  ==='
         )
 
-    def test_rst_export_set_as_simple_table(self):
+    def test_rst_export_set(self):
         # Arrange
         data = tablib.Dataset()
         data.append(self.john)
@@ -668,11 +668,13 @@ class RSTTests(BaseTestCase):
         fmt = registry.get_format("rst")
 
         # Act
-        out = fmt.export_set_as_simple_table(data)
+        out1 = fmt.export_set(data)
+        out2 = fmt.export_set_as_simple_table(data)
 
         # Assert
+        self.assertEqual(out1, out2)
         self.assertEqual(
-            out,
+            out1,
             "==========  =========  ===\n"
             "first_name  last_name  gpa\n"
             "==========  =========  ===\n"
