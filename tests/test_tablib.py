@@ -660,6 +660,26 @@ class RSTTests(BaseTestCase):
             '==========  =========  ==='
         )
 
+    def test_rst_export_set_as_simple_table(self):
+        # Arrange
+        data = tablib.Dataset()
+        data.append(self.john)
+        data.headers = self.headers
+        fmt = registry.get_format("rst")
+
+        # Act
+        out = fmt.export_set_as_simple_table(data)
+
+        # Assert
+        self.assertEqual(
+            out,
+            "==========  =========  ===\n"
+            "first_name  last_name  gpa\n"
+            "==========  =========  ===\n"
+            "John        Adams      90 \n"
+            "==========  =========  ===",
+        )
+
 
 class CSVTests(BaseTestCase):
     def test_csv_format_detect(self):

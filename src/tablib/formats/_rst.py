@@ -113,7 +113,7 @@ class ReSTFormat:
         lines = []
         wrapper = TextWrapper()
         if column_widths is None:
-            column_widths = _get_column_widths(dataset, pad_len=2)
+            column_widths = cls._get_column_widths(dataset, pad_len=2)
         border = '  '.join(['=' * w for w in column_widths])
 
         lines.append(border)
