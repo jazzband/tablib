@@ -800,6 +800,12 @@ class CSVTests(BaseTestCase):
 
         self.assertEqual(csv, self.founders.csv)
 
+    def test_csv_export_options(self):
+        """Exporting support csv.writer() parameters."""
+        data.append(('1. a', '2. b', '3. c'))
+        result = data.export('csv', delimiter=' ', quotechar='|')
+        self.assertEqual(result, '|1. a| |2. b| |3. c|\r\n')
+
     def test_csv_stream_export(self):
         """Verify exporting dataset object as CSV from file object."""
 

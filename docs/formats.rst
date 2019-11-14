@@ -21,6 +21,14 @@ When exporting with the ``csv`` format, the top row will contain headers, if
 they have been set. Otherwise, the top row will contain the first row of the
 dataset.
 
+When importing a CSV data source or exporting a dataset as CSV, you can pass any
+parameter supported by the :py:func:`csv.reader` and :py:func:`csv.writer`
+functions. For example::
+
+    tablib.import_set(your_data_stream, format='csv', dialect='unix')
+
+    dataset.export('csv', delimiter=' ', quotechar='|')
+
 .. admonition:: Line endings
 
      Exporting uses \\r\\n line endings by default so, make sure to include
