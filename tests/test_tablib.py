@@ -1092,6 +1092,17 @@ class YAMLTests(BaseTestCase):
 
         self.assertEqual(_yaml, data.yaml)
 
+    def test_yaml_export(self):
+        """YAML export"""
+
+        expected = """\
+- {first_name: John, gpa: 90, last_name: Adams}
+- {first_name: George, gpa: 67, last_name: Washington}
+- {first_name: Thomas, gpa: 50, last_name: Jefferson}
+"""
+        output = self.founders.yaml
+        self.assertEqual(output, expected)
+
 
 class LatexTests(BaseTestCase):
     def test_latex_export(self):
