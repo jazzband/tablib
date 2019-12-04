@@ -1288,3 +1288,14 @@ class DocTests(unittest.TestCase):
         import tablib.formats._rst
         results = doctest.testmod(tablib.formats._rst)
         self.assertEqual(results.failed, 0)
+
+
+class CliTests(BaseTestCase):
+    def test_cli_export_github(self):
+        self.assertEqual('|---|---|---|\n| a | b | c |', tablib.Dataset(['a','b','c']).export('cli', tablefmt='github'))
+
+    def test_cli_export_simple(self):
+        self.assertEqual('-  -  -\na  b  c\n-  -  -', tablib.Dataset(['a','b','c']).export('cli', tablefmt='simple'))
+
+    def test_cli_export_grid(self):
+        self.assertEqual('+---+---+---+\n| a | b | c |\n+---+---+---+', tablib.Dataset(['a','b','c']).export('cli', tablefmt='grid'))

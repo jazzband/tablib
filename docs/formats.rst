@@ -7,6 +7,29 @@ Formats
 Tablib supports a wide variety of different tabular formats, both for input and
 output. Moreover, you can :ref:`register your own formats <newformats>`.
 
+cli
+===
+
+The ``cli`` format is currently export-only. The exports produce a representation
+table suited to a terminal.
+
+When exporting to a CLI you can pass the table format  with the ``tablefmt``
+parameter, the supported formats are::
+
+    >>> import tabulate
+    >>> list(tabulate._table_formats)
+    ['simple', 'plain', 'grid', 'fancy_grid', 'github', 'pipe', 'orgtbl',
+     'jira', 'presto', 'psql', 'rst', 'mediawiki', 'moinmoin', 'youtrack',
+     'html', 'latex', 'latex_raw', 'latex_booktabs', 'tsv', 'textile']
+
+For example::
+
+    dataset.export("cli", tablefmt="github")
+    dataset.export("cli", tablefmt="grid")
+
+This format is optional, install Tablib with ``pip install tablib[cli]`` to
+make the format available.
+
 csv
 ===
 
@@ -100,7 +123,7 @@ latex
 
 Import/export using the LaTeX_ format. This format is export-only.
 If a title has been set, it will be exported as the table caption.
- 
+
 .. _LaTeX: https://www.latex-project.org/
 
 ods

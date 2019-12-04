@@ -5,5 +5,6 @@ odfpy
 openpyxl>=2.4.0
 pandas
 pyyaml
+tabulate
 xlrd
 xlwt
