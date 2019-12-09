@@ -12,6 +12,10 @@ from ._json import JSONFormat
 from ._tsv import TSVFormat
 
 uninstalled_format_messages = {
+    'cli': (
+        "The 'cli' format is not available. You may want to install the tabulate "
+        "package (or `pip install tablib[cli]`)."
+    ),
     'df': (
         "The 'df' format is not available. You may want to install the pandas "
         "package (or `pip install tablib[pandas]`)."
@@ -88,7 +92,7 @@ class Registry:
     def register(self, key, format_or_path):
         from tablib.core import Databook, Dataset
 
-        # Create Databook.<format> read or read/write properties 
+        # Create Databook.<format> read or read/write properties
         setattr(Databook, key, ImportExportBookDescriptor(key, format_or_path))
 
         # Create Dataset.<format> read or read/write properties,
@@ -124,6 +128,8 @@ class Registry:
         if find_spec('pandas'):
             self.register('df', 'tablib.formats._df.DataFrameFormat')
         self.register('rst', 'tablib.formats._rst.ReSTFormat')
+        if find_spec('tabulate'):
+            self.register('cli', 'tablib.formats._cli.CLIFormat')
 
     def formats(self):
         for key, frm in self._formats.items():
