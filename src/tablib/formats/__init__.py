@@ -119,11 +119,10 @@ class Registry:
     def get_format(self, key):
         if key not in self._formats:
             if key in uninstalled_format_messages:
-                uninstalled_format_messages[key].update(key=key)
                 raise UnsupportedFormat(
                     "The '{key}' format is not available. You may want to install the "
                     "{package_name} (or `pip install tablib[{extras_name}]`).".format(
-                        **uninstalled_format_messages[key]
+                        **uninstalled_format_messages[key], key=key
                     )
                 )
             raise UnsupportedFormat("Tablib has no format '%s' or it is not registered." % key)
