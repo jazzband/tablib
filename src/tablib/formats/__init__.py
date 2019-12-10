@@ -12,34 +12,13 @@ from ._json import JSONFormat
 from ._tsv import TSVFormat
 
 uninstalled_format_messages = {
-    'cli': (
-        "The 'cli' format is not available. You may want to install the tabulate "
-        "package (or `pip install tablib[cli]`)."
-    ),
-    'df': (
-        "The 'df' format is not available. You may want to install the pandas "
-        "package (or `pip install tablib[pandas]`)."
-    ),
-    'html': (
-        "The 'html' format is not available. You may want to install the MarkupPy "
-        "package (or `pip install tablib[html]`)."
-    ),
-    'ods': (
-        "The 'ods' format is not available. You may want to install the odfpy "
-        "package (or `pip install tablib[ods]`)."
-    ),
-    'xls': (
-        "The 'xls' format is not available. You may want to install the xlrd and "
-        "xlwt packages (or `pip install tablib[xls]`)."
-    ),
-    'xlsx': (
-        "The 'xlsx' format is not available. You may want to install the openpyxl "
-        "package (or `pip install tablib[xlsx]`)."
-    ),
-    'yaml': (
-        "The 'yaml' format is not available. You may want to install the pyyaml "
-        "package (or `pip install tablib[yaml]`)."
-    ),
+    "cli": {"package_name": "tabulate package", "extras_name": "cli"},
+    "df": {"package_name": "pandas package", "extras_name": "pandas"},
+    "html": {"package_name": "MarkupPy package", "extras_name": "html"},
+    "ods": {"package_name": "odfpy package", "extras_name": "ods"},
+    "xls": {"package_name": "odfpy and xlwt packages", "extras_name": "ods"},
+    "xlsx": {"package_name": "openpyxl package", "extras_name": "xlsx"},
+    "yaml": {"package_name": "pyyaml package", "extras_name": "yaml"},
 }
 
 
@@ -140,7 +119,12 @@ class Registry:
     def get_format(self, key):
         if key not in self._formats:
             if key in uninstalled_format_messages:
-                raise UnsupportedFormat(uninstalled_format_messages[key])
+                raise UnsupportedFormat(
+                    "The '{key}' format is not available. You may want to install the "
+                    "{package_name} (or `pip install tablib[{extras_name}]`).".format(
+                        **uninstalled_format_messages[key], key=key
+                    )
+                )
             raise UnsupportedFormat("Tablib has no format '%s' or it is not registered." % key)
         if isinstance(self._formats[key], str):
             self._formats[key] = load_format_class(self._formats[key])
