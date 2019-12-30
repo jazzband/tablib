@@ -1,23 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-import re
-import sys
 
 from setuptools import find_packages, setup
-
-
-install = [
-    'odfpy',
-    'openpyxl>=2.4.0',
-    'backports.csv;python_version<"3.0"',
-    'markuppy',
-    'xlrd',
-    'xlwt',
-    'pyyaml',
-]
-
 
 setup(
     name='tablib',
@@ -41,17 +24,22 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
-    install_requires=install,
+    python_requires='>=3.5',
     extras_require={
+        'all': ['markuppy', 'odfpy', 'openpyxl>=2.4.0', 'pandas', 'pyyaml', 'tabulate', 'xlrd', 'xlwt'],
+        'cli': ['tabulate'],
+        'html': ['markuppy'],
+        'ods': ['odfpy'],
         'pandas': ['pandas'],
+        'xls': ['xlrd', 'xlwt'],
+        'xlsx': ['openpyxl>=2.4.0'],
+        'yaml': ['pyyaml'],
     },
 )

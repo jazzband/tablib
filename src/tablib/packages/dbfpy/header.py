@@ -19,20 +19,16 @@ __date__ = "$Date: 2010/09/16 05:06:39 $"[7:-2]
 
 __all__ = ["DbfHeader"]
 
-try:
-    import cStringIO
-except ImportError:
-    # when we're in python3, we cStringIO has been replaced by io.StringIO
-    import io as cStringIO
 import datetime
+import io
 import struct
-import time
+import sys
 
 from . import fields
-from . import utils
+from .utils import getDate
 
 
-class DbfHeader(object):
+class DbfHeader:
     """Dbf header definition.
 
     For more information about dbf header format visit
@@ -54,13 +50,12 @@ class DbfHeader(object):
     """
 
     __slots__ = ("signature", "fields", "lastUpdate", "recordLength",
-        "recordCount", "headerLength", "changed", "_ignore_errors")
+                 "recordCount", "headerLength", "changed", "_ignore_errors")
 
-    ## instance construction and initialization methods
+    # instance construction and initialization methods
 
     def __init__(self, fields=None, headerLength=0, recordLength=0,
-        recordCount=0, signature=0x03, lastUpdate=None, ignoreErrors=False,
-    ):
+                 recordCount=0, signature=0x03, lastUpdate=None, ignoreErrors=False):
         """Initialize instance.
 
         Arguments:
@@ -90,7 +85,7 @@ class DbfHeader(object):
             self.fields = []
         else:
             self.fields = list(fields)
-        self.lastUpdate = utils.getDate(lastUpdate)
+        self.lastUpdate = getDate(lastUpdate)
         self.recordLength = recordLength
         self.headerLength = headerLength
         self.recordCount = recordCount
@@ -102,35 +97,34 @@ class DbfHeader(object):
     # @classmethod
     def fromString(cls, string):
         """Return header instance from the string object."""
-        return cls.fromStream(cStringIO.StringIO(str(string)))
+        return cls.fromStream(io.StringIO(str(string)))
     fromString = classmethod(fromString)
 
     # @classmethod
     def fromStream(cls, stream):
         """Return header object from the stream."""
         stream.seek(0)
-        _data = stream.read(32)
+        first_32 = stream.read(32)
+        if type(first_32) != bytes:
+            _data = bytes(first_32, sys.getfilesystemencoding())
+        _data = first_32
         (_cnt, _hdrLen, _recLen) = struct.unpack("<I2H", _data[4:12])
-        #reserved = _data[12:32]
-        _year = ord(_data[1])
+        # reserved = _data[12:32]
+        _year = _data[1]
         if _year < 80:
             # dBase II started at 1980.  It is quite unlikely
             # that actual last update date is before that year.
             _year += 2000
         else:
             _year += 1900
-        ## create header object
-        _obj = cls(None, _hdrLen, _recLen, _cnt, ord(_data[0]),
-            (_year, ord(_data[2]), ord(_data[3])))
-        ## append field definitions
+        # create header object
+        _obj = cls(None, _hdrLen, _recLen, _cnt, _data[0],
+                   (_year, _data[2], _data[3]))
+        # append field definitions
         # position 0 is for the deletion flag
         _pos = 1
         _data = stream.read(1)
-
-        # The field definitions are ended either by \x0D OR a newline
-        # character, so we need to handle both when reading from a stream.
-        # When writing, dbfpy appears to write newlines instead of \x0D.
-        while _data[0] not in ["\x0D", "\n"]:
+        while _data != b'\r':
             _data += stream.read(31)
             _fld = fields.lookupFor(_data[11]).fromString(_data, _pos)
             _obj._addField(_fld)
@@ -139,7 +133,7 @@ class DbfHeader(object):
         return _obj
     fromStream = classmethod(fromStream)
 
-    ## properties
+    # properties
 
     year = property(lambda self: self.lastUpdate.year)
     month = property(lambda self: self.lastUpdate.month)
@@ -160,7 +154,7 @@ class DbfHeader(object):
 
         """)
 
-    ## object representation
+    # object representation
 
     def __repr__(self):
         _rv = """\
@@ -177,7 +171,7 @@ Version (signature): 0x%02x
         )
         return _rv
 
-    ## internal methods
+    # internal methods
 
     def _addField(self, *defs):
         """Internal variant of the `addField` method.
@@ -201,8 +195,7 @@ Version (signature): 0x%02x
             else:
                 (_name, _type, _len, _dec) = (tuple(_def) + (None,) * 4)[:4]
                 _cls = fields.lookupFor(_type)
-                _obj = _cls(_name, _len, _dec,
-                    ignoreErrors=self._ignore_errors)
+                _obj = _cls(_name, _len, _dec, ignoreErrors=self._ignore_errors)
             _recordLength += _obj.length
             _defs.append(_obj)
         # and now extend field definitions and
@@ -210,7 +203,7 @@ Version (signature): 0x%02x
         self.fields += _defs
         return _recordLength
 
-    ## interface methods
+    # interface methods
 
     def addField(self, *defs):
         """Add field definition to the header.
@@ -240,8 +233,9 @@ Version (signature): 0x%02x
         """Encode and write header to the stream."""
         stream.seek(0)
         stream.write(self.toString())
-        stream.write("".join([_fld.toString() for _fld in self.fields]))
-        stream.write(chr(0x0D))   # cr at end of all hdr data
+        fields = [_fld.toString() for _fld in self.fields]
+        stream.write(''.join(fields).encode(sys.getfilesystemencoding()))
+        stream.write(b'\x0D')   # cr at end of all header data
         self.changed = False
 
     def toString(self):
@@ -253,7 +247,8 @@ Version (signature): 0x%02x
             self.day,
             self.recordCount,
             self.headerLength,
-            self.recordLength) + "\0" * 20
+            self.recordLength) + (b'\x00' * 20)
+        # TODO: figure out if bytes(utf-8) is correct here.
 
     def setCurrentDate(self):
         """Update ``self.lastUpdate`` field with current date value."""
@@ -261,7 +256,7 @@ Version (signature): 0x%02x
 
     def __getitem__(self, item):
         """Return a field definition by numeric index or name string"""
-        if isinstance(item, basestring):
+        if isinstance(item, str):
             _name = item.upper()
             for _field in self.fields:
                 if _field.name == _name:

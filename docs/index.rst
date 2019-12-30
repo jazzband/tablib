@@ -1,7 +1,7 @@
 .. Tablib documentation master file, created by
    sphinx-quickstart on Tue Oct  5 15:25:21 2010.
    You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+   contain the root ``toctree`` directive.
 
 Tablib: Pythonic Tabular Datasets
 =================================
@@ -97,6 +97,11 @@ This part of the documentation, which is mostly prose, begins with some backgrou
    :maxdepth: 2
 
    tutorial
+
+.. toctree::
+   :maxdepth: 2
+
+   formats
 
 .. toctree::
    :maxdepth: 2

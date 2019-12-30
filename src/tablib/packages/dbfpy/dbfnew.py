@@ -24,13 +24,13 @@ __date__ = "$Date: 2006/07/04 08:18:18 $"[7:-2]
 
 __all__ = ["dbf_new"]
 
-from dbf import *
-from fields import *
-from header import *
-from record import *
+from .dbf import *
+from .fields import *
+from .header import *
+from .record import *
 
 
-class _FieldDefinition(object):
+class _FieldDefinition:
     """Field definition.
 
     This is a simple structure, which contains ``name``, ``type``,
@@ -87,7 +87,7 @@ class _FieldDefinition(object):
         dbfh.addField(_dbff)
 
 
-class dbf_new(object):
+class dbf_new:
     """New .DBF creation helper.
 
     Example Usage:
@@ -140,16 +140,10 @@ class dbf_new(object):
         _dbfh.setCurrentDate()
         for _fldDef in self.fields:
             _fldDef.appendToHeader(_dbfh)
-        _dbfStream = file(filename, "wb")
+
+        _dbfStream = open(filename, "wb")
         _dbfh.write(_dbfStream)
         _dbfStream.close()
-
-    def write_stream(self, stream):
-        _dbfh = DbfHeader()
-        _dbfh.setCurrentDate()
-        for _fldDef in self.fields:
-            _fldDef.appendToHeader(_dbfh)
-        _dbfh.write(stream)
 
 
 if __name__ == '__main__':
@@ -182,8 +176,8 @@ if __name__ == '__main__':
     for i1 in range(len(dbft)):
         rec = dbft[i1]
         for fldName in dbft.fieldNames:
-            print('%s:\t %s' % (fldName, rec[fldName]))
+            print('{}:\t {}'.format(fldName, rec[fldName]))
         print()
     dbft.close()
 
-    # vim: set et sts=4 sw=4 :
+# vim: set et sts=4 sw=4 :

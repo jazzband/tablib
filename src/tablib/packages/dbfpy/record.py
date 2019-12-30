@@ -16,11 +16,12 @@ __date__ = "$Date: 2007/02/11 09:05:49 $"[7:-2]
 
 __all__ = ["DbfRecord"]
 
-from itertools import izip
+import sys
 
-import utils
+from . import utils
 
-class DbfRecord(object):
+
+class DbfRecord:
     """DBF record.
 
     Instances of this class shouldn't be created manually,
@@ -52,7 +53,7 @@ class DbfRecord(object):
 
     __slots__ = "dbf", "index", "deleted", "fieldData"
 
-    ## creation and initialization
+    # creation and initialization
 
     def __init__(self, dbf, index=None, deleted=False, data=None):
         """Instance initialization.
@@ -82,7 +83,7 @@ class DbfRecord(object):
 
     # XXX: validate self.index before calculating position?
     position = property(lambda self: self.dbf.header.headerLength + \
-        self.index * self.dbf.header.recordLength)
+                        self.index * self.dbf.header.recordLength)
 
     def rawFromStream(cls, dbf, index):
         """Return raw record contents read from the stream.
@@ -137,10 +138,10 @@ class DbfRecord(object):
 
         """
         return cls(dbf, index, string[0]=="*",
-            [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
+                   [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
     fromString = classmethod(fromString)
 
-    ## object representation
+    # object representation
 
     def __repr__(self):
         _template = "%%%ds: %%s (%%s)" % max([len(_fld)
@@ -155,7 +156,7 @@ class DbfRecord(object):
                 _rv.append(_template % (_fld, _val, type(_val)))
         return "\n".join(_rv)
 
-    ## protected methods
+    # protected methods
 
     def _write(self):
         """Write data to the dbf stream.
@@ -170,15 +171,16 @@ class DbfRecord(object):
         """
         self._validateIndex(False)
         self.dbf.stream.seek(self.position)
-        self.dbf.stream.write(self.toString())
+        self.dbf.stream.write(bytes(self.toString(),
+                              sys.getfilesystemencoding()))
         # FIXME: may be move this write somewhere else?
         # why we should check this condition for each record?
         if self.index == len(self.dbf):
             # this is the last record,
             # we should write SUB (ASCII 26)
-            self.dbf.stream.write("\x1A")
+            self.dbf.stream.write(b"\x1A")
 
-    ## utility methods
+    # utility methods
 
     def _validateIndex(self, allowUndefined=True, checkRange=False):
         """Valid ``self.index`` value.
@@ -194,9 +196,9 @@ class DbfRecord(object):
             raise ValueError("Index can't be negative (%s)" % self.index)
         elif checkRange and self.index <= self.dbf.header.recordCount:
             raise ValueError("There are only %d records in the DBF" %
-                self.dbf.header.recordCount)
+                             self.dbf.header.recordCount)
 
-    ## interface methods
+    # interface methods
 
     def store(self):
         """Store current record in the DBF.
@@ -218,9 +220,12 @@ class DbfRecord(object):
 
     def toString(self):
         """Return string packed record values."""
+#        for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData):
+#
+
         return "".join([" *"[self.deleted]] + [
-            _def.encodeValue(_dat)
-            for (_def, _dat) in izip(self.dbf.header.fields, self.fieldData)
+           _def.encodeValue(_dat)
+            for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData)
         ])
 
     def asList(self):
@@ -241,11 +246,11 @@ class DbfRecord(object):
             real values stored in this object.
 
         """
-        return dict([_i for _i in izip(self.dbf.fieldNames, self.fieldData)])
+        return dict([_i for _i in zip(self.dbf.fieldNames, self.fieldData)])
 
     def __getitem__(self, key):
         """Return value by field name or field index."""
-        if isinstance(key, (long, int)):
+        if isinstance(key, int):
             # integer index of the field
             return self.fieldData[key]
         # assuming string field name
@@ -253,7 +258,7 @@ class DbfRecord(object):
 
     def __setitem__(self, key, value):
         """Set field value by integer index of the field or string name."""
-        if isinstance(key, (int, long)):
+        if isinstance(key, int):
             # integer index of the field
             return self.fieldData[key]
         # assuming string field name

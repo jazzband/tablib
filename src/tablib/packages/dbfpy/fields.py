@@ -28,17 +28,20 @@ TODO:
 __version__ = "$Revision: 1.14 $"[11:-2]
 __date__ = "$Date: 2009/05/26 05:16:51 $"[7:-2]
 
-__all__ = ["lookupFor",] # field classes added at the end of the module
+__all__ = ["lookupFor"]  # field classes added at the end of the module
 
 import datetime
 import struct
 import sys
+from functools import total_ordering
 
 from . import utils
 
-## abstract definitions
+# abstract definitions
 
-class DbfFieldDef(object):
+
+@total_ordering
+class DbfFieldDef:
     """Abstract field definition.
 
     Child classes must override ``type`` class attribute to provide datatype
@@ -56,8 +59,7 @@ class DbfFieldDef(object):
 
     """
 
-    __slots__ = ("name", "length", "decimalCount",
-        "start", "end", "ignoreErrors")
+    __slots__ = ("name", "decimalCount", "start", "end", "ignoreErrors")
 
     # length of the field, None in case of variable-length field,
     # or a number if this field is a fixed-length field
@@ -73,13 +75,12 @@ class DbfFieldDef(object):
     defaultValue = None
 
     def __init__(self, name, length=None, decimalCount=None,
-        start=None, stop=None, ignoreErrors=False,
-    ):
+                 start=None, stop=None, ignoreErrors=False):
         """Initialize instance."""
         assert self.typeCode is not None, "Type code must be overridden"
         assert self.defaultValue is not None, "Default value must be overridden"
-        ## fix arguments
-        if len(name) >10:
+        # fix arguments
+        if len(name) > 10:
             raise ValueError("Field name \"%s\" is too long" % name)
         name = str(name).upper()
         if self.__class__.length is None:
@@ -87,13 +88,12 @@ class DbfFieldDef(object):
                 raise ValueError("[%s] Length isn't specified" % name)
             length = int(length)
             if length <= 0:
-                raise ValueError("[%s] Length must be a positive integer"
-                    % name)
+                raise ValueError("[%s] Length must be a positive integer" % name)
         else:
             length = self.length
         if decimalCount is None:
             decimalCount = 0
-        ## set fields
+        # set fields
         self.name = name
         # FIXME: validate length according to the specification at
         # http://www.clicketyclick.dk/databases/xbase/format/data_types.html
@@ -103,8 +103,14 @@ class DbfFieldDef(object):
         self.start = start
         self.end = stop
 
-    def __cmp__(self, other):
-        return cmp(self.name, str(other).upper())
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __lt__(self, other):
+        return repr(self) < repr(other)
 
     def __hash__(self):
         return hash(self.name)
@@ -123,9 +129,9 @@ class DbfFieldDef(object):
 
         """
         assert len(string) == 32
-        _length = ord(string[16])
-        return cls(utils.unzfill(string)[:11], _length, ord(string[17]),
-            start, start + _length, ignoreErrors=ignoreErrors)
+        _length = string[16]
+        return cls(utils.unzfill(string)[:11].decode('utf-8'), _length,
+            string[17], start, start + _length, ignoreErrors=ignoreErrors)
     fromString = classmethod(fromString)
 
     def toString(self):
@@ -136,15 +142,11 @@ class DbfFieldDef(object):
             definition of this field.
 
         """
-        if sys.version_info < (2, 4):
-            # earlier versions did not support padding character
-            _name = self.name[:11] + "\0" * (11 - len(self.name))
-        else:
-            _name = self.name.ljust(11, '\0')
+        _name = self.name.ljust(11, '\0')
         return (
             _name +
             self.typeCode +
-            #data address
+            # data address
             chr(0) * 4 +
             chr(self.length) +
             chr(self.decimalCount) +
@@ -171,7 +173,7 @@ class DbfFieldDef(object):
         """Return decoded field value from the record string."""
         try:
             return self.decodeValue(self.rawFromRecord(record))
-        except:
+        except Exception:
             if self.ignoreErrors:
                 return utils.INVALID_VALUE
             else:
@@ -194,13 +196,14 @@ class DbfFieldDef(object):
         """
         raise NotImplementedError
 
-## real classes
+# real classes
+
 
 class DbfCharacterFieldDef(DbfFieldDef):
     """Definition of the character field."""
 
     typeCode = "C"
-    defaultValue = ""
+    defaultValue = b''
 
     def decodeValue(self, value):
         """Return string object.
@@ -208,7 +211,7 @@ class DbfCharacterFieldDef(DbfFieldDef):
         Return value is a ``value`` argument with stripped right spaces.
 
         """
-        return value.rstrip(" ")
+        return value.rstrip(b' ').decode('utf-8')
 
     def encodeValue(self, value):
         """Return raw data string encoded from a ``value``."""
@@ -235,8 +238,8 @@ class DbfNumericFieldDef(DbfFieldDef):
             Return value is a int (long) or float instance.
 
         """
-        value = value.strip(" \0")
-        if "." in value:
+        value = value.strip(b' \0')
+        if b'.' in value:
             # a float (has decimal separator)
             return float(value)
         elif value:
@@ -257,10 +260,12 @@ class DbfNumericFieldDef(DbfFieldDef):
                     % (self.name, _rv, self.length))
         return _rv
 
+
 class DbfFloatFieldDef(DbfNumericFieldDef):
     """Definition of the float field - same as numeric."""
 
     typeCode = "F"
+
 
 class DbfIntegerFieldDef(DbfFieldDef):
     """Definition of the integer field."""
@@ -277,6 +282,7 @@ class DbfIntegerFieldDef(DbfFieldDef):
         """Return string containing encoded ``value``."""
         return struct.pack("<i", int(value))
 
+
 class DbfCurrencyFieldDef(DbfFieldDef):
     """Definition of the currency field."""
 
@@ -291,6 +297,7 @@ class DbfCurrencyFieldDef(DbfFieldDef):
     def encodeValue(self, value):
         """Return string containing encoded ``value``."""
         return struct.pack("<q", round(value * 10000))
+
 
 class DbfLogicalFieldDef(DbfFieldDef):
     """Definition of the logical field."""
@@ -308,7 +315,7 @@ class DbfLogicalFieldDef(DbfFieldDef):
             return False
         if value in "YyTt":
             return True
-        raise ValueError("[%s] Invalid logical value %r" % (self.name, value))
+        raise ValueError("[{}] Invalid logical value {!r}".format(self.name, value))
 
     def encodeValue(self, value):
         """Return a character from the "TF?" set.
@@ -338,7 +345,7 @@ class DbfMemoFieldDef(DbfFieldDef):
 
     def decodeValue(self, value):
         """Return int .dbt block number decoded from the string object."""
-        #return int(value)
+        # return int(value)
         raise NotImplementedError
 
     def encodeValue(self, value):
@@ -347,7 +354,7 @@ class DbfMemoFieldDef(DbfFieldDef):
         Note: this is an internal method.
 
         """
-        #return str(value)[:self.length].ljust(self.length)
+        # return str(value)[:self.length].ljust(self.length)
         raise NotImplementedError
 
 
@@ -423,6 +430,7 @@ class DbfDateTimeFieldDef(DbfFieldDef):
 
 _fieldsRegistry = {}
 
+
 def registerField(fieldCls):
     """Register field definition class.
 
@@ -452,13 +460,14 @@ def lookupFor(typeCode):
     """
     # XXX: use typeCode.upper()? in case of any decign don't
     # forget to look to the same comment in ``registerField``
-    return _fieldsRegistry[typeCode]
+    return _fieldsRegistry[chr(typeCode)]
 
-## register generic types
+# register generic types
 
-for (_name, _val) in globals().items():
+
+for (_name, _val) in list(globals().items()):
     if isinstance(_val, type) and issubclass(_val, DbfFieldDef) \
-    and (_name != "DbfFieldDef"):
+       and (_name != "DbfFieldDef"):
         __all__.append(_name)
         registerField(_val)
 del _name, _val

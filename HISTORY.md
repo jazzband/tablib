@@ -1,5 +1,23 @@
 # History
 
+## Unreleased
+
+### Breaking changes
+
+- Dropped Python 2 support
+- Dependencies are now all optional. To install `tablib` as before with all
+  possible supported formats, run `pip install tablib[all]`
+
+### Improvements
+
+- Formats can now be dynamically registered through the
+  `tablib.formats.registry.refister` API (#256).
+
+### Bugfixes
+
+- Fixed a crash when exporting an empty string with the ReST format (#368)
+- Error cells from imported .xls files contain now the error string (#202)
+
 ## 0.14.0 (2019-10-19)
 
 ### Deprecations

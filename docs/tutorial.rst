@@ -35,7 +35,7 @@ You can now start filling this :class:`Dataset <tablib.Dataset>` object with dat
 
 .. admonition:: Example Context
 
-    From here on out, if you see ``data``, assume that it's a fresh 
+    From here on out, if you see ``data``, assume that it's a fresh
     :class:`Dataset <tablib.Dataset>` object.
 
 
@@ -109,6 +109,12 @@ Creating a :class:`tablib.Dataset` object by importing a pre-existing file is si
    imported_data = Dataset().load(open('data.csv').read())
 
 This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
+
+.. admonition:: Source without headers
+
+    When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and the data source does not have headers, the import should be done as follows ::
+
+    imported_data = Dataset().load(open('data.csv').read(), headers=False)
 
 --------------
 Exporting Data
@@ -200,7 +206,7 @@ Delete a range of rows::
 Advanced Usage
 ==============
 
-This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`
+This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`.
 
 And now for something completely different.
 
@@ -287,24 +293,35 @@ Let's tag some students. ::
     students.headers = ['first', 'last']
 
     students.rpush(['Kenneth', 'Reitz'], tags=['male', 'technical'])
+    students.rpush(['Daniel', 'Dupont'], tags=['male', 'creative' ])
     students.rpush(['Bessie', 'Monke'], tags=['female', 'creative'])
 
-Now that we have extra meta-data on our rows, we can easily filter our :class:`Dataset`. Let's just see Male students. ::
+Now that we have extra meta-data on our rows, we can easily filter our :class:`Dataset`. Let's just see Female students. ::
 
+    >>> students.filter(['female']).yaml
+    - {first: Bessie, Last: Monke}
 
-    >>> students.filter(['male']).yaml
-    - {first: Kenneth, Last: Reitz}
+By default, when you pass a list of tags you get filter type or. :: 
+
+    >>> students.filter(['female', 'creative']).yaml
+    - {first: Daniel, Last: Dupont}
+    - {first: Bessie, Last: Monke}
+
+Using chaining you can get a filter type and. ::
+
+    >>> students.filter(['female']).filter(['creative']).yaml
+    - {first: Bessie, Last: Monke}
 
 It's that simple. The original :class:`Dataset` is untouched.
 
 Open an Excel Workbook and read first sheet
 -------------------------------------------
 
-To open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet), use the following:
+Open an Excel 2007 and later workbook with a single sheet (or a workbook with multiple sheets but you just want the first sheet). ::
 
-data = tablib.Dataset()
-data.xlsx = open('my_excel_file.xlsx', 'rb').read()
-print(data)
+    data = tablib.Dataset()
+    data.xlsx = open('my_excel_file.xlsx', 'rb').read()
+    print(data)
 
 Excel Workbook With Multiple Sheets
 ------------------------------------
@@ -321,7 +338,7 @@ All we have to do is add them to a :class:`Databook` object... ::
 ... and export to Excel just like :class:`Datasets <Dataset>`. ::
 
     with open('students.xls', 'wb') as f:
-        f.write(book.xls)
+        f.write(book.export('xls'))
 
 The resulting ``students.xls`` file will contain a separate spreadsheet for each :class:`Dataset` object in the :class:`Databook`.
 

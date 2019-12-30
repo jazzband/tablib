@@ -1,21 +1,20 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Tests for Tablib."""
-from __future__ import unicode_literals
 
 import datetime
 import doctest
 import json
 import pickle
-import sys
 import unittest
+from collections import OrderedDict
+from pathlib import Path
 from uuid import uuid4
 
-from MarkupPy import markup
 import tablib
-from tablib.compat import unicode, is_py3
+from MarkupPy import markup
 from tablib.core import Row, detect_format
-from tablib.formats import _csv as csv_module
+from tablib.exceptions import UnsupportedFormat
+from tablib.formats import registry
 
 
 class BaseTestCase(unittest.TestCase):
@@ -50,6 +49,16 @@ class TablibTestCase(BaseTestCase):
             if format_ in exclude:
                 continue
             dataset.export(format_)
+
+    def test_unknown_format(self):
+        with self.assertRaises(UnsupportedFormat):
+            data.export('??')
+        # A known format but uninstalled
+        del registry._formats['ods']
+        msg = (r"The 'ods' format is not available. You may want to install the "
+               "odfpy package \\(or `pip install tablib\\[ods\\]`\\).")
+        with self.assertRaisesRegex(UnsupportedFormat, msg):
+            data.export('ods')
 
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
@@ -207,7 +216,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders[2:], [self.tom])
 
     def test_row_slicing(self):
-        """Verify Row's __getslice__ method. Issue #184."""
+        """Verify Row slicing. Issue #184."""
 
         john = Row(self.john)
 
@@ -252,10 +261,7 @@ class TablibTestCase(BaseTestCase):
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
-        if is_py3:
-            new_row = ('å', 'é')
-        else:
-            exec ("new_row = (u'å', u'é')")
+        new_row = ('å', 'é')
 
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
@@ -286,6 +292,15 @@ class TablibTestCase(BaseTestCase):
         # These formats don't implement the book abstraction.
         unsupported = ['csv', 'tsv', 'jira', 'latex', 'df']
         self._test_export_data_in_all_formats(book, exclude=unsupported)
+
+    def test_book_unsupported_loading(self):
+        with self.assertRaises(UnsupportedFormat):
+            tablib.Databook().load('Any stream', 'csv')
+
+    def test_book_unsupported_export(self):
+        book = tablib.Databook().load('[{"title": "first", "data": [{"first_name": "John"}]}]', 'json')
+        with self.assertRaises(UnsupportedFormat):
+            book.export('csv')
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
@@ -459,7 +474,7 @@ class TablibTestCase(BaseTestCase):
         # add another entry to test right field width for
         # integer
         self.founders.append(('Old', 'Man', 100500))
-        self.assertEqual('first_name|last_name |gpa   ', unicode(self.founders).split('\n')[0])
+        self.assertEqual('first_name|last_name |gpa   ', str(self.founders).split('\n')[0])
 
     def test_pickle_unpickle_dataset(self):
         before_pickle = self.founders.export('json')
@@ -467,7 +482,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(founders.export('json'), before_pickle)
 
     def test_databook_add_sheet_accepts_only_dataset_instances(self):
-        class NotDataset(object):
+        class NotDataset:
             def append(self, item):
                 pass
 
@@ -499,16 +514,86 @@ class TablibTestCase(BaseTestCase):
         self.founders.append(('First\nSecond', 'Name', 42))
         self.founders.export('xlsx')
 
-    def test_rst_force_grid(self):
-        data.append(self.john)
-        data.append(self.george)
-        data.headers = self.headers
+    def test_row_repr(self):
+        """Row repr."""
+        # Arrange
+        john = Row(self.john)
 
-        simple = tablib.formats._rst.export_set(data)
-        grid = tablib.formats._rst.export_set(data, force_grid=True)
-        self.assertNotEqual(simple, grid)
-        self.assertNotIn('+', simple)
-        self.assertIn('+', grid)
+        # Act
+        output = str(john)
+
+        # Assert
+        self.assertEqual(output, "['John', 'Adams', 90]")
+
+    def test_row_pickle_unpickle(self):
+        """Row __setstate__ and __getstate__."""
+        # Arrange
+        before_pickle = Row(self.john)
+
+        # Act
+        output = pickle.loads(pickle.dumps(before_pickle))
+
+        # Assert
+        self.assertEqual(output[0], before_pickle[0])
+        self.assertEqual(output[1], before_pickle[1])
+        self.assertEqual(output[2], before_pickle[2])
+
+    def test_row_lpush(self):
+        """Row lpush."""
+        # Arrange
+        john = Row(self.john)
+        george = Row(self.george)
+
+        # Act
+        john.lpush(george)
+
+        # Assert
+        self.assertEqual(john[-1], george)
+
+    def test_row_append(self):
+        """Row append."""
+        # Arrange
+        john = Row(self.john)
+        george = Row(self.george)
+
+        # Act
+        john.append(george)
+
+        # Assert
+        self.assertEqual(john[0], george)
+
+    def test_row_contains(self):
+        """Row __contains__."""
+        # Arrange
+        john = Row(self.john)
+
+        # Act / Assert
+        self.assertIn("John", john)
+
+    def test_row_no_tag(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john)
+
+        # Act / Assert
+        self.assertFalse(john.has_tag("not found"))
+        self.assertFalse(john.has_tag(None))
+
+    def test_row_has_tag(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john, tags=["tag1"])
+
+        # Act / Assert
+        self.assertTrue(john.has_tag("tag1"))
+
+    def test_row_has_tags(self):
+        """Row has_tag."""
+        # Arrange
+        john = Row(self.john, tags=["tag1", "tag2"])
+
+        # Act / Assert
+        self.assertTrue(john.has_tag(["tag2", "tag1"]))
 
 
 class HTMLTests(BaseTestCase):
@@ -545,10 +630,62 @@ class HTMLTests(BaseTestCase):
         html.table.close()
         html = str(html)
 
-        headers = ['foo', None, 'bar'];
+        headers = ['foo', None, 'bar']
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
 
         self.assertEqual(html, d.html)
+
+
+class RSTTests(BaseTestCase):
+    def test_rst_force_grid(self):
+        data = tablib.Dataset()
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+
+        fmt = registry.get_format('rst')
+        simple = fmt.export_set(data)
+        grid = fmt.export_set(data, force_grid=True)
+        self.assertNotEqual(simple, grid)
+        self.assertNotIn('+', simple)
+        self.assertIn('+', grid)
+
+    def test_empty_string(self):
+        data = tablib.Dataset()
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(('Wendy', '', 43))
+        self.assertEqual(
+            data.export('rst'),
+            '==========  =========  ===\n'
+            'first_name  last_name  gpa\n'
+            '==========  =========  ===\n'
+            'John        Adams      90 \n'
+            'Wendy                  43 \n'
+            '==========  =========  ==='
+        )
+
+    def test_rst_export_set(self):
+        # Arrange
+        data = tablib.Dataset()
+        data.append(self.john)
+        data.headers = self.headers
+        fmt = registry.get_format("rst")
+
+        # Act
+        out1 = fmt.export_set(data)
+        out2 = fmt.export_set_as_simple_table(data)
+
+        # Assert
+        self.assertEqual(out1, out2)
+        self.assertEqual(
+            out1,
+            "==========  =========  ===\n"
+            "first_name  last_name  gpa\n"
+            "==========  =========  ===\n"
+            "John        Adams      90 \n"
+            "==========  =========  ===",
+        )
 
 
 class CSVTests(BaseTestCase):
@@ -564,8 +701,9 @@ class CSVTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.csv.detect(_csv))
-        self.assertFalse(tablib.formats.csv.detect(_bunk))
+        fmt = registry.get_format('csv')
+        self.assertTrue(fmt.detect(_csv))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_csv_import_set(self):
         """Generate and import CSV set serialization."""
@@ -631,6 +769,16 @@ class CSVTests(BaseTestCase):
 
         self.assertEqual(_csv, data.csv)
 
+    def test_csv_import_set_commas_embedded(self):
+        """Comma-separated CSV can include commas inside quoted string."""
+        csv_text = (
+            'id,name,description,count\r\n'
+            '12,Smith,"Red, rounded",4\r\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(data[0][2], 'Red, rounded')
+        self.assertEqual(data.csv, csv_text)
+
     def test_csv_import_set_with_unicode_str(self):
         """Import CSV set with non-ascii characters in unicode literal"""
         csv_text = (
@@ -657,6 +805,12 @@ class CSVTests(BaseTestCase):
 
         self.assertEqual(csv, self.founders.csv)
 
+    def test_csv_export_options(self):
+        """Exporting support csv.writer() parameters."""
+        data.append(('1. a', '2. b', '3. c'))
+        result = data.export('csv', delimiter=' ', quotechar='|')
+        self.assertEqual(result, '|1. a| |2. b| |3. c|\r\n')
+
     def test_csv_stream_export(self):
         """Verify exporting dataset object as CSV from file object."""
 
@@ -672,7 +826,8 @@ class CSVTests(BaseTestCase):
                 csv += str(col) + ','
             csv = csv.strip(',') + '\r\n'
 
-        csv_stream = csv_module.export_stream_set(self.founders)
+        frm = registry.get_format('csv')
+        csv_stream = frm.export_stream_set(self.founders)
         self.assertEqual(csv, csv_stream.getvalue())
 
     def test_unicode_csv(self):
@@ -680,10 +835,7 @@ class CSVTests(BaseTestCase):
 
         data = tablib.Dataset()
 
-        if sys.version_info[0] > 2:
-            data.append(['\xfc', '\xfd'])
-        else:
-            exec ("data.append([u'\xfc', u'\xfd'])")
+        data.append(['\xfc', '\xfd'])
 
         data.csv
 
@@ -694,7 +846,7 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         headers = data.headers
-        self.assertTrue(isinstance(headers[0], unicode))
+        self.assertTrue(isinstance(headers[0], str))
 
         orig_first_name = self.founders[self.headers[0]]
         csv_first_name = data[headers[0]]
@@ -707,7 +859,7 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         target_header = data.headers[0]
-        self.assertTrue(isinstance(target_header, unicode))
+        self.assertTrue(isinstance(target_header, str))
 
         del data[target_header]
 
@@ -772,8 +924,9 @@ class TSVTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.tsv.detect(_tsv))
-        self.assertFalse(tablib.formats.tsv.detect(_bunk))
+        fmt = registry.get_format('tsv')
+        self.assertTrue(fmt.detect(_tsv))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_tsv_export(self):
         """Verify exporting dataset object as TSV."""
@@ -793,16 +946,33 @@ class TSVTests(BaseTestCase):
         self.assertEqual(tsv, self.founders.tsv)
 
 
+class XLSTests(BaseTestCase):
+    def test_xls_format_detect(self):
+        """Test the XLS format detection."""
+        in_stream = self.founders.xls
+        self.assertEqual(detect_format(in_stream), 'xls')
+
+    def test_xls_import_with_errors(self):
+        """Errors from imported files are kept as errors."""
+        xls_source = Path(__file__).parent / 'files' / 'errors.xls'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh.read())
+        self.assertEqual(
+            data.dict[0],
+            OrderedDict([
+                ('div by 0', '#DIV/0!'),
+                ('name unknown', '#NAME?'),
+                ('not available (formula)', '#N/A'),
+                ('not available (static)', '#N/A')
+            ])
+        )
+
+
 class XLSXTests(BaseTestCase):
     def test_xlsx_format_detect(self):
         """Test the XLSX format detection."""
         in_stream = self.founders.xlsx
         self.assertEqual(detect_format(in_stream), 'xlsx')
-
-    def test_xls_format_detect(self):
-        """Test the XLS format detection."""
-        in_stream = self.founders.xls
-        self.assertEqual(detect_format(in_stream), 'xls')
 
     def test_xlsx_import_set(self):
         date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
@@ -834,8 +1004,9 @@ class JSONTests(BaseTestCase):
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.json.detect(_json))
-        self.assertFalse(tablib.formats.json.detect(_bunk))
+        fmt = registry.get_format('json')
+        self.assertTrue(fmt.detect(_json))
+        self.assertFalse(fmt.detect(_bunk))
 
     def test_json_import_book(self):
         """Generate and import JSON book serialization."""
@@ -889,12 +1060,14 @@ class YAMLTests(BaseTestCase):
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
         _tsv = 'foo\tbar'
         _bunk = (
-            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†'
+            'ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
 
-        self.assertTrue(tablib.formats.yaml.detect(_yaml))
-        self.assertFalse(tablib.formats.yaml.detect(_bunk))
-        self.assertFalse(tablib.formats.yaml.detect(_tsv))
+        fmt = registry.get_format('yaml')
+        self.assertTrue(fmt.detect(_yaml))
+        self.assertFalse(fmt.detect(_bunk))
+        self.assertFalse(fmt.detect(_tsv))
 
     def test_yaml_import_book(self):
         """Generate and import YAML book serialization."""
@@ -923,6 +1096,17 @@ class YAMLTests(BaseTestCase):
         data.yaml = _yaml
 
         self.assertEqual(_yaml, data.yaml)
+
+    def test_yaml_export(self):
+        """YAML export"""
+
+        expected = """\
+- {first_name: John, gpa: 90, last_name: Adams}
+- {first_name: George, gpa: 67, last_name: Washington}
+- {first_name: Thomas, gpa: 50, last_name: Jefferson}
+"""
+        output = self.founders.yaml
+        self.assertEqual(output, expected)
 
 
 class LatexTests(BaseTestCase):
@@ -1000,7 +1184,7 @@ class DBFTests(BaseTestCase):
             for reg_char, data_char in zip(_dbf, data.dbf):
                 so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char %s: %s vs %s %s' % (
+                    raise AssertionError('Failing at char {}: {} vs {} {}'.format(
                         index, reg_char, data_char, so_far))
                 index += 1
 
@@ -1030,11 +1214,9 @@ class DBFTests(BaseTestCase):
         _regression_dbf += b' 50.0000000'
         _regression_dbf += b'\x1a'
 
-        if is_py3:
-            # If in python3, decode regression string to binary.
-            # _regression_dbf = bytes(_regression_dbf, 'utf-8')
-            # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
-            pass
+        # If in python3, decode regression string to binary.
+        # _regression_dbf = bytes(_regression_dbf, 'utf-8')
+        # _regression_dbf = _regression_dbf.replace(b'\n', b'\r')
 
         try:
             self.assertEqual(_regression_dbf, data.dbf)
@@ -1045,7 +1227,7 @@ class DBFTests(BaseTestCase):
                 # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
-                        'Failing at char %s: %s vs %s (found %s)' % (
+                        'Failing at char {}: {} vs {} (found {})'.format(
                             index, reg_char, data_char, found_so_far))
                 index += 1
 
@@ -1078,12 +1260,13 @@ class DBFTests(BaseTestCase):
         _bunk = (
             '¡¡¡¡¡¡¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
-        self.assertTrue(tablib.formats.dbf.detect(_dbf))
-        self.assertFalse(tablib.formats.dbf.detect(_yaml))
-        self.assertFalse(tablib.formats.dbf.detect(_tsv))
-        self.assertFalse(tablib.formats.dbf.detect(_csv))
-        self.assertFalse(tablib.formats.dbf.detect(_json))
-        self.assertFalse(tablib.formats.dbf.detect(_bunk))
+        fmt = registry.get_format('dbf')
+        self.assertTrue(fmt.detect(_dbf))
+        self.assertFalse(fmt.detect(_yaml))
+        self.assertFalse(fmt.detect(_tsv))
+        self.assertFalse(fmt.detect(_csv))
+        self.assertFalse(fmt.detect(_json))
+        self.assertFalse(fmt.detect(_bunk))
 
 
 class JiraTests(BaseTestCase):
@@ -1107,5 +1290,17 @@ class JiraTests(BaseTestCase):
 class DocTests(unittest.TestCase):
 
     def test_rst_formatter_doctests(self):
+        import tablib.formats._rst
         results = doctest.testmod(tablib.formats._rst)
         self.assertEqual(results.failed, 0)
+
+
+class CliTests(BaseTestCase):
+    def test_cli_export_github(self):
+        self.assertEqual('|---|---|---|\n| a | b | c |', tablib.Dataset(['a','b','c']).export('cli', tablefmt='github'))
+
+    def test_cli_export_simple(self):
+        self.assertEqual('-  -  -\na  b  c\n-  -  -', tablib.Dataset(['a','b','c']).export('cli', tablefmt='simple'))
+
+    def test_cli_export_grid(self):
+        self.assertEqual('+---+---+---+\n| a | b | c |\n+---+---+---+', tablib.Dataset(['a','b','c']).export('cli', tablefmt='grid'))

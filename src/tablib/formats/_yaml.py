@@ -1,53 +1,53 @@
-# -*- coding: utf-8 -*-
-
 """ Tablib - YAML Support.
 """
 
 import tablib
 import yaml
 
-title = 'yaml'
-extensions = ('yaml', 'yml')
 
+class YAMLFormat:
+    title = 'yaml'
+    extensions = ('yaml', 'yml')
 
-def export_set(dataset):
-    """Returns YAML representation of Dataset."""
+    @classmethod
+    def export_set(cls, dataset):
+        """Returns YAML representation of Dataset."""
 
-    return yaml.safe_dump(dataset._package(ordered=False))
+        return yaml.safe_dump(dataset._package(ordered=False), default_flow_style=None)
 
+    @classmethod
+    def export_book(cls, databook):
+        """Returns YAML representation of Databook."""
+        return yaml.safe_dump(databook._package(ordered=False), default_flow_style=None)
 
-def export_book(databook):
-    """Returns YAML representation of Databook."""
-    return yaml.safe_dump(databook._package(ordered=False))
+    @classmethod
+    def import_set(cls, dset, in_stream):
+        """Returns dataset from YAML stream."""
 
+        dset.wipe()
+        dset.dict = yaml.safe_load(in_stream)
 
-def import_set(dset, in_stream):
-    """Returns dataset from YAML stream."""
+    @classmethod
+    def import_book(cls, dbook, in_stream):
+        """Returns databook from YAML stream."""
 
-    dset.wipe()
-    dset.dict = yaml.safe_load(in_stream)
+        dbook.wipe()
 
+        for sheet in yaml.safe_load(in_stream):
+            data = tablib.Dataset()
+            data.title = sheet['title']
+            data.dict = sheet['data']
+            dbook.add_sheet(data)
 
-def import_book(dbook, in_stream):
-    """Returns databook from YAML stream."""
-
-    dbook.wipe()
-
-    for sheet in yaml.safe_load(in_stream):
-        data = tablib.Dataset()
-        data.title = sheet['title']
-        data.dict = sheet['data']
-        dbook.add_sheet(data)
-
-
-def detect(stream):
-    """Returns True if given stream is valid YAML."""
-    try:
-        _yaml = yaml.safe_load(stream)
-        if isinstance(_yaml, (list, tuple, dict)):
-            return True
-        else:
+    @classmethod
+    def detect(cls, stream):
+        """Returns True if given stream is valid YAML."""
+        try:
+            _yaml = yaml.safe_load(stream)
+            if isinstance(_yaml, (list, tuple, dict)):
+                return True
+            else:
+                return False
+        except (yaml.parser.ParserError, yaml.reader.ReaderError,
+                yaml.scanner.ScannerError):
             return False
-    except (yaml.parser.ParserError, yaml.reader.ReaderError,
-            yaml.scanner.ScannerError):
-        return False
