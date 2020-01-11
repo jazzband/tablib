@@ -12,7 +12,6 @@ from collections import OrderedDict
 from copy import copy
 from operator import itemgetter
 
-from tablib import formats
 from tablib.exceptions import (
     HeadersNeeded,
     InvalidDatasetIndex,
@@ -416,7 +415,7 @@ class Dataset:
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_set'):
             raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
-            
+
         if not import_set:
             raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
 

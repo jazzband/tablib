@@ -169,7 +169,8 @@ class TablibTestCase(BaseTestCase):
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
 
-        new_col = lambda x: x[0]
+        def new_col(x):
+            return x[0]
 
         self.founders.append_col(new_col, header='first_again')
 
@@ -1313,10 +1314,19 @@ class DocTests(unittest.TestCase):
 
 class CliTests(BaseTestCase):
     def test_cli_export_github(self):
-        self.assertEqual('|---|---|---|\n| a | b | c |', tablib.Dataset(['a','b','c']).export('cli', tablefmt='github'))
+        self.assertEqual(
+            '|---|---|---|\n| a | b | c |',
+            tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='github')
+        )
 
     def test_cli_export_simple(self):
-        self.assertEqual('-  -  -\na  b  c\n-  -  -', tablib.Dataset(['a','b','c']).export('cli', tablefmt='simple'))
+        self.assertEqual(
+            '-  -  -\na  b  c\n-  -  -',
+            tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='simple')
+        )
 
     def test_cli_export_grid(self):
-        self.assertEqual('+---+---+---+\n| a | b | c |\n+---+---+---+', tablib.Dataset(['a','b','c']).export('cli', tablefmt='grid'))
+        self.assertEqual(
+            '+---+---+---+\n| a | b | c |\n+---+---+---+',
+            tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='grid')
+        )

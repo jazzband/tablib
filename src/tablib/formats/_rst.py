@@ -85,7 +85,6 @@ class ReSTFormat:
         lines = [''.join((lpad, pad.join(line), rpad)) for line in lines]
         return lines
 
-
     @classmethod
     def _get_column_widths(cls, dataset, max_table_width=MAX_TABLE_WIDTH, pad_len=3):
         """
@@ -183,7 +182,6 @@ class ReSTFormat:
             lines.extend(cls._row_to_lines(values, column_widths, wrapper))
             lines.append(row_sep)
         return '\n'.join(lines)
-
 
     @classmethod
     def _use_simple_table(cls, head0, col0, width0):

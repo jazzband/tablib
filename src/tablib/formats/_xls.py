@@ -63,7 +63,6 @@ class XLSFormat:
         wb.save(stream)
         return stream.getvalue()
 
-
     @classmethod
     def import_set(cls, dset, in_stream, headers=True):
         """Returns databook from XLS stream."""
