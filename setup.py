@@ -16,6 +16,10 @@ setup(
     maintainer='Jazzband',
     maintainer_email='roadies@jazzband.co',
     url='https://tablib.readthedocs.io',
+    project_urls={
+        "Documentation": "https://tablib.readthedocs.io",
+        "Source": "https://github.com/jazzband/tablib",
+    },
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     license='MIT',
