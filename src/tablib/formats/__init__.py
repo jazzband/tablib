@@ -17,7 +17,7 @@ uninstalled_format_messages = {
     "df": {"package_name": "pandas package", "extras_name": "pandas"},
     "html": {"package_name": "MarkupPy package", "extras_name": "html"},
     "ods": {"package_name": "odfpy package", "extras_name": "ods"},
-    "xls": {"package_name": "odfpy and xlwt packages", "extras_name": "ods"},
+    "xls": {"package_name": "xlrd and xlwt packages", "extras_name": "xls"},
     "xlsx": {"package_name": "openpyxl package", "extras_name": "xlsx"},
     "yaml": {"package_name": "pyyaml package", "extras_name": "yaml"},
 }
