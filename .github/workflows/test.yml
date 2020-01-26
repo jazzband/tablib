@@ -28,6 +28,6 @@ jobs:
 
     - name: Tox tests
       shell: bash
-      # Drop the dot: py3.7-tests -> py37-tests
+      # Drop the dot: py3.7 -> py37
       run: |
-        tox -e py`echo ${{ matrix.python-version }} | tr -d .`-tests
+        tox -e py`echo ${{ matrix.python-version }} | tr -d .`
