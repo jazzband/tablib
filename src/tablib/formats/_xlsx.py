@@ -3,12 +3,12 @@
 
 from io import BytesIO
 
-import openpyxl
 import tablib
-
-Workbook = openpyxl.workbook.Workbook
-ExcelWriter = openpyxl.writer.excel.ExcelWriter
-get_column_letter = openpyxl.utils.get_column_letter
+from openpyxl.reader.excel import ExcelReader, load_workbook
+from openpyxl.styles import Alignment, Font
+from openpyxl.utils import get_column_letter
+from openpyxl.workbook import Workbook
+from openpyxl.writer.excel import ExcelWriter
 
 
 class XLSXFormat:
@@ -19,7 +19,10 @@ class XLSXFormat:
     def detect(cls, stream):
         """Returns True if given stream is a readable excel file."""
         try:
-            openpyxl.reader.excel.load_workbook(stream, read_only=True)
+            # No need to fully load the file, it should be enough to be able to
+            # read the manifest.
+            reader = ExcelReader(stream, read_only=False)
+            reader.read_manifest()
             return True
         except Exception:
             return False
@@ -60,7 +63,7 @@ class XLSXFormat:
 
         dset.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(in_stream, read_only=True)
+        xls_book = load_workbook(in_stream, read_only=True)
         sheet = xls_book.active
 
         dset.title = sheet.title
@@ -78,7 +81,7 @@ class XLSXFormat:
 
         dbook.wipe()
 
-        xls_book = openpyxl.reader.excel.load_workbook(in_stream, read_only=True)
+        xls_book = load_workbook(in_stream, read_only=True)
 
         for sheet in xls_book.worksheets:
             data = tablib.Dataset()
@@ -102,8 +105,8 @@ class XLSXFormat:
             _offset = i
             _package.insert((sep[0] + _offset), (sep[1],))
 
-        bold = openpyxl.styles.Font(bold=True)
-        wrap_text = openpyxl.styles.Alignment(wrap_text=True)
+        bold = Font(bold=True)
+        wrap_text = Alignment(wrap_text=True)
 
         for i, row in enumerate(_package):
             row_number = i + 1
