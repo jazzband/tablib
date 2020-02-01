@@ -74,7 +74,7 @@ class Row:
         self.insert(0, value)
 
     def lpush(self, value):
-        self.insert(len(value), value)
+        self.insert(len(self._row), value)
 
     def append(self, value):
         self.rpush(value)
