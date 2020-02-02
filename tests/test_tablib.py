@@ -559,12 +559,15 @@ class TablibTestCase(BaseTestCase):
         # Arrange
         john = Row(self.john)
         george = Row(self.george)
+        tom = Row(self.tom)
 
         # Act
+        john.lpush(tom)
         john.lpush(george)
 
         # Assert
         self.assertEqual(john[-1], george)
+        self.assertEqual(john[-2], tom)
 
     def test_row_append(self):
         """Row append."""
