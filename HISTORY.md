@@ -1,5 +1,13 @@
 # History
 
+## 2.0.0 (Unreleased)
+
+### Breaking changes
+
+- The `Row.lpush/rpush` logic was reversed. `lpush` was appending while `rpush`
+  and `append` were prepending. This was fixed (reversed behavior). If you
+  counted on the broken behavior, please update your code (#453).
+
 ## 1.1.0 (2020-02-13)
 
 ### Deprecations
