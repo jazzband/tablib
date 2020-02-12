@@ -804,6 +804,25 @@ class CSVTests(BaseTestCase):
         data.csv = csv_text
         self.assertEqual(data.width, 7)
 
+    def test_csv_import_set_ragged(self):
+        """Import CSV set when not all rows have the same length."""
+        csv_text = (
+            "H1,H2,H3\n"
+            "A,B\n"
+            "C,D,E\n"
+            "\n"
+            "F\n"
+        )
+        dataset = tablib.import_set(csv_text, format="csv")
+        self.assertEqual(
+            str(dataset),
+            'H1|H2|H3\n'
+            '--|--|--\n'
+            'A |B |  \n'
+            'C |D |E \n'
+            'F |  |  '
+        )
+
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 

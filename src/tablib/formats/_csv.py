@@ -46,6 +46,8 @@ class CSVFormat:
             if (i == 0) and (headers):
                 dset.headers = row
             elif row:
+                if i > 0 and len(row) < dset.width:
+                    row += [''] * (dset.width - len(row))
                 dset.append(row)
 
     @classmethod

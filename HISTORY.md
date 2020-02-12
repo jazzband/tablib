@@ -9,6 +9,11 @@
   will remain in Tablib 1.x and will be fixed (reversed) in Tablib 2.0.0 (#453). If you
   count on the broken behavior, please update your code when you upgrade to Tablib 2.x.
 
+### Improvements
+
+- Tablib is now able to import CSV content where not all rows have the same
+  length. Missing columns on any line receive the empty string (#226).
+
 ## 1.0.0 (2020-01-13)
 
 ### Breaking changes
