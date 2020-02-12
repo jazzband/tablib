@@ -1,5 +1,14 @@
 # History
 
+## 1.1.0 (Unreleased)
+
+### Deprecations
+
+- Upcoming breaking change in Tablib 2.0.0: the `Row.lpush/rpush` logic is reversed.
+  `lpush` is appending while `rpush` and `append` are prepending. The broken behavior
+  will remain in Tablib 1.x and will be fixed (reversed) in Tablib 2.0.0 (#453). If you
+  count on the broken behavior, please update your code when you upgrade to Tablib 2.x.
+
 ## 1.0.0 (2020-01-13)
 
 ### Breaking changes
