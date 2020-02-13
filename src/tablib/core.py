@@ -71,10 +71,10 @@ class Row:
             setattr(self, k, v)
 
     def rpush(self, value):
-        self.insert(0, value)
+        self.insert(len(self._row), value)
 
     def lpush(self, value):
-        self.insert(len(value), value)
+        self.insert(0, value)
 
     def append(self, value):
         self.rpush(value)

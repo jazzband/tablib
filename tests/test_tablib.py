@@ -556,27 +556,15 @@ class TablibTestCase(BaseTestCase):
 
     def test_row_lpush(self):
         """Row lpush."""
-        # Arrange
         john = Row(self.john)
-        george = Row(self.george)
-
-        # Act
-        john.lpush(george)
-
-        # Assert
-        self.assertEqual(john[-1], george)
+        john.lpush(53)
+        self.assertEqual(john.list, [53, 'John', 'Adams', 90])
 
     def test_row_append(self):
         """Row append."""
-        # Arrange
         john = Row(self.john)
-        george = Row(self.george)
-
-        # Act
-        john.append(george)
-
-        # Assert
-        self.assertEqual(john[0], george)
+        john.append('stuff')
+        self.assertEqual(john.list, ['John', 'Adams', 90, 'stuff'])
 
     def test_row_contains(self):
         """Row __contains__."""
