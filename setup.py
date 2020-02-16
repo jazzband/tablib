@@ -38,13 +38,13 @@ setup(
     ],
     python_requires='>=3.5',
     extras_require={
-        'all': ['markuppy', 'odfpy', 'openpyxl>=2.4.0', 'pandas', 'pyyaml', 'tabulate', 'xlrd', 'xlwt'],
+        'all': ['markuppy', 'odfpy', 'openpyxl>=2.6.0', 'pandas', 'pyyaml', 'tabulate', 'xlrd', 'xlwt'],
         'cli': ['tabulate'],
         'html': ['markuppy'],
         'ods': ['odfpy'],
         'pandas': ['pandas'],
         'xls': ['xlrd', 'xlwt'],
-        'xlsx': ['openpyxl>=2.4.0'],
+        'xlsx': ['openpyxl>=2.6.0'],
         'yaml': ['pyyaml'],
     },
 )

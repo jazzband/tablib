@@ -8,6 +8,10 @@
   and `append` were prepending. This was fixed (reversed behavior). If you
   counted on the broken behavior, please update your code (#453).
 
+### Bugfixes
+
+- Fixed minimal openpyxl dependency version to 2.6.0 (#457).
+
 ## 1.1.0 (2020-02-13)
 
 ### Deprecations
