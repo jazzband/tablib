@@ -60,7 +60,7 @@ class DbfRecord:
 
         Arguments:
             dbf:
-                A `Dbf.Dbf` instance this record belonogs to.
+                A `Dbf.Dbf` instance this record belongs to.
             index:
                 An integer record index or None. If this value is
                 None, record will be appended to the DBF.
