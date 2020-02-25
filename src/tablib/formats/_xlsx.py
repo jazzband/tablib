@@ -63,7 +63,7 @@ class XLSXFormat:
 
         dset.wipe()
 
-        xls_book = load_workbook(in_stream, read_only=True)
+        xls_book = load_workbook(in_stream, read_only=True, data_only=True)
         sheet = xls_book.active
 
         dset.title = sheet.title
