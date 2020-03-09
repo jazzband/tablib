@@ -975,6 +975,12 @@ class XLSTests(BaseTestCase):
         in_stream = self.founders.xls
         self.assertEqual(detect_format(in_stream), 'xls')
 
+    def test_xls_date_import(self):
+        xls_source = Path(__file__).parent / 'files' / 'dates.xls'
+        with open(str(xls_source), mode='rb') as fh:
+            dset = tablib.Dataset().load(fh, 'xls')
+        self.assertEqual(dset.dict[0]['birth_date'], datetime.datetime(2015, 4, 12, 0, 0))
+
     def test_xls_import_with_errors(self):
         """Errors from imported files are kept as errors."""
         xls_source = Path(__file__).parent / 'files' / 'errors.xls'

@@ -6,6 +6,7 @@ from io import BytesIO
 import tablib
 import xlrd
 import xlwt
+from xlrd.xldate import xldate_as_datetime
 
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")
@@ -74,12 +75,19 @@ class XLSFormat:
 
         dset.title = sheet.name
 
+        def cell_value(value, type_):
+            if type_ == xlrd.XL_CELL_ERROR:
+                return xlrd.error_text_from_code[value]
+            elif type_ == xlrd.XL_CELL_DATE:
+                return xldate_as_datetime(value, xls_book.datemode)
+            return value
+
         for i in range(sheet.nrows):
             if i == 0 and headers:
                 dset.headers = sheet.row_values(0)
             else:
                 dset.append([
-                    val if typ != xlrd.XL_CELL_ERROR else xlrd.error_text_from_code[val]
+                    cell_value(val, typ)
                     for val, typ in zip(sheet.row_values(i), sheet.row_types(i))
                 ])
 
