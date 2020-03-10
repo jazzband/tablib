@@ -206,6 +206,10 @@ Import/export data in Excel 07+ Spreadsheet representation.
 This format is optional, install Tablib with ``pip install tablib[xlsx]`` to
 make the format available.
 
+.. note::
+
+    When reading an xlsx file it will read the cell values and not the cell formulas
+
 .. admonition:: Binary Warning
 
     The ``xlsx`` file format is binary, so make sure to write in binary mode::

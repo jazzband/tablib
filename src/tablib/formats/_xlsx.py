@@ -81,7 +81,7 @@ class XLSXFormat:
 
         dbook.wipe()
 
-        xls_book = load_workbook(in_stream, read_only=True)
+        xls_book = load_workbook(in_stream, read_only=True, data_only=True)
 
         for sheet in xls_book.worksheets:
             data = tablib.Dataset()
