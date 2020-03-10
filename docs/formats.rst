@@ -208,7 +208,12 @@ make the format available.
 
 .. note::
 
-    When reading an xlsx file it will read the cell values and not the cell formulas
+    When reading an ``xlsx`` file containing formulas in its cells, Tablib will
+    read the cell values, not the cell formulas.
+
+.. versionchanged:: 2.0.0
+
+    Reading now cell values instead of formulas.
 
 .. admonition:: Binary Warning
 

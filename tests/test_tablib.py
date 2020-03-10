@@ -1021,7 +1021,7 @@ class XLSXTests(BaseTestCase):
         """Test cell values are read and not formulas"""
         xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
         with xls_source.open('rb') as fh:
-            data = tablib.Dataset().load(fh.read())
+            data = tablib.Dataset().load(fh)
         self.assertEqual(data.headers[0], 'Hello World')
 
 

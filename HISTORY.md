@@ -12,11 +12,9 @@
 
 - Fixed minimal openpyxl dependency version to 2.6.0 (#457).
 
-## 1.1.1 (2020-03-10)
-
 ### Improvements
 
-- When importing an xlsx file it will now read cell values instead of formulas (#462)
+- When importing an xlsx file, Tablib will now read cell values instead of formulas (#462).
 
 ## 1.1.0 (2020-02-13)
 
