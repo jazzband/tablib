@@ -213,7 +213,7 @@ make the format available.
 
 .. versionchanged:: 2.0.0
 
-    Reading now cell values instead of formulas.
+    Reads cell values instead of formulas.
 
 .. admonition:: Binary Warning
 
