@@ -1023,6 +1023,13 @@ class XLSXTests(BaseTestCase):
             data.append(('string', b'\x0cf'))
             data.xlsx
 
+    def test_xlsx_cell_values(self):
+        """Test cell values are read and not formulas"""
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        self.assertEqual(data.headers[0], 'Hello World')
+
 
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):

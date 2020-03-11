@@ -13,6 +13,10 @@
 - Fixed minimal openpyxl dependency version to 2.6.0 (#457).
 - Dates from xls files are now read as Python datetime objects (#373).
 
+### Improvements
+
+- When importing an xlsx file, Tablib will now read cell values instead of formulas (#462).
+
 ## 1.1.0 (2020-02-13)
 
 ### Deprecations
