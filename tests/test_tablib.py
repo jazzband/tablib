@@ -1350,3 +1350,34 @@ class CliTests(BaseTestCase):
             '+---+---+---+\n| a | b | c |\n+---+---+---+',
             tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='grid')
         )
+
+
+class XMLTests(BaseTestCase):
+    def test_xml_export(self):
+        """Verify exporting dataset object as XML."""
+
+        xml = '<dataset>'
+        for row in self.founders:
+            xml += '<row>'
+            for i, header in enumerate(self.founders.headers):
+                xml += '<{}>{}</{}>'.format(header, row[i], header)
+            xml += '</row>'
+        xml += '</dataset>'
+
+        self.assertEqual(xml, self.founders.xml)
+
+    def test_xml_export_row_with_tag(self):
+        """Verify exporting dataset with row tags object as XML."""
+
+        local_data = tablib.Dataset(headers=['A', 'B'])
+        local_data.append(('a', 'b'), tags=['tag 1', 'tag 2'])
+
+        xml = '<dataset>'
+        for row_index, row in enumerate(local_data):
+            xml += '<row tags="{}">'.format(','.join(local_data._data[row_index].tags))
+            for header_index, header in enumerate(local_data.headers):
+                xml += '<{}>{}</{}>'.format(header, row[header_index], header)
+            xml += '</row>'
+        xml += '</dataset>'
+
+        self.assertEqual(xml, local_data.xml)
