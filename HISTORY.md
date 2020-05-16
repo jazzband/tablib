@@ -12,6 +12,7 @@
 
 - Fixed minimal openpyxl dependency version to 2.6.0 (#457).
 - Dates from xls files are now read as Python datetime objects (#373).
+- Allow import of "ragged" xlsx files (#465).
 
 ### Improvements
 

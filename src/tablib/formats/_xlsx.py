@@ -92,6 +92,8 @@ class XLSXFormat:
                 if (i == 0) and (headers):
                     data.headers = row_vals
                 else:
+                    if i > 0 and len(row_vals) < data.width:
+                        row_vals += [''] * (data.width - len(row_vals))
                     data.append(row_vals)
 
             dbook.add_sheet(data)

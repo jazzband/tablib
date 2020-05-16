@@ -1015,6 +1015,13 @@ class XLSXTests(BaseTestCase):
         self.assertEqual(data.dict[0]['float'], 21.55)
         self.assertEqual(data.dict[0]['date/time'], date_time)
 
+    def test_xlsx_import_set_ragged(self):
+        """Import XLSX file when not all rows have the same length."""
+        xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
+        with open(str(xlsx_source), mode='rb') as fh:
+            book = tablib.Databook().load(fh, 'xlsx')
+        self.assertEqual(book.sheets()[0].pop(), (1.0, ''))
+
     def test_xlsx_wrong_char(self):
         """Bad characters are not silently ignored. We let the exception bubble up."""
         from openpyxl.utils.exceptions import IllegalCharacterError
