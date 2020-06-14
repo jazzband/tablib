@@ -1,5 +1,11 @@
 # History
 
+## Unreleased
+
+### Bugfixes
+
+- Prevented crash in rst export with only-space strings (#469).
+
 ## 2.0.0 (2020-05-16)
 
 ### Breaking changes

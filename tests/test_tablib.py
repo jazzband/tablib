@@ -659,6 +659,7 @@ class RSTTests(BaseTestCase):
         data.headers = self.headers
         data.append(self.john)
         data.append(('Wendy', '', 43))
+        data.append(('Esther', ' ', 31))
         self.assertEqual(
             data.export('rst'),
             '==========  =========  ===\n'
@@ -666,6 +667,7 @@ class RSTTests(BaseTestCase):
             '==========  =========  ===\n'
             'John        Adams      90 \n'
             'Wendy                  43 \n'
+            'Esther                 31 \n'
             '==========  =========  ==='
         )
 

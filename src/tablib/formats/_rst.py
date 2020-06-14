@@ -24,7 +24,7 @@ def _max_word_len(text):
     >>> _max_word_len('Python Module for Tabular Datasets')
     8
     """
-    return max(len(word) for word in text.split()) if text else 0
+    return max([len(word) for word in text.split()], default=0) if text else 0
 
 
 class ReSTFormat:
