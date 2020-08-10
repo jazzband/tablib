@@ -4,7 +4,9 @@ from setuptools import find_packages, setup
 
 setup(
     name='tablib',
-    use_scm_version=True,
+    use_scm_version={
+        'write_to': 'src/tablib/_version.py',
+    },
     setup_requires=['setuptools_scm'],
     description='Format agnostic tabular data library (XLS, JSON, YAML, CSV)',
     long_description=(
