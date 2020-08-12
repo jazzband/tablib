@@ -122,7 +122,7 @@ class Registry:
             if key in uninstalled_format_messages:
                 raise UnsupportedFormat(
                     "The '{key}' format is not available. You may want to install the "
-                    "{package_name} (or `pip install tablib[{extras_name}]`).".format(
+                    "{package_name} (or `pip install \"tablib[{extras_name}]\"`).".format(
                         **uninstalled_format_messages[key], key=key
                     )
                 )

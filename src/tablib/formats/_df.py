@@ -30,7 +30,7 @@ class DataFrameFormat:
         if DataFrame is None:
             raise NotImplementedError(
                 'DataFrame Format requires `pandas` to be installed.'
-                ' Try `pip install tablib[pandas]`.')
+                ' Try `pip install "tablib[pandas]"`.')
         dataframe = DataFrame(dset.dict, columns=dset.headers)
         return dataframe
 
