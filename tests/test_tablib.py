@@ -57,7 +57,7 @@ class TablibTestCase(BaseTestCase):
         # A known format but uninstalled
         del registry._formats['ods']
         msg = (r"The 'ods' format is not available. You may want to install the "
-               "odfpy package \\(or `pip install tablib\\[ods\\]`\\).")
+               "odfpy package \\(or `pip install \"tablib\\[ods\\]\"`\\).")
         with self.assertRaisesRegex(UnsupportedFormat, msg):
             data.export('ods')
 

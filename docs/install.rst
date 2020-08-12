@@ -26,19 +26,19 @@ formats available:
 
 .. code-block:: console
 
-    $ pip install tablib[xlsx]
+    $ pip install "tablib[xlsx]"
 
 Or all possible formats:
 
 .. code-block:: console
 
-    $ pip install tablib[all]
+    $ pip install "tablib[all]"
 
 which is equivalent to:
 
 .. code-block:: console
 
-    $ pip install tablib[html, pandas, ods, xls, xlsx, yaml]
+    $ pip install "tablib[html, pandas, ods, xls, xlsx, yaml]"
 
 -------------------
 Download the Source

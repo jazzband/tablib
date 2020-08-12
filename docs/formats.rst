@@ -27,7 +27,7 @@ For example::
     dataset.export("cli", tablefmt="github")
     dataset.export("cli", tablefmt="grid")
 
-This format is optional, install Tablib with ``pip install tablib[cli]`` to
+This format is optional, install Tablib with ``pip install "tablib[cli]"`` to
 make the format available.
 
 csv
@@ -83,7 +83,7 @@ df (DataFrame)
 ==============
 
 Import/export using the pandas_ DataFrame format. This format is optional,
-install Tablib with ``pip install tablib[pandas]`` to make the format available.
+install Tablib with ``pip install "tablib[pandas]"`` to make the format available.
 
 .. _pandas: https://pandas.pydata.org/
 
@@ -94,7 +94,7 @@ The ``html`` format is currently export-only. The exports produce an HTML page
 with the data in a ``<table>``. If headers have been set, they will be used as
 table headers.
 
-This format is optional, install Tablib with ``pip install tablib[html]`` to
+This format is optional, install Tablib with ``pip install "tablib[html]"`` to
 make the format available.
 
 jira
@@ -132,7 +132,7 @@ ods
 Export data in OpenDocument Spreadsheet format. The ``ods`` format is currently
 export-only.
 
-This format is optional, install Tablib with ``pip install tablib[ods]`` to
+This format is optional, install Tablib with ``pip install "tablib[ods]"`` to
 make the format available.
 
 .. admonition:: Binary Warning
@@ -183,7 +183,7 @@ xls
 
 Import/export data in Legacy Excel Spreadsheet representation.
 
-This format is optional, install Tablib with ``pip install tablib[xls]`` to
+This format is optional, install Tablib with ``pip install "tablib[xls]"`` to
 make the format available.
 
 .. note::
@@ -203,7 +203,7 @@ xlsx
 
 Import/export data in Excel 07+ Spreadsheet representation.
 
-This format is optional, install Tablib with ``pip install tablib[xlsx]`` to
+This format is optional, install Tablib with ``pip install "tablib[xlsx]"`` to
 make the format available.
 
 .. note::
@@ -232,7 +232,7 @@ returned instead.
 
 Import assumes (for now) that headers exist.
 
-This format is optional, install Tablib with ``pip install tablib[yaml]`` to
+This format is optional, install Tablib with ``pip install "tablib[yaml]"`` to
 make the format available.
 
 .. _YAML: https://yaml.org
