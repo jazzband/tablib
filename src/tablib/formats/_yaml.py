@@ -13,12 +13,12 @@ class YAMLFormat:
     def export_set(cls, dataset):
         """Returns YAML representation of Dataset."""
 
-        return yaml.safe_dump(dataset._package(ordered=False), default_flow_style=None)
+        return yaml.safe_dump(dataset._package(ordered=False), default_flow_style=None,allow_unicode=True)
 
     @classmethod
     def export_book(cls, databook):
         """Returns YAML representation of Databook."""
-        return yaml.safe_dump(databook._package(ordered=False), default_flow_style=None)
+        return yaml.safe_dump(databook._package(ordered=False), default_flow_style=None,allow_unicode=True)
 
     @classmethod
     def import_set(cls, dset, in_stream):
