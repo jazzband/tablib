@@ -114,7 +114,7 @@ class XLSXFormat:
             row_number = i + 1
             for j, col in enumerate(row):
                 col_idx = get_column_letter(j + 1)
-                cell = ws['{}{}'.format(col_idx, row_number)]
+                cell = ws[f'{col_idx}{row_number}']
 
                 # bold headers
                 if (row_number == 1) and dataset.headers:

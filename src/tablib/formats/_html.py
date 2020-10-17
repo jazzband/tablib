@@ -55,7 +55,7 @@ class HTMLFormat:
 
         for i, dset in enumerate(databook._datasets):
             title = (dset.title if dset.title else 'Set %s' % (i))
-            wrapper.write('<{}>{}</{}>\n'.format(cls.BOOK_ENDINGS, title, cls.BOOK_ENDINGS))
+            wrapper.write(f'<{cls.BOOK_ENDINGS}>{title}</{cls.BOOK_ENDINGS}>\n')
             wrapper.write(dset.html)
             wrapper.write('\n')
 
