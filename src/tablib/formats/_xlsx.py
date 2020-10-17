@@ -3,12 +3,13 @@
 
 from io import BytesIO
 
-import tablib
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 from openpyxl.writer.excel import ExcelWriter
+
+import tablib
 
 
 class XLSXFormat:
