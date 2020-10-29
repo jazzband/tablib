@@ -2,6 +2,9 @@ name: Docs and lint
 
 on: [push, pull_request]
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
