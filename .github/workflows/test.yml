@@ -20,6 +20,20 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key:
+          ${{ matrix.os }}-${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ matrix.os }}-${{ matrix.python-version }}-v1-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
