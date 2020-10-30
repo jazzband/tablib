@@ -1,8 +1,9 @@
 """ Tablib - YAML Support.
 """
 
-import tablib
 import yaml
+
+import tablib
 
 
 class YAMLFormat:

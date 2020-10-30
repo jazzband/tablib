@@ -11,8 +11,9 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
 
-import tablib
 from MarkupPy import markup
+
+import tablib
 from tablib.core import Row, detect_format
 from tablib.exceptions import UnsupportedFormat
 from tablib.formats import registry

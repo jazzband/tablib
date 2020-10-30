@@ -3,12 +3,13 @@
 
 from io import BytesIO
 
-import tablib
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 from openpyxl.writer.excel import ExcelWriter
+
+import tablib
 
 
 class XLSXFormat:
@@ -114,7 +115,7 @@ class XLSXFormat:
             row_number = i + 1
             for j, col in enumerate(row):
                 col_idx = get_column_letter(j + 1)
-                cell = ws['{}{}'.format(col_idx, row_number)]
+                cell = ws[f'{col_idx}{row_number}']
 
                 # bold headers
                 if (row_number == 1) and dataset.headers:

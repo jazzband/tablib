@@ -315,7 +315,7 @@ class DbfLogicalFieldDef(DbfFieldDef):
             return False
         if value in "YyTt":
             return True
-        raise ValueError("[{}] Invalid logical value {!r}".format(self.name, value))
+        raise ValueError(f"[{self.name}] Invalid logical value {value!r}")
 
     def encodeValue(self, value):
         """Return a character from the "TF?" set.

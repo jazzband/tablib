@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Breaking changes
+
+- Dropped Python 3.5 support
+
+### Improvements
+
+- Added Python 3.9 support
+
 ### Bugfixes
 
 - Prevented crash in rst export with only-space strings (#469).

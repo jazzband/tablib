@@ -21,7 +21,7 @@ class JIRAFormat:
 
         header = cls._get_header(dataset.headers) if dataset.headers else ''
         body = cls._get_body(dataset)
-        return '{}\n{}'.format(header, body) if header else body
+        return f'{header}\n{body}' if header else body
 
     @classmethod
     def _get_body(cls, dataset):

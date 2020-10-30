@@ -2,23 +2,39 @@ name: Docs and lint
 
 on: [push, pull_request]
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
         env:
         - TOXENV: docs
         - TOXENV: lint
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key:
+            ${{ matrix.os }}-${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-v1-
 
       - name: Install dependencies
         run: |

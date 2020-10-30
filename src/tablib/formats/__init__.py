@@ -28,7 +28,7 @@ def load_format_class(dotted_path):
         module_path, class_name = dotted_path.rsplit('.', 1)
         return getattr(import_module(module_path), class_name)
     except (ValueError, AttributeError) as err:
-        raise ImportError("Unable to load format class '{}' ({})".format(dotted_path, err))
+        raise ImportError(f"Unable to load format class '{dotted_path}' ({err})")
 
 
 class FormatDescriptorBase:

@@ -3,10 +3,11 @@
 
 from io import BytesIO
 
-import tablib
 import xlrd
 import xlwt
 from xlrd.xldate import xldate_as_datetime
+
+import tablib
 
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")

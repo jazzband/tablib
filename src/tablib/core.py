@@ -414,10 +414,10 @@ class Dataset:
 
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_set'):
-            raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
+            raise UnsupportedFormat(f'Format {format} cannot be imported.')
 
         if not import_set:
-            raise UnsupportedFormat('Format {} cannot be imported.'.format(format))
+            raise UnsupportedFormat(f'Format {format} cannot be imported.')
 
         fmt.import_set(self, stream, **kwargs)
         return self
@@ -430,7 +430,7 @@ class Dataset:
         """
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'export_set'):
-            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
+            raise UnsupportedFormat(f'Format {format} cannot be exported.')
 
         return fmt.export_set(self, **kwargs)
 
@@ -875,7 +875,7 @@ class Databook:
 
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'import_book'):
-            raise UnsupportedFormat('Format {} cannot be loaded.'.format(format))
+            raise UnsupportedFormat(f'Format {format} cannot be loaded.')
 
         fmt.import_book(self, stream, **kwargs)
         return self
@@ -888,7 +888,7 @@ class Databook:
         """
         fmt = registry.get_format(format)
         if not hasattr(fmt, 'export_book'):
-            raise UnsupportedFormat('Format {} cannot be exported.'.format(format))
+            raise UnsupportedFormat(f'Format {format} cannot be exported.')
 
         return fmt.export_book(self, **kwargs)
 
