@@ -46,3 +46,8 @@ jobs:
       shell: bash
       run: |
         tox -e py
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
