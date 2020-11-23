@@ -163,16 +163,16 @@ the easiest way to test your changes for potential issues is to simply run the t
 Continuous Integration
 ----------------------
 
-Every pull request is automatically tested and inspected upon receipt with `Travis CI`_.
+Every pull request is automatically tested and inspected upon receipt with `GitHub Actions`_.
 If you broke the build, you will receive an email accordingly.
 
 Anyone may view the build status and history at any time.
 
-    https://travis-ci.org/jazzband/tablib
+    https://github.com/jazzband/tablib/actions
 
 Additional reports will also be included here in the future, including :pep:`8` checks and stress reports for extremely large datasets.
 
-.. _`Travis CI`: https://travis-ci.org/
+.. _`GitHub Actions`: https://github.com/jazzband/tablib/actions
 
 
 .. _docs:
