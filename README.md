@@ -4,7 +4,6 @@
 [![PyPI version](https://img.shields.io/pypi/v/tablib.svg)](https://pypi.org/project/tablib/)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/tablib.svg)](https://pypi.org/project/tablib/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/tablib.svg)](https://pypistats.org/packages/tablib)
-[![Travus CI status](https://img.shields.io/travis/jazzband/tablib/master?label=Travis%20CI&logo=travis)](https://travis-ci.org/jazzband/tablib)
 [![GitHub Actions status](https://github.com/jazzband/tablib/workflows/Test/badge.svg)](https://github.com/jazzband/tablib/actions)
 [![codecov](https://codecov.io/gh/jazzband/tablib/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/tablib)
 [![GitHub](https://img.shields.io/github/license/jazzband/tablib.svg)](LICENSE)
