@@ -57,18 +57,10 @@ class Row:
         del self._row[i]
 
     def __getstate__(self):
-
-        slots = dict()
-
-        for slot in self.__slots__:
-            attribute = getattr(self, slot)
-            slots[slot] = attribute
-
-        return slots
+        return self._row, self.tags
 
     def __setstate__(self, state):
-        for (k, v) in list(state.items()):
-            setattr(self, k, v)
+        self._row, self.tags = state
 
     def rpush(self, value):
         self.insert(len(self._row), value)
@@ -147,9 +139,9 @@ class Dataset:
 
     .. admonition:: Format Attributes Definition
 
-     If you look at the code, the various output/import formats are not
-     defined within the :class:`Dataset` object. To add support for a new format, see
-     :ref:`Adding New Formats <newformats>`.
+    If you look at the code, the various output/import formats are not
+    defined within the :class:`Dataset` object. To add support for a new format, see
+    :ref:`Adding New Formats <newformats>`.
 
     """
 
@@ -299,7 +291,7 @@ class Dataset:
     def _get_headers(self):
         """An *optional* list of strings to be used for header rows and attribute names.
 
-        This must be set manually. The given list length must equal :class:`Dataset.width`.
+        This must be set manually. The given list length must equal :attr:`Dataset.width`.
 
         """
         return self.__headers
@@ -335,7 +327,7 @@ class Dataset:
         set, a list of Python dictionaries will be returned. If no headers have been
         set, a list of tuples (rows) will be returned instead.
 
-        A dataset object can also be imported by setting the :class:`Dataset.dict` attribute. ::
+        A dataset object can also be imported by setting the :attr:`Dataset.dict` attribute. ::
 
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
@@ -452,28 +444,28 @@ class Dataset:
 
     def rpush(self, row, tags=list()):
         """Adds a row to the end of the :class:`Dataset`.
-        See :class:`Dataset.insert` for additional documentation.
+        See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert(self.height, row=row, tags=tags)
 
     def lpush(self, row, tags=list()):
         """Adds a row to the top of the :class:`Dataset`.
-        See :class:`Dataset.insert` for additional documentation.
+        See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert(0, row=row, tags=tags)
 
     def append(self, row, tags=list()):
         """Adds a row to the :class:`Dataset`.
-        See :class:`Dataset.insert` for additional documentation.
+        See :method:`Dataset.insert` for additional documentation.
         """
 
         self.rpush(row, tags)
 
     def extend(self, rows, tags=list()):
         """Adds a list of rows to the :class:`Dataset` using
-        :class:`Dataset.append`
+        :method:`Dataset.append`
         """
 
         for row in rows:
@@ -515,20 +507,20 @@ class Dataset:
 
             data.append_col(col=random.randint)
 
-        If inserting a column, and :class:`Dataset.headers` is set, the
+        If inserting a column, and :attr:`Dataset.headers` is set, the
         header attribute must be set, and will be considered the header for
         that row.
 
         See :ref:`dyncols` for an in-depth example.
 
         .. versionchanged:: 0.9.0
-           If inserting a column, and :class:`Dataset.headers` is set, the
+           If inserting a column, and :attr:`Dataset.headers` is set, the
            header attribute must be set, and will be considered the header for
            that row.
 
         .. versionadded:: 0.9.0
            If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
-           This gives you the ability to :class:`filter <Dataset.filter>` your
+           This gives you the ability to :method:`filter <Dataset.filter>` your
            :class:`Dataset` later.
 
         """
@@ -565,14 +557,14 @@ class Dataset:
 
     def rpush_col(self, col, header=None):
         """Adds a column to the end of the :class:`Dataset`.
-        See :class:`Dataset.insert` for additional documentation.
+        See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert_col(self.width, col, header=header)
 
     def lpush_col(self, col, header=None):
         """Adds a column to the top of the :class:`Dataset`.
-        See :class:`Dataset.insert` for additional documentation.
+        See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert_col(0, col, header=header)
@@ -596,7 +588,7 @@ class Dataset:
 
     def append_col(self, col, header=None):
         """Adds a column to the :class:`Dataset`.
-        See :class:`Dataset.insert_col` for additional documentation.
+        See :method:`Dataset.insert_col` for additional documentation.
         """
 
         self.rpush_col(col, header)
