@@ -1040,6 +1040,13 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh)
         self.assertEqual(data.headers[0], 'Hello World')
 
+    def test_xlsx_bad_dimensions(self):
+        """Test loading file with bad dimension.  Must be done with
+        read_only=False."""
+        xls_source = Path(__file__).parent / 'files' / 'bad_dimensions.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh, read_only=False)
+        self.assertEqual(data.height, 3)
 
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
