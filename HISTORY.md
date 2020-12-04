@@ -9,6 +9,7 @@
 ### Improvements
 
 - Added Python 3.9 support
+- Added read_only option to xlsx file reader (#482).
 
 ### Bugfixes
 

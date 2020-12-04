@@ -59,12 +59,12 @@ class XLSXFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True):
+    def import_set(cls, dset, in_stream, headers=True, read_only=True):
         """Returns databook from XLS stream."""
 
         dset.wipe()
 
-        xls_book = load_workbook(in_stream, read_only=True, data_only=True)
+        xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
         sheet = xls_book.active
 
         dset.title = sheet.title
@@ -77,12 +77,12 @@ class XLSXFormat:
                 dset.append(row_vals)
 
     @classmethod
-    def import_book(cls, dbook, in_stream, headers=True):
+    def import_book(cls, dbook, in_stream, headers=True, read_only=True):
         """Returns databook from XLS stream."""
 
         dbook.wipe()
 
-        xls_book = load_workbook(in_stream, read_only=True, data_only=True)
+        xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
 
         for sheet in xls_book.worksheets:
             data = tablib.Dataset()

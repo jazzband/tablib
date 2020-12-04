@@ -206,6 +206,15 @@ Import/export data in Excel 07+ Spreadsheet representation.
 This format is optional, install Tablib with ``pip install "tablib[xlsx]"`` to
 make the format available.
 
+The ``import_set()`` and ``import_book()`` methods accept keyword
+argument ``read_only``.  If its value is ``True`` (the default), the
+XLSX data source is read lazily.  Lazy reading generally reduces time
+and memory consumption, especially for large spreadsheets.  However,
+it relies on the XLSX data source declaring correct dimensions.  Some
+programs generate XLSX files with incorrect dimensions.  Such files
+may need to be loaded with this optimization turned off by passing
+``read_only=False``.
+
 .. note::
 
     When reading an ``xlsx`` file containing formulas in its cells, Tablib will
