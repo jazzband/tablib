@@ -1,6 +1,6 @@
 # History
 
-## Unreleased
+## 3.0.0 (2020-12-05)
 
 ### Breaking changes
 
