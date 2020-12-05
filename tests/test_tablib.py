@@ -1096,11 +1096,13 @@ class JSONTests(BaseTestCase):
         headers = self.headers + ('address_id',)
         founders = tablib.Dataset(headers=headers, title='Founders')
         founders.append(('John', 'Adams', 90, address_id))
+        founders.append(('名字', '李', 60, ''))
         founders_json = founders.export('json')
 
         expected_json = (
             '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
-            '"address_id": "%s"}]' % str(address_id)
+            '"address_id": "%s"}, {"first_name": "名字", "last_name": "李", '
+            '"gpa": 60, "address_id": ""}]' % str(address_id)
         )
 
         self.assertEqual(founders_json, expected_json)
