@@ -23,12 +23,16 @@ class JSONFormat:
     @classmethod
     def export_set(cls, dataset):
         """Returns JSON representation of Dataset."""
-        return json.dumps(dataset.dict, default=serialize_objects_handler)
+        return json.dumps(
+            dataset.dict, default=serialize_objects_handler, ensure_ascii=False
+        )
 
     @classmethod
     def export_book(cls, databook):
         """Returns JSON representation of Databook."""
-        return json.dumps(databook._package(), default=serialize_objects_handler)
+        return json.dumps(
+            databook._package(), default=serialize_objects_handler, ensure_ascii=False
+        )
 
     @classmethod
     def import_set(cls, dset, in_stream):

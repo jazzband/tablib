@@ -5,6 +5,7 @@
 ### Breaking changes
 
 - Dropped Python 3.5 support
+- JSON-exported data is no longer forced to ASCII characters.
 
 ### Improvements
 
