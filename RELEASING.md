@@ -12,9 +12,12 @@ Jazzband guidelines: https://jazzband.co/about/releases
 
 * [ ] Tag with version number and push tag, for example:
 ```bash
-git tag -a v0.14.0 -m v0.14.0
+git tag -a v3.1.0 -m v3.1.0
 git push --tags
 ```
+
+* [ ] Create new GitHub release: https://github.com/jazzband/tablib/releases/new
+  * Tag: Pick existing tag "v3.1.0"
 
 * [ ] Once GitHub Actions has built and uploaded distributions, check files at
       [Jazzband](https://jazzband.co/projects/tablib) and release to
@@ -24,6 +27,3 @@ git push --tags
 ```bash
 pip uninstall -y tablib && pip install -U tablib
 ```
-
-* [ ] Create new GitHub release: https://github.com/jazzband/tablib/releases/new
-  * Tag: Pick existing tag "v0.14.0"
