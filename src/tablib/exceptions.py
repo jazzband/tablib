@@ -1,18 +1,22 @@
-class InvalidDatasetType(Exception):
-    "Only Datasets can be added to a DataBook"
+class TablibException(Exception):
+    """Tablib common exception."""
 
 
-class InvalidDimensions(Exception):
-    "Invalid size"
+class InvalidDatasetType(TablibException, TypeError):
+    """Only Datasets can be added to a DataBook."""
 
 
-class InvalidDatasetIndex(Exception):
-    "Outside of Dataset size"
+class InvalidDimensions(TablibException, ValueError):
+    """Invalid size."""
 
 
-class HeadersNeeded(Exception):
-    "Header parameter must be given when appending a column in this Dataset."
+class InvalidDatasetIndex(TablibException, IndexError):
+    """Outside of Dataset size."""
 
 
-class UnsupportedFormat(NotImplementedError):
-    "Format is not supported"
+class HeadersNeeded(TablibException, AttributeError):
+    """Header parameter must be given when appending a column in this Dataset."""
+
+
+class UnsupportedFormat(TablibException, NotImplementedError):
+    """Format is not supported."""
