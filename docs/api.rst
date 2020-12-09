@@ -30,7 +30,6 @@ Databook Object
    :inherited-members:
 
 
-
 ---------
 Functions
 ---------
@@ -46,19 +45,8 @@ Exceptions
 ----------
 
 
-.. class:: InvalidDatasetType
-
-    You're trying to add something that doesn't quite look right.
-
-
-.. class:: InvalidDimensions
-
-    You're trying to add something that doesn't quite fit right.
-
-
-.. class:: UnsupportedFormat
-
-    You're trying to add something that doesn't quite taste right.
+.. automodule:: tablib.exceptions
+   :members:
 
 
 Now, go start some :ref:`Tablib Development <development>`.
