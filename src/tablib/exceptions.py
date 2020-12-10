@@ -3,11 +3,11 @@ class TablibException(Exception):
 
 
 class InvalidDatasetType(TablibException, TypeError):
-    """Only Datasets can be added to a DataBook."""
+    """Only Datasets can be added to a Databook."""
 
 
 class InvalidDimensions(TablibException, ValueError):
-    """Invalid size."""
+    """The size of the column or row doesn't fit the table dimensions."""
 
 
 class InvalidDatasetIndex(TablibException, IndexError):
@@ -15,8 +15,8 @@ class InvalidDatasetIndex(TablibException, IndexError):
 
 
 class HeadersNeeded(TablibException, AttributeError):
-    """Header parameter must be given when appending a column in this Dataset."""
+    """Header parameter must be given when appending a column to this Dataset."""
 
 
 class UnsupportedFormat(TablibException, NotImplementedError):
-    """Format is not supported."""
+    """Format not supported."""
