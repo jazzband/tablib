@@ -348,7 +348,8 @@ class TablibTestCase(BaseTestCase):
         _bunk = StringIO(
             '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
-        self.assertEqual(tablib.detect_format(_bunk), None)
+        with self.assertRaises(UnsupportedFormat):
+            tablib.detect_format(_bunk)
 
     def test_transpose(self):
         """Transpose a dataset."""
@@ -406,8 +407,8 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(column_stacked[0],
                          ("John", "Adams", 90, "John", "Adams", 90))
 
-    def test_sorting(self):
-        """Sort columns."""
+    def test_sorting_by_header(self):
+        """Sort columns by header (str)."""
 
         sorted_data = self.founders.sort(col="first_name")
         self.assertEqual(sorted_data.title, 'Founders')
@@ -422,6 +423,38 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(first_row, expected_first)
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
+
+    def test_sorting_by_index(self):
+        """Sort columns by index (int)."""
+
+        sorted_data = self.founders.sort(col=0)
+        self.assertEqual(sorted_data.title, 'Founders')
+
+        first_row = sorted_data[0]
+        second_row = sorted_data[2]
+        third_row = sorted_data[1]
+        expected_first = self.founders[1]
+        expected_second = self.founders[2]
+        expected_third = self.founders[0]
+
+        self.assertEqual(first_row, expected_first)
+        self.assertEqual(second_row, expected_second)
+        self.assertEqual(third_row, expected_third)
+
+    def test_extend(self):
+        dset = tablib.Dataset()
+        dset.extend([self.john, self.george, self.tom])
+
+        self.assertEqual(list(dset), list(self.founders))
+
+    def test_filter(self):
+        dset = tablib.Dataset()
+        dset.append(self.john, tags=['Massachusetts'])
+        dset.append(self.george, tags=['Virginia'])
+        dset.append(self.tom, tags=['Virginia'])
+
+        filtered = dset.filter('Virginia')
+        self.assertEqual(list(filtered), [self.george, self.tom])
 
     def test_remove_duplicates(self):
         """Unique Rows."""
@@ -475,6 +508,13 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(subset.headers, list(columns))
         self.assertEqual(subset._data[0].list, ['John', 90])
         self.assertEqual(subset._data[1].list, ['Thomas', 50])
+
+        # Verify default subset equals self
+        subset = data.subset()
+        self.assertEqual(subset.headers, list(self.headers))
+        self.assertEqual(subset._data[0].tuple, self.john)
+        self.assertEqual(subset._data[1].tuple, self.george)
+        self.assertEqual(subset._data[2].tuple, self.tom)
 
     def test_formatters(self):
         """Confirm formatters are being triggered."""

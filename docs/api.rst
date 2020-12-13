@@ -39,6 +39,8 @@ Functions
 
 .. autofunction:: import_set
 
+.. autofunction:: import_book
+
 
 ----------
 Exceptions
