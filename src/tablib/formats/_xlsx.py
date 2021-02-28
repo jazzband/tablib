@@ -1,8 +1,8 @@
 """ Tablib - XLSX Support.
 """
 
-from io import BytesIO
 import re
+from io import BytesIO
 
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
