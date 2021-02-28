@@ -1018,6 +1018,10 @@ class XLSXTests(BaseTestCase):
         self.assertEqual(data.dict[0]['float'], 21.55)
         self.assertEqual(data.dict[0]['date/time'], date_time)
 
+    def test_xlsx_bad_chars_sheet_name(self):
+        data.title = "this / is / good"
+        _xlsx = data.xlsx
+
     def test_xlsx_import_set_ragged(self):
         """Import XLSX file when not all rows have the same length."""
         xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
