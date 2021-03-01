@@ -67,8 +67,6 @@ class XLSXFormat:
             ws = wb.create_sheet()
             ws.title = dset.title if dset.title else 'Sheet%s' % (i)
 
-            #
-
             cls.dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
         stream = BytesIO()
