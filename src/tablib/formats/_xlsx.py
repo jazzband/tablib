@@ -1,6 +1,7 @@
 """ Tablib - XLSX Support.
 """
 
+import re
 from io import BytesIO
 
 from openpyxl.reader.excel import ExcelReader, load_workbook
@@ -10,6 +11,11 @@ from openpyxl.workbook import Workbook
 from openpyxl.writer.excel import ExcelWriter
 
 import tablib
+
+INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
+
+def safe_xlsx_sheet_title(s, replace="-"):
+    return re.sub(INVALID_TITLE_REGEX, s, replace)[:31]
 
 
 class XLSXFormat:
@@ -29,11 +35,20 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True):
-        """Returns XLSX representation of Dataset."""
+    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-"):
+        """Returns XLSX representation of Dataset.
+
+        If dataset.title contains characters which are considered invalid for an XLSX file
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), it will
+        be replaced with `invalid_char_subst`.
+        """
         wb = Workbook()
         ws = wb.worksheets[0]
-        ws.title = dataset.title if dataset.title else 'Tablib Dataset'
+
+        ws.title = (
+            safe_xlsx_sheet_title(dataset.title, invalid_char_subst)
+            if dataset.title else 'Tablib Dataset'
+        )
 
         cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes)
 
