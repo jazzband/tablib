@@ -31,9 +31,15 @@ class Row(object):
 
     __slots__ = ['_row', 'tags']
 
-    def __init__(self, row=list(), tags=list()):
-        self._row = list(row)
-        self.tags = list(tags)
+    def __init__(self, row=None, tags=None):
+        if row is None:
+            self._row = []
+        else:
+            self._row = list(row)
+        if tags is None:
+            self.tags = []
+        else:
+            self.tags = list(tags)
 
     def __iter__(self):
         return (col for col in self._row)
@@ -631,7 +637,7 @@ class Dataset(object):
     # Rows
     # ----
 
-    def insert(self, index, row, tags=list()):
+    def insert(self, index, row, tags=None):
         """Inserts a row to the :class:`Dataset` at the given index.
 
         Rows inserted must be the correct size (height or width).
@@ -639,39 +645,54 @@ class Dataset(object):
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index.
        """
-
+        if tags is None:
+            tags = []
+        else:
+            tags = list(tags)
         self._validate(row)
         self._data.insert(index, Row(row, tags=tags))
 
 
-    def rpush(self, row, tags=list()):
+    def rpush(self, row, tags=None):
         """Adds a row to the end of the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
         """
-
+        if tags is None:
+            tags = []
+        else:
+            tags = list(tags)
         self.insert(self.height, row=row, tags=tags)
 
 
-    def lpush(self, row, tags=list()):
+    def lpush(self, row, tags=None):
         """Adds a row to the top of the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
         """
-
+        if tags is None:
+            tags = []
+        else:
+            tags = list(tags)
         self.insert(0, row=row, tags=tags)
 
 
-    def append(self, row, tags=list()):
+    def append(self, row, tags=None):
         """Adds a row to the :class:`Dataset`.
         See :class:`Dataset.insert` for additional documentation.
         """
-
+        if tags is None:
+            tags = []
+        else:
+            tags = list(tags)
         self.rpush(row, tags)
 
-    def extend(self, rows, tags=list()):
+    def extend(self, rows, tags=None):
         """Adds a list of rows to the :class:`Dataset` using
         :class:`Dataset.append`
         """
-
+        if tags is None:
+            tags = []
+        else:
+            tags = list(tags)
         for row in rows:
             self.append(row, tags)
 
