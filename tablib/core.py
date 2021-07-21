@@ -31,15 +31,9 @@ class Row(object):
 
     __slots__ = ['_row', 'tags']
 
-    def __init__(self, row=None, tags=None):
-        if row is None:
-            self._row = []
-        else:
-            self._row = list(row)
-        if tags is None:
-            self.tags = []
-        else:
-            self.tags = list(tags)
+    def __init__(self, row=tuple(), tags=tuple()):
+        self._row = list(row)
+        self.tags = list(tags)
 
     def __iter__(self):
         return (col for col in self._row)
