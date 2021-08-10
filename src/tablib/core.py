@@ -34,7 +34,7 @@ class Row:
 
     __slots__ = ['_row', 'tags']
 
-    def __init__(self, row=list(), tags=list()):
+    def __init__(self, row=(), tags=()):
         self._row = list(row)
         self.tags = list(tags)
 
@@ -430,7 +430,7 @@ class Dataset:
     # Rows
     # ----
 
-    def insert(self, index, row, tags=list()):
+    def insert(self, index, row, tags=()):
         """Inserts a row to the :class:`Dataset` at the given index.
 
         Rows inserted must be the correct size (height or width).
@@ -442,28 +442,28 @@ class Dataset:
         self._validate(row)
         self._data.insert(index, Row(row, tags=tags))
 
-    def rpush(self, row, tags=list()):
+    def rpush(self, row, tags=()):
         """Adds a row to the end of the :class:`Dataset`.
         See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert(self.height, row=row, tags=tags)
 
-    def lpush(self, row, tags=list()):
+    def lpush(self, row, tags=()):
         """Adds a row to the top of the :class:`Dataset`.
         See :method:`Dataset.insert` for additional documentation.
         """
 
         self.insert(0, row=row, tags=tags)
 
-    def append(self, row, tags=list()):
+    def append(self, row, tags=()):
         """Adds a row to the :class:`Dataset`.
         See :method:`Dataset.insert` for additional documentation.
         """
 
         self.rpush(row, tags)
 
-    def extend(self, rows, tags=list()):
+    def extend(self, rows, tags=()):
         """Adds a list of rows to the :class:`Dataset` using
         :method:`Dataset.append`
         """
