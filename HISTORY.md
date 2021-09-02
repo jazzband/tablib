@@ -1,5 +1,13 @@
 # History
 
+## 3.1.0 (Unreleased)
+
+### Improvements
+
+- The csv, xls, and xlsx formats gained support for the `skip_lines` keyword
+  argument for their `import_set()` method to be able to skip the nth first
+  lines of a read file.
+
 ## 3.0.0 (2020-12-05)
 
 ### Breaking changes

@@ -814,6 +814,16 @@ class CSVTests(BaseTestCase):
             'F |  |  '
         )
 
+    def test_csv_import_set_skip_lines(self):
+        csv_text = (
+            'garbage,line\n'
+            '\n'
+            'id,name,description\n'
+            '12,Smith,rounded\n'
+        )
+        dataset = tablib.import_set(csv_text, format="csv", skip_lines=2)
+        self.assertEqual(dataset.headers, ['id', 'name','description'])
+
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 
@@ -984,6 +994,14 @@ class XLSTests(BaseTestCase):
             dset = tablib.Dataset().load(fh, 'xls')
         self.assertEqual(dset.dict[0]['birth_date'], datetime.datetime(2015, 4, 12, 0, 0))
 
+    def test_xlsx_import_set_skip_lines(self):
+        data.append(('garbage', 'line', ''))
+        data.append(('', '', ''))
+        data.append(('id', 'name', 'description'))
+        _xls = data.xls
+        new_data = tablib.Dataset().load(_xls, skip_lines=2)
+        self.assertEqual(new_data.headers, ['id', 'name', 'description'])
+
     def test_xls_import_with_errors(self):
         """Errors from imported files are kept as errors."""
         xls_source = Path(__file__).parent / 'files' / 'errors.xls'
@@ -1018,6 +1036,14 @@ class XLSXTests(BaseTestCase):
         self.assertEqual(data.dict[0]['float'], 21.55)
         self.assertEqual(data.dict[0]['date/time'], date_time)
 
+    def test_xlsx_import_set_skip_lines(self):
+        data.append(('garbage', 'line', ''))
+        data.append(('', '', ''))
+        data.append(('id', 'name', 'description'))
+        _xlsx = data.xlsx
+        new_data = tablib.Dataset().load(_xlsx, skip_lines=2)
+        self.assertEqual(new_data.headers, ['id', 'name', 'description'])
+
     def test_xlsx_bad_chars_sheet_name(self):
         data.title = "this / is / good"
         _xlsx = data.xlsx
@@ -1051,6 +1077,7 @@ class XLSXTests(BaseTestCase):
         with xls_source.open('rb') as fh:
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
+
 
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
