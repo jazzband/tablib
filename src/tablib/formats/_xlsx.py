@@ -74,7 +74,7 @@ class XLSXFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, read_only=True):
+    def import_set(cls, dset, in_stream, headers=True, read_only=True, skip_lines=0):
         """Returns databook from XLS stream."""
 
         dset.wipe()
@@ -85,8 +85,10 @@ class XLSXFormat:
         dset.title = sheet.title
 
         for i, row in enumerate(sheet.rows):
+            if i < skip_lines:
+                continue
             row_vals = [c.value for c in row]
-            if (i == 0) and (headers):
+            if i == skip_lines and headers:
                 dset.headers = row_vals
             else:
                 dset.append(row_vals)

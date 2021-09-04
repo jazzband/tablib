@@ -40,6 +40,13 @@ is headers with the ``headers`` boolean parameter (defaults to ``True``)::
 
     tablib.import_set(your_data_stream, format='csv', headers=False)
 
+It is also possible to provide the ``skip_lines`` parameter for the number of
+lines that should be skipped before starting to read data.
+
+.. versionchanged:: 3.1.0
+
+    The ``skip_lines`` parameter was added.
+
 When exporting with the ``csv`` format, the top row will contain headers, if
 they have been set. Otherwise, the top row will contain the first row of the
 dataset.
@@ -186,6 +193,14 @@ Import/export data in Legacy Excel Spreadsheet representation.
 This format is optional, install Tablib with ``pip install "tablib[xls]"`` to
 make the format available.
 
+Its ``import_set()`` method also supports a ``skip_lines`` parameter that you
+can set to a number of lines that should be skipped before starting to read
+data.
+
+.. versionchanged:: 3.1.0
+
+    The ``skip_lines`` parameter for ``import_set()`` was added.
+
 .. note::
 
     XLS files are limited to a maximum of 65,000 rows. Use xlsx_ to avoid this
@@ -214,6 +229,14 @@ it relies on the XLSX data source declaring correct dimensions.  Some
 programs generate XLSX files with incorrect dimensions.  Such files
 may need to be loaded with this optimization turned off by passing
 ``read_only=False``.
+
+The ``import_set()`` method also supports a ``skip_lines`` parameter that you
+can set to a number of lines that should be skipped before starting to read
+data.
+
+.. versionchanged:: 3.1.0
+
+    The ``skip_lines`` parameter for ``import_set()`` was added.
 
 .. note::
 

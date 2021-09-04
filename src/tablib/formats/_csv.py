@@ -33,7 +33,7 @@ class CSVFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, **kwargs):
+    def import_set(cls, dset, in_stream, headers=True, skip_lines=0, **kwargs):
         """Returns dataset from CSV stream."""
 
         dset.wipe()
@@ -42,8 +42,9 @@ class CSVFormat:
 
         rows = csv.reader(in_stream, **kwargs)
         for i, row in enumerate(rows):
-
-            if (i == 0) and (headers):
+            if i < skip_lines:
+                continue
+            if i == skip_lines and headers:
                 dset.headers = row
             elif row:
                 if i > 0 and len(row) < dset.width:
