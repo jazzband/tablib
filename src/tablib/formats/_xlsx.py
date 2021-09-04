@@ -88,7 +88,7 @@ class XLSXFormat:
             if i < skip_lines:
                 continue
             row_vals = [c.value for c in row]
-            if (i == skip_lines) and (headers):
+            if i == skip_lines and headers:
                 dset.headers = row_vals
             else:
                 dset.append(row_vals)

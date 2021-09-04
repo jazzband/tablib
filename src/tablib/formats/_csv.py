@@ -44,7 +44,7 @@ class CSVFormat:
         for i, row in enumerate(rows):
             if i < skip_lines:
                 continue
-            if (i == skip_lines) and (headers):
+            if i == skip_lines and headers:
                 dset.headers = row
             elif row:
                 if i > 0 and len(row) < dset.width:

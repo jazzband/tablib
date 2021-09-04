@@ -40,7 +40,7 @@ is headers with the ``headers`` boolean parameter (defaults to ``True``)::
 
     tablib.import_set(your_data_stream, format='csv', headers=False)
 
-It is also possible to provide the ``skip_lines`` parameter to a number of
+It is also possible to provide the ``skip_lines`` parameter for the number of
 lines that should be skipped before starting to read data.
 
 .. versionchanged:: 3.1.0
