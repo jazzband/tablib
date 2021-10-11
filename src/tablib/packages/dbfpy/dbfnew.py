@@ -176,7 +176,7 @@ if __name__ == '__main__':
     for i1 in range(len(dbft)):
         rec = dbft[i1]
         for fldName in dbft.fieldNames:
-            print('{}:\t {}'.format(fldName, rec[fldName]))
+            print(f'{fldName}:\t {rec[fldName]}')
         print()
     dbft.close()
 
