@@ -23,3 +23,6 @@ repos:
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+
+ci:
+  autoupdate_schedule: quarterly
