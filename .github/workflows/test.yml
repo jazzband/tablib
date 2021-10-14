@@ -11,8 +11,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
         os: [ubuntu-latest, macOS-latest, windows-latest]
+        include:
+          # Only test 3.10 on Ubuntu, until pandas wheels are available
+          - { python-version: "3.10", os: ubuntu-latest }
 
     steps:
     - uses: actions/checkout@v2
@@ -48,6 +51,6 @@ jobs:
         tox -e py
 
     - name: Upload coverage
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         name: ${{ matrix.os }} Python ${{ matrix.python-version }}
