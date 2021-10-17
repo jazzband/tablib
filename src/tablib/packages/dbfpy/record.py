@@ -144,8 +144,8 @@ class DbfRecord:
     # object representation
 
     def __repr__(self):
-        _template = "%%%ds: %%s (%%s)" % max([len(_fld)
-            for _fld in self.dbf.fieldNames])
+        _template = "%%%ds: %%s (%%s)" % max(len(_fld)
+            for _fld in self.dbf.fieldNames)
         _rv = []
         for _fld in self.dbf.fieldNames:
             _val = self[_fld]
