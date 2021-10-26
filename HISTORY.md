@@ -1,18 +1,25 @@
 # History
 
-## 3.1.0 (Unreleased)
+## 3.1.0 (2021-10-26)
 
 ### Improvements
 
+- Add support for Python 3.10 (#504).
 - The csv, xls, and xlsx formats gained support for the `skip_lines` keyword
   argument for their `import_set()` method to be able to skip the nth first
-  lines of a read file.
+  lines of a read file (#497).
+
+### Bugfixes
+
+- Avoided mutable parameter defaults (#494).
+- Specify build backend for editable installs (#501).
+- Doubled sample size passed to `csv.Sniffer()` in `_csv.detect()` (#503).
 
 ## 3.0.0 (2020-12-05)
 
 ### Breaking changes
 
-- Dropped Python 3.5 support
+- Dropped Python 3.5 support.
 - JSON-exported data is no longer forced to ASCII characters.
 - YAML-exported data is no longer forced to ASCII characters.
 
