@@ -1046,7 +1046,7 @@ class XLSXTests(BaseTestCase):
 
     def test_xlsx_bad_chars_sheet_name(self):
         """
-        Sheet names are limited to 30 chars and following chars
+        Sheet names are limited to 30 chars and the following chars
         are not permitted: \\ / * ? : [ ]
         """
         _dataset = tablib.Dataset(

@@ -39,7 +39,7 @@ class XLSXFormat:
         """Returns XLSX representation of Dataset.
 
         If dataset.title contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), it will
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
         """
         wb = Workbook()
@@ -61,7 +61,7 @@ class XLSXFormat:
         """Returns XLSX representation of DataBook.
 
         If dataset.title contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), it will
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
         """
 
