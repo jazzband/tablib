@@ -1045,8 +1045,22 @@ class XLSXTests(BaseTestCase):
         self.assertEqual(new_data.headers, ['id', 'name', 'description'])
 
     def test_xlsx_bad_chars_sheet_name(self):
-        data.title = "this / is / good"
-        _xlsx = data.xlsx
+        """
+        Sheet names are limited to 30 chars and following chars
+        are not permitted: \\ / * ? : [ ]
+        """
+        _dataset = tablib.Dataset(
+            title='bad name \\/*?:[]qwertyuiopasdfghjklzxcvbnm'
+        )
+        _xlsx = _dataset.export('xlsx')
+        new_data = tablib.Dataset().load(_xlsx)
+        self.assertEqual(new_data.title, 'bad name -------qwertyuiopasdfg')
+
+        _book = tablib.Databook()
+        _book.add_sheet(_dataset)
+        _xlsx = _book.export('xlsx')
+        new_data = tablib.Databook().load(_xlsx, 'xlsx')
+        self.assertEqual(new_data.sheets()[0].title, 'bad name -------qwertyuiopasdfg')
 
     def test_xlsx_import_set_ragged(self):
         """Import XLSX file when not all rows have the same length."""
