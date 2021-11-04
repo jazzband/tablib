@@ -15,7 +15,7 @@ import tablib
 INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
 
 def safe_xlsx_sheet_title(s, replace="-"):
-    return re.sub(INVALID_TITLE_REGEX, s, replace)[:31]
+    return re.sub(INVALID_TITLE_REGEX, replace, s)[:31]
 
 
 class XLSXFormat:
@@ -39,7 +39,7 @@ class XLSXFormat:
         """Returns XLSX representation of Dataset.
 
         If dataset.title contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), it will
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
         """
         wb = Workbook()
@@ -57,15 +57,23 @@ class XLSXFormat:
         return stream.getvalue()
 
     @classmethod
-    def export_book(cls, databook, freeze_panes=True):
-        """Returns XLSX representation of DataBook."""
+    def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-"):
+        """Returns XLSX representation of DataBook.
+
+        If dataset.title contains characters which are considered invalid for an XLSX file
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
+        be replaced with `invalid_char_subst`.
+        """
 
         wb = Workbook()
         for sheet in wb.worksheets:
             wb.remove(sheet)
         for i, dset in enumerate(databook._datasets):
             ws = wb.create_sheet()
-            ws.title = dset.title if dset.title else 'Sheet%s' % (i)
+            ws.title = (
+                safe_xlsx_sheet_title(dset.title, invalid_char_subst)
+                if dset.title else 'Sheet%s' % (i)
+            )
 
             cls.dset_sheet(dset, ws, freeze_panes=freeze_panes)
 
