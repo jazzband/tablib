@@ -1,5 +1,15 @@
 # History
 
+## 3.2.0 (2022-01-27)
+
+### Changes
+
+- Dropped Python 3.6 support (#513).
+
+### Bugfixes
+
+- Corrected order of arguments to a regex call in `safe_xlsx_sheet_title` (#510).
+
 ## 3.1.0 (2021-10-26)
 
 ### Improvements
@@ -25,7 +35,7 @@
 
 ### Improvements
 
-- Added Python 3.9 support
+- Added Python 3.9 support.
 - Added read_only option to xlsx file reader (#482).
 
 ### Bugfixes
