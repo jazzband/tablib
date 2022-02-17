@@ -3,12 +3,14 @@
 
 import re
 from io import BytesIO
+from typing import Optional, Union
 
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 from openpyxl.writer.excel import ExcelWriter
+from openpyxl.utils import get_column_letter
 
 import tablib
 
@@ -35,12 +37,17 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-"):
+    def export_set(
+        cls, dataset, freeze_panes=True, invalid_char_subst="-",
+        column_width: Optional[Union[str, int]] = "adaptive"
+    ):
         """Returns XLSX representation of Dataset.
 
         If dataset.title contains characters which are considered invalid for an XLSX file
         sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
+
+        column_width: can have int, None, or "adaptive" as a value
         """
         wb = Workbook()
         ws = wb.worksheets[0]
@@ -51,6 +58,11 @@ class XLSXFormat:
         )
 
         cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes)
+        if isinstance(column_width, str) and column_width != "adaptive":
+            raise ValueError(f"Unsupported value `{column_width}` passed to `column_width` "
+                             f"parameter. It supports 'adaptive' or integer values")
+
+        cls._adapt_column_width(ws, column_width)
 
         stream = BytesIO()
         wb.save(stream)
@@ -166,3 +178,25 @@ class XLSXFormat:
                     cell.value = col
                 except (ValueError, TypeError):
                     cell.value = str(col)
+
+    @classmethod
+    def _adapt_column_width(cls, worksheet,
+                            width: Optional[Union[str, int]]) -> None:
+        if width is None:
+            return
+
+        column_widths = []
+        if isinstance(width, str) and width == "adaptive":
+            for row in worksheet.values:
+                for i, cell in enumerate(row):
+                    cell = str(cell)
+                    if len(column_widths) > i:
+                        if len(cell) > column_widths[i]:
+                            column_widths[i] = len(cell)
+                    else:
+                        column_widths += [len(cell)]
+        else:
+            column_widths = [width] * len(worksheet.values)
+        
+        for i, column_width in enumerate(column_widths, 1): # start at 1
+            worksheet.column_dimensions[get_column_letter(i)].width = column_width
