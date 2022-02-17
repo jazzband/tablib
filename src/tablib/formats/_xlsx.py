@@ -10,7 +10,6 @@ from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 from openpyxl.writer.excel import ExcelWriter
-from openpyxl.utils import get_column_letter
 
 import tablib
 
