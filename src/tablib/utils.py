@@ -7,7 +7,7 @@ def normalize_input(stream):
     file-like object.
     """
     if isinstance(stream, str):
-        return StringIO(stream)
+        return StringIO(stream, newline='')
     elif isinstance(stream, bytes):
         return BytesIO(stream)
     return stream
