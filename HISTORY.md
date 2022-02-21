@@ -1,5 +1,11 @@
 # History
 
+## 3.2.1 (unreleased)
+
+### Bugfixes
+
+- Support solo CR in text input imports (#518).
+
 ## 3.2.0 (2022-01-27)
 
 ### Changes

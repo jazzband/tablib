@@ -824,6 +824,14 @@ class CSVTests(BaseTestCase):
         dataset = tablib.import_set(csv_text, format="csv", skip_lines=2)
         self.assertEqual(dataset.headers, ['id', 'name','description'])
 
+    def test_csv_import_mac_os_lf(self):
+        csv_text = (
+            'id,name,description\r'
+            '12,Smith,rounded\r'
+        )
+        dataset = tablib.import_set(csv_text, format="csv")
+        self.assertEqual('id,name,description\r\n12,Smith,rounded\r\n', dataset.csv)
+
     def test_csv_export(self):
         """Verify exporting dataset object as CSV."""
 
