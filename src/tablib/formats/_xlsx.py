@@ -46,7 +46,7 @@ class XLSXFormat:
         sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
 
-        column_width: can have int, None, or "adaptive" as a value
+        column_width: can be None, an integer, or "adaptive"
         """
         wb = Workbook()
         ws = wb.worksheets[0]
