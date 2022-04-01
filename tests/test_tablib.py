@@ -9,9 +9,11 @@ import unittest
 from collections import OrderedDict
 from io import BytesIO, StringIO
 from pathlib import Path
+from tempfile import TemporaryFile
 from uuid import uuid4
 
 from MarkupPy import markup
+from openpyxl import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1092,7 +1094,25 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
 
+    def test_xlsx_column_width(self):
+        """check that column width adapts to value length"""
+        def _get_width(data):
+            xlsx_content = data.export('xlsx')
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions['A'].width
 
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        width_before = _get_width(data)
+        data.append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data)
+      
+        assert width_before != width_after    
+        
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
         """Test JSON format detection."""
