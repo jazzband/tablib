@@ -1102,10 +1102,30 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
 
-    def test_xlsx_column_width(self):
+    def test_xlsx_column_width_none(self):
+        """check that column width adapts to value length"""
+
+        def _get_width(data):
+            xlsx_content = data.export('xlsx', column_width=None)
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions['A'].width
+
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        width_before = _get_width(data)
+        data.append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data)
+
+        self.assertEqual(width_before, width_after)
+        
+    def test_xlsx_column_width_adaptive(self):
         """check that column width adapts to value length"""
         def _get_width(data):
-            xlsx_content = data.export('xlsx')
+            xlsx_content = data.export('xlsx', column_width='adaptive')
             wb = load_workbook(filename=BytesIO(xlsx_content))
             ws = wb.active
             return ws.column_dimensions['A'].width
@@ -1120,7 +1140,30 @@ class XLSXTests(BaseTestCase):
         width_after = _get_width(data)
         
         self.assertNotEqual(width_before, width_after)
+
+    def test_xlsx_column_width_integer(self):
+        """check that column width adapts to value length"""
+        _some_integer = 10
         
+        def _get_width(data):
+            xlsx_content = data.export('xlsx', column_width=_some_integer)
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions['A'].width
+
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        width_before = _get_width(data)
+        data.append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data)
+
+        self.assertEqual(_some_integer, width_before)
+        self.assertEqual(_some_integer, width_after)
+
+
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
         """Test JSON format detection."""
