@@ -191,7 +191,7 @@ class XLSXFormat:
                     else:
                         column_widths += [len(cell)]
         else:
-            column_widths = [width] * len(worksheet.values)
+            column_widths = [width] * worksheet.max_column
         
         for i, column_width in enumerate(column_widths, 1): # start at 1
             worksheet.column_dimensions[get_column_letter(i)].width = column_width
