@@ -256,7 +256,7 @@ If "adapt" is passed, the column width will be unique for every column and will 
 calculated based on values' length
 
 
-.. versionchanged:: 3.2.0
+.. versionchanged:: 3.3.0
     The ``column_width`` parameter for ``export_set()`` was added.
     
 .. versionchanged:: 3.1.0
