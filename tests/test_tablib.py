@@ -1501,8 +1501,8 @@ class XLSXTests(BaseTestCase):
             'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
         ])
         width_after = _get_width(data)
-      
-        assert width_before != width_after    
+        
+        self.assertNotEqual(width_before, width_after)
         
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
