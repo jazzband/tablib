@@ -11,11 +11,13 @@ import unittest
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
+from tempfile import TemporaryFile
 from uuid import uuid4
 
 import xlrd
 from odf import opendocument, table
 from openpyxl.reader.excel import load_workbook
+from MarkupPy import markup
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1483,7 +1485,25 @@ class XLSXTests(BaseTestCase):
         wb = load_workbook(filename=BytesIO(_xlsx))
         self.assertEqual('[1]', wb.active['A1'].value)
 
+    def test_xlsx_column_width(self):
+        """check that column width adapts to value length"""
+        def _get_width(data):
+            xlsx_content = data.export('xlsx')
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions['A'].width
 
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        width_before = _get_width(data)
+        data.append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data)
+      
+        assert width_before != width_after    
+        
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
         """Test JSON format detection."""

@@ -251,9 +251,14 @@ can set to a number of lines that should be skipped before starting to read
 data.
 
 The ``export_set()`` method supports a ``column_width`` parameter. Depending on the
-value you pass, the column width will be set accordingly. It can be either None, int, or "adapt".
-If "adapt" is passed, the column width will be unique for every column and will be 
-calculated based on values' length
+value you pass, the column width will be set accordingly. It can be either None, int, or "adaptive".
+If "adaptive" is passed, the column width will be unique for every column and will be 
+calculated based on values' length. Example of usage
+
+```python3
+data = tablib.Dataset()
+data.export('xlsx', column_width='adaptive')
+```
 
 
 .. versionchanged:: 3.3.0
