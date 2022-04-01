@@ -37,7 +37,7 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False):
+    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False, column_width="adaptive"):
         """Returns XLSX representation of Dataset.
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
@@ -173,7 +173,7 @@ class XLSXFormat:
 
                 if escape and cell.data_type == 'f' and cell.value.startswith('='):
                     cell.value = cell.value.replace("=", "")
-                    
+
     @classmethod
     def _adapt_column_width(cls, worksheet,
                             width: Optional[Union[str, int]]) -> None:
