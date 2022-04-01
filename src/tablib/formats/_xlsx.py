@@ -62,7 +62,7 @@ class XLSXFormat:
         cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes, escape=escape)
         if isinstance(column_width, str) and column_width != "adaptive":
             raise ValueError(f"Unsupported value `{column_width}` passed to `column_width` "
-                             f"parameter. It supports 'adaptive' or integer values")
+                             "parameter. It supports 'adaptive' or integer values")
 
         cls._adapt_column_width(ws, column_width)
 
