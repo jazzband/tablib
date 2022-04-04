@@ -9,7 +9,11 @@ repos:
     rev: 5.10.1
     hooks:
       - id: isort
-        additional_dependencies: [toml]
+
+  - repo: https://github.com/isidentical/teyit
+    rev: 0.4.2
+    hooks:
+      -   id: teyit
 
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.9.0
