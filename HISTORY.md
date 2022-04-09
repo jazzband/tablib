@@ -1,6 +1,6 @@
 # History
 
-## 3.2.1 (unreleased)
+## 3.2.1 (2022-04-09)
 
 ### Bugfixes
 
