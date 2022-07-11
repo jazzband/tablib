@@ -68,8 +68,8 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
 
         # Verify width/data
-        self.assertTrue(data.width == len(new_row))
-        self.assertTrue(data[0] == new_row)
+        self.assertEqual(data.width, len(new_row))
+        self.assertEqual(data[0], new_row)
 
     def test_empty_append_with_headers(self):
         """Verify append() correctly detects mismatch of number of
@@ -448,14 +448,14 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
 
         # Verify width/data
-        self.assertTrue(data.width == len(new_row))
-        self.assertTrue(data[0] == new_row)
+        self.assertEqual(data.width, len(new_row))
+        self.assertEqual(data[0], new_row)
 
         data.wipe()
         new_row = (1, 2, 3, 4)
         data.append(new_row)
-        self.assertTrue(data.width == len(new_row))
-        self.assertTrue(data[0] == new_row)
+        self.assertEqual(data.width, len(new_row))
+        self.assertEqual(data[0], new_row)
 
     def test_subset(self):
         """Create a subset of a dataset"""
@@ -890,7 +890,7 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         headers = data.headers
-        self.assertTrue(isinstance(headers[0], str))
+        self.assertIsInstance(headers[0], str)
 
         orig_first_name = self.founders[self.headers[0]]
         csv_first_name = data[headers[0]]
@@ -903,11 +903,11 @@ class CSVTests(BaseTestCase):
         data.csv = self.founders.csv
 
         target_header = data.headers[0]
-        self.assertTrue(isinstance(target_header, str))
+        self.assertIsInstance(target_header, str)
 
         del data[target_header]
 
-        self.assertTrue(target_header not in data.headers)
+        self.assertNotIn(target_header, data.headers)
 
     def test_csv_column_sort(self):
         """Build up a CSV and test sorting a column by name"""
@@ -1244,36 +1244,36 @@ class LatexTests(BaseTestCase):
         self.assertEqual(output, expected)
 
     def test_latex_export_empty_dataset(self):
-        self.assertTrue(tablib.Dataset().latex is not None)
+        self.assertIsNotNone(tablib.Dataset().latex)
 
     def test_latex_export_no_headers(self):
         d = tablib.Dataset()
         d.append(('one', 'two', 'three'))
-        self.assertTrue('one' in d.latex)
+        self.assertIn('one', d.latex)
 
     def test_latex_export_caption(self):
         d = tablib.Dataset()
         d.append(('one', 'two', 'three'))
-        self.assertFalse('caption' in d.latex)
+        self.assertNotIn('caption', d.latex)
 
         d.title = 'Title'
-        self.assertTrue('\\caption{Title}' in d.latex)
+        self.assertIn('\\caption{Title}', d.latex)
 
     def test_latex_export_none_values(self):
         headers = ['foo', None, 'bar']
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
         output = d.latex
-        self.assertTrue('foo' in output)
-        self.assertFalse('None' in output)
+        self.assertIn('foo', output)
+        self.assertNotIn('None', output)
 
     def test_latex_escaping(self):
         d = tablib.Dataset(['~', '^'])
         output = d.latex
 
-        self.assertFalse('~' in output)
-        self.assertTrue('textasciitilde' in output)
-        self.assertFalse('^' in output)
-        self.assertTrue('textasciicircum' in output)
+        self.assertNotIn('~', output)
+        self.assertIn('textasciitilde', output)
+        self.assertNotIn('^', output)
+        self.assertIn('textasciicircum', output)
 
 
 class DBFTests(BaseTestCase):
@@ -1395,7 +1395,7 @@ class JiraTests(BaseTestCase):
         self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
 
     def test_jira_export_empty_dataset(self):
-        self.assertTrue(tablib.Dataset().jira is not None)
+        self.assertIsNotNone(tablib.Dataset().jira)
 
 
 class DocTests(unittest.TestCase):
