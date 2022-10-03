@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v2.38.2
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -11,7 +11,7 @@ repos:
       - id: isort
 
   - repo: https://github.com/isidentical/teyit
-    rev: 0.4.2
+    rev: 0.4.3
     hooks:
       -   id: teyit
 
