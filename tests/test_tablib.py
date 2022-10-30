@@ -7,6 +7,7 @@ import json
 import pickle
 import unittest
 from collections import OrderedDict
+from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
@@ -988,6 +989,16 @@ class TSVTests(BaseTestCase):
             tsv = tsv.strip('\t') + '\r\n'
 
         self.assertEqual(tsv, self.founders.tsv)
+
+
+class ODSTests(BaseTestCase):
+    def test_ods_export_datatypes(self):
+        date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
+        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date_time))
+        data.headers = ('string', 'start0', 'integer', 'float', 'decimal', 'date/time')
+        # ODS is currently write-only, just test that output doesn't crash.
+        assert data.ods is not None
+        assert len(data.ods)
 
 
 class XLSTests(BaseTestCase):
