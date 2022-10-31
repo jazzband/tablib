@@ -1,5 +1,11 @@
 # History
 
+## unreleased
+
+### Improvements
+
+- ODS export: integers/floats/decimals are exported as numbers (#527).
+
 ## 3.2.1 (2022-04-09)
 
 ### Bugfixes

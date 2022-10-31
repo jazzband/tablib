@@ -1,6 +1,7 @@
 """ Tablib - ODF Support.
 """
 
+import numbers
 from io import BytesIO
 
 from odf import opendocument, style, table, text
@@ -53,45 +54,18 @@ class ODSFormat:
             _offset = i
             _package.insert((sep[0] + _offset), (sep[1],))
 
-        for i, row in enumerate(_package):
-            row_number = i + 1
-            odf_row = table.TableRow(stylename=bold, defaultcellstylename='bold')
+        for row_number, row in enumerate(_package, start=1):
+            is_header = row_number == 1 and dataset.headers
+            style = bold if is_header else None
+            odf_row = table.TableRow(stylename=style)
+            ws.addElement(odf_row)
             for j, col in enumerate(row):
-                try:
-                    col = str(col, errors='ignore')
-                except TypeError:
-                    # col is already str
-                    pass
-                ws.addElement(table.TableColumn())
-
-                # bold headers
-                if (row_number == 1) and dataset.headers:
-                    odf_row.setAttribute('stylename', bold)
-                    ws.addElement(odf_row)
-                    cell = table.TableCell()
-                    p = text.P()
-                    p.addElement(text.Span(text=col, stylename=bold))
-                    cell.addElement(p)
-                    odf_row.addElement(cell)
-
-                # wrap the rest
+                if isinstance(col, numbers.Number):
+                    cell = table.TableCell(valuetype="float", value=col)
                 else:
-                    try:
-                        if '\n' in col:
-                            ws.addElement(odf_row)
-                            cell = table.TableCell()
-                            cell.addElement(text.P(text=col))
-                            odf_row.addElement(cell)
-                        else:
-                            ws.addElement(odf_row)
-                            cell = table.TableCell()
-                            cell.addElement(text.P(text=col))
-                            odf_row.addElement(cell)
-                    except TypeError:
-                        ws.addElement(odf_row)
-                        cell = table.TableCell()
-                        cell.addElement(text.P(text=col))
-                        odf_row.addElement(cell)
+                    cell = table.TableCell(valuetype="string")
+                    cell.addElement(text.P(text=str(col), stylename=style))
+                odf_row.addElement(cell)
 
     @classmethod
     def detect(cls, stream):
