@@ -1,9 +1,10 @@
 # History
 
-## unreleased
+## 3.3.0 (2022-12-10)
 
 ### Improvements
 
+- Add support for Python 3.11 (#525).
 - ODS export: integers/floats/decimals are exported as numbers (#527).
 
 ## 3.2.1 (2022-04-09)
