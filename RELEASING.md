@@ -10,14 +10,14 @@ Jazzband guidelines: https://jazzband.co/about/releases
 * [ ] Check [HISTORY.md](https://github.com/jazzband/tablib/blob/master/HISTORY.md),
       update version number and release date
 
-* [ ] Tag with version number and push tag, for example:
-```bash
-git tag -a v3.1.0 -m v3.1.0
-git push --tags
-```
-
 * [ ] Create new GitHub release: https://github.com/jazzband/tablib/releases/new
-  * Tag: Pick existing tag "v3.1.0"
+  * Tag:
+    * Click "Choose a tag"
+    * Enter new tag: "v3.4.0"
+    * Click "**Create new tag: v3.4.0** on publish"
+  * Title: Leave blank, will be same as tag
+  * Click "Generate release notes" and edit as required
+  * Click "Publish release"
 
 * [ ] Once GitHub Actions has built and uploaded distributions, check files at
       [Jazzband](https://jazzband.co/projects/tablib) and release to
