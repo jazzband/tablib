@@ -1,9 +1,9 @@
 """ Tablib - XLSX Support.
 """
+from __future__ import annotations
 
 import re
 from io import BytesIO
-from typing import Optional, Union
 
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
@@ -38,7 +38,7 @@ class XLSXFormat:
     @classmethod
     def export_set(
         cls, dataset, freeze_panes=True, invalid_char_subst="-",
-        column_width: Optional[Union[str, int]] = "adaptive"
+        column_width: str | int | None = "adaptive"
     ):
         """Returns XLSX representation of Dataset.
 
@@ -180,7 +180,7 @@ class XLSXFormat:
 
     @classmethod
     def _adapt_column_width(cls, worksheet,
-                            width: Optional[Union[str, int]]) -> None:
+                            width: str | int | None) -> None:
         if width is None:
             return
 
