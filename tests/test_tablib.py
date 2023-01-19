@@ -1229,6 +1229,13 @@ class YAMLTests(BaseTestCase):
         output = self.founders.yaml
         self.assertEqual(output, expected)
 
+    def test_yaml_load(self):
+        """ test issue 524: invalid format  """
+        yaml_source = Path(__file__).parent / 'files' / 'issue_524.yaml'
+        with yaml_source.open(mode='rb') as fh:
+            with self.assertRaises(UnsupportedFormat):
+                tablib.Dataset().load(fh, 'yaml')
+
 
 class LatexTests(BaseTestCase):
     def test_latex_export(self):

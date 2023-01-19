@@ -333,9 +333,14 @@ class Dataset:
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
         """
-
+        error_details = "Please check format documentation https://tablib.readthedocs.io/en/stable/formats.html#yaml"
         if not len(pickle):
             return
+        
+        if not isinstance(pickle, list):
+            # sometimes pickle is a dict and len(pickle) returns True.
+            # since we access index 0 we should check if the type is list
+            raise UnsupportedFormat(error_details)
 
         # if list of rows
         if isinstance(pickle[0], list):
@@ -350,7 +355,7 @@ class Dataset:
             for row in pickle:
                 self.append(Row(list(row.values())))
         else:
-            raise UnsupportedFormat
+            raise UnsupportedFormat(error_details)
 
     dict = property(_get_dict, _set_dict)
 
