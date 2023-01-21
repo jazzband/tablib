@@ -334,7 +334,8 @@ class Dataset:
 
         """
         error_details = "Please check format documentation https://tablib.readthedocs.io/en/stable/formats.html#yaml"
-        if not len(pickle):
+
+        if not pickle:
             return
         
         if not isinstance(pickle, list):

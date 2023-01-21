@@ -5,6 +5,7 @@ import datetime
 import doctest
 import json
 import pickle
+import tempfile
 import unittest
 from collections import OrderedDict
 from decimal import Decimal
@@ -317,6 +318,11 @@ class TablibTestCase(BaseTestCase):
         with open(str(xlsx_source), mode='rb') as fh:
             dset = tablib.Dataset().load(fh, 'xlsx')
         self.assertEqual(eval(dset.json)[0]['last_name'], 'Adams')
+
+    def test_empty_file(self):
+        tmp_file = tempfile.NamedTemporaryFile()
+        dset = tablib.Dataset().load(tmp_file, 'yaml')
+        self.assertEqual(dset.json, '[]')
 
     def test_auto_format_detect(self):
         """Test auto format detection."""
@@ -1170,6 +1176,12 @@ class JSONTests(BaseTestCase):
         )
 
         self.assertEqual(founders_json, expected_json)
+
+    def test_json_list_of_lists(self):
+        input_json = "[[1,2],[3,4]]"
+        expected_yaml = "- [1, 2]\n- [3, 4]\n"
+        dset = tablib.Dataset().load(in_stream=input_json, format="json")
+        self.assertEqual(dset.export("yaml"), expected_yaml)
 
 
 class YAMLTests(BaseTestCase):
