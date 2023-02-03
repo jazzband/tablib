@@ -60,7 +60,7 @@ class DBFFormat:
     def detect(cls, stream):
         """Returns True if the given stream is valid DBF"""
         try:
-            _dbf = dbf.Dbf(stream, readOnly=True)
+            dbf.Dbf(stream, readOnly=True)
             return True
         except Exception:
             return False

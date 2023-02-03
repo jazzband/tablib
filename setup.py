@@ -41,7 +41,16 @@ setup(
     ],
     python_requires='>=3.7',
     extras_require={
-        'all': ['markuppy', 'odfpy', 'openpyxl>=2.6.0', 'pandas', 'pyyaml', 'tabulate', 'xlrd', 'xlwt'],
+        'all': [
+            'markuppy',
+            'odfpy',
+            'openpyxl>=2.6.0',
+            'pandas',
+            'pyyaml',
+            'tabulate',
+            'xlrd',
+            'xlwt',
+        ],
         'cli': ['tabulate'],
         'html': ['markuppy'],
         'ods': ['odfpy'],

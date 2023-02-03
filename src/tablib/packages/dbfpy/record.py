@@ -1,3 +1,13 @@
+import sys
+
+from . import utils
+
+__version__ = "$Revision: 1.7 $"[11:-2]
+__date__ = "$Date: 2007/02/11 09:05:49 $"[7:-2]
+
+__all__ = ["DbfRecord"]
+
+
 """DBF record definition.
 
 """
@@ -10,15 +20,6 @@
                     added delete() method.
 16-dec-2005 [yc]    record definition moved from `dbf`.
 """
-
-__version__ = "$Revision: 1.7 $"[11:-2]
-__date__ = "$Date: 2007/02/11 09:05:49 $"[7:-2]
-
-__all__ = ["DbfRecord"]
-
-import sys
-
-from . import utils
 
 
 class DbfRecord:
@@ -82,7 +83,7 @@ class DbfRecord:
             self.fieldData = list(data)
 
     # XXX: validate self.index before calculating position?
-    position = property(lambda self: self.dbf.header.headerLength + \
+    position = property(lambda self: self.dbf.header.headerLength +
                         self.index * self.dbf.header.recordLength)
 
     def rawFromStream(cls, dbf, index):
@@ -101,9 +102,9 @@ class DbfRecord:
         # XXX: may be write smth assuming, that current stream
         # position is the required one? it could save some
         # time required to calculate where to seek in the file
-        dbf.stream.seek(dbf.header.headerLength +
-            index * dbf.header.recordLength)
+        dbf.stream.seek(dbf.header.headerLength + index * dbf.header.recordLength)
         return dbf.stream.read(dbf.header.recordLength)
+
     rawFromStream = classmethod(rawFromStream)
 
     def fromStream(cls, dbf, index):
@@ -120,6 +121,7 @@ class DbfRecord:
 
         """
         return cls.fromString(dbf, cls.rawFromStream(dbf, index), index)
+
     fromStream = classmethod(fromStream)
 
     def fromString(cls, dbf, string, index=None):
@@ -137,21 +139,20 @@ class DbfRecord:
         Return value is an instance of the current class.
 
         """
-        return cls(dbf, index, string[0]=="*",
+        return cls(dbf, index, string[0] == "*",
                    [_fd.decodeFromRecord(string) for _fd in dbf.header.fields])
+
     fromString = classmethod(fromString)
 
     # object representation
 
     def __repr__(self):
-        _template = "%%%ds: %%s (%%s)" % max(len(_fld)
-            for _fld in self.dbf.fieldNames)
+        _template = "%%%ds: %%s (%%s)" % max(len(_fld) for _fld in self.dbf.fieldNames)
         _rv = []
         for _fld in self.dbf.fieldNames:
             _val = self[_fld]
             if _val is utils.INVALID_VALUE:
-                _rv.append(_template %
-                    (_fld, "None", "value cannot be decoded"))
+                _rv.append(_template % (_fld, "None", "value cannot be decoded"))
             else:
                 _rv.append(_template % (_fld, _val, type(_val)))
         return "\n".join(_rv)
@@ -166,7 +167,6 @@ class DbfRecord:
             use 'store' instead publicly.
             Be design ``_write`` method should be called
             only from the `Dbf` instance.
-
 
         """
         self._validateIndex(False)
@@ -220,12 +220,8 @@ class DbfRecord:
 
     def toString(self):
         """Return string packed record values."""
-#        for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData):
-#
-
         return "".join([" *"[self.deleted]] + [
-           _def.encodeValue(_dat)
-            for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData)
+           _def.encodeValue(_dat) for (_def, _dat) in zip(self.dbf.header.fields, self.fieldData)
         ])
 
     def asList(self):
@@ -263,5 +259,3 @@ class DbfRecord:
             return self.fieldData[key]
         # assuming string field name
         self.fieldData[self.dbf.indexOfFieldName(key)] = value
-
-# vim: et sts=4 sw=4 :

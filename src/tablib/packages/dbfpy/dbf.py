@@ -1,4 +1,13 @@
 #! /usr/bin/env python
+
+from . import header, record
+from .utils import INVALID_VALUE
+
+__version__ = "$Revision: 1.7 $"[11:-2]
+__date__ = "$Date: 2007/02/11 09:23:13 $"[7:-2]
+__author__ = "Jeff Kunce <kuncej@mail.conservation.state.mo.us>"
+__all__ = ["Dbf"]
+
 """DBF accessing helpers.
 
 FIXME: more documentation needed
@@ -55,15 +64,6 @@ Examples:
 19-feb-1998 [jjk]   add create/write capabilities
 18-feb-1998 [jjk]   from dbfload.py
 """
-
-__version__ = "$Revision: 1.7 $"[11:-2]
-__date__ = "$Date: 2007/02/11 09:23:13 $"[7:-2]
-__author__ = "Jeff Kunce <kuncej@mail.conservation.state.mo.us>"
-
-__all__ = ["Dbf"]
-
-from . import header, record
-from .utils import INVALID_VALUE
 
 
 class Dbf:
@@ -293,5 +293,3 @@ if __name__ == '__main__':
     _name = len(sys.argv) > 1 and sys.argv[1] or "county.dbf"
     demo_create(_name)
     demo_read(_name)
-
-# vim: set et sw=4 sts=4 :

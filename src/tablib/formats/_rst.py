@@ -62,12 +62,14 @@ class ReSTFormat:
             raise ValueError('Value of "justify" must be one of "{}"'.format(
                 '", "'.join(JUSTIFY_VALUES)
             ))
-        if justify == JUSTIFY_LEFT:
-            just = lambda text, width: text.ljust(width)
-        elif justify == JUSTIFY_CENTER:
-            just = lambda text, width: text.center(width)
-        else:
-            just = lambda text, width: text.rjust(width)
+
+        def just(text_, width_):
+            if justify == JUSTIFY_LEFT:
+                return text_.ljust(width_)
+            elif justify == JUSTIFY_CENTER:
+                return text_.center(width_)
+            else:
+                return text_.rjust(width_)
         lpad = sep + ' ' if sep else ''
         rpad = ' ' + sep if sep else ''
         pad = ' ' + sep + ' '
@@ -95,9 +97,9 @@ class ReSTFormat:
         median_lens = [int(median(lens)) for lens in str_lens]
         total = sum(median_lens)
         if total > max_table_width - (pad_len * len(median_lens)):
-            column_widths = (max_table_width * l // total for l in median_lens)
+            column_widths = (max_table_width * lens // total for lens in median_lens)
         else:
-            column_widths = (l for l in median_lens)
+            column_widths = (lens for lens in median_lens)
         # Allow for separator and padding:
         column_widths = (w - pad_len if w > pad_len else w for w in column_widths)
         # Rather widen table than break words:

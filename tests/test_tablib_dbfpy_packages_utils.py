@@ -151,7 +151,7 @@ class UtilsGetDateTimeTestCase(unittest.TestCase):
 
         # Act / Assert
         with self.assertRaises(NotImplementedError):
-            output = utils.getDateTime(value)
+            utils.getDateTime(value)
 
 
 class InvalidValueTestCase(unittest.TestCase):
