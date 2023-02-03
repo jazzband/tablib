@@ -1,0 +1,5 @@
+[flake8]
+max_line_length = 99
+exclude =
+    .tox
+    *env/

@@ -10,6 +10,11 @@ repos:
     hooks:
       - id: isort
 
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+
   - repo: https://github.com/isidentical/teyit
     rev: 0.4.3
     hooks:
