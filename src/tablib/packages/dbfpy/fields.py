@@ -1,3 +1,15 @@
+import datetime
+import struct
+from functools import total_ordering
+
+from . import utils
+
+__version__ = "$Revision: 1.14 $"[11:-2]
+__date__ = "$Date: 2009/05/26 05:16:51 $"[7:-2]
+
+__all__ = ["lookupFor"]  # field classes added at the end of the module
+
+
 """DBF fields definitions.
 
 TODO:
@@ -24,18 +36,6 @@ TODO:
 20-dec-2005 [yc]    use field names in upper case
 15-dec-2005 [yc]    field definitions moved from `dbf`.
 """
-
-__version__ = "$Revision: 1.14 $"[11:-2]
-__date__ = "$Date: 2009/05/26 05:16:51 $"[7:-2]
-
-__all__ = ["lookupFor"]  # field classes added at the end of the module
-
-import datetime
-import struct
-import sys
-from functools import total_ordering
-
-from . import utils
 
 # abstract definitions
 
@@ -131,7 +131,7 @@ class DbfFieldDef:
         assert len(string) == 32
         _length = string[16]
         return cls(utils.unzfill(string)[:11].decode('utf-8'), _length,
-            string[17], start, start + _length, ignoreErrors=ignoreErrors)
+                   string[17], start, start + _length, ignoreErrors=ignoreErrors)
     fromString = classmethod(fromString)
 
     def toString(self):
@@ -256,8 +256,9 @@ class DbfNumericFieldDef(DbfFieldDef):
             if 0 <= _ppos <= self.length:
                 _rv = _rv[:self.length]
             else:
-                raise ValueError("[%s] Numeric overflow: %s (field width: %i)"
-                    % (self.name, _rv, self.length))
+                raise ValueError(
+                    f"[{self.name}] Numeric overflow: {_rv} (field width: {self.length})"
+                )
         return _rv
 
 
@@ -421,7 +422,7 @@ class DbfDateTimeFieldDef(DbfFieldDef):
             value = utils.getDateTime(value)
             # LE byteorder
             _rv = struct.pack("<2I", value.toordinal() + self.JDN_GDN_DIFF,
-                (value.hour * 3600 + value.minute * 60 + value.second) * 1000)
+                              (value.hour * 3600 + value.minute * 60 + value.second) * 1000)
         else:
             _rv = "\0" * self.length
         assert len(_rv) == self.length
@@ -471,5 +472,3 @@ for (_name, _val) in list(globals().items()):
         __all__.append(_name)
         registerField(_val)
 del _name, _val
-
-# vim: et sts=4 sw=4 :

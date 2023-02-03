@@ -303,7 +303,10 @@ class TablibTestCase(BaseTestCase):
             tablib.Databook().load('Any stream', 'csv')
 
     def test_book_unsupported_export(self):
-        book = tablib.Databook().load('[{"title": "first", "data": [{"first_name": "John"}]}]', 'json')
+        book = tablib.Databook().load(
+            '[{"title": "first", "data": [{"first_name": "John"}]}]',
+            'json',
+        )
         with self.assertRaises(UnsupportedFormat):
             book.export('csv')
 
@@ -353,7 +356,8 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(tablib.detect_format(_tsv), 'tsv')
 
         _bunk = StringIO(
-            '¡¡¡¡¡¡---///\n\n\n¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
+            '¡¡¡¡¡¡---///\n\n\n' +
+            '¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
         self.assertEqual(tablib.detect_format(_bunk), None)
 
@@ -829,7 +833,7 @@ class CSVTests(BaseTestCase):
             '12,Smith,rounded\n'
         )
         dataset = tablib.import_set(csv_text, format="csv", skip_lines=2)
-        self.assertEqual(dataset.headers, ['id', 'name','description'])
+        self.assertEqual(dataset.headers, ['id', 'name', 'description'])
 
     def test_csv_import_mac_os_lf(self):
         csv_text = (

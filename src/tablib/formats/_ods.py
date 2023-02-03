@@ -7,7 +7,11 @@ from io import BytesIO
 from odf import opendocument, style, table, text
 
 bold = style.Style(name="bold", family="paragraph")
-bold.addElement(style.TextProperties(fontweight="bold", fontweightasian="bold", fontweightcomplex="bold"))
+bold.addElement(style.TextProperties(
+    fontweight="bold",
+    fontweightasian="bold",
+    fontweightcomplex="bold",
+))
 
 
 class ODSFormat:

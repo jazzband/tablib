@@ -333,11 +333,14 @@ class Dataset:
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
         """
-        error_details = "Please check format documentation https://tablib.readthedocs.io/en/stable/formats.html#yaml"
+        error_details = (
+            "Please check format documentation "
+            "https://tablib.readthedocs.io/en/stable/formats.html#yaml"
+        )
 
         if not pickle:
             return
-        
+
         if not isinstance(pickle, list):
             # sometimes pickle is a dict and len(pickle) returns True.
             # since we access index 0 we should check if the type is list
@@ -764,7 +767,9 @@ class Dataset:
         """Removes all duplicate rows from the :class:`Dataset` object
         while maintaining the original order."""
         seen = set()
-        self._data[:] = [row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))]
+        self._data[:] = [
+            row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))
+        ]
 
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""

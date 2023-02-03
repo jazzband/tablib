@@ -8,11 +8,11 @@ from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
-from openpyxl.writer.excel import ExcelWriter
 
 import tablib
 
 INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
+
 
 def safe_xlsx_sheet_title(s, replace="-"):
     return re.sub(INVALID_TITLE_REGEX, replace, s)[:31]
