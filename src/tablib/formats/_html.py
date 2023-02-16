@@ -30,11 +30,13 @@ class HTMLFormat:
             page.tr(headers)
             page.thead.close()
 
+        page.tbody.open()
         for row in dataset:
             new_row = [item if item is not None else '' for item in row]
 
             html_row = markup.oneliner.td(new_row)
             page.tr(html_row)
+        page.tbody.close()
 
         page.table.close()
 
