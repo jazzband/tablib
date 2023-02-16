@@ -623,8 +623,10 @@ class HTMLTests(BaseTestCase):
         html.tr(markup.oneliner.th(self.founders.headers))
         html.thead.close()
 
+        html.tbody.open()
         for founder in self.founders:
             html.tr(markup.oneliner.td(founder))
+        html.tbody.close()
 
         html.table.close()
         html = str(html)
