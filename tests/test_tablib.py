@@ -641,7 +641,9 @@ class HTMLTests(BaseTestCase):
         html.tr(markup.oneliner.th(['foo', '', 'bar']))
         html.thead.close()
 
+        html.tbody.open()
         html.tr(markup.oneliner.td(['foo', '', 'bar']))
+        html.tbody.close()
 
         html.table.close()
         html = str(html)
