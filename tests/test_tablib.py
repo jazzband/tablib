@@ -11,9 +11,11 @@ from collections import OrderedDict
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
+from tempfile import TemporaryFile
 from uuid import uuid4
 
 from MarkupPy import markup
+from openpyxl import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1124,6 +1126,47 @@ class XLSXTests(BaseTestCase):
         with xls_source.open('rb') as fh:
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
+
+    def _helper_export_column_width(self, input_arg):
+        """check that column width adapts to value length"""
+        def _get_width(data, input_arg):
+            xlsx_content = data.export('xlsx', column_width=input_arg)
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions['A'].width
+
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        width_before = _get_width(data, input_arg)
+        data.append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data, width_before)
+        return width_before, width_after
+
+    def test_xlsx_column_width_none(self):
+        """check column width with None"""
+        width_before, width_after = self._helper_export_column_width(None)
+        self.assertEqual(width_before, 13)
+        self.assertEqual(width_after, 13)
+
+    def test_xlsx_column_width_adaptive(self):
+        """check column width with 'adaptive'"""
+        width_before, width_after = self._helper_export_column_width("adaptive")
+        self.assertEqual(width_before, 11)
+        self.assertEqual(width_after, 11)
+
+    def test_xlsx_column_width_integer(self):
+        """check column width with an integer"""
+        width_before, width_after = self._helper_export_column_width(10)
+        self.assertEqual(width_before, 10)
+        self.assertEqual(width_after, 10)
+
+    def test_xlsx_column_width_value_error(self):
+        """check column width with invalid input"""
+        with self.assertRaises(ValueError):
+            self._helper_export_column_width("invalid input")
 
 
 class JSONTests(BaseTestCase):
