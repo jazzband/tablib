@@ -163,6 +163,8 @@ class XLSXFormat:
                         cell.alignment = wrap_text
 
                 try:
+                    print(cell.data_type)
+                    print(cell.value)
                     cell.value = col
                 except (ValueError, TypeError):
                     cell.value = str(col)

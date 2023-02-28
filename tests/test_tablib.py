@@ -14,6 +14,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from MarkupPy import markup
+from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1116,6 +1117,23 @@ class XLSXTests(BaseTestCase):
         with xls_source.open('rb') as fh:
             data = tablib.Dataset().load(fh)
         self.assertEqual(data.headers[0], 'Hello World')
+
+    def test_xlsx_safe_export_formulae(self):
+        """
+        Test that formulae are sanitised on export.
+        """
+        # data.append(('first', '=SUM(A1:A2)'))
+        # _book = tablib.Databook()
+        # _book.add_sheet(data)
+        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
+        with xls_source.open('rb') as fh:
+            data = tablib.Dataset().load(fh)
+        _xlsx = data.export('xlsx')
+        # read back using openpyxl because tablib reads formulae as values
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        print(ws)
+        self.assertEqual('SUM(1+1)', ws['B1'].value)
 
     def test_xlsx_bad_dimensions(self):
         """Test loading file with bad dimension.  Must be done with
