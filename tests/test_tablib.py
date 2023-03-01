@@ -1118,22 +1118,67 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh)
         self.assertEqual(data.headers[0], 'Hello World')
 
-    def test_xlsx_safe_export_formulae(self):
+    def test_xlsx_export_set_escape_formulae(self):
         """
         Test that formulae are sanitised on export.
         """
-        # data.append(('first', '=SUM(A1:A2)'))
-        # _book = tablib.Databook()
-        # _book.add_sheet(data)
-        xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
-        with xls_source.open('rb') as fh:
-            data = tablib.Dataset().load(fh)
+        data.append(('=SUM(1+1)',))
         _xlsx = data.export('xlsx')
+
         # read back using openpyxl because tablib reads formulae as values
         wb = load_workbook(filename=BytesIO(_xlsx))
         ws = wb.active
-        print(ws)
-        self.assertEqual('SUM(1+1)', ws['B1'].value)
+        self.assertEqual('=SUM(1+1)', ws['A1'].value)
+
+        _xlsx = data.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('SUM(1+1)', ws['A1'].value)
+
+    def test_xlsx_export_book_escape_formulae(self):
+        """
+        Test that formulae are sanitised on export.
+        """
+        data.append(('=SUM(1+1)',))
+        _book = tablib.Databook()
+        _book.add_sheet(data)
+        _xlsx = _book.export('xlsx')
+
+        # read back using openpyxl because tablib reads formulae as values
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('=SUM(1+1)', ws['A1'].value)
+
+        _xlsx = _book.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('SUM(1+1)', ws['A1'].value)
+
+    def test_xlsx_export_set_escape_formulae_in_header(self):
+        data.headers = ('=SUM(1+1)',)
+        _xlsx = data.export('xlsx')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('=SUM(1+1)', ws['A1'].value)
+
+        _xlsx = data.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('SUM(1+1)', ws['A1'].value)
+
+    def test_xlsx_export_book_escape_formulae_in_header(self):
+        data.headers = ('=SUM(1+1)',)
+        _book = tablib.Databook()
+        _book.add_sheet(data)
+        _xlsx = _book.export('xlsx')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('=SUM(1+1)', ws['A1'].value)
+
+        _xlsx = _book.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        ws = wb.active
+        self.assertEqual('SUM(1+1)', ws['A1'].value)
 
     def test_xlsx_bad_dimensions(self):
         """Test loading file with bad dimension.  Must be done with
