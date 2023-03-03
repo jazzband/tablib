@@ -40,12 +40,9 @@ class XLSXFormat:
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
 
-        ``invalid_char_substring`` controls the character which will be used to replace any
-        invalid chars which are defined in the dataset title.
-
         If ``dataset.title`` contains characters which are considered invalid for an XLSX file
         sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
-        be replaced with `invalid_char_subst`.
+        be replaced with ``invalid_char_subst``.
 
         If ``escape`` is True, formulae will have the leading '=' character removed.
         This is a security measure to prevent formulae from executing by default
