@@ -38,6 +38,8 @@ class XLSXFormat:
     def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False):
         """Returns XLSX representation of Dataset.
 
+        If freeze_panes is True, Export will freeze panes only after first line.
+
         If dataset.title contains characters which are considered invalid for an XLSX file
         sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
         be replaced with `invalid_char_subst`.
