@@ -35,12 +35,18 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-"):
+    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False):
         """Returns XLSX representation of Dataset.
 
-        If dataset.title contains characters which are considered invalid for an XLSX file
+        If ``freeze_panes`` is True, Export will freeze panes only after first line.
+
+        If ``dataset.title`` contains characters which are considered invalid for an XLSX file
         sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
-        be replaced with `invalid_char_subst`.
+        be replaced with ``invalid_char_subst``.
+
+        If ``escape`` is True, formulae will have the leading '=' character removed.
+        This is a security measure to prevent formulae from executing by default
+        in exported XLSX files.
         """
         wb = Workbook()
         ws = wb.worksheets[0]
@@ -50,19 +56,16 @@ class XLSXFormat:
             if dataset.title else 'Tablib Dataset'
         )
 
-        cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes)
+        cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes, escape=escape)
 
         stream = BytesIO()
         wb.save(stream)
         return stream.getvalue()
 
     @classmethod
-    def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-"):
+    def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-", escape=False):
         """Returns XLSX representation of DataBook.
-
-        If dataset.title contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
-        be replaced with `invalid_char_subst`.
+        See export_set().
         """
 
         wb = Workbook()
@@ -75,7 +78,7 @@ class XLSXFormat:
                 if dset.title else 'Sheet%s' % (i)
             )
 
-            cls.dset_sheet(dset, ws, freeze_panes=freeze_panes)
+            cls.dset_sheet(dset, ws, freeze_panes=freeze_panes, escape=escape)
 
         stream = BytesIO()
         wb.save(stream)
@@ -125,7 +128,7 @@ class XLSXFormat:
             dbook.add_sheet(data)
 
     @classmethod
-    def dset_sheet(cls, dataset, ws, freeze_panes=True):
+    def dset_sheet(cls, dataset, ws, freeze_panes=True, escape=False):
         """Completes given worksheet from given Dataset."""
         _package = dataset._package(dicts=False)
 
@@ -166,3 +169,6 @@ class XLSXFormat:
                     cell.value = col
                 except (ValueError, TypeError):
                     cell.value = str(col)
+
+                if escape and cell.data_type == 'f' and cell.value.startswith('='):
+                    cell.value = cell.value.replace("=", "")
