@@ -11,9 +11,11 @@ from collections import OrderedDict
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
+from unittest.mock import Mock, patch
 from uuid import uuid4
 
 from MarkupPy import markup
+from openpyxl.cell import Cell
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -1179,6 +1181,33 @@ class XLSXTests(BaseTestCase):
         with xls_source.open('rb') as fh:
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
+
+    def test_xlsx_raise_ValueError_on_cell_write_during_export(self):
+        setter_mock = Mock(wraps=Cell.value.fset, side_effect=[ValueError, '1'])
+        mock_property = Cell.value.setter(setter_mock)
+        with patch.object(Cell, 'value', mock_property):
+            data.append((1,))
+            _xlsx = data.export('xlsx')
+            wb = load_workbook(filename=BytesIO(_xlsx))
+            # value doesn't get written because the Cell is mocked
+            self.assertEqual(None, wb.active['A1'].value)
+
+    def test_xlsx_bad_str_call_during_export(self):
+        class BadStr(object):
+            call_count = 0
+            def __str__(self):
+                self.call_count += 1
+                print(self.call_count)
+                if self.call_count == 3:
+                    raise TypeError('bad!')
+                return '1'
+
+        data.headers = ('someheader',)
+        data.append((BadStr(),))
+        _xlsx = data.export('xlsx')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('1', wb.active['A2'].value)
+
 
 
 class JSONTests(BaseTestCase):

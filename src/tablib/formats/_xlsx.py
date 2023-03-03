@@ -159,7 +159,7 @@ class XLSXFormat:
                     try:
                         str_col_value = str(col)
                     except TypeError:
-                        str_col_value = ''
+                        pass
                     if '\n' in str_col_value:
                         cell.alignment = wrap_text
 
