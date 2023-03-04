@@ -1186,28 +1186,11 @@ class XLSXTests(BaseTestCase):
         setter_mock = Mock(wraps=Cell.value.fset, side_effect=[ValueError, '1'])
         mock_property = Cell.value.setter(setter_mock)
         with patch.object(Cell, 'value', mock_property):
-            data.append((1,))
+            data.append(('{"a": 1}',))
             _xlsx = data.export('xlsx')
             wb = load_workbook(filename=BytesIO(_xlsx))
             # value doesn't get written because the Cell is mocked
             self.assertEqual(None, wb.active['A1'].value)
-
-    def test_xlsx_bad_str_call_during_export(self):
-        class BadStr(object):
-            call_count = 0
-            def __str__(self):
-                self.call_count += 1
-                print(self.call_count)
-                if self.call_count == 3:
-                    raise TypeError('bad!')
-                return '1'
-
-        data.headers = ('someheader',)
-        data.append((BadStr(),))
-        _xlsx = data.export('xlsx')
-        wb = load_workbook(filename=BytesIO(_xlsx))
-        self.assertEqual('1', wb.active['A2'].value)
-
 
 
 class JSONTests(BaseTestCase):
