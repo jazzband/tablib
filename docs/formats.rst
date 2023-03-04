@@ -247,6 +247,10 @@ data.
 
     Reads cell values instead of formulas.
 
+You can export data to xlsx format by calling :meth:`export('xlsx') <.export>`.
+There are optional parameters to control the export.
+For available parameters, see :meth:`tablib.formats._xlsx.XLSXFormat.export_set`.
+
 .. admonition:: Binary Warning
 
     The ``xlsx`` file format is binary, so make sure to write in binary mode::

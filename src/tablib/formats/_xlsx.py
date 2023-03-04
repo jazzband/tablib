@@ -38,11 +38,13 @@ class XLSXFormat:
     def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False):
         """Returns XLSX representation of Dataset.
 
-        If dataset.title contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
-        be replaced with `invalid_char_subst`.
+        If ``freeze_panes`` is True, Export will freeze panes only after first line.
 
-        If escape is True, formulae will have the leading '=' character removed.
+        If ``dataset.title`` contains characters which are considered invalid for an XLSX file
+        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
+        be replaced with ``invalid_char_subst``.
+
+        If ``escape`` is True, formulae will have the leading '=' character removed.
         This is a security measure to prevent formulae from executing by default
         in exported XLSX files.
         """
@@ -159,7 +161,7 @@ class XLSXFormat:
                     try:
                         str_col_value = str(col)
                     except TypeError:
-                        pass
+                        str_col_value = ''
                     if '\n' in str_col_value:
                         cell.alignment = wrap_text
 
