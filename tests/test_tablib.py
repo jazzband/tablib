@@ -11,11 +11,9 @@ from collections import OrderedDict
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
-from unittest.mock import Mock, patch
 from uuid import uuid4
 
 from MarkupPy import markup
-from openpyxl.cell import Cell
 from openpyxl.reader.excel import load_workbook
 
 import tablib
