@@ -1,6 +1,64 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+requires = ["setuptools>=58", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "tablib"
+description = "Format agnostic tabular data library (XLS, JSON, YAML, CSV, etc.)"
+readme = "README.md"
+license = {text = "MIT License"}
+authors = [
+    {name = "Kenneth Reitz", email = "me@kennethreitz.org"}
+]
+maintainers = [
+    {name = "Jazzband Team", email = "roadies@jazzband.co"},
+    {name = "Hugo van Kemenade"},
+    {name = "Claude Paroz", email = "claude@2xlibre.net"},
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+all = [
+    "markuppy",
+    "odfpy",
+    "openpyxl>=2.6.0",
+    "pandas",
+    "pyyaml",
+    "tabulate",
+    "xlrd",
+    "xlwt",
+]
+cli = ["tabulate"]
+html = ["markuppy"]
+ods = ["odfpy"]
+pandas = ["pandas"]
+xls = ["xlrd", "xlwt"]
+xlsx = ["openpyxl>=2.6.0"]
+yaml = ["pyyaml"]
+
+[project.urls]
+homepage = "https://tablib.readthedocs.io"
+documentation = "https://tablib.readthedocs.io"
+repository = "https://github.com/jazzband/tablib"
+changelog = "https://github.com/jazzband/tablib/blob/master/HISTORY.md"
+
+[tool.setuptools_scm]
+write_to = "src/tablib/_version.py"
 
 [tool.isort]
 profile = "black"
