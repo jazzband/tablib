@@ -163,7 +163,7 @@ class XLSXFormat:
 
                 try:
                     cell.value = col
-                except (ValueError, TypeError):
+                except ValueError:
                     cell.value = str(col)
 
                 if escape and cell.data_type == 'f' and cell.value.startswith('='):
