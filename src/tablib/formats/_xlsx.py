@@ -158,16 +158,12 @@ class XLSXFormat:
 
                 # wrap the rest
                 else:
-                    try:
-                        str_col_value = str(col)
-                    except TypeError:
-                        str_col_value = ''
-                    if '\n' in str_col_value:
+                    if '\n' in str(col):
                         cell.alignment = wrap_text
 
                 try:
                     cell.value = col
-                except (ValueError, TypeError):
+                except ValueError:
                     cell.value = str(col)
 
                 if escape and cell.data_type == 'f' and cell.value.startswith('='):

@@ -1180,6 +1180,16 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh, read_only=False)
         self.assertEqual(data.height, 3)
 
+    def test_xlsx_raise_ValueError_on_cell_write_during_export(self):
+        """Test that the process handles errors which might be raised
+        when calling cell setter."""
+        # openpyxl does not handle array type, so will raise ValueError,
+        # which results in the array being cast to string
+        data.append(([1],))
+        _xlsx = data.export('xlsx')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('[1]', wb.active['A1'].value)
+
 
 class JSONTests(BaseTestCase):
     def test_json_format_detect(self):
