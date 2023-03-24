@@ -1,6 +1,6 @@
 # History
 
-## 3.4.0 (unreleased)
+## 3.4.0 (2023-03-24)
 
 ### Improvements
 
