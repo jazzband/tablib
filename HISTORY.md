@@ -1,5 +1,20 @@
 # History
 
+## 3.4.0 (2023-03-24)
+
+### Improvements
+
+- Move setup to `pyproject.toml` (#542)
+- xlsx export: remove redundant code (#541)
+- xlsx export: support escape of formulae (#540)
+- Add &lt;tbody&gt; tags to HTML output (#539)
+- Check for type list and improve error msg (#524)
+
+### Bugfixes
+
+- Fix bug when yaml file is empty (#535)
+- Fix linting issues raised by Flake8 (#536)
+ 
 ## 3.3.0 (2022-12-10)
 
 ### Improvements
