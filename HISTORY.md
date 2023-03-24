@@ -6,19 +6,14 @@
 
 - Move setup to `pyproject.toml` (#542)
 - xlsx export: remove redundant code (#541)
-- Support escape of formulae on xlsx export (#540)
-- Add &lt;tbody&gt; tags to html output (#539)
-- Add flake8 hook to pre-commit (#537)
-- Fix linting issues raised by flake8 (#536)
+- xlsx export: support escape of formulae (#540)
+- Add &lt;tbody&gt; tags to HTML output (#539)
 - Check for type list and improve error msg (#524)
-- pre-commit autoupdate (#533)
-- Fix spelling of word in AUTHORS file (#532)
-- Update release checklist (#530)
-- Fix deploy warning (#531)
 
 ### Bugfixes
 
-- fix bug when yaml file is empty (#535)
+- Fix bug when yaml file is empty (#535)
+- Fix linting issues raised by Flake8 (#536)
  
 ## 3.3.0 (2022-12-10)
 
