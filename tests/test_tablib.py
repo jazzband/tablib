@@ -313,13 +313,13 @@ class TablibTestCase(BaseTestCase):
 
     def test_book_import_from_file(self):
         xlsx_source = Path(__file__).parent / 'files' / 'founders.xlsx'
-        with open(str(xlsx_source), mode='rb') as fh:
+        with xlsx_source.open('rb') as fh:
             book = tablib.Databook().load(fh, 'xlsx')
         self.assertEqual(eval(book.json)[0]['title'], 'Feuille1')
 
     def test_dataset_import_from_file(self):
         xlsx_source = Path(__file__).parent / 'files' / 'founders.xlsx'
-        with open(str(xlsx_source), mode='rb') as fh:
+        with xlsx_source.open('rb') as fh:
             dset = tablib.Dataset().load(fh, 'xlsx')
         self.assertEqual(eval(dset.json)[0]['last_name'], 'Adams')
 
@@ -1024,7 +1024,7 @@ class XLSTests(BaseTestCase):
 
     def test_xls_date_import(self):
         xls_source = Path(__file__).parent / 'files' / 'dates.xls'
-        with open(str(xls_source), mode='rb') as fh:
+        with xls_source.open('rb') as fh:
             dset = tablib.Dataset().load(fh, 'xls')
         self.assertEqual(dset.dict[0]['birth_date'], datetime.datetime(2015, 4, 12, 0, 0))
 
@@ -1099,14 +1099,14 @@ class XLSXTests(BaseTestCase):
     def test_xlsx_import_book_ragged(self):
         """Import XLSX file through databook when not all rows have the same length."""
         xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
-        with open(str(xlsx_source), mode='rb') as fh:
+        with xlsx_source.open('rb') as fh:
             book = tablib.Databook().load(fh, 'xlsx')
         self.assertEqual(book.sheets()[0].pop(), (1.0, ''))
 
     def test_xlsx_import_set_ragged(self):
         """Import XLSX file through dataset when not all rows have the same length."""
         xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
-        with open(str(xlsx_source), mode='rb') as fh:
+        with xlsx_source.open('rb') as fh:
             dataset = tablib.Dataset().load(fh, 'xlsx')
         self.assertEqual(dataset.pop(), (1.0, ''))
 
@@ -1324,7 +1324,7 @@ class YAMLTests(BaseTestCase):
     def test_yaml_load(self):
         """ test issue 524: invalid format  """
         yaml_source = Path(__file__).parent / 'files' / 'issue_524.yaml'
-        with yaml_source.open(mode='rb') as fh:
+        with yaml_source.open('rb') as fh:
             with self.assertRaises(UnsupportedFormat):
                 tablib.Dataset().load(fh, 'yaml')
 
