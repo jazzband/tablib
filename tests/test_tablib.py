@@ -1096,12 +1096,19 @@ class XLSXTests(BaseTestCase):
         new_data = tablib.Databook().load(_xlsx, 'xlsx')
         self.assertEqual(new_data.sheets()[0].title, 'bad name -------qwertyuiopasdfg')
 
-    def test_xlsx_import_set_ragged(self):
-        """Import XLSX file when not all rows have the same length."""
+    def test_xlsx_import_book_ragged(self):
+        """Import XLSX file through databook when not all rows have the same length."""
         xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
         with open(str(xlsx_source), mode='rb') as fh:
             book = tablib.Databook().load(fh, 'xlsx')
         self.assertEqual(book.sheets()[0].pop(), (1.0, ''))
+
+    def test_xlsx_import_set_ragged(self):
+        """Import XLSX file through dataset when not all rows have the same length."""
+        xlsx_source = Path(__file__).parent / 'files' / 'ragged.xlsx'
+        with open(str(xlsx_source), mode='rb') as fh:
+            dataset = tablib.Dataset().load(fh, 'xlsx')
+        self.assertEqual(dataset.pop(), (1.0, ''))
 
     def test_xlsx_wrong_char(self):
         """Bad characters are not silently ignored. We let the exception bubble up."""

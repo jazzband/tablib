@@ -102,6 +102,8 @@ class XLSXFormat:
             if i == skip_lines and headers:
                 dset.headers = row_vals
             else:
+                if i > 0 and len(row_vals) < dset.width:
+                    row_vals += [''] * (dset.width - len(row_vals))
                 dset.append(row_vals)
 
     @classmethod
