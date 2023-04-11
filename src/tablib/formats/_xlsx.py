@@ -85,13 +85,8 @@ class XLSXFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, read_only=True, skip_lines=0):
-        """Returns databook from XLS stream."""
-
-        dset.wipe()
-
-        xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
-        sheet = xls_book.active
+    def import_sheet(cls, dset, sheet, headers=True, skip_lines=0):
+        """Populates dataset with sheet."""
 
         dset.title = sheet.title
 
@@ -102,9 +97,19 @@ class XLSXFormat:
             if i == skip_lines and headers:
                 dset.headers = row_vals
             else:
-                if i > 0 and len(row_vals) < dset.width:
+                if i > skip_lines and len(row_vals) < dset.width:
                     row_vals += [''] * (dset.width - len(row_vals))
                 dset.append(row_vals)
+
+    @classmethod
+    def import_set(cls, dset, in_stream, headers=True, read_only=True, skip_lines=0):
+        """Returns databook from XLS stream."""
+
+        dset.wipe()
+
+        xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
+        sheet = xls_book.active
+        cls.import_sheet(dset, sheet, headers, skip_lines)
 
     @classmethod
     def import_book(cls, dbook, in_stream, headers=True, read_only=True):
@@ -115,19 +120,9 @@ class XLSXFormat:
         xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
 
         for sheet in xls_book.worksheets:
-            data = tablib.Dataset()
-            data.title = sheet.title
-
-            for i, row in enumerate(sheet.rows):
-                row_vals = [c.value for c in row]
-                if (i == 0) and (headers):
-                    data.headers = row_vals
-                else:
-                    if i > 0 and len(row_vals) < data.width:
-                        row_vals += [''] * (data.width - len(row_vals))
-                    data.append(row_vals)
-
-            dbook.add_sheet(data)
+            dset = tablib.Dataset()
+            cls.import_sheet(dset, sheet, headers)
+            dbook.add_sheet(dset)
 
     @classmethod
     def dset_sheet(cls, dataset, ws, freeze_panes=True, escape=False):
