@@ -13,6 +13,7 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
 
+import pytest
 from MarkupPy import markup
 from openpyxl.reader.excel import load_workbook
 
@@ -20,6 +21,11 @@ import tablib
 from tablib.core import Row, detect_format
 from tablib.exceptions import UnsupportedFormat
 from tablib.formats import registry
+
+try:
+    import pandas
+except ImportError:  # pragma: no cover
+    pandas = None
 
 
 class BaseTestCase(unittest.TestCase):
@@ -264,6 +270,7 @@ class TablibTestCase(BaseTestCase):
             'c|3'
         ])
 
+    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
@@ -272,6 +279,7 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
 
+    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_datetime_append(self):
         """Passes in a single datetime and a single date and exports."""
 
@@ -283,6 +291,7 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
 
+    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_separator_append(self):
         for a in range(3):
             data.append_separator('foobar')
@@ -328,6 +337,7 @@ class TablibTestCase(BaseTestCase):
         dset = tablib.Dataset().load(tmp_file, 'yaml')
         self.assertEqual(dset.json, '[]')
 
+    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_auto_format_detect(self):
         """Test auto format detection."""
         # html, jira, latex, rst are export only.
