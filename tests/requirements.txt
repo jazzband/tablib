@@ -3,7 +3,6 @@ pytest-cov
 MarkupPy
 odfpy
 openpyxl>=2.6.0
-pandas
 pyyaml
 tabulate
 xlrd
