@@ -1,5 +1,14 @@
 # History
 
+## 3.5.0 (2023-06-11)
+
+### Improvements
+
+- Add support for Python 3.12 (#550)
+- Drop support for EOL Python 3.7 (#551)
+- Allow importing 'ragged' .xlsx files through dataset (#547)
+- Release: replace deprecated `repository_url` with `repository-url` (#545)
+
 ## 3.4.0 (2023-03-24)
 
 ### Improvements
