@@ -14,7 +14,6 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from MarkupPy import markup
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -624,47 +623,49 @@ class TablibTestCase(BaseTestCase):
 
 
 class HTMLTests(BaseTestCase):
-    def test_html_export(self):
+    founders_html = (
+        "<table>"
+        "<thead>"
+        "<tr><th>first_name</th><th>last_name</th><th>gpa</th></tr>"
+        "</thead>"
+        "<tbody>"
+        "<tr><td>John</td><td>Adams</td><td>90</td></tr>"
+        "<tr><td>George</td><td>Washington</td><td>67</td></tr>"
+        "<tr><td>Thomas</td><td>Jefferson</td><td>50</td></tr>"
+        "</tbody>"
+        "</table>"
+    )
+
+    def test_html_dataset_export(self):
         """HTML export"""
-
-        html = markup.page()
-        html.table.open()
-        html.thead.open()
-
-        html.tr(markup.oneliner.th(self.founders.headers))
-        html.thead.close()
-
-        html.tbody.open()
-        for founder in self.founders:
-            html.tr(markup.oneliner.td(founder))
-        html.tbody.close()
-
-        html.table.close()
-        html = str(html)
-
-        self.assertEqual(html, self.founders.html)
+        self.assertEqual(self.founders_html, self.founders.html.replace('\n', ''))
 
     def test_html_export_none_value(self):
         """HTML export"""
 
-        html = markup.page()
-        html.table.open()
-        html.thead.open()
-
-        html.tr(markup.oneliner.th(['foo', '', 'bar']))
-        html.thead.close()
-
-        html.tbody.open()
-        html.tr(markup.oneliner.td(['foo', '', 'bar']))
-        html.tbody.close()
-
-        html.table.close()
-        html = str(html)
-
         headers = ['foo', None, 'bar']
-        d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
+        d = tablib.Dataset(['foø', None, 'bar'], headers=headers)
+        expected = (
+            "<table>"
+            "<thead>"
+            "<tr><th>foo</th><th></th><th>bar</th></tr>"
+            "</thead>"
+            "<tbody>"
+            "<tr><td>foø</td><td></td><td>bar</td></tr>"
+            "</tbody>"
+            "</table>"
+        )
+        self.assertEqual(expected, d.html.replace('\n', ''))
 
-        self.assertEqual(html, d.html)
+    def test_html_databook_export(self):
+        book = tablib.Databook()
+        book.add_sheet(self.founders)
+        book.add_sheet(self.founders)
+        self.maxDiff = None
+        self.assertEqual(
+            book.html.replace('\n', ''),
+            f"<h3>Founders</h3>{self.founders_html}<h3>Founders</h3>{self.founders_html}"
+        )
 
 
 class RSTTests(BaseTestCase):

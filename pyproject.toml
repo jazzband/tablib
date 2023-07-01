@@ -34,7 +34,6 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 all = [
-    "markuppy",
     "odfpy",
     "openpyxl>=2.6.0",
     "pandas",
@@ -44,7 +43,6 @@ all = [
     "xlwt",
 ]
 cli = ["tabulate"]
-html = ["markuppy"]
 ods = ["odfpy"]
 pandas = ["pandas"]
 xls = ["xlrd", "xlwt"]

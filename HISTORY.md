@@ -1,5 +1,12 @@
 # History
 
+## Unreleased
+
+### Changes
+
+- The html export format does not depend on MarkupPy any longer, therefore the
+  tablib[html] install target was removed also.
+
 ## 3.5.0 (2023-06-11)
 
 ### Improvements

@@ -1,10 +1,6 @@
 """ Tablib - HTML export support.
 """
-
-import codecs
-from io import BytesIO
-
-from MarkupPy import markup
+from xml.etree import ElementTree as ET
 
 
 class HTMLFormat:
@@ -17,48 +13,38 @@ class HTMLFormat:
     def export_set(cls, dataset):
         """HTML representation of a Dataset."""
 
-        stream = BytesIO()
-
-        page = markup.page()
-        page.table.open()
-
+        table = ET.Element('table')
         if dataset.headers is not None:
-            new_header = [item if item is not None else '' for item in dataset.headers]
+            head = ET.Element('thead')
+            tr = ET.Element('tr')
+            for header in dataset.headers:
+                th = ET.Element('th')
+                th.text = str(header) if header is not None else ''
+                tr.append(th)
+            head.append(tr)
+            table.append(head)
 
-            page.thead.open()
-            headers = markup.oneliner.th(new_header)
-            page.tr(headers)
-            page.thead.close()
-
-        page.tbody.open()
+        body = ET.Element('tbody')
         for row in dataset:
-            new_row = [item if item is not None else '' for item in row]
+            tr = ET.Element('tr')
+            for item in row:
+                td = ET.Element('td')
+                td.text = str(item) if item is not None else ''
+                tr.append(td)
+            body.append(tr)
+        table.append(body)
 
-            html_row = markup.oneliner.td(new_row)
-            page.tr(html_row)
-        page.tbody.close()
-
-        page.table.close()
-
-        # Allow unicode characters in output
-        wrapper = codecs.getwriter("utf8")(stream)
-        wrapper.writelines(str(page))
-
-        return stream.getvalue().decode('utf-8')
+        return ET.tostring(table, method='html', encoding='unicode')
 
     @classmethod
     def export_book(cls, databook):
         """HTML representation of a Databook."""
 
-        stream = BytesIO()
-
-        # Allow unicode characters in output
-        wrapper = codecs.getwriter("utf8")(stream)
-
+        result = ''
         for i, dset in enumerate(databook._datasets):
-            title = (dset.title if dset.title else 'Set %s' % (i))
-            wrapper.write(f'<{cls.BOOK_ENDINGS}>{title}</{cls.BOOK_ENDINGS}>\n')
-            wrapper.write(dset.html)
-            wrapper.write('\n')
+            title = dset.title if dset.title else f'Set {i}'
+            result += f'<{cls.BOOK_ENDINGS}>{title}</{cls.BOOK_ENDINGS}>\n'
+            result += dset.html
+            result += '\n'
 
-        return stream.getvalue().decode('utf-8')
+        return result
