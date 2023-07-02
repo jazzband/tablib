@@ -1,6 +1,5 @@
 pytest
 pytest-cov
-MarkupPy
 odfpy
 openpyxl>=2.6.0
 pyyaml

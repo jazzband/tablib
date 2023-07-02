@@ -101,9 +101,6 @@ The ``html`` format is currently export-only. The exports produce an HTML page
 with the data in a ``<table>``. If headers have been set, they will be used as
 table headers.
 
-This format is optional, install Tablib with ``pip install "tablib[html]"`` to
-make the format available.
-
 jira
 ====
 

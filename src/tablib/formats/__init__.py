@@ -15,7 +15,6 @@ from ._tsv import TSVFormat
 uninstalled_format_messages = {
     "cli": {"package_name": "tabulate package", "extras_name": "cli"},
     "df": {"package_name": "pandas package", "extras_name": "pandas"},
-    "html": {"package_name": "MarkupPy package", "extras_name": "html"},
     "ods": {"package_name": "odfpy package", "extras_name": "ods"},
     "xls": {"package_name": "xlrd and xlwt packages", "extras_name": "xls"},
     "xlsx": {"package_name": "openpyxl package", "extras_name": "xlsx"},
@@ -101,8 +100,7 @@ class Registry:
         if find_spec('odf'):
             self.register('ods', 'tablib.formats._ods.ODSFormat')
         self.register('dbf', 'tablib.formats._dbf.DBFFormat')
-        if find_spec('MarkupPy'):
-            self.register('html', 'tablib.formats._html.HTMLFormat')
+        self.register('html', 'tablib.formats._html.HTMLFormat')
         self.register('jira', 'tablib.formats._jira.JIRAFormat')
         self.register('latex', 'tablib.formats._latex.LATEXFormat')
         if find_spec('pandas'):
