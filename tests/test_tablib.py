@@ -667,6 +667,59 @@ class HTMLTests(BaseTestCase):
             f"<h3>Founders</h3>{self.founders_html}<h3>Founders</h3>{self.founders_html}"
         )
 
+    def test_html_import(self):
+        data.html = self.founders_html
+
+        self.assertEqual(['first_name', 'last_name', 'gpa'], data.headers)
+        self.assertEqual([
+            ('John', 'Adams', '90'),
+            ('George', 'Washington', '67'),
+            ('Thomas', 'Jefferson', '50'),
+        ], data[:])
+
+    def test_html_import_no_headers(self):
+        data.html = """
+            <table>
+            <tr><td>John</td><td><i>Adams</i></td><td>90</td></tr>"
+            <tr><td>George</td><td><i>Wash</i>ington</td><td>67</td></tr>"
+            </table>
+        """
+
+        self.assertIsNone(data.headers)
+        self.assertEqual([
+            ('John', 'Adams', '90'),
+            ('George', 'Washington', '67'),
+        ], data[:])
+
+    def test_html_import_no_table(self):
+        html = "<html><body></body></html>"
+
+        with self.assertRaises(ValueError) as exc:
+            data.html = html
+        self.assertEqual('No <table> found in input HTML', str(exc.exception))
+
+    def test_html_import_table_id(self):
+        """A table with a specific id can be targeted for import."""
+        html_input = """
+            <html><body>
+            <table id="ignore">
+              <thead><tr><th>IGNORE</th></tr></thead><tr><td>IGNORE</td></tr>
+            </table>
+            <table id="import">
+              <thead><tr><th>first_name</th><th>last_name</th></tr></thead>
+              <tr><td>John</td><td>Adams</td></tr>"
+            </table>
+            </html></body>
+        """
+        dataset = tablib.import_set(html_input, format="html", table_id="import")
+        self.assertEqual(['first_name', 'last_name'], dataset.headers)
+        self.assertEqual([('John', 'Adams')], dataset[:])
+
+        # If the id is not found, an error is raised
+        with self.assertRaises(ValueError) as exc:
+            dataset = tablib.import_set(html_input, format="html", table_id="notfound")
+        self.assertEqual('No <table> found with id="notfound" in input HTML', str(exc.exception))
+
 
 class RSTTests(BaseTestCase):
     def test_rst_force_grid(self):

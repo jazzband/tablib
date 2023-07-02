@@ -97,9 +97,21 @@ install Tablib with ``pip install "tablib[pandas]"`` to make the format availabl
 html
 ====
 
-The ``html`` format is currently export-only. The exports produce an HTML page
-with the data in a ``<table>``. If headers have been set, they will be used as
-table headers.
+The exports produce an HTML page with the data in a ``<table>``. If headers have
+been set, they will be used as table headers (``thead``).
+
+When you import HTML, you can specify a specific table to import by providing
+the ``table_id`` argument::
+
+    import tablib
+
+    tablib.import_set(your_html, format='html', table_id='some_table_id')
+
+Otherwise, the first table found will be imported.
+
+.. versionchanged:: 3.6.0
+
+    The ability to import HTML was added. The dependency on MarkupPy was dropped.
 
 jira
 ====

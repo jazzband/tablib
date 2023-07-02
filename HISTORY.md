@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Improvements
+
+- The html format now supports importing from HTML content (#243)
+
 ### Changes
 
 - The html export format does not depend on MarkupPy any longer, therefore the
