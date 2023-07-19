@@ -501,6 +501,11 @@ class Dataset:
 
         return self.rpop()
 
+    def get(self, index):
+        """Returns the row from the :class:`Dataset` at the given index."""
+
+        return self[index]
+
     # -------
     # Columns
     # -------
