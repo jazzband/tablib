@@ -206,7 +206,8 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders.get(-2), self.george)
         self.assertEqual(self.founders.get(-3), self.john)
 
-        self.assertRaises(self.founders.get(3), IndexError)
+        with self.assertRaises(IndexError):
+            self.founders.get(3)
 
     def test_get_col(self):
         """Verify getting columns by index"""
