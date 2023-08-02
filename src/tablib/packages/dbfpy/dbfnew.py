@@ -24,7 +24,7 @@ Note: this is a legacy interface.  New code should use Dbf class
 TODO:
   - handle Memo fields.
   - check length of the fields according to the
-    `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
+    `https://www.clicketyclick.dk/databases/xbase/format/data_types.html`
 
 """
 """History (most recent first)

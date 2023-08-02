@@ -46,7 +46,7 @@ class DbfFieldDef:
 
     Child classes must override ``type`` class attribute to provide datatype
     information of the field definition. For more info about types visit
-    `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
+    `https://www.clicketyclick.dk/databases/xbase/format/data_types.html`
 
     Also child classes must override ``defaultValue`` field to provide
     default value for the field value.
@@ -66,7 +66,7 @@ class DbfFieldDef:
     length = None
 
     # field type. for more information about fields types visit
-    # `http://www.clicketyclick.dk/databases/xbase/format/data_types.html`
+    # `https://www.clicketyclick.dk/databases/xbase/format/data_types.html`
     # must be overridden in child classes
     typeCode = None
 
@@ -96,7 +96,7 @@ class DbfFieldDef:
         # set fields
         self.name = name
         # FIXME: validate length according to the specification at
-        # http://www.clicketyclick.dk/databases/xbase/format/data_types.html
+        # https://www.clicketyclick.dk/databases/xbase/format/data_types.html
         self.length = length
         self.decimalCount = decimalCount
         self.ignoreErrors = ignoreErrors
