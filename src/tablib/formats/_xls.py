@@ -57,7 +57,7 @@ class XLSFormat:
         wb = xlwt.Workbook(encoding='utf8')
 
         for i, dset in enumerate(databook._datasets):
-            ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
+            ws = wb.add_sheet(dset.title if dset.title else f"Sheet{i}")
 
             cls.dset_sheet(dset, ws)
 

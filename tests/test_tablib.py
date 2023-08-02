@@ -153,7 +153,7 @@ class TablibTestCase(BaseTestCase):
         data.headers = ['first_name']
         # no data
 
-        new_col = ('allen')
+        new_col = 'allen'
 
         def append_col_callable():
             data.append_col(new_col, header='middle_name')

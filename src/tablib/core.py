@@ -75,7 +75,7 @@ class Row:
         self._row.insert(index, value)
 
     def __contains__(self, item):
-        return (item in self._row)
+        return item in self._row
 
     @property
     def tuple(self):
@@ -93,7 +93,7 @@ class Row:
         if tag is None:
             return False
         elif isinstance(tag, str):
-            return (tag in self.tags)
+            return tag in self.tags
         else:
             return bool(len(set(tag) & set(self.tags)))
 

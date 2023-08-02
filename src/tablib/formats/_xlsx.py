@@ -75,7 +75,7 @@ class XLSXFormat:
             ws = wb.create_sheet()
             ws.title = (
                 safe_xlsx_sheet_title(dset.title, invalid_char_subst)
-                if dset.title else 'Sheet%s' % (i)
+                if dset.title else f"Sheet{i}"
             )
 
             cls.dset_sheet(dset, ws, freeze_panes=freeze_panes, escape=escape)

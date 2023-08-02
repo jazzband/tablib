@@ -163,7 +163,7 @@ class DbfFieldDef:
             Return value is a (name, type, length, decimals) tuple.
 
         """
-        return (self.name, self.typeCode, self.length, self.decimalCount)
+        return self.name, self.typeCode, self.length, self.decimalCount
 
     def rawFromRecord(self, record):
         """Return a "raw" field value from the record string."""
