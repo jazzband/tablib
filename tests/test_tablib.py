@@ -717,7 +717,7 @@ class HTMLTests(BaseTestCase):
 
         # If the id is not found, an error is raised
         with self.assertRaises(ValueError) as exc:
-            dataset = tablib.import_set(html_input, format="html", table_id="notfound")
+            tablib.import_set(html_input, format="html", table_id="notfound")
         self.assertEqual('No <table> found with id="notfound" in input HTML', str(exc.exception))
 
 
