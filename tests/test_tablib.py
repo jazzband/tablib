@@ -195,6 +195,23 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders['gpa'],
                          [self.john[2], self.george[2], self.tom[2]])
 
+    def test_get(self):
+        """Verify getting rows by index"""
+
+        self.assertEqual(self.founders.get(0), self.john)
+        self.assertEqual(self.founders.get(1), self.george)
+        self.assertEqual(self.founders.get(2), self.tom)
+
+        self.assertEqual(self.founders.get(-1), self.tom)
+        self.assertEqual(self.founders.get(-2), self.george)
+        self.assertEqual(self.founders.get(-3), self.john)
+
+        with self.assertRaises(IndexError):
+            self.founders.get(3)
+
+        with self.assertRaises(TypeError):
+            self.founders.get('first_name')
+
     def test_get_col(self):
         """Verify getting columns by index"""
 

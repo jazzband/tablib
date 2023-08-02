@@ -167,7 +167,13 @@ You can slice and dice your data, just like a standard Python list. ::
 
     >>> data[0]
     ('Kenneth', 'Reitz', 22)
+    >>> data[0:2]
+    [('Kenneth', 'Reitz', 22), ('Bessie', 'Monke', 20)]
 
+You can also access a row using its index without slicing. ::
+
+    >>> data.get(0)
+    ('Kenneth', 'Reitz', 22)
 
 If we had a set of data consisting of thousands of rows,
 it could be useful to get a list of values in a column.

@@ -501,6 +501,14 @@ class Dataset:
 
         return self.rpop()
 
+    def get(self, index):
+        """Returns the row from the :class:`Dataset` at the given index."""
+
+        if isinstance(index, int):
+            return self[index]
+
+        raise TypeError('Row indices must be integers.')
+
     # -------
     # Columns
     # -------
