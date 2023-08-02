@@ -4,8 +4,8 @@ import io
 import os
 import tempfile
 
-from tablib.packages.dbfpy import dbf, dbfnew
-from tablib.packages.dbfpy import record as dbfrecord
+from ..packages.dbfpy import dbf, dbfnew
+from ..packages.dbfpy import record as dbfrecord
 
 
 class DBFFormat:

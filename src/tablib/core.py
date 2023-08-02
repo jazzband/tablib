@@ -12,15 +12,15 @@ from collections import OrderedDict
 from copy import copy
 from operator import itemgetter
 
-from tablib.exceptions import (
+from .exceptions import (
     HeadersNeeded,
     InvalidDatasetIndex,
     InvalidDatasetType,
     InvalidDimensions,
     UnsupportedFormat,
 )
-from tablib.formats import registry
-from tablib.utils import normalize_input
+from .formats import registry
+from .utils import normalize_input
 
 __title__ = 'tablib'
 __author__ = 'Kenneth Reitz'
