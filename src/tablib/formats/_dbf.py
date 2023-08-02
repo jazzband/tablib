@@ -46,7 +46,7 @@ class DBFFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True):
+    def import_set(cls, dset, in_stream):
         """Returns a dataset from a DBF stream."""
 
         dset.wipe()
