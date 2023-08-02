@@ -41,7 +41,7 @@ class ODSFormat:
         wb.automaticstyles.addElement(bold)
 
         for i, dset in enumerate(databook._datasets):
-            ws = table.Table(name=dset.title if dset.title else 'Sheet%s' % (i))
+            ws = table.Table(name=dset.title if dset.title else f"Sheet{i}")
             wb.spreadsheet.addElement(ws)
             cls.dset_sheet(dset, ws)
 

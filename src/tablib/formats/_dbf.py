@@ -4,8 +4,8 @@ import io
 import os
 import tempfile
 
-from tablib.packages.dbfpy import dbf, dbfnew
-from tablib.packages.dbfpy import record as dbfrecord
+from ..packages.dbfpy import dbf, dbfnew
+from ..packages.dbfpy import record as dbfrecord
 
 
 class DBFFormat:
@@ -46,7 +46,7 @@ class DBFFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True):
+    def import_set(cls, dset, in_stream):
         """Returns a dataset from a DBF stream."""
 
         dset.wipe()

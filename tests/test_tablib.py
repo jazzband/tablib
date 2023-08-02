@@ -153,7 +153,7 @@ class TablibTestCase(BaseTestCase):
         data.headers = ['first_name']
         # no data
 
-        new_col = ('allen')
+        new_col = 'allen'
 
         def append_col_callable():
             data.append_col(new_col, header='middle_name')
@@ -292,9 +292,9 @@ class TablibTestCase(BaseTestCase):
 
     @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_separator_append(self):
-        for a in range(3):
+        for _ in range(3):
             data.append_separator('foobar')
-            for a in range(5):
+            for _ in range(5):
                 data.append(['asdf', 'asdf', 'asdf'])
         self._test_export_data_in_all_formats(data)
 
@@ -717,7 +717,7 @@ class HTMLTests(BaseTestCase):
 
         # If the id is not found, an error is raised
         with self.assertRaises(ValueError) as exc:
-            dataset = tablib.import_set(html_input, format="html", table_id="notfound")
+            tablib.import_set(html_input, format="html", table_id="notfound")
         self.assertEqual('No <table> found with id="notfound" in input HTML', str(exc.exception))
 
 

@@ -25,7 +25,7 @@ class DataFrameFormat:
             return False
 
     @classmethod
-    def export_set(cls, dset, index=None):
+    def export_set(cls, dset):
         """Returns DataFrame representation of DataBook."""
         if DataFrame is None:
             raise NotImplementedError(

@@ -51,7 +51,7 @@ class HTMLFormat:
         return result
 
     @classmethod
-    def import_set(cls, dset, in_stream, table_id=None, **kwargs):
+    def import_set(cls, dset, in_stream, table_id=None):
         """Returns dataset from HTML content."""
 
         dset.wipe()

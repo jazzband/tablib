@@ -7,7 +7,7 @@ except ImportError:
     __version__ = None
 
 
-from tablib.core import (  # noqa: F401
+from .core import (  # noqa: F401
     Databook,
     Dataset,
     InvalidDatasetType,
