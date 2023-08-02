@@ -209,6 +209,9 @@ class TablibTestCase(BaseTestCase):
         with self.assertRaises(IndexError):
             self.founders.get(3)
 
+        with self.assertRaises(TypeError):
+            self.founders.get('first_name')
+
     def test_get_col(self):
         """Verify getting columns by index"""
 
