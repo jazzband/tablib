@@ -40,9 +40,10 @@ class XLSXFormat:
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
 
-        If ``dataset.title`` contains characters which are considered invalid for an XLSX file
-        sheet name (http://www.excelcodex.com/2012/06/worksheets-naming-conventions/), they will
-        be replaced with ``invalid_char_subst``.
+        If ``dataset.title`` contains characters which are
+        considered invalid for an XLSX file sheet name
+        (https://web.archive.org/web/20230323081941/https://www.excelcodex.com/2012/06/worksheets-naming-conventions/),
+        they will be replaced with ``invalid_char_subst``.
 
         If ``escape`` is True, formulae will have the leading '=' character removed.
         This is a security measure to prevent formulae from executing by default
