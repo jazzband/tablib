@@ -80,7 +80,7 @@ class _FieldDefinition:
         self.cls = _cls
 
     def getDbfField(self):
-        "Return `DbfFieldDef` instance from the current definition."
+        """Return `DbfFieldDef` instance from the current definition."""
         return self.cls(self.name, self.len, self.dec)
 
     def appendToHeader(self, dbfh):
