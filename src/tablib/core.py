@@ -715,7 +715,7 @@ class Dataset:
     def _transpose_without_headers(self):
         """Transpose a :class:`Dataset`, turning rows into columns and vice
         versa, returning a new ``Dataset`` instance. This instance should not
-        has headers, or the dimension would be invalid."""
+        have headers, or the dimension would be invalid."""
 
         _dset = Dataset()
 
