@@ -688,14 +688,10 @@ class Dataset:
 
         return _dset
 
-    def transpose(self):
+    def _transpose_with_headers(self):
         """Transpose a :class:`Dataset`, turning rows into columns and vice
         versa, returning a new ``Dataset`` instance. The first row of the
         original instance becomes the new header row."""
-
-        # Don't transpose if there is no data
-        if not self:
-            return
 
         _dset = Dataset()
         # The first element of the headers stays in the headers,
@@ -715,6 +711,35 @@ class Dataset:
             row_data = Row(row_data)
             _dset.append(row=row_data)
         return _dset
+
+    def _transpose_without_headers(self):
+        """Transpose a :class:`Dataset`, turning rows into columns and vice
+        versa, returning a new ``Dataset`` instance. This instance should not
+        has headers, or the dimension would be invalid."""
+
+        _dset = Dataset()
+
+        # Add columns as rows in new instance
+        for index in range(0, len(self._data[0])):
+            row_data = self.get_col(index)
+            _dset.append(row=row_data)
+
+        return _dset
+
+    def transpose(self):
+        """Transpose a :class:`Dataset`, turning rows into columns and vice
+        versa, returning a new ``Dataset`` instance. If the instance has
+        headers, the first row of the original instance becomes the new header
+        row."""
+
+        # Don't transpose if there is no data
+        if not self:
+            return
+
+        if self.headers is None:
+            return self._transpose_without_headers()
+        else:
+            return self._transpose_with_headers()
 
     def stack(self, other):
         """Stack two :class:`Dataset` instances together by
