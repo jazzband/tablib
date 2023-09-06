@@ -402,6 +402,21 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(second_row,
                          ("gpa", 90, 67, 50))
 
+    def test_transpose_empty_dataset(self):
+        data = tablib.Dataset()
+        self.assertEqual(data.transpose(), None)
+
+    def test_transpose_with_no_headers(self):
+        data = tablib.Dataset()
+        data.append(('Cat', 'Eats fish', 26))
+        data.append(['Dogs like', '_balls', 48])
+        data.append([73, 'people', 'sleeps'])
+        dataTrans = data.transpose()
+        self.assertEqual(dataTrans[0], ('Cat', 'Dogs like', 73))
+        self.assertEqual(dataTrans[1], ('Eats fish', '_balls', 'people'))
+        self.assertEqual(dataTrans[2], (26, 48, 'sleeps'))
+        self.assertEqual(data.transpose().transpose().dict, data.dict)
+
     def test_transpose_multiple_headers(self):
 
         data = tablib.Dataset()
