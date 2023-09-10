@@ -164,6 +164,8 @@ class ODSFormat:
                     cell = table.TableCell(valuetype="date", datevalue=col.strftime('%Y-%m-%d'))
                 elif isinstance(col, dt.time):
                     cell = table.TableCell(valuetype="time", timevalue=col.strftime('%H:%M:%S'))
+                elif col is None:
+                    cell = table.TableCell(valuetype="void")
                 else:
                     cell = table.TableCell(valuetype="string")
                     cell.addElement(text.P(text=str(col), stylename=style))

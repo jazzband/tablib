@@ -1111,9 +1111,9 @@ class ODSTests(BaseTestCase):
         date = dt.date(2019, 10, 4)
         date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
         time = dt.time(14, 30)
-        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time))
+        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time, None))
         data.headers = (
-            'string', 'start0', 'integer', 'float', 'decimal', 'date', 'time', 'date/time'
+            'string', 'start0', 'integer', 'float', 'decimal', 'date', 'time', 'date/time', 'None'
         )
         _ods = data.ods
         data.ods = _ods
@@ -1125,6 +1125,7 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['date'], date)
         self.assertEqual(data.dict[0]['time'], time)
         self.assertEqual(data.dict[0]['date/time'], date_time)
+        self.assertEqual(data.dict[0]['None'], '')
 
     def test_ods_import_book(self):
         ods_source = Path(__file__).parent / 'files' / 'book.ods'
