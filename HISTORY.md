@@ -5,7 +5,7 @@
 ### Improvements
 
 - The html format now supports importing from HTML content (#243)
-- Refactored html export to allow optional escaping of characters (#)
+- Refactored html export to allow optional escaping of characters (#562)
 
 ### Changes
 
