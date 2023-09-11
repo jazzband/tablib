@@ -15,24 +15,24 @@ class HTMLFormat:
         """Returns HTML representation of Dataset.
         If ``escape`` is True, cell data will be passed through html.escape().
         """
-        html_output = "<table>"
+        html_output = '<table>'
         if dataset.headers is not None:
-            html_output += "<thead><tr>"
+            html_output += '<thead><tr>'
             for header in dataset.headers:
-                html_output += "<th>"
+                html_output += '<th>'
                 html_output += cls.format_str(header, escape=escape)
-                html_output += "</th>"
-            html_output += "</tr></thead>"
+                html_output += '</th>'
+            html_output += '</tr></thead>'
 
-        html_output += "<tbody>"
+        html_output += '<tbody>'
         for row in dataset:
-            html_output += "<tr>"
+            html_output += '<tr>'
             for item in row:
-                html_output += "<td>"
+                html_output += '<td>'
                 html_output += cls.format_str(item, escape=escape)
-                html_output += "</td>"
-            html_output += "</tr>"
-        html_output += "</tbody></table>"
+                html_output += '</td>'
+            html_output += '</tr>'
+        html_output += '</tbody></table>'
         return html_output
 
     @classmethod
