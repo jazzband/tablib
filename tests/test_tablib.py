@@ -752,10 +752,30 @@ class HTMLTests(BaseTestCase):
             tablib.import_set(html_input, format="html", table_id="notfound")
         self.assertEqual('No <table> found with id="notfound" in input HTML', str(exc.exception))
 
-    def test_html_export_with_special_chars(self):
+    def test_html_export_no_escape_special_chars(self):
         self.founders = tablib.Dataset(headers=self.headers, title='Founders')
         self.founders.append(('J &amp; J', 'A', 90))
         self.assertIn("J &amp; J", self.founders.html)
+
+    def test_html_export_escape_special_chars(self):
+        self.founders = tablib.Dataset(headers=self.headers, title='Founders')
+        self.founders.append(('J & J', 'A', 90))
+        expected = self.founders.export('html', escape=True)
+        self.assertIn("J &amp; J", expected)
+
+    def test_html_export_book_no_escape_special_chars(self):
+        book = tablib.Databook()
+        self.founders.append(('J &amp; J', 'A', 90))
+        book.add_sheet(self.founders)
+        expected = book.export('html', escape=False)
+        self.assertIn("J &amp; J", expected)
+
+    def test_html_export_book_escape_special_chars(self):
+        book = tablib.Databook()
+        self.founders.append(('J & J', 'A', 90))
+        book.add_sheet(self.founders)
+        expected = book.export('html', escape=True)
+        self.assertIn("J &amp; J", expected)
 
 
 class RSTTests(BaseTestCase):
