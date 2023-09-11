@@ -15,25 +15,25 @@ class HTMLFormat:
         """Returns HTML representation of Dataset.
         If ``escape`` is True, cell data will be passed through html.escape().
         """
-        html_output = '<table>'
+        s = '<table>'
         if dataset.headers is not None:
-            html_output += '<thead><tr>'
+            s += '<thead><tr>'
             for header in dataset.headers:
-                html_output += '<th>'
-                html_output += cls.format_str(header, escape=escape)
-                html_output += '</th>'
-            html_output += '</tr></thead>'
+                s += '<th>'
+                s += cls.format_str(header, escape=escape)
+                s += '</th>'
+            s += '</tr></thead>'
 
-        html_output += '<tbody>'
+        s += '<tbody>'
         for row in dataset:
-            html_output += '<tr>'
+            s += '<tr>'
             for item in row:
-                html_output += '<td>'
-                html_output += cls.format_str(item, escape=escape)
-                html_output += '</td>'
-            html_output += '</tr>'
-        html_output += '</tbody></table>'
-        return html_output
+                s += '<td>'
+                s += cls.format_str(item, escape=escape)
+                s += '</td>'
+            s += '</tr>'
+        s += '</tbody></table>'
+        return s
 
     @classmethod
     def export_book(cls, databook, escape=False):
