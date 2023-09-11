@@ -752,6 +752,11 @@ class HTMLTests(BaseTestCase):
             tablib.import_set(html_input, format="html", table_id="notfound")
         self.assertEqual('No <table> found with id="notfound" in input HTML', str(exc.exception))
 
+    def test_html_export_with_special_chars(self):
+        self.founders = tablib.Dataset(headers=self.headers, title='Founders')
+        self.founders.append(('J &amp; J', 'A', 90))
+        self.assertIn("J &amp; J", self.founders.html)
+
 
 class RSTTests(BaseTestCase):
     def test_rst_force_grid(self):

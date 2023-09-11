@@ -1,7 +1,7 @@
 """ Tablib - HTML export support.
 """
+import html
 from html.parser import HTMLParser
-from xml.etree import ElementTree as ET
 
 
 class HTMLFormat:
@@ -11,41 +11,39 @@ class HTMLFormat:
     extensions = ('html', )
 
     @classmethod
-    def export_set(cls, dataset):
-        """HTML representation of a Dataset."""
-
-        table = ET.Element('table')
+    def export_set(cls, dataset, escape=False):
+        """Returns HTML representation of Dataset.
+        If ``escape`` is True, cell data will be passed through html.escape().
+        """
+        html_output = "<table>"
         if dataset.headers is not None:
-            head = ET.Element('thead')
-            tr = ET.Element('tr')
+            html_output += "<thead><tr>"
             for header in dataset.headers:
-                th = ET.Element('th')
-                th.text = str(header) if header is not None else ''
-                tr.append(th)
-            head.append(tr)
-            table.append(head)
+                html_output += "<th>"
+                html_output += cls.format_str(header, escape=escape)
+                html_output += "</th>"
+            html_output += "</tr></thead>"
 
-        body = ET.Element('tbody')
+        html_output += "<tbody>"
         for row in dataset:
-            tr = ET.Element('tr')
+            html_output += "<tr>"
             for item in row:
-                td = ET.Element('td')
-                td.text = str(item) if item is not None else ''
-                tr.append(td)
-            body.append(tr)
-        table.append(body)
-
-        return ET.tostring(table, method='html', encoding='unicode')
+                html_output += "<td>"
+                html_output += cls.format_str(item, escape=escape)
+                html_output += "</td>"
+            html_output += "</tr>"
+        html_output += "</tbody></table>"
+        return html_output
 
     @classmethod
-    def export_book(cls, databook):
+    def export_book(cls, databook, escape=False):
         """HTML representation of a Databook."""
 
         result = ''
         for i, dset in enumerate(databook._datasets):
             title = dset.title if dset.title else f'Set {i}'
             result += f'<{cls.BOOK_ENDINGS}>{title}</{cls.BOOK_ENDINGS}>\n'
-            result += dset.html
+            result += cls.export_set(dset, escape=escape)
             result += '\n'
 
         return result
@@ -62,6 +60,15 @@ class HTMLFormat:
                 raise ValueError(f'No <table> found with id="{table_id}" in input HTML')
             else:
                 raise ValueError('No <table> found in input HTML')
+
+    @classmethod
+    def format_str(cls, s, escape=False):
+        if s is None:
+            return ''
+        s = str(s)
+        if escape:
+            return html.escape(s)
+        return s
 
 
 class TablibHTMLParser(HTMLParser):
