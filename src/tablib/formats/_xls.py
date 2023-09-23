@@ -100,7 +100,7 @@ class XLSFormat:
 
         dbook.wipe()
 
-        xls_book = xlrd.open_workbook(file_contents=in_stream)
+        xls_book = xlrd.open_workbook(file_contents=in_stream.read())
 
         for sheet in xls_book.sheets():
             data = tablib.Dataset()
