@@ -1147,6 +1147,11 @@ class XLSTests(BaseTestCase):
             ])
         )
 
+    def test_book_import_from_stream(self):
+        in_stream = self.founders.xls
+        book = tablib.Databook().load(in_stream, 'xls')
+        self.assertEqual(book.sheets()[0].title, 'Founders')
+
 
 class XLSXTests(BaseTestCase):
     def test_xlsx_format_detect(self):
