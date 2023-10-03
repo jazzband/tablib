@@ -106,7 +106,7 @@ class DbfHeader:
         """Return header object from the stream."""
         stream.seek(0)
         first_32 = stream.read(32)
-        if type(first_32) != bytes:
+        if not isinstance(first_32, bytes):
             _data = bytes(first_32, sys.getfilesystemencoding())
         _data = first_32
         (_cnt, _hdrLen, _recLen) = struct.unpack("<I2H", _data[4:12])
