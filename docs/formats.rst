@@ -145,11 +145,18 @@ If a title has been set, it will be exported as the table caption.
 ods
 ===
 
-Export data in OpenDocument Spreadsheet format. The ``ods`` format is currently
-export-only.
+Import/export data in OpenDocument Spreadsheet format.
+
+.. versionadded:: 3.6.0
+
+    Import functionality was added.
 
 This format is optional, install Tablib with ``pip install "tablib[ods]"`` to
 make the format available.
+
+The ``import_set()`` method also supports a ``skip_lines`` parameter that you
+can set to a number of lines that should be skipped before starting to read
+data.
 
 .. admonition:: Binary Warning
 
