@@ -5,6 +5,8 @@
 ### Improvements
 
 - The html format now supports importing from HTML content (#243)
+- The ODS format now supports importing from .ods files (#567). The support is
+  still a bit experimental.
 
 ### Changes
 

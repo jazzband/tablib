@@ -1107,13 +1107,52 @@ class TSVTests(BaseTestCase):
 
 
 class ODSTests(BaseTestCase):
-    def test_ods_export_datatypes(self):
+    def test_ods_export_import_set(self):
+        date = datetime.date(2019, 10, 4)
         date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
-        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date_time))
-        data.headers = ('string', 'start0', 'integer', 'float', 'decimal', 'date/time')
-        # ODS is currently write-only, just test that output doesn't crash.
-        assert data.ods is not None
-        assert len(data.ods)
+        time = datetime.time(14, 30)
+        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time))
+        data.headers = (
+            'string', 'start0', 'integer', 'float', 'decimal', 'date', 'time', 'date/time'
+        )
+        _ods = data.ods
+        data.ods = _ods
+        self.assertEqual(data.dict[0]['string'], 'string')
+        self.assertEqual(data.dict[0]['start0'], '004')
+        self.assertEqual(data.dict[0]['integer'], 42)
+        self.assertEqual(data.dict[0]['float'], 21.55)
+        self.assertEqual(data.dict[0]['decimal'], 34.5)
+        self.assertEqual(data.dict[0]['date'], date)
+        self.assertEqual(data.dict[0]['time'], time)
+        self.assertEqual(data.dict[0]['date/time'], date_time)
+
+    def test_ods_import_book(self):
+        ods_source = Path(__file__).parent / 'files' / 'book.ods'
+        with ods_source.open('rb') as fh:
+            dbook = tablib.Databook().load(fh, 'ods')
+        self.assertEqual(len(dbook.sheets()), 2)
+
+    def test_ods_import_set_skip_lines(self):
+        data.append(('garbage', 'line', ''))
+        data.append(('', '', ''))
+        data.append(('id', 'name', 'description'))
+        _ods = data.ods
+        new_data = tablib.Dataset().load(_ods, skip_lines=2)
+        self.assertEqual(new_data.headers, ['id', 'name', 'description'])
+
+    def test_ods_import_set_ragged(self):
+        ods_source = Path(__file__).parent / 'files' / 'ragged.ods'
+        with ods_source.open('rb') as fh:
+            dataset = tablib.Dataset().load(fh, 'ods')
+        self.assertEqual(dataset.pop(), (1, '', True, ''))
+
+    def test_ods_unknown_value_type(self):
+        # The ods file was trafficked to contain:
+        # <table:table-cell office:value-type="unknown" calcext:value-type="string">
+        ods_source = Path(__file__).parent / 'files' / 'unknown_value_type.ods'
+        with ods_source.open('rb') as fh:
+            dataset = tablib.Dataset().load(fh, 'ods')
+        self.assertEqual(dataset.pop(), ('abcd',))
 
 
 class XLSTests(BaseTestCase):
