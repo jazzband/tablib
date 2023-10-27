@@ -64,11 +64,15 @@ class TablibTestCase(BaseTestCase):
         with self.assertRaises(UnsupportedFormat):
             data.export('??')
         # A known format but uninstalled
-        del registry._formats['ods']
-        msg = (r"The 'ods' format is not available. You may want to install the "
-               "odfpy package \\(or `pip install \"tablib\\[ods\\]\"`\\).")
-        with self.assertRaisesRegex(UnsupportedFormat, msg):
-            data.export('ods')
+        saved_registry = registry._formats.copy()
+        try:
+            del registry._formats['ods']
+            msg = (r"The 'ods' format is not available. You may want to install the "
+                   "odfpy package \\(or `pip install \"tablib\\[ods\\]\"`\\).")
+            with self.assertRaisesRegex(UnsupportedFormat, msg):
+                data.export('ods')
+        finally:
+            registry._formats = saved_registry
 
     def test_empty_append(self):
         """Verify append() correctly adds tuple with no headers."""
