@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Tests for Tablib."""
 
-import datetime
+import datetime as dt
 import doctest
 import json
 import pickle
@@ -304,8 +304,8 @@ class TablibTestCase(BaseTestCase):
         """Passes in a single datetime and a single date and exports."""
 
         new_row = (
-            datetime.datetime.now(),
-            datetime.datetime.today(),
+            dt.datetime.now(),
+            dt.datetime.today(),
         )
 
         data.append(new_row)
@@ -1108,9 +1108,9 @@ class TSVTests(BaseTestCase):
 
 class ODSTests(BaseTestCase):
     def test_ods_export_import_set(self):
-        date = datetime.date(2019, 10, 4)
-        date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
-        time = datetime.time(14, 30)
+        date = dt.date(2019, 10, 4)
+        date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
+        time = dt.time(14, 30)
         data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time))
         data.headers = (
             'string', 'start0', 'integer', 'float', 'decimal', 'date', 'time', 'date/time'
@@ -1165,7 +1165,7 @@ class XLSTests(BaseTestCase):
         xls_source = Path(__file__).parent / 'files' / 'dates.xls'
         with xls_source.open('rb') as fh:
             dset = tablib.Dataset().load(fh, 'xls')
-        self.assertEqual(dset.dict[0]['birth_date'], datetime.datetime(2015, 4, 12, 0, 0))
+        self.assertEqual(dset.dict[0]['birth_date'], dt.datetime(2015, 4, 12, 0, 0))
 
     def test_xlsx_import_set_skip_lines(self):
         data.append(('garbage', 'line', ''))
@@ -1203,7 +1203,7 @@ class XLSXTests(BaseTestCase):
         self.assertEqual(detect_format(in_stream), 'xlsx')
 
     def test_xlsx_import_set(self):
-        date_time = datetime.datetime(2019, 10, 4, 12, 30, 8)
+        date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
         data.append(('string', '004', 42, 21.55, date_time))
         data.headers = ('string', 'start0', 'integer', 'float', 'date/time')
         _xlsx = data.xlsx

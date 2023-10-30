@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Tests for tablib.packages.dbfpy."""
 
-import datetime
+import datetime as dt
 import unittest
 
 from tablib.packages.dbfpy import utils
@@ -42,28 +42,28 @@ class UtilsGetDateTestCase(unittest.TestCase):
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
+        self.assertIsInstance(output, dt.date)
 
     def test_getDate_datetime_date(self):
         # Arrange
-        value = datetime.date(2019, 10, 19)
+        value = dt.date(2019, 10, 19)
 
         # Act
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
+        self.assertIsInstance(output, dt.date)
         self.assertEqual(output, value)
 
     def test_getDate_datetime_datetime(self):
         # Arrange
-        value = datetime.datetime(2019, 10, 19, 12, 00, 00)
+        value = dt.datetime(2019, 10, 19, 12, 00, 00)
 
         # Act
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
+        self.assertIsInstance(output, dt.date)
         self.assertEqual(output, value)
 
     def test_getDate_datetime_timestamp(self):
@@ -74,8 +74,8 @@ class UtilsGetDateTestCase(unittest.TestCase):
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
-        self.assertEqual(output, datetime.date(2019, 10, 19))
+        self.assertIsInstance(output, dt.date)
+        self.assertEqual(output, dt.date(2019, 10, 19))
 
     def test_getDate_datetime_string_yyyy_mm_dd(self):
         # Arrange
@@ -85,8 +85,8 @@ class UtilsGetDateTestCase(unittest.TestCase):
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
-        self.assertEqual(output, datetime.date(2019, 10, 19))
+        self.assertIsInstance(output, dt.date)
+        self.assertEqual(output, dt.date(2019, 10, 19))
 
     def test_getDate_datetime_string_yymmdd(self):
         # Arrange
@@ -96,8 +96,8 @@ class UtilsGetDateTestCase(unittest.TestCase):
         output = utils.getDate(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
-        self.assertEqual(output, datetime.date(2019, 10, 19))
+        self.assertIsInstance(output, dt.date)
+        self.assertEqual(output, dt.date(2019, 10, 19))
 
 
 class UtilsGetDateTimeTestCase(unittest.TestCase):
@@ -111,29 +111,29 @@ class UtilsGetDateTimeTestCase(unittest.TestCase):
         output = utils.getDateTime(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.datetime)
+        self.assertIsInstance(output, dt.datetime)
 
     def test_getDateTime_datetime_datetime(self):
         # Arrange
-        value = datetime.datetime(2019, 10, 19, 12, 00, 00)
+        value = dt.datetime(2019, 10, 19, 12, 00, 00)
 
         # Act
         output = utils.getDateTime(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
+        self.assertIsInstance(output, dt.date)
         self.assertEqual(output, value)
 
     def test_getDateTime_datetime_date(self):
         # Arrange
-        value = datetime.date(2019, 10, 19)
+        value = dt.date(2019, 10, 19)
 
         # Act
         output = utils.getDateTime(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.date)
-        self.assertEqual(output, datetime.datetime(2019, 10, 19, 00, 00))
+        self.assertIsInstance(output, dt.date)
+        self.assertEqual(output, dt.datetime(2019, 10, 19, 00, 00))
 
     def test_getDateTime_datetime_timestamp(self):
         # Arrange
@@ -143,7 +143,7 @@ class UtilsGetDateTimeTestCase(unittest.TestCase):
         output = utils.getDateTime(value)
 
         # Assert
-        self.assertIsInstance(output, datetime.datetime)
+        self.assertIsInstance(output, dt.datetime)
 
     def test_getDateTime_datetime_string(self):
         # Arrange
