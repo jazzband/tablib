@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Tests for tablib.packages.dbfpy."""
+"""Tests for tablib._vendor.dbfpy."""
 
 import unittest
 
-from tablib.packages.dbfpy import fields
+from tablib._vendor.dbfpy import fields
 
 
 class DbfFieldDefTestCompareCase(unittest.TestCase):
