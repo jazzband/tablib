@@ -25,6 +25,7 @@ Output formats supported:
 - Pandas DataFrames (Sets)
 - HTML (Sets)
 - Jira (Sets)
+- LaTeX (Sets)
 - TSV (Sets)
 - ODS (Sets)
 - CSV (Sets)
