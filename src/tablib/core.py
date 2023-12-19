@@ -155,6 +155,9 @@ class Dataset:
         # (column, callback) tuples
         self._formatters = []
 
+        # {col_index: col_func}
+        self._dyn_columns = {}
+
         self.headers = kwargs.get('headers')
 
         self.title = kwargs.get('title')
@@ -238,7 +241,7 @@ class Dataset:
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
         if row:
-            is_valid = (len(row) == self.width) if self.width else True
+            is_valid = (len(row) == (self.width - len(self._dyn_columns))) if self.width else True
         elif col:
             if len(col) < 1:
                 is_valid = True
@@ -449,6 +452,9 @@ class Dataset:
        """
 
         self._validate(row)
+        for pos, func in self._dyn_columns.items():
+            row = list(row)
+            row.insert(pos, func(row))
         self._data.insert(index, Row(row, tags=tags))
 
     def rpush(self, row, tags=()):
@@ -547,6 +553,7 @@ class Dataset:
 
         # Callable Columns...
         if hasattr(col, '__call__'):
+            self._dyn_columns[self.width] = col
             col = list(map(col, self._data))
 
         col = self._clean_col(col)
