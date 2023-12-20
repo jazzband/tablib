@@ -457,12 +457,13 @@ class Dataset:
 
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index.
-       """
+        """
 
         self._validate(row)
-        for pos, func in self._dynamic_columns.items():
-            row = list(row)
-            row.insert(pos, func(row))
+        if len(row) < self.width:
+            for pos, func in self._dynamic_columns.items():
+                row = list(row)
+                row.insert(pos, func(row))
         self._data.insert(index, Row(row, tags=tags))
 
     def rpush(self, row, tags=()):
@@ -560,7 +561,7 @@ class Dataset:
             col = []
 
         # Callable Columns...
-        if hasattr(col, '__call__'):
+        if callable(col):
             self._dynamic_columns[self.width] = col
             col = list(map(col, self._data))
 

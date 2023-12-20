@@ -196,6 +196,8 @@ class TablibTestCase(BaseTestCase):
         # Also acceptable when all dynamic column values are provided.
         self.founders.append(('Other', 'Second', 84, 'Other', 'OS'))
 
+        self.assertEqual(self.founders[3], ('Some', 'One', 71, 'Some', 'SO'))
+        self.assertEqual(self.founders[4], ('Other', 'Second', 84, 'Other', 'OS'))
         self.assertEqual(
             self.founders['first_again'],
             ['John', 'George', 'Thomas', 'Some', 'Other']
