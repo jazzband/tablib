@@ -190,6 +190,8 @@ class Dataset:
 
                 pos = self.headers.index(key)
                 del self.headers[pos]
+                if pos in self._dynamic_columns:
+                    del self._dynamic_columns[pos]
 
                 for i, row in enumerate(self._data):
 
@@ -241,7 +243,13 @@ class Dataset:
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
         if row:
-            is_valid = (len(row) == (self.width - len(self._dynamic_columns))) if self.width else True
+            if self.width:
+                is_valid = (
+                    len(row) == self.width or
+                    len(row) == (self.width - len(self._dynamic_columns))
+                )
+            else:
+                is_valid = True
         elif col:
             if len(col) < 1:
                 is_valid = True

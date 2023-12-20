@@ -278,6 +278,15 @@ Adding this function to our dataset as a dynamic column would result in: ::
     - {Age: 22, First Name: Kenneth, Gender: Male, Last Name: Reitz}
     - {Age: 20, First Name: Bessie, Gender: Female, Last Name: Monke}
 
+When you add new rows to a dataset that contains dynamic columns, you should
+either provide all values in the row, or only the non-dynamic values and then
+the dynamic values will be automatically generated using the function initially
+provided for the column calculation.
+
+..versionchanged:: 3.6.0
+
+    In older versions, you could only add new rows with fully-populated rows,
+    including dynamic columns.
 
 .. _tags:
 
