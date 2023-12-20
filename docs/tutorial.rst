@@ -225,8 +225,6 @@ And now for something completely different.
 Dynamic Columns
 ---------------
 
-.. versionadded:: 0.8.3
-
 Thanks to Josh Ourisman, Tablib now supports adding dynamic columns.
 A dynamic column is a single callable object (*e.g.* a function).
 
@@ -293,9 +291,6 @@ provided for the column calculation.
 ----------------------------
 Filtering Datasets with Tags
 ----------------------------
-
-.. versionadded:: 0.9.0
-
 
 When constructing a :class:`Dataset` object,
 you can add tags to rows by specifying the ``tags`` parameter.
@@ -370,8 +365,6 @@ The resulting ``students.xls`` file will contain a separate spreadsheet for each
 ----------
 Separators
 ----------
-
-.. versionadded:: 0.8.2
 
 When constructing a spreadsheet,
 it's often useful to create a blank row containing information on the upcoming data. So,
