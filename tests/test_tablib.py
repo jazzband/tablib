@@ -186,6 +186,7 @@ class TablibTestCase(BaseTestCase):
             return x[0]
 
         self.founders.append_col(new_col, header='first_again')
+
         # A new row can still be appended, and the dynamic column value generated.
         self.founders.append(('Some', 'One', 71))
         self.assertEqual(
