@@ -457,6 +457,10 @@ class Dataset:
 
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index.
+
+        You can add :ref:`tags <tags>` to the row you are inserting.
+        This gives you the ability to :method:`filter <Dataset.filter>` your
+        :class:`Dataset` later.
         """
 
         self._validate(row)
@@ -544,17 +548,6 @@ class Dataset:
         that row.
 
         See :ref:`dyncols` for an in-depth example.
-
-        .. versionchanged:: 0.9.0
-           If inserting a column, and :attr:`Dataset.headers` is set, the
-           header attribute must be set, and will be considered the header for
-           that row.
-
-        .. versionadded:: 0.9.0
-           If inserting a row, you can add :ref:`tags <tags>` to the row you are inserting.
-           This gives you the ability to :method:`filter <Dataset.filter>` your
-           :class:`Dataset` later.
-
         """
 
         if col is None:
@@ -637,8 +630,6 @@ class Dataset:
 
     def add_formatter(self, col, handler):
         """Adds a formatter to the :class:`Dataset`.
-
-        .. versionadded:: 0.9.5
 
         :param col: column to. Accepts index int or header str.
         :param handler: reference to callback function to execute against
