@@ -181,10 +181,42 @@ class TablibTestCase(BaseTestCase):
     def test_add_callable_column(self):
         """Verify adding column with values specified as callable."""
 
-        def new_col(x):
-            return x[0]
+        def new_col(row):
+            return row[0]
+
+        def initials(row):
+            return f"{row[0][0]}{row[1][0]}"
 
         self.founders.append_col(new_col, header='first_again')
+        self.founders.append_col(initials, header='initials')
+
+        # A new row can still be appended, and the dynamic column value generated.
+        self.founders.append(('Some', 'One', 71))
+        # Also acceptable when all dynamic column values are provided.
+        self.founders.append(('Other', 'Second', 84, 'Other', 'OS'))
+
+        self.assertEqual(self.founders[3], ('Some', 'One', 71, 'Some', 'SO'))
+        self.assertEqual(self.founders[4], ('Other', 'Second', 84, 'Other', 'OS'))
+        self.assertEqual(
+            self.founders['first_again'],
+            ['John', 'George', 'Thomas', 'Some', 'Other']
+        )
+        self.assertEqual(
+            self.founders['initials'],
+            ['JA', 'GW', 'TJ', 'SO', 'OS']
+        )
+
+        # However only partial dynamic values provided is not accepted.
+        with self.assertRaises(tablib.InvalidDimensions):
+            self.founders.append(('Should', 'Crash', 60, 'Partial'))
+
+        # Add a new row after dynamic column deletion
+        del self.founders['first_again']
+        self.founders.append(('After', 'Deletion', 75))
+        self.assertEqual(
+            self.founders['initials'],
+            ['JA', 'GW', 'TJ', 'SO', 'OS', 'AD']
+        )
 
     def test_header_slicing(self):
         """Verify slicing by headers."""

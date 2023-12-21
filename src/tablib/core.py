@@ -155,6 +155,9 @@ class Dataset:
         # (column, callback) tuples
         self._formatters = []
 
+        # {col_index: col_func}
+        self._dynamic_columns = {}
+
         self.headers = kwargs.get('headers')
 
         self.title = kwargs.get('title')
@@ -187,6 +190,8 @@ class Dataset:
 
                 pos = self.headers.index(key)
                 del self.headers[pos]
+                if pos in self._dynamic_columns:
+                    del self._dynamic_columns[pos]
 
                 for i, row in enumerate(self._data):
 
@@ -238,7 +243,13 @@ class Dataset:
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
         if row:
-            is_valid = (len(row) == self.width) if self.width else True
+            if self.width:
+                is_valid = (
+                    len(row) == self.width or
+                    len(row) == (self.width - len(self._dynamic_columns))
+                )
+            else:
+                is_valid = True
         elif col:
             if len(col) < 1:
                 is_valid = True
@@ -446,9 +457,13 @@ class Dataset:
 
         The default behaviour is to insert the given row to the :class:`Dataset`
         object at the given index.
-       """
+        """
 
         self._validate(row)
+        if len(row) < self.width:
+            for pos, func in self._dynamic_columns.items():
+                row = list(row)
+                row.insert(pos, func(row))
         self._data.insert(index, Row(row, tags=tags))
 
     def rpush(self, row, tags=()):
@@ -546,7 +561,8 @@ class Dataset:
             col = []
 
         # Callable Columns...
-        if hasattr(col, '__call__'):
+        if callable(col):
+            self._dynamic_columns[self.width] = col
             col = list(map(col, self._data))
 
         col = self._clean_col(col)
