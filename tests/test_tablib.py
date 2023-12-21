@@ -13,7 +13,6 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
 
-import pytest
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -56,7 +55,7 @@ class TablibTestCase(BaseTestCase):
             'latex', 'df', 'rst',
         ]
         for format_ in all_formats:
-            if format_ in exclude:
+            if format_ in exclude or (format_ == 'df' and pandas is None):
                 continue
             dataset.export(format_)
 
@@ -290,7 +289,6 @@ class TablibTestCase(BaseTestCase):
             'c|3'
         ])
 
-    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_unicode_append(self):
         """Passes in a single unicode character and exports."""
 
@@ -299,7 +297,6 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
 
-    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_datetime_append(self):
         """Passes in a single datetime and a single date and exports."""
 
@@ -311,7 +308,6 @@ class TablibTestCase(BaseTestCase):
         data.append(new_row)
         self._test_export_data_in_all_formats(data)
 
-    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_separator_append(self):
         for _ in range(3):
             data.append_separator('foobar')
@@ -357,7 +353,6 @@ class TablibTestCase(BaseTestCase):
         dset = tablib.Dataset().load(tmp_file, 'yaml')
         self.assertEqual(dset.json, '[]')
 
-    @pytest.mark.skipif(pandas is None, reason="pandas is not installed")
     def test_auto_format_detect(self):
         """Test auto format detection."""
         # html, jira, latex, rst are export only.
@@ -371,8 +366,9 @@ class TablibTestCase(BaseTestCase):
         _ods = self.founders.export('ods')
         self.assertEqual(tablib.detect_format(_ods), 'ods')
 
-        _df = self.founders.export('df')
-        self.assertEqual(tablib.detect_format(_df), 'df')
+        if pandas is not None:
+            _df = self.founders.export('df')
+            self.assertEqual(tablib.detect_format(_df), 'df')
 
         _yaml = '- {age: 90, first_name: John, last_name: Adams}'
         self.assertEqual(tablib.detect_format(_yaml), 'yaml')
