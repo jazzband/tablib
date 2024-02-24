@@ -311,10 +311,7 @@ class Dataset:
         """Validating headers setter."""
         self._validate(collection)
         if collection:
-            try:
-                self.__headers = list(collection)
-            except TypeError:
-                raise TypeError
+            self.__headers = list(collection)
         else:
             self.__headers = None
 
