@@ -564,12 +564,18 @@ class TablibTestCase(BaseTestCase):
         """Confirm formatters are being triggered."""
 
         def _formatter(cell_value):
-            return str(cell_value).upper()
+            return str(cell_value)[1:]
 
         self.founders.add_formatter('last_name', _formatter)
 
-        for name in [r['last_name'] for r in self.founders.dict]:
-            self.assertTrue(name.isupper())
+        expected = [
+            {'first_name': 'John', 'last_name': 'dams', 'gpa': 90},
+            {'first_name': 'George', 'last_name': 'ashington', 'gpa': 67},
+            {'first_name': 'Thomas', 'last_name': 'efferson', 'gpa': 50},
+        ]
+        self.assertEqual(self.founders.dict, expected)
+        # Test once more as the result should be the same
+        self.assertEqual(self.founders.dict, expected)
 
     def test_unicode_renders_markdown_table(self):
         # add another entry to test right field width for
