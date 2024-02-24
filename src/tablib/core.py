@@ -73,6 +73,9 @@ class Row:
     def insert(self, index, value):
         self._row.insert(index, value)
 
+    def copy(self):
+        return Row(self._row.copy(), self.tags.copy())
+
     def __contains__(self, item):
         return item in self._row
 
@@ -270,27 +273,25 @@ class Dataset:
 
         _data = list(self._data)
 
-        # Execute formatters
-        if self._formatters:
-            for row_i, row in enumerate(_data):
+        def format_row(row):
+            # Execute formatters
+            if self._formatters:
+                row = row.copy()  # To not mutate internal data structure
                 for col, callback in self._formatters:
-                    try:
-                        if col is None:
-                            for j, c in enumerate(row):
-                                _data[row_i][j] = callback(c)
-                        else:
-                            _data[row_i][col] = callback(row[col])
-                    except IndexError:
-                        raise InvalidDatasetIndex
+                    if col is None:
+                        # Apply formatter to all cells
+                        row = [callback(cell) for cell in row]
+                    else:
+                        row[col] = callback(row[col])
+            return list(row)
 
         if self.headers:
             if dicts:
-                data = [dict(list(zip(self.headers, data_row))) for data_row in _data]
+                data = [dict(list(zip(self.headers, format_row(row)))) for row in _data]
             else:
-                data = [list(self.headers)] + list(_data)
+                data = [list(self.headers)] + [format_row(row) for row in _data]
         else:
-            data = [list(row) for row in _data]
-
+            data = [format_row(row) for row in _data]
         return data
 
     def _get_headers(self):
