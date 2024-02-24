@@ -577,6 +577,22 @@ class TablibTestCase(BaseTestCase):
         # Test once more as the result should be the same
         self.assertEqual(self.founders.dict, expected)
 
+    def test_formatters_all_cols(self):
+        """
+        Passing None as first add_formatter param apply formatter to all columns.
+        """
+
+        def _formatter(cell_value):
+            return str(cell_value).upper()
+
+        self.founders.add_formatter(None, _formatter)
+
+        self.assertEqual(self.founders.dict, [
+            {'first_name': 'JOHN', 'last_name': 'ADAMS', 'gpa': '90'},
+            {'first_name': 'GEORGE', 'last_name': 'WASHINGTON', 'gpa': '67'},
+            {'first_name': 'THOMAS', 'last_name': 'JEFFERSON', 'gpa': '50'},
+        ])
+
     def test_unicode_renders_markdown_table(self):
         # add another entry to test right field width for
         # integer

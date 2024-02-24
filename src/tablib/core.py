@@ -623,7 +623,8 @@ class Dataset:
     def add_formatter(self, col, handler):
         """Adds a formatter to the :class:`Dataset`.
 
-        :param col: column to. Accepts index int or header str.
+        :param col: column to. Accepts index int, header str, or None to apply
+                    the formatter to all columns.
         :param handler: reference to callback function to execute against
                         each cell value.
         """
@@ -634,7 +635,7 @@ class Dataset:
             else:
                 raise KeyError
 
-        if not col > self.width:
+        if col is None or col <= self.width:
             self._formatters.append((col, handler))
         else:
             raise InvalidDatasetIndex
