@@ -7,7 +7,6 @@ import json
 import pickle
 import tempfile
 import unittest
-from collections import OrderedDict
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -1211,7 +1210,7 @@ class XLSTests(BaseTestCase):
             data = tablib.Dataset().load(fh.read())
         self.assertEqual(
             data.dict[0],
-            OrderedDict([
+            dict([
                 ('div by 0', '#DIV/0!'),
                 ('name unknown', '#NAME?'),
                 ('not available (formula)', '#N/A'),

@@ -1,6 +1,5 @@
 """ Tablib - formats
 """
-from collections import OrderedDict
 from functools import partialmethod
 from importlib import import_module
 from importlib.util import find_spec
@@ -65,7 +64,7 @@ class ImportExportSetDescriptor(FormatDescriptorBase):
 
 
 class Registry:
-    _formats = OrderedDict()
+    _formats = {}
 
     def register(self, key, format_or_path):
         from ..core import Databook, Dataset
