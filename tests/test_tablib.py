@@ -117,10 +117,19 @@ class TablibTestCase(BaseTestCase):
 
         # With Headers
         data.headers = ('fname', 'lname')
-        new_col = [21, 22]
-        data.append_col(new_col, header='age')
+        age_col = [21, 22]
+        data.append_col(age_col, header='age')
+        size_col = [1.65, 1.86]
+        data.insert_col(1, size_col, header='size')
 
-        self.assertEqual(data['age'], new_col)
+        self.assertEqual(data['age'], age_col)
+        self.assertEqual(data['size'], size_col)
+
+    def test_add_column_no_data_with_headers(self):
+        """Verify adding empty column when dataset has only headers."""
+        data.headers = ('fname', 'lname')
+        data.insert_col(1, [], header='size')
+        self.assertEqual(data.headers, ['fname', 'size', 'lname'])
 
     def test_add_column_no_data_no_headers(self):
         """Verify adding new column with no headers."""

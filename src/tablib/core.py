@@ -366,19 +366,14 @@ class Dataset:
     dict = property(_get_dict, _set_dict)
 
     def _clean_col(self, col):
-        """Prepares the given column for insert/append."""
+        """Prepares the given column for insert/append. `col` is not supposed to
+           contain any header value.
+        """
 
         col = list(col)
 
-        if self.headers:
-            header = [col.pop(0)]
-        else:
-            header = []
-
         if len(col) == 1 and hasattr(col[0], '__call__'):
-
             col = list(map(col[0], self._data))
-        col = tuple(header + col)
 
         return col
 
