@@ -1,9 +1,11 @@
 # History
 
-## Unreleased
+## 3.6.0 (2024-03-?)
 
 ### Improvements
 
+- It's now possible to access a dataset row using its index without slicing (#24).
+- The dataset `transpose()` method can be called on datasets without headers.
 - The html format now supports importing from HTML content (#243)
 - The ODS format now supports importing from .ods files (#567). The support is
   still a bit experimental.
@@ -15,6 +17,13 @@
 
 - The html export format does not depend on MarkupPy any longer, therefore the
   tablib[html] install target was removed also.
+
+### Bugfixes
+
+- Fix crash when loading a databook from an XLS file (#522).
+- `None` Python values are now converted to the empty string by the ODS formatter.
+- When applying formatters, the internal data is no longer mutated (#578).
+- Columns can be inserted even when a dataset has headers but no values (#583).
 
 ## 3.5.0 (2023-06-11)
 
