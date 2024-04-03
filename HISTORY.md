@@ -1,5 +1,11 @@
 # History
 
+## 3.6.1 (2024-04-04)
+
+### Bugfixes
+
+- Fix broken installs with pip failing to resolve the request for `tablib[html]` in some cases (#588).
+
 ## 3.6.0 (2024-03-23)
 
 ### Improvements
@@ -48,7 +54,7 @@
 
 - Fix bug when yaml file is empty (#535)
 - Fix linting issues raised by Flake8 (#536)
- 
+
 ## 3.3.0 (2022-12-10)
 
 ### Improvements
