@@ -939,13 +939,13 @@ def detect_format(stream):
 def import_set(stream, format=None, **kwargs):
     """Return dataset of given stream (file-like object, string, or bytestring)."""
 
-    return Dataset().load(normalize_input(stream), format, **kwargs)
+    return Dataset().load(stream, format, **kwargs)
 
 
 def import_book(stream, format=None, **kwargs):
     """Return dataset of given stream (file-like object, string, or bytestring)."""
 
-    return Databook().load(normalize_input(stream), format, **kwargs)
+    return Databook().load(stream, format, **kwargs)
 
 
 registry.register_builtins()
