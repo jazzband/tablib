@@ -43,6 +43,7 @@ all = [
     "xlwt",
 ]
 cli = ["tabulate"]
+html = []
 ods = ["odfpy"]
 pandas = ["pandas"]
 xls = ["xlrd", "xlwt"]
