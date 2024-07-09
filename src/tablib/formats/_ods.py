@@ -5,7 +5,7 @@ import datetime as dt
 import numbers
 from io import BytesIO
 
-from odf import opendocument, style, table, text
+from odf import number, opendocument, style, table, text
 
 import tablib
 
@@ -15,6 +15,52 @@ bold.addElement(style.TextProperties(
     fontweightasian="bold",
     fontweightcomplex="bold",
 ))
+
+
+def set_date_style(style):
+    style.addElement(number.Year(style="long"))
+    style.addElement(number.Text(text="-"))
+    style.addElement(number.Month(style="long"))
+    style.addElement(number.Text(text="-"))
+    style.addElement(number.Day(style="long"))
+
+
+def set_time_style(style):
+    style.addElement(number.Hours(style="long"))
+    style.addElement(number.Text(text=":"))
+    style.addElement(number.Minutes(style="long"))
+    style.addElement(number.Text(text=":"))
+    style.addElement(number.Seconds(style="long", decimalplaces="0"))
+
+
+date_style = number.DateStyle(name="date-style1")
+set_date_style(date_style)
+ds = style.Style(
+    name="ds1",
+    datastylename="date-style1",
+    parentstylename="Default",
+    family="table-cell",
+)
+
+time_style = number.DateStyle(name="time-style1")
+set_time_style(time_style)
+ts = style.Style(
+    name="ts1",
+    datastylename="time-style1",
+    parentstylename="Default",
+    family="table-cell",
+)
+
+datetime_style = number.DateStyle(name="datetime-style1")
+set_date_style(datetime_style)
+datetime_style.addElement(number.Text(text=" "))
+set_time_style(datetime_style)
+dts = style.Style(
+    name="dts1",
+    datastylename="datetime-style1",
+    parentstylename="Default",
+    family="table-cell",
+)
 
 
 class ODSFormat:
@@ -27,6 +73,12 @@ class ODSFormat:
 
         wb = opendocument.OpenDocumentSpreadsheet()
         wb.automaticstyles.addElement(bold)
+        wb.styles.addElement(date_style)
+        wb.automaticstyles.addElement(ds)
+        wb.styles.addElement(time_style)
+        wb.automaticstyles.addElement(ts)
+        wb.styles.addElement(datetime_style)
+        wb.automaticstyles.addElement(dts)
 
         ws = table.Table(name=dataset.title if dataset.title else 'Tablib Dataset')
         wb.spreadsheet.addElement(ws)
@@ -162,12 +214,22 @@ class ODSFormat:
                     cell = table.TableCell(valuetype="float", value=col)
                 elif isinstance(col, dt.datetime):
                     cell = table.TableCell(
-                        valuetype="date", datevalue=col.strftime('%Y-%m-%dT%H:%M:%S')
+                        valuetype="date",
+                        datevalue=col.strftime('%Y-%m-%dT%H:%M:%S'),
+                        stylename=dts,
                     )
+                    cell.addElement(text.P(text=col.strftime('%Y-%m-%d %H:%M:%S')))
                 elif isinstance(col, dt.date):
-                    cell = table.TableCell(valuetype="date", datevalue=col.strftime('%Y-%m-%d'))
+                    date_value = col.strftime('%Y-%m-%d')
+                    cell = table.TableCell(valuetype="date", datevalue=date_value, stylename=ds)
+                    cell.addElement(text.P(text=date_value))
                 elif isinstance(col, dt.time):
-                    cell = table.TableCell(valuetype="time", timevalue=col.strftime('PT%HH%MM%SS'))
+                    cell = table.TableCell(
+                        valuetype="time",
+                        timevalue=col.strftime('PT%HH%MM%SS'),
+                        stylename=ts,
+                    )
+                    cell.addElement(text.P(text=col.strftime('%H:%M:%S')))
                 elif col is None:
                     cell = table.TableCell(valuetype="void")
                 else:
