@@ -1168,6 +1168,16 @@ class TSVTests(BaseTestCase):
 
 
 class ODSTests(BaseTestCase):
+    FORMAT_CONVERT = {
+        'yearlong': '%Y',
+        'monthlong': '%m',
+        'daylong': '%d',
+        'hourslong': '%H',
+        'minuteslong': '%M',
+        'secondslong': '%S',
+        'secondslong0': '%S',
+    }
+
     def test_ods_export_import_set(self):
         date = dt.date(2019, 10, 4)
         date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
@@ -1187,6 +1197,39 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['time'], time)
         self.assertEqual(data.dict[0]['date/time'], date_time)
         self.assertEqual(data.dict[0]['None'], '')
+
+    def test_ods_export_display(self):
+        """Test that exported datetime types are displayed correctly in office software"""
+        date = dt.date(2019, 10, 4)
+        date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
+        time = dt.time(14, 30)
+        data.append((date, time, date_time))
+        data.headers = ('date', 'time', 'date/time')
+        _ods = data.ods
+        ods_book = opendocument.load(BytesIO(_ods))
+        styles = {style.getAttribute('name'): style for style in ods_book.styles.childNodes}
+        automatic_styles = {
+            style.getAttribute('name'): style.getAttribute('datastylename')
+            for style in ods_book.automaticstyles.childNodes
+        }
+
+        def get_format(cell):
+            style = styles[automatic_styles[cell.getAttribute('stylename')]]
+            f = []
+            for number in style.childNodes:
+                name = number.qname[1] + ''.join(number.attributes.values())
+                f.append(self.FORMAT_CONVERT.get(name, str(number)))
+            return ''.join(f)
+
+        cells = ods_book.spreadsheet.getElementsByType(table.TableRow)[1].childNodes
+        self.assertEqual(str(date), str(cells[0]))
+        self.assertEqual('%Y-%m-%d', get_format(cells[0]))
+
+        self.assertEqual(str(time), str(cells[1]))
+        self.assertEqual('%H:%M:%S', get_format(cells[1]))
+
+        self.assertEqual(str(date_time), str(cells[2]))
+        self.assertEqual('%Y-%m-%d %H:%M:%S', get_format(cells[2]))
 
     def test_ods_import_book(self):
         ods_source = Path(__file__).parent / 'files' / 'book.ods'
