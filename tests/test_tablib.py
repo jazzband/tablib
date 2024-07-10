@@ -12,6 +12,7 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
 
+import xlrd
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -1253,6 +1254,23 @@ class XLSTests(BaseTestCase):
         in_stream = self.founders.xls
         book = tablib.Databook().load(in_stream, 'xls')
         self.assertEqual(book.sheets()[0].title, 'Founders')
+
+    def test_xls_export_with_dates(self):
+        date = dt.date(2019, 10, 4)
+        time = dt.time(14, 30)
+        date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
+        data.append((date, time, date_time))
+        data.headers = ('date', 'time', 'date/time')
+        _xls = data.xls
+        xls_book = xlrd.open_workbook(file_contents=_xls, formatting_info=True)
+        row = xls_book.sheet_by_index(0).row(1)
+
+        def get_format_str(cell):
+            return xls_book.format_map[xls_book.xf_list[cell.xf_index].format_key].format_str
+
+        self.assertEqual('m/d/yy', get_format_str(row[0]))
+        self.assertEqual('h:mm:ss', get_format_str(row[1]))
+        self.assertEqual('m/d/yy h:mm', get_format_str(row[2]))
 
 
 class XLSXTests(BaseTestCase):
