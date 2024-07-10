@@ -92,7 +92,11 @@ class ODSFormat:
                 return convert_date(date_value)
         if value_type == 'time':
             time_value = cell.getAttribute('timevalue')
-            return dt.datetime.strptime(time_value, "%H:%M:%S").time()
+            try:
+                return dt.datetime.strptime(time_value, "PT%HH%MM%SS").time()
+            except ValueError:
+                # backwards compatibility for times exported with older tablib versions
+                return dt.datetime.strptime(time_value, "%H:%M:%S").time()
         if value_type == 'boolean':
             bool_value = cell.getAttribute('booleanvalue')
             return bool_value == 'true'
@@ -158,12 +162,12 @@ class ODSFormat:
                     cell = table.TableCell(valuetype="float", value=col)
                 elif isinstance(col, dt.datetime):
                     cell = table.TableCell(
-                        valuetype="date", value=col.strftime('%Y-%m-%dT%H:%M:%S')
+                        valuetype="date", datevalue=col.strftime('%Y-%m-%dT%H:%M:%S')
                     )
                 elif isinstance(col, dt.date):
                     cell = table.TableCell(valuetype="date", datevalue=col.strftime('%Y-%m-%d'))
                 elif isinstance(col, dt.time):
-                    cell = table.TableCell(valuetype="time", timevalue=col.strftime('%H:%M:%S'))
+                    cell = table.TableCell(valuetype="time", timevalue=col.strftime('PT%HH%MM%SS'))
                 elif col is None:
                     cell = table.TableCell(valuetype="void")
                 else:

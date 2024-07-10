@@ -5,6 +5,7 @@ import datetime as dt
 import doctest
 import json
 import pickle
+import re
 import tempfile
 import unittest
 from decimal import Decimal
@@ -13,6 +14,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import xlrd
+from odf import opendocument, table
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -1213,6 +1215,26 @@ class ODSTests(BaseTestCase):
         with ods_source.open('rb') as fh:
             dataset = tablib.Dataset().load(fh, 'ods')
         self.assertEqual(dataset.pop(), ('abcd',))
+
+    def test_ods_export_dates(self):
+        """test against odf specification"""
+        date = dt.date(2019, 10, 4)
+        date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
+        time = dt.time(14, 30)
+        data.append((date, time, date_time))
+        data.headers = ('date', 'time', 'date/time')
+        _ods = data.ods
+        ods_book = opendocument.load(BytesIO(_ods))
+        cells = ods_book.spreadsheet.getElementsByType(table.TableRow)[1].childNodes
+        # date value
+        self.assertEqual(cells[0].getAttribute('datevalue'), '2019-10-04')
+        # time value
+        duration_exp = re.compile(r"^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?"
+                                  r"(?:T(?:(\d+)H)?(?:(\d+)M)?(?:([\d.]+)S)?)?$")
+        duration = duration_exp.match(cells[1].getAttribute('timevalue')).groups()
+        self.assertListEqual([0, 0, 0, 14, 30, 0], [int(v or 0) for v in duration])
+        # datetime value
+        self.assertEqual(cells[2].getAttribute('datevalue'), '2019-10-04T12:30:08')
 
 
 class XLSTests(BaseTestCase):
