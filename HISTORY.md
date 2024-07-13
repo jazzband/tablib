@@ -1,5 +1,11 @@
 # History
 
+## Unreleased
+
+### Bugfixes
+
+- Fix time and datetime export in ODS format (#595).
+
 ## 3.6.1 (2024-04-04)
 
 ### Bugfixes
