@@ -1,10 +1,18 @@
 # History
 
-## Unreleased
+## 3.7.0 (2024-10-08)
+
+### Improvements
+
+- Add support for Python 3.13 (#592)
+- Drop support for EOL Python 3.8 (#598)
+- Add styling to datetime, date and time values for ODS (#594)
+- Add styling for date/time types for XLS (#596)
 
 ### Bugfixes
 
-- Fix time and datetime export in ODS format (#595).
+- Fix time and datetime export in ODS format (#595)
+- Avoid normalizing input twice in `import_set`/`book` (#591)
 
 ## 3.6.1 (2024-04-04)
 
