@@ -415,9 +415,6 @@ class Dataset:
         if not hasattr(fmt, 'import_set'):
             raise UnsupportedFormat(f'Format {format} cannot be imported.')
 
-        if not import_set:
-            raise UnsupportedFormat(f'Format {format} cannot be imported.')
-
         fmt.import_set(self, stream, **kwargs)
         return self
 
