@@ -251,8 +251,8 @@ can set to a number of lines that should be skipped before starting to read
 data.
 
 The ``export_set()`` method supports a ``column_width`` parameter. Depending on the
-value you pass, the column width will be set accordingly. It can be either ``None``, an integer, or "adaptive".
-If "adaptive" is passed, the column width will be unique for every column and will be 
+value passed, the column width will be set accordingly. It can be either ``None``, an integer, or default "adaptive".
+If "adaptive" is passed, the column width will be unique and will be 
 calculated based on values' length. For example:: 
 
     data = tablib.Dataset()
@@ -260,7 +260,7 @@ calculated based on values' length. For example::
 
 
 
-.. versionchanged:: 3.3.0
+.. versionchanged:: 3.8.0
     The ``column_width`` parameter for ``export_set()`` was added.
     
 .. versionchanged:: 3.1.0
