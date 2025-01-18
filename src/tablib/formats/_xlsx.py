@@ -176,8 +176,11 @@ class XLSXFormat:
     @classmethod
     def _adapt_column_width(cls, worksheet, width):
         if isinstance(width, str) and width != "adaptive":
-            raise ValueError(f"Unsupported value `{width}` passed to `column_width` "
-                             "parameter. It supports 'adaptive' or integer values")
+            msg = (
+                f"Invalid value for column_width: {width}. "
+                f"Must be 'adaptive' or an integer."
+            )
+            raise ValueError(msg)
         
         if width is None:
             return
