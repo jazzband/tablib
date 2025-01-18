@@ -34,7 +34,8 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False, column_width="adaptive"):
+    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-",
+                   escape=False, column_width="adaptive"):
         """Returns XLSX representation of Dataset.
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
@@ -50,7 +51,8 @@ class XLSXFormat:
 
         If ``column_width`` is set to "adaptive", the column width will be set to the maximum
         width of the content in each column. If it is set to an integer, the column width will be
-        set to that integer value. If it is set to None, the column width will be set as the default openpyxl.Worksheet width value.
+        set to that integer value. If it is set to None, the column width will be set as the
+        default openpyxl.Worksheet width value.
 
         """
         wb = Workbook()
@@ -181,7 +183,7 @@ class XLSXFormat:
                 f"Must be 'adaptive' or an integer."
             )
             raise ValueError(msg)
-        
+
         if width is None:
             return
 
@@ -197,6 +199,6 @@ class XLSXFormat:
                         column_widths.append(len(cell))
         else:
             column_widths = [width] * worksheet.max_column
-        
-        for i, column_width in enumerate(column_widths, 1): # start at 1
+
+        for i, column_width in enumerate(column_widths, 1):  # start at 1
             worksheet.column_dimensions[get_column_letter(i)].width = column_width

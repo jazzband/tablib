@@ -11,13 +11,11 @@ import unittest
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
-from tempfile import TemporaryFile
 from uuid import uuid4
 
 import xlrd
 from odf import opendocument, table
 from openpyxl.reader.excel import load_workbook
-from MarkupPy import markup
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1354,11 +1352,12 @@ class XLSXTests(BaseTestCase):
             data = tablib.Dataset().load(fh)
         width_before = _get_width(data, column_width)
         data.append([
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
         ])
         width_after = _get_width(data, width_before)
         return width_before, width_after
-    
+
     def test_xlsx_format_detect(self):
         """Test the XLSX format detection."""
         in_stream = self.founders.xlsx
@@ -1502,7 +1501,7 @@ class XLSXTests(BaseTestCase):
         _xlsx = data.export('xlsx')
         wb = load_workbook(filename=BytesIO(_xlsx))
         self.assertEqual('[1]', wb.active['A1'].value)
-    
+
     def test_xlsx_column_width_adaptive(self):
         """ Test that column width adapts to value length"""
         width_before, width_after = self._helper_export_column_width("adaptive")
@@ -1514,7 +1513,7 @@ class XLSXTests(BaseTestCase):
         width_before, width_after = self._helper_export_column_width(10)
         self.assertEqual(width_before, 10)
         self.assertEqual(width_after, 10)
-    
+
     def test_xlsx_column_width_none(self):
         """Test that column width does not change"""
         width_before, width_after = self._helper_export_column_width(None)
