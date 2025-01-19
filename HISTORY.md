@@ -1,5 +1,11 @@
 # History
 
+## Unreleased
+
+### Improvements
+
+- Add support for exporting XLSX with column width (#516)
+
 ## 3.7.0 (2024-10-08)
 
 ### Improvements
