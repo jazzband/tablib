@@ -125,8 +125,8 @@ registered.
 
    .. admonition:: Excluding Support
 
-       If the format excludes support for an import/export mechanism (*e.g.* 
-       :class:`csv <tablib.Dataset.csv>` excludes 
+       If the format excludes support for an import/export mechanism (*e.g.*
+       :class:`csv <tablib.Dataset.csv>` excludes
        :class:`Databook <tablib.Databook>` support),
        simply don't define the respective class methods.
        Appropriate errors will be raised.
@@ -138,7 +138,7 @@ registered.
     registry.register('xxx', MyXXXFormatClass())
 
 3. From then on, you should be able to use your new custom format as if it were
-a built-in Tablib format, e.g. using ``dataset.export('xxx')`` will use the 
+a built-in Tablib format, e.g. using ``dataset.export('xxx')`` will use the
 ``MyXXXFormatClass.export_set`` method.
 
 .. _testing:

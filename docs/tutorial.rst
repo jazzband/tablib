@@ -313,7 +313,7 @@ Now that we have extra meta-data on our rows, we can easily filter our :class:`D
     >>> students.filter(['female']).yaml
     - {first: Bessie, Last: Monke}
 
-By default, when you pass a list of tags you get filter type or. :: 
+By default, when you pass a list of tags you get filter type or. ::
 
     >>> students.filter(['female', 'creative']).yaml
     - {first: Daniel, Last: Dupont}

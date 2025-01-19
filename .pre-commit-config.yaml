@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
         args: [--py39-plus]
@@ -29,9 +29,21 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: forbid-submodules
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+      - id: check-useless-excludes
 
 ci:
   autoupdate_schedule: quarterly
