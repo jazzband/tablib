@@ -180,7 +180,7 @@ class XLSXFormat:
         if isinstance(width, str) and width != "adaptive":
             msg = (
                 f"Invalid value for column_width: {width}. "
-                f"Must be 'adaptive' or an integer."
+                "Must be 'adaptive' or an integer."
             )
             raise ValueError(msg)
 
