@@ -1,6 +1,5 @@
 """ Tablib - XLSX Support.
 """
-
 import re
 from io import BytesIO
 
@@ -35,7 +34,8 @@ class XLSXFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-", escape=False):
+    def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-",
+                   escape=False, column_width="adaptive"):
         """Returns XLSX representation of Dataset.
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
@@ -48,6 +48,12 @@ class XLSXFormat:
         If ``escape`` is True, formulae will have the leading '=' character removed.
         This is a security measure to prevent formulae from executing by default
         in exported XLSX files.
+
+        If ``column_width`` is set to "adaptive", the column width will be set to the maximum
+        width of the content in each column. If it is set to an integer, the column width will be
+        set to that integer value. If it is set to None, the column width will be set as the
+        default openpyxl.Worksheet width value.
+
         """
         wb = Workbook()
         ws = wb.worksheets[0]
@@ -58,6 +64,8 @@ class XLSXFormat:
         )
 
         cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes, escape=escape)
+
+        cls._adapt_column_width(ws, column_width)
 
         stream = BytesIO()
         wb.save(stream)
@@ -166,3 +174,31 @@ class XLSXFormat:
 
                 if escape and cell.data_type == 'f' and cell.value.startswith('='):
                     cell.value = cell.value.replace("=", "")
+
+    @classmethod
+    def _adapt_column_width(cls, worksheet, width):
+        if isinstance(width, str) and width != "adaptive":
+            msg = (
+                f"Invalid value for column_width: {width}. "
+                "Must be 'adaptive' or an integer."
+            )
+            raise ValueError(msg)
+
+        if width is None:
+            return
+
+        column_widths = []
+        if width == "adaptive":
+            for row in worksheet.values:
+                for i, cell in enumerate(row):
+                    cell_width = len(str(cell))
+                    if len(column_widths) > i:
+                        if cell_width > column_widths[i]:
+                            column_widths[i] = cell_width
+                    else:
+                        column_widths.append(cell_width)
+        else:
+            column_widths = [width] * worksheet.max_column
+
+        for i, column_width in enumerate(column_widths, 1):  # start at 1
+            worksheet.column_dimensions[get_column_letter(i)].width = column_width
