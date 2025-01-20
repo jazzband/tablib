@@ -191,12 +191,12 @@ class XLSXFormat:
         if width == "adaptive":
             for row in worksheet.values:
                 for i, cell in enumerate(row):
-                    cell = str(cell)
+                    cell_width = len(str(cell))
                     if len(column_widths) > i:
-                        if len(cell) > column_widths[i]:
-                            column_widths[i] = len(cell)
+                        if cell_width > column_widths[i]:
+                            column_widths[i] = cell_width
                     else:
-                        column_widths.append(len(cell))
+                        column_widths.append(cell_width)
         else:
             column_widths = [width] * worksheet.max_column
 
