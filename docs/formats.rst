@@ -261,7 +261,7 @@ For example::
 
 .. versionchanged:: 3.8.0
     The ``column_width`` parameter for ``export_set()`` was added.
-    
+
 .. versionchanged:: 3.1.0
 
     The ``skip_lines`` parameter for ``import_set()`` was added.
