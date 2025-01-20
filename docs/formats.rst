@@ -250,11 +250,11 @@ The ``import_set()`` method also supports a ``skip_lines`` parameter that you
 can set to a number of lines that should be skipped before starting to read
 data.
 
-The ``export_set()`` method supports a ``column_width`` parameter. Depending 
-on the value passed, the column width will be set accordingly. It can be 
-either ``None``, an integer, or default "adaptive". If "adaptive" is passed, 
-the column width will be unique and will be calculated based on values' length. 
-For example:: 
+The ``export_set()`` method supports a ``column_width`` parameter. Depending
+on the value passed, the column width will be set accordingly. It can be
+either ``None``, an integer, or default "adaptive". If "adaptive" is passed,
+the column width will be unique and will be calculated based on values' length.
+For example::
 
     data = tablib.Dataset()
     data.export('xlsx', column_width='adaptive')
