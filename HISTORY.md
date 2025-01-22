@@ -5,6 +5,7 @@
 ### Improvements
 
 - Add support for exporting XLSX with column width (#516)
+- Remove redundant check from `Dataset.load()` (#604)
 
 ## 3.7.0 (2024-10-08)
 
