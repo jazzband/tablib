@@ -1,10 +1,11 @@
 # History
 
-## 3.8.0 (Unreleased)
+## 3.8.0 (2025-01-22)
 
 ### Improvements
 
 - Add support for exporting XLSX with column width (#516)
+- Remove redundant check from `Dataset.load()` (#604)
 
 ## 3.7.0 (2024-10-08)
 
