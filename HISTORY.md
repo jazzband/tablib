@@ -1,6 +1,6 @@
 # History
 
-## 3.8.0 (Unreleased)
+## 3.8.0 (2025-01-22)
 
 ### Improvements
 
