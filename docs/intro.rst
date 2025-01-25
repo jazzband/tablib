@@ -51,3 +51,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 .. _`The MIT License`: https://opensource.org/licenses/mit-license.php
+
+Now, go :ref:`install Tablib <install>`.
