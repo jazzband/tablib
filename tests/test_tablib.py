@@ -1182,9 +1182,18 @@ class ODSTests(BaseTestCase):
         date = dt.date(2019, 10, 4)
         date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
         time = dt.time(14, 30)
-        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time, None))
+        data.append(('string', '004', 42, 21.55, Decimal('34.5'), date, time, date_time, None, ''))
         data.headers = (
-            'string', 'start0', 'integer', 'float', 'decimal', 'date', 'time', 'date/time', 'None'
+            'string',
+            'start0',
+            'integer',
+            'float',
+            'decimal',
+            'date',
+            'time',
+            'date/time',
+            'None',
+            'empty',
         )
         _ods = data.ods
         data.ods = _ods
@@ -1197,6 +1206,7 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['time'], time)
         self.assertEqual(data.dict[0]['date/time'], date_time)
         self.assertEqual(data.dict[0]['None'], '')
+        self.assertEqual(data.dict[0]['empty'], '')
 
     def test_ods_export_display(self):
         """Test that exported datetime types are displayed correctly in office software"""
