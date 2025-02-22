@@ -113,9 +113,9 @@ class ODSFormat:
         def is_real_cell(cell):
             return cell.hasChildNodes() or not cell.getAttribute('numbercolumnsrepeated')
 
-        for i, row in enumerate(sheet.childNodes):
-            if row.tagName != 'table:table-row':
-                continue
+        rows = (row for row in sheet.childNodes if row.tagName == "table:table-row")
+
+        for i, row in enumerate(rows):
             if i < skip_lines:
                 continue
             row_vals = [cls.read_cell(cell) for cell in row.childNodes if is_real_cell(cell)]
