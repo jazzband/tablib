@@ -1246,6 +1246,7 @@ class ODSTests(BaseTestCase):
         with ods_source.open('rb') as fh:
             dbook = tablib.Databook().load(fh, 'ods')
         self.assertEqual(len(dbook.sheets()), 2)
+        self.assertEqual(["This", "is", "a", "second", "sheet"], dbook.sheets()[1].headers)
 
     def test_ods_import_set_skip_lines(self):
         data.append(('garbage', 'line', ''))
@@ -1266,7 +1267,7 @@ class ODSTests(BaseTestCase):
         # <table:table-cell office:value-type="unknown" calcext:value-type="string">
         ods_source = Path(__file__).parent / 'files' / 'unknown_value_type.ods'
         with ods_source.open('rb') as fh:
-            dataset = tablib.Dataset().load(fh, 'ods')
+            dataset = tablib.Dataset().load(fh, 'ods', headers=False)
         self.assertEqual(dataset.pop(), ('abcd',))
 
     def test_ods_export_dates(self):
