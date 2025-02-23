@@ -110,22 +110,33 @@ class ODSFormat:
 
         dset.title = sheet.getAttribute('name')
 
-        def is_real_cell(cell):
-            return cell.hasChildNodes() or not cell.getAttribute('numbercolumnsrepeated')
+        def repeat(cell):
+            try:
+                n = int(cell.getAttribute("numbercolumnsrepeated"))
+            except Exception:
+                n = 1
+
+            return [cls.read_cell(cell)] * n
 
         rows = (row for row in sheet.childNodes if row.tagName == "table:table-row")
 
         for i, row in enumerate(rows):
             if i < skip_lines:
                 continue
-            row_vals = [cls.read_cell(cell) for cell in row.childNodes if is_real_cell(cell)]
+            row_vals = [c for cell in row.childNodes for c in repeat(cell)]
             if not row_vals:
                 continue
             if i == skip_lines and headers:
-                dset.headers = row_vals
+                try:
+                    end = row_vals.index("")
+                except ValueError:
+                    end = len(row_vals)
+                dset.headers = row_vals[:end]
             else:
-                if i > skip_lines and len(row_vals) < dset.width:
-                    row_vals += [''] * (dset.width - len(row_vals))
+                if i > skip_lines:
+                    if len(row_vals) < dset.width:
+                        row_vals += [''] * (dset.width - len(row_vals))
+                    row_vals = row_vals[:dset.width]
                 dset.append(row_vals)
 
     @classmethod
