@@ -1271,6 +1271,14 @@ class ODSTests(BaseTestCase):
         self.assertEqual(dataset[0], ("a1", "", "", "d1"))
         self.assertEqual(dataset[1], ("repeat",) * 4)
 
+    def test_ods_multiline_cell(self):
+        ods = Path(__file__).parent / "files" / "multiline_cell.ods"
+
+        with ods.open("rb") as fh:
+            dataset = tablib.Dataset().load(fh, "ods", headers=False)
+
+        self.assertEqual(dataset[0], ("first\nsecond\nthird",))
+
     def test_ods_unknown_value_type(self):
         # The ods file was trafficked to contain:
         # <table:table-cell office:value-type="unknown" calcext:value-type="string">

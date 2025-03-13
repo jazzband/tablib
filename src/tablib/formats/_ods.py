@@ -148,7 +148,7 @@ class ODSFormat:
                 return dt.datetime.strptime(val, "%Y-%m-%d").date()
 
         if value_type is None:
-            value_type = cell.getAttribute('valuetype')
+            value_type = cls.get_attribute(cell, 'valuetype')
         if value_type == 'date':
             date_value = cell.getAttribute('datevalue')
             if date_value:
@@ -166,10 +166,7 @@ class ODSFormat:
         if not cell.childNodes:
             value = getattr(cell, 'data', None)
             if value is None:
-                try:
-                    value = cell.getAttribute('value')
-                except ValueError:
-                    pass
+                value = cls.get_attribute(cell, "value")
             if value is None:
                 return ''
             if value_type == 'float':
@@ -178,8 +175,17 @@ class ODSFormat:
                 return convert_date(value)
             return value  # Any other type default to 'string'
 
-        for subnode in cell.childNodes:
-            return cls.read_cell(subnode, value_type)
+        if value_type == "string":
+            return "\n".join(cls.read_cell(subnode, value_type) for subnode in cell.childNodes)
+
+        return cls.read_cell(cell.childNodes[0], value_type)
+
+    @classmethod
+    def get_attribute(cls, cell, name, default=None):
+        try:
+            return cell.getAttribute(name)
+        except Exception:
+            return default
 
     @classmethod
     def import_set(cls, dset, in_stream, headers=True, skip_lines=0):
