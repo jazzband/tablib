@@ -113,7 +113,7 @@ class ODSFormat:
         def repeat(cell):
             try:
                 n = int(cell.getAttribute("numbercolumnsrepeated"))
-            except Exception:
+            except (AttributeError, TypeError, ValueError):
                 n = 1
 
             return [cls.read_cell(cell)] * n
