@@ -127,11 +127,7 @@ class ODSFormat:
             if not row_vals:
                 continue
             if i == skip_lines and headers:
-                try:
-                    end = row_vals.index("")
-                except ValueError:
-                    end = len(row_vals)
-                dset.headers = row_vals[:end]
+                dset.headers = row_vals
             else:
                 if i > skip_lines:
                     if len(row_vals) < dset.width:
