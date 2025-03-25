@@ -1260,7 +1260,7 @@ class ODSTests(BaseTestCase):
         ods_source = Path(__file__).parent / 'files' / 'ragged.ods'
         with ods_source.open('rb') as fh:
             dataset = tablib.Dataset().load(fh, 'ods')
-        self.assertEqual(dataset[0], (1, '', True, ''))
+        self.assertEqual(dataset[0], (1, '', True) + ('',) * 16381)
 
     def test_ods_import_columns_repeated(self):
         ods = Path(__file__).parent / "files" / "columns_repeated.ods"
