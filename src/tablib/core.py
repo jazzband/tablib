@@ -8,9 +8,6 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from copy import copy
-from operator import itemgetter
-
 from .exceptions import (
     HeadersNeeded,
     InvalidDatasetIndex,
@@ -638,6 +635,8 @@ class Dataset:
         """Returns a new instance of the :class:`Dataset`, excluding any rows
         that do not contain the given :ref:`tags <tags>`.
         """
+        import copy
+
         _dset = copy(self)
         _dset._data = [row for row in _dset._data if row.has_tag(tag)]
 
@@ -651,6 +650,7 @@ class Dataset:
         Returns a new :class:`Dataset` instance where columns have been
         sorted.
         """
+        from operator import itemgetter
 
         if isinstance(col, str):
 
@@ -745,6 +745,8 @@ class Dataset:
             raise InvalidDimensions
 
         # Copy the source data
+        from copy import copy
+
         _dset = copy(self)
 
         rows_to_stack = [row for row in _dset._data]
