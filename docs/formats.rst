@@ -300,3 +300,32 @@ This format is optional, install Tablib with ``pip install "tablib[yaml]"`` to
 make the format available.
 
 .. _YAML: https://yaml.org
+
+sql
+===
+
+The ``sql`` format is export-only. It produces SQL INSERT statements (one per row)
+assuming the target table already exists. The table name can be passed as an argument or taken from the
+dataset's title (or defaults to ``data``), and values are rendered as ANSI SQL literals:
+
+- ``NULL`` for null values
+- ``TRUE``/``FALSE`` for booleans
+- ``DATE 'YYYY-MM-DD'`` for date values
+- ``TIMESTAMP 'YYYY-MM-DD HH:MM:SS'`` for timestamp values
+- Numeric literals for ints/floats/decimals
+- Single-quoted strings with embedded quotes escaped
+
+Example::
+
+    import datetime
+    from tablib import Dataset
+
+    data = Dataset(title='users')
+    data.headers = ['id', 'name', 'joined']
+    data.append([1, 'Alice', datetime.date(2021,1,1)])
+
+    print(data.export('sql'))
+
+Output::
+
+    INSERT INTO "users" VALUES (1, 'Alice', DATE '2021-01-01');

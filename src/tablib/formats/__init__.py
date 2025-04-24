@@ -104,6 +104,7 @@ class Registry:
         if find_spec('pandas'):
             self.register('df', 'tablib.formats._df.DataFrameFormat')
         self.register('rst', 'tablib.formats._rst.ReSTFormat')
+        self.register('sql', 'tablib.formats._sql.SQLFormat')
         if find_spec('tabulate'):
             self.register('cli', 'tablib.formats._cli.CLIFormat')
 
