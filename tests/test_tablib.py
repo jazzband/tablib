@@ -1893,7 +1893,7 @@ class SQLFormatTests(unittest.TestCase):
         ds.headers = ['ts']
         ds.append([dt.datetime(2021, 12, 31, 23, 59, 59, 123456)])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"data\" VALUES (TIMESTAMP '2021-12-31 23:59:59.123456');"
+        expected = "INSERT INTO \"EXPORT_TABLE\" VALUES (TIMESTAMP '2021-12-31 23:59:59.123456');"
         self.assertEqual(sql, expected)
 
     def test_sql_regular_literals(self):
@@ -1933,5 +1933,5 @@ class SQLFormatTests(unittest.TestCase):
         ds = tablib.Dataset()
         ds.append([1, 'test'])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"data\" VALUES (1, 'test');"
+        expected = "INSERT INTO \"EXPORT_TABLE\" VALUES (1, 'test');"
         self.assertEqual(sql, expected)
