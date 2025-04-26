@@ -305,8 +305,8 @@ sql
 ===
 
 The ``sql`` format is export-only. It produces SQL INSERT statements (one per row)
-assuming the target table already exists. The table name can be passed as an argument or taken from the
-dataset's title (or defaults to ``data``), and values are rendered as ANSI SQL literals:
+assuming the target table already exists with the same columns. The table name can be passed as an argument or taken from the
+dataset's title (or defaults to ``EXPORT_TABLE``), and values are rendered as ANSI SQL literals:
 
 - ``NULL`` for null values
 - ``TRUE``/``FALSE`` for booleans
