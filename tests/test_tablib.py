@@ -1873,7 +1873,7 @@ class CliTests(BaseTestCase):
             '+---+---+---+\n| a | b | c |\n+---+---+---+',
             tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='grid')
         )
-        
+
 class SQLFormatTests(unittest.TestCase):
     def test_sql_date_and_timestamp_literals(self):
         # ANSI SQL date and timestamp literals
@@ -1899,7 +1899,7 @@ class SQLFormatTests(unittest.TestCase):
     def test_sql_regular_literals(self):
         # Test int, quoted string, decimal, bool, NULL, and multiline string
         ds = tablib.Dataset(title='t')
-        ds.headers = ['i', 's', 'd', 'b', 'n', 'm', 'ml'] 
+        ds.headers = ['i', 's', 'd', 'b', 'n', 'm', 'ml']
         ds.append([
             1,
             "O'Reilly",
