@@ -1874,6 +1874,7 @@ class CliTests(BaseTestCase):
             tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='grid')
         )
 
+
 class SQLFormatTests(unittest.TestCase):
     def test_sql_date_and_timestamp_literals(self):
         # ANSI SQL date and timestamp literals
