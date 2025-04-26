@@ -1884,7 +1884,10 @@ class SQLFormatTests(unittest.TestCase):
             dt.datetime(2020, 1, 2, 3, 4, 5)
         ])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"tbl\" VALUES (DATE '2020-01-02', TIMESTAMP '2020-01-02 03:04:05');"
+        expected = (
+            "INSERT INTO \"tbl\" VALUES "
+            "(DATE '2020-01-02', TIMESTAMP '2020-01-02 03:04:05');"
+        )
         self.assertEqual(sql, expected)
 
     def test_sql_microseconds_and_default_table(self):
@@ -1893,7 +1896,10 @@ class SQLFormatTests(unittest.TestCase):
         ds.headers = ['ts']
         ds.append([dt.datetime(2021, 12, 31, 23, 59, 59, 123456)])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"EXPORT_TABLE\" VALUES (TIMESTAMP '2021-12-31 23:59:59.123456');"
+        expected = (
+            "INSERT INTO \"EXPORT_TABLE\" VALUES "
+            "(TIMESTAMP '2021-12-31 23:59:59.123456');"
+        )
         self.assertEqual(sql, expected)
 
     def test_sql_regular_literals(self):
@@ -1910,7 +1916,10 @@ class SQLFormatTests(unittest.TestCase):
             'Line1\nLine2'
         ])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, FALSE, NULL, 'Line1\nLine2');"
+        expected = (
+            "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');"
+        )
         self.assertEqual(sql, expected)
 
     def test_sql_no_headers(self):
@@ -1926,7 +1935,10 @@ class SQLFormatTests(unittest.TestCase):
             'Line1\nLine2'
         ])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, FALSE, NULL, 'Line1\nLine2');"
+        expected = (
+            "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');"
+        )
         self.assertEqual(sql, expected)
 
         # Test with default table name
