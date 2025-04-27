@@ -9,6 +9,7 @@ from ..utils import normalize_input
 from ._csv import CSVFormat
 from ._json import JSONFormat
 from ._tsv import TSVFormat
+from ._xml import XMLFormat
 
 uninstalled_format_messages = {
     "cli": {"package_name": "tabulate package", "extras_name": "cli"},
@@ -106,6 +107,7 @@ class Registry:
         self.register('rst', 'tablib.formats._rst.ReSTFormat')
         if find_spec('tabulate'):
             self.register('cli', 'tablib.formats._cli.CLIFormat')
+        self.register('xml', XMLFormat())
 
     def formats(self):
         for key, frm in self._formats.items():
