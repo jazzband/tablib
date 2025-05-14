@@ -1951,7 +1951,7 @@ class SQLFormatTests(unittest.TestCase):
 
         ds = tablib.Dataset()
         ds.append([1, 'test'])
-        sql = ds.export('sql', table='schema_name.custom_table', 
+        sql = ds.export('sql', table='schema_name.custom_table',
                         columns=['col1', 'col2'], commit=True)
         expected = ("INSERT INTO schema_name.custom_table (col1,col2)"
                     " VALUES (1, 'test');\nCOMMIT;\n")
