@@ -45,7 +45,7 @@ class SQLFormat:
         Return SQL INSERT statements for Dataset rows.
         :param table: optional table name; defaults to dataset.title or 'data'
         """
-        tbl = table or getattr(dataset, 'title', None) or 'EXPORT_TABLE'
+        tbl = table or getattr(dataset, 'title', None) or 'export_table'
         tbl_ident = str(tbl)
         columns_headers = (','.join(
                 columns if columns is not None else

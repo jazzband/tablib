@@ -1898,7 +1898,7 @@ class SQLFormatTests(unittest.TestCase):
         ds.append([dt.datetime(2021, 12, 31, 23, 59, 59, 123456)])
         sql = ds.export('sql')
         expected = (
-            "INSERT INTO EXPORT_TABLE (ts) VALUES "
+            "INSERT INTO export_table (ts) VALUES "
             "(TIMESTAMP '2021-12-31 23:59:59.123456');\n"
         )
         self.assertEqual(sql, expected)
@@ -1946,7 +1946,7 @@ class SQLFormatTests(unittest.TestCase):
         ds = tablib.Dataset()
         ds.append([1, 'test'])
         sql = ds.export('sql')
-        expected = "INSERT INTO EXPORT_TABLE VALUES (1, 'test');\n"
+        expected = "INSERT INTO export_table VALUES (1, 'test');\n"
         self.assertEqual(sql, expected)
 
         ds = tablib.Dataset()
