@@ -11,11 +11,6 @@ class SQLFormat:
     extensions = ('sql',)
 
     @staticmethod
-    def _quote_ident(name):
-        """Quote SQL identifier (table name)."""
-        return '"' + name.replace('"', '""') + '"'
-
-    @staticmethod
     def _render_literal(value):
         """Render a Python value as an SQL literal."""
         if value is None:
@@ -45,18 +40,26 @@ class SQLFormat:
         return f"'{text}'"
 
     @classmethod
-    def export_set(cls, dataset, table=None):
+    def export_set(cls, dataset, table=None, columns=None, commit=False):
         """
         Return SQL INSERT statements for Dataset rows.
         :param table: optional table name; defaults to dataset.title or 'data'
         """
         tbl = table or getattr(dataset, 'title', None) or 'EXPORT_TABLE'
-        tbl_ident = cls._quote_ident(str(tbl))
+        tbl_ident = str(tbl)
+        columns_headers = (','.join(
+                columns if columns is not None else 
+                dataset.headers if dataset.headers is not None else []
+            )
+        )
+        columns_headers = f' ({columns_headers})' if columns_headers else ''
         statements = []
         for row in dataset._data:
             values = ', '.join(cls._render_literal(v) for v in row)
-            statements.append(f'INSERT INTO {tbl_ident} VALUES ({values});')
-        return '\n'.join(statements)
+            statements.append(
+                f'INSERT INTO {tbl_ident}{columns_headers} VALUES ({values});'
+            )
+        return '\n'.join(statements) + '\n' + ('COMMIT;\n' if commit else '')
 
     @classmethod
     def import_set(cls, dataset, in_stream, **kwargs):

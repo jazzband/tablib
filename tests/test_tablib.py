@@ -1886,8 +1886,8 @@ class SQLFormatTests(unittest.TestCase):
         ])
         sql = ds.export('sql')
         expected = (
-            "INSERT INTO \"tbl\" VALUES "
-            "(DATE '2020-01-02', TIMESTAMP '2020-01-02 03:04:05');"
+            "INSERT INTO tbl (col_date,col_timestamp) VALUES "
+            "(DATE '2020-01-02', TIMESTAMP '2020-01-02 03:04:05');\n"
         )
         self.assertEqual(sql, expected)
 
@@ -1898,8 +1898,8 @@ class SQLFormatTests(unittest.TestCase):
         ds.append([dt.datetime(2021, 12, 31, 23, 59, 59, 123456)])
         sql = ds.export('sql')
         expected = (
-            "INSERT INTO \"EXPORT_TABLE\" VALUES "
-            "(TIMESTAMP '2021-12-31 23:59:59.123456');"
+            "INSERT INTO EXPORT_TABLE (ts) VALUES "
+            "(TIMESTAMP '2021-12-31 23:59:59.123456');\n"
         )
         self.assertEqual(sql, expected)
 
@@ -1918,8 +1918,8 @@ class SQLFormatTests(unittest.TestCase):
         ])
         sql = ds.export('sql')
         expected = (
-            "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, "
-            "FALSE, NULL, 'Line1\nLine2');"
+            "INSERT INTO t (i,s,d,b,n,m,ml) VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');\n"
         )
         self.assertEqual(sql, expected)
 
@@ -1937,8 +1937,8 @@ class SQLFormatTests(unittest.TestCase):
         ])
         sql = ds.export('sql')
         expected = (
-            "INSERT INTO \"t\" VALUES (1, 'O''Reilly', 3.14, 5.1, "
-            "FALSE, NULL, 'Line1\nLine2');"
+            "INSERT INTO t VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');\n"
         )
         self.assertEqual(sql, expected)
 
@@ -1946,5 +1946,13 @@ class SQLFormatTests(unittest.TestCase):
         ds = tablib.Dataset()
         ds.append([1, 'test'])
         sql = ds.export('sql')
-        expected = "INSERT INTO \"EXPORT_TABLE\" VALUES (1, 'test');"
+        expected = "INSERT INTO EXPORT_TABLE VALUES (1, 'test');\n"
+        self.assertEqual(sql, expected)
+
+        ds = tablib.Dataset()
+        ds.append([1, 'test'])
+        sql = ds.export('sql', table='schema_name.custom_table', 
+                        columns=['col1', 'col2'], commit=True)
+        expected = ("INSERT INTO schema_name.custom_table (col1,col2)"
+                    " VALUES (1, 'test');\nCOMMIT;\n")
         self.assertEqual(sql, expected)

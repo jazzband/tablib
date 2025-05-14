@@ -304,9 +304,14 @@ make the format available.
 sql
 ===
 
+.. versionadded:: 3.9.0
+
 The ``sql`` format is export-only. It produces SQL INSERT statements (one per row)
-assuming the target table already exists with the same columns. The table name can be passed as an argument or taken from the
-dataset's title (or defaults to ``EXPORT_TABLE``), and values are rendered as ANSI SQL literals:
+assuming the target table already exists with the same columns. 
+The table name can be passed as an argument or will be taken from the dataset's title (or defaults to ``EXPORT_TABLE``)
+Columns can be passed as an argument or will be taken from the dataset's headers.
+Values are rendered as ANSI SQL literals:
+Additionally the argument ``commit`` can be passed to add a ``COMMIT;`` statement at the end.
 
 - ``NULL`` for null values
 - ``TRUE``/``FALSE`` for booleans
@@ -325,7 +330,12 @@ Example::
     data.append([1, 'Alice', datetime.date(2021,1,1)])
 
     print(data.export('sql'))
+    print(data.export('sql', table='users', columns=['id', 'name'], commit=True))
 
 Output::
 
-    INSERT INTO "users" VALUES (1, 'Alice', DATE '2021-01-01');
+    INSERT INTO users VALUES (1, 'Alice', DATE '2021-01-01');
+
+    INSERT INTO users (id,name) VALUES (1, 'Alice');
+    COMMIT;
+
