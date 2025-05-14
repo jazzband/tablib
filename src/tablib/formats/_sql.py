@@ -48,7 +48,7 @@ class SQLFormat:
         tbl = table or getattr(dataset, 'title', None) or 'EXPORT_TABLE'
         tbl_ident = str(tbl)
         columns_headers = (','.join(
-                columns if columns is not None else 
+                columns if columns is not None else
                 dataset.headers if dataset.headers is not None else []
             )
         )
