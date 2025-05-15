@@ -141,7 +141,7 @@ class TablibTestCase(BaseTestCase):
 
         data.append_col(new_col)
 
-        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data[0], (new_col[0],))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
 
@@ -154,7 +154,7 @@ class TablibTestCase(BaseTestCase):
 
         data.append_col(new_col, header='first_name')
 
-        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data[0], (new_col[0],))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
         self.assertEqual(data.headers, None)
@@ -1108,7 +1108,7 @@ class CSVTests(BaseTestCase):
 
         expected = 'first_name;last_name;gpa\nJohn;Adams;90\nGeorge;Washington;67\n'
 
-        kwargs = dict(delimiter=';', lineterminator='\n')
+        kwargs = {'delimiter': ';', 'lineterminator': '\n'}
         _csv = data.export('csv', **kwargs)
         self.assertEqual(expected, _csv)
 
@@ -1318,12 +1318,12 @@ class XLSTests(BaseTestCase):
             data = tablib.Dataset().load(fh.read())
         self.assertEqual(
             data.dict[0],
-            dict([
-                ('div by 0', '#DIV/0!'),
-                ('name unknown', '#NAME?'),
-                ('not available (formula)', '#N/A'),
-                ('not available (static)', '#N/A')
-            ])
+            {
+                'div by 0': '#DIV/0!',
+                'name unknown': '#NAME?',
+                'not available (formula)': '#N/A',
+                'not available (static)': '#N/A',
+            }
         )
 
     def test_book_import_from_stream(self):

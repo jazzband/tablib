@@ -148,7 +148,7 @@ class Dataset:
     """
 
     def __init__(self, *args, **kwargs):
-        self._data = list(Row(arg) for arg in args)
+        self._data = [Row(arg) for arg in args]
         self.__headers = None
 
         # ('title', index) tuples
@@ -747,8 +747,8 @@ class Dataset:
         # Copy the source data
         _dset = copy(self)
 
-        rows_to_stack = [row for row in _dset._data]
-        other_rows = [row for row in other._data]
+        rows_to_stack = list(_dset._data)
+        other_rows = list(other._data)
 
         rows_to_stack.extend(other_rows)
         _dset._data = rows_to_stack
@@ -798,7 +798,7 @@ class Dataset:
 
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
-        self._data = list()
+        self._data = []
         self.__headers = None
 
     def subset(self, rows=None, cols=None):
