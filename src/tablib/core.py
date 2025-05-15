@@ -798,7 +798,7 @@ class Dataset:
 
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
-        self._data = list()
+        self._data = []
         self.__headers = None
 
     def subset(self, rows=None, cols=None):

@@ -54,8 +54,8 @@ class LATEXFormat:
         header = cls._serialize_row(dataset.headers) if dataset.headers else ''
         midrule = cls._midrule(dataset.width)
         body = '\n'.join([cls._serialize_row(row) for row in dataset])
-        return cls.TABLE_TEMPLATE % dict(CAPTION=caption, COLSPEC=colspec,
-                                         HEADER=header, MIDRULE=midrule, BODY=body)
+        return cls.TABLE_TEMPLATE % {'CAPTION': caption, 'COLSPEC': colspec,
+                                     'HEADER': header, 'MIDRULE': midrule, 'BODY': body}
 
     @classmethod
     def _colspec(cls, dataset_width):

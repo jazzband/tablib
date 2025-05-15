@@ -1108,7 +1108,7 @@ class CSVTests(BaseTestCase):
 
         expected = 'first_name;last_name;gpa\nJohn;Adams;90\nGeorge;Washington;67\n'
 
-        kwargs = dict(delimiter=';', lineterminator='\n')
+        kwargs = {'delimiter': ';', 'lineterminator': '\n'}
         _csv = data.export('csv', **kwargs)
         self.assertEqual(expected, _csv)
 
