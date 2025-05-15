@@ -25,18 +25,18 @@ class LATEXFormat:
 \\end{table}
 """
 
-    TEX_RESERVED_SYMBOLS_MAP = dict([
-        ('\\', '\\textbackslash{}'),
-        ('{', '\\{'),
-        ('}', '\\}'),
-        ('$', '\\$'),
-        ('&', '\\&'),
-        ('#', '\\#'),
-        ('^', '\\textasciicircum{}'),
-        ('_', '\\_'),
-        ('~', '\\textasciitilde{}'),
-        ('%', '\\%'),
-    ])
+    TEX_RESERVED_SYMBOLS_MAP = {
+        '\\': '\\textbackslash{}',
+        '{': '\\{',
+        '}': '\\}',
+        '$': '\\$',
+        '&': '\\&',
+        '#': '\\#',
+        '^': '\\textasciicircum{}',
+        '_': '\\_',
+        '~': '\\textasciitilde{}',
+        '%': '\\%',
+    }
 
     TEX_RESERVED_SYMBOLS_RE = re.compile(
         '(%s)' % '|'.join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys())))

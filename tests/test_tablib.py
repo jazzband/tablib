@@ -1318,12 +1318,12 @@ class XLSTests(BaseTestCase):
             data = tablib.Dataset().load(fh.read())
         self.assertEqual(
             data.dict[0],
-            dict([
-                ('div by 0', '#DIV/0!'),
-                ('name unknown', '#NAME?'),
-                ('not available (formula)', '#N/A'),
-                ('not available (static)', '#N/A')
-            ])
+            {
+                'div by 0': '#DIV/0!',
+                'name unknown': '#NAME?',
+                'not available (formula)': '#N/A',
+                'not available (static)': '#N/A',
+            }
         )
 
     def test_book_import_from_stream(self):
