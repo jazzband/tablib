@@ -148,7 +148,7 @@ class Dataset:
     """
 
     def __init__(self, *args, **kwargs):
-        self._data = list(Row(arg) for arg in args)
+        self._data = [Row(arg) for arg in args]
         self.__headers = None
 
         # ('title', index) tuples
