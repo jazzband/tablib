@@ -242,7 +242,7 @@ class DbfRecord:
             real values stored in this object.
 
         """
-        return dict([_i for _i in zip(self.dbf.fieldNames, self.fieldData)])
+        return dict(list(zip(self.dbf.fieldNames, self.fieldData)))
 
     def __getitem__(self, key):
         """Return value by field name or field index."""

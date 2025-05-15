@@ -747,8 +747,8 @@ class Dataset:
         # Copy the source data
         _dset = copy(self)
 
-        rows_to_stack = [row for row in _dset._data]
-        other_rows = [row for row in other._data]
+        rows_to_stack = list(_dset._data)
+        other_rows = list(other._data)
 
         rows_to_stack.extend(other_rows)
         _dset._data = rows_to_stack
