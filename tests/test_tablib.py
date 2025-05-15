@@ -141,7 +141,7 @@ class TablibTestCase(BaseTestCase):
 
         data.append_col(new_col)
 
-        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data[0], (new_col[0],))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
 
@@ -154,7 +154,7 @@ class TablibTestCase(BaseTestCase):
 
         data.append_col(new_col, header='first_name')
 
-        self.assertEqual(data[0], tuple([new_col[0]]))
+        self.assertEqual(data[0], (new_col[0],))
         self.assertEqual(data.width, 1)
         self.assertEqual(data.height, len(new_col))
         self.assertEqual(data.headers, None)
