@@ -712,7 +712,7 @@ class Dataset:
         _dset = Dataset()
 
         # Add columns as rows in new instance
-        for index in range(0, len(self._data[0])):
+        for index in range(len(self._data[0])):
             row_data = self.get_col(index)
             _dset.append(row=row_data)
 

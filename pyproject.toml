@@ -70,6 +70,7 @@ lint.select = [
   "F",      # pyflakes
   "I",      # isort
   "ISC",    # flake8-implicit-str-concat
+  "PIE",    # flake8-pie
   "RUF022", # unsorted-dunder-all
   "RUF100", # unused noqa (yesqa)
   "W",      # pycodestyle warnings
@@ -81,5 +82,6 @@ lint.ignore = [
   "E226",   # Missing whitespace around arithmetic operator
   "E241",   # Multiple spaces after ','
   "E741",   # Ambiguous variable name
+  "PIE790", # Unnecessary pass statement
 ]
 lint.isort.known-first-party = [ "tablib" ]
