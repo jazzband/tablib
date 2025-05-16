@@ -69,6 +69,7 @@ lint.select = [
   "E",      # pycodestyle errors
   "F",      # pyflakes
   "I",      # isort
+  "ISC",    # flake8-implicit-str-concat
   "W",      # pycodestyle warnings
 ]
 lint.ignore = [

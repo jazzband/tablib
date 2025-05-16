@@ -426,7 +426,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(tablib.detect_format(_tsv), 'tsv')
 
         _bunk = StringIO(
-            '¡¡¡¡¡¡---///\n\n\n' +
+            '¡¡¡¡¡¡---///\n\n\n'
             '¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
         self.assertEqual(tablib.detect_format(_bunk), None)
