@@ -60,5 +60,22 @@ changelog = "https://github.com/jazzband/tablib/blob/master/HISTORY.md"
 [tool.setuptools_scm]
 write_to = "src/tablib/_version.py"
 
+[tool.ruff]
+fix = true
+line-length = 99
+
+lint.select = [
+  "E",      # pycodestyle errors
+  "F",      # pyflakes
+  "W",      # pycodestyle warnings
+]
+lint.ignore = [
+  "E203",   # Whitespace before ':'
+  "E221",   # Multiple spaces before operator
+  "E226",   # Missing whitespace around arithmetic operator
+  "E241",   # Multiple spaces after ','
+  "E741",   # Ambiguous variable name
+]
+
 [tool.isort]
 profile = "black"
