@@ -144,7 +144,7 @@ class _InvalidValue:
         return not other
 
     def __ne__(self, other):
-        return not (other is self)
+        return other is not self
 
     def __bool__(self):
         return False

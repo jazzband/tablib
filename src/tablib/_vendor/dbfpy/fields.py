@@ -81,14 +81,14 @@ class DbfFieldDef:
         assert self.defaultValue is not None, "Default value must be overridden"
         # fix arguments
         if len(name) > 10:
-            raise ValueError("Field name \"%s\" is too long" % name)
+            raise ValueError(f"Field name \"{name}\" is too long")
         name = str(name).upper()
         if self.__class__.length is None:
             if length is None:
-                raise ValueError("[%s] Length isn't specified" % name)
+                raise ValueError(f"[{name}] Length isn't specified")
             length = int(length)
             if length <= 0:
-                raise ValueError("[%s] Length must be a positive integer" % name)
+                raise ValueError(f"[{name}] Length must be a positive integer")
         else:
             length = self.length
         if decimalCount is None:
@@ -154,7 +154,7 @@ class DbfFieldDef:
         )
 
     def __repr__(self):
-        return "%-10s %1s %3d %3d" % self.fieldInfo()
+        return "%-10s %1s %3d %3d" % self.fieldInfo()  # noqa: UP031
 
     def fieldInfo(self):
         """Return field information.
@@ -250,7 +250,7 @@ class DbfNumericFieldDef(DbfFieldDef):
 
     def encodeValue(self, value):
         """Return string containing encoded ``value``."""
-        _rv = ("%*.*f" % (self.length, self.decimalCount, value))
+        _rv = ("%*.*f" % (self.length, self.decimalCount, value))  # noqa: UP031
         if len(_rv) > self.length:
             _ppos = _rv.find(".")
             if 0 <= _ppos <= self.length:

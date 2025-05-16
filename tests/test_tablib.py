@@ -324,7 +324,7 @@ class TablibTestCase(BaseTestCase):
 
     def test_str_no_columns(self):
         d = tablib.Dataset(['a', 1], ['b', 2], ['c', 3])
-        output = '%s' % d
+        output = f'{d}'
 
         self.assertEqual(output.splitlines(), [
             'a|1',
@@ -426,7 +426,7 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(tablib.detect_format(_tsv), 'tsv')
 
         _bunk = StringIO(
-            '¡¡¡¡¡¡---///\n\n\n' +
+            '¡¡¡¡¡¡---///\n\n\n'
             '¡¡£™∞¢£§∞§¶•¶ª∞¶•ªº••ª–º§•†•§º¶•†¥ª–º•§ƒø¥¨©πƒø†ˆ¥ç©¨√øˆ¥≈†ƒ¥ç©ø¨çˆ¥ƒçø¶'
         )
         self.assertEqual(tablib.detect_format(_bunk), None)
@@ -1590,8 +1590,8 @@ class JSONTests(BaseTestCase):
 
         expected_json = (
             '[{"first_name": "John", "last_name": "Adams", "gpa": 90, '
-            '"address_id": "%s"}, {"first_name": "名字", "last_name": "李", '
-            '"gpa": 60, "address_id": ""}]' % str(address_id)
+            f'"address_id": "{str(address_id)}"}}, {{"first_name": "名字", "last_name": "李", '
+            '"gpa": 60, "address_id": ""}]'
         )
 
         self.assertEqual(founders_json, expected_json)
@@ -1743,8 +1743,9 @@ class DBFTests(BaseTestCase):
             for reg_char, data_char in zip(_dbf, data.dbf):
                 so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
-                    raise AssertionError('Failing at char {}: {} vs {} {}'.format(
-                        index, reg_char, data_char, so_far))
+                    raise AssertionError(
+                        f'Failing at char {index}: {reg_char} vs {data_char} {so_far}'
+                    )
                 index += 1
 
     def test_dbf_export_set(self):
@@ -1786,8 +1787,9 @@ class DBFTests(BaseTestCase):
                 # found_so_far += chr(data_char)
                 if reg_char != data_char and index not in [1, 2, 3]:
                     raise AssertionError(
-                        'Failing at char {}: {} vs {} (found {})'.format(
-                            index, reg_char, data_char, found_so_far))
+                        f'Failing at char {index}: '
+                        f'{reg_char} vs {data_char} (found {found_so_far})'
+                    )
                 index += 1
 
     def test_dbf_format_detect(self):

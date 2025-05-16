@@ -206,7 +206,7 @@ class Dataset:
 
     def __repr__(self):
         try:
-            return '<%s dataset>' % (self.title.lower())
+            return f'<{self.title.lower()} dataset>'
         except AttributeError:
             return '<dataset object>'
 
@@ -227,7 +227,7 @@ class Dataset:
         if self.__headers:
             result.insert(1, ['-' * length for length in field_lens])
 
-        format_string = '|'.join('{%s:%s}' % item for item in enumerate(field_lens))
+        format_string = '|'.join('{{{}:{}}}'.format(*item) for item in enumerate(field_lens))
 
         return '\n'.join(format_string.format(*row) for row in result)
 
@@ -712,7 +712,7 @@ class Dataset:
         _dset = Dataset()
 
         # Add columns as rows in new instance
-        for index in range(0, len(self._data[0])):
+        for index in range(len(self._data[0])):
             row_data = self.get_col(index)
             _dset.append(row=row_data)
 
@@ -850,7 +850,7 @@ class Databook:
 
     def __repr__(self):
         try:
-            return '<%s databook>' % (self.title.lower())
+            return f'<{self.title.lower()} databook>'
         except AttributeError:
             return '<databook object>'
 

@@ -60,5 +60,31 @@ changelog = "https://github.com/jazzband/tablib/blob/master/HISTORY.md"
 [tool.setuptools_scm]
 write_to = "src/tablib/_version.py"
 
-[tool.isort]
-profile = "black"
+[tool.ruff]
+fix = true
+line-length = 99
+
+lint.select = [
+  "C4",     # flake8-comprehensions
+  "E",      # pycodestyle errors
+  "F",      # pyflakes
+  "I",      # isort
+  "ISC",    # flake8-implicit-str-concat
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "RUF022", # unsorted-dunder-all
+  "RUF100", # unused noqa (yesqa)
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
+]
+lint.ignore = [
+  "E203",   # Whitespace before ':'
+  "E221",   # Multiple spaces before operator
+  "E226",   # Missing whitespace around arithmetic operator
+  "E241",   # Multiple spaces after ','
+  "E741",   # Ambiguous variable name
+  "PIE790", # Unnecessary pass statement
+  "UP038",  # Makes code slower and more verbose
+]
+lint.isort.known-first-party = [ "tablib" ]

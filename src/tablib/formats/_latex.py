@@ -39,7 +39,7 @@ class LATEXFormat:
     }
 
     TEX_RESERVED_SYMBOLS_RE = re.compile(
-        '(%s)' % '|'.join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys())))
+        '({})'.format('|'.join(map(re.escape, TEX_RESERVED_SYMBOLS_MAP.keys()))))
 
     @classmethod
     def export_set(cls, dataset):
@@ -49,7 +49,7 @@ class LATEXFormat:
         :type dataset: tablib.core.Dataset
         """
 
-        caption = '\\caption{%s}' % dataset.title if dataset.title else '%'
+        caption = f'\\caption{{{dataset.title}}}' if dataset.title else '%'
         colspec = cls._colspec(dataset.width)
         header = cls._serialize_row(dataset.headers) if dataset.headers else ''
         midrule = cls._midrule(dataset.width)
