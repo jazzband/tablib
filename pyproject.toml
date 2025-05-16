@@ -70,7 +70,10 @@ lint.select = [
   "F",      # pyflakes
   "I",      # isort
   "ISC",    # flake8-implicit-str-concat
+  "RUF022", # unsorted-dunder-all
+  "RUF100", # unused noqa (yesqa)
   "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
 ]
 lint.ignore = [
   "E203",   # Whitespace before ':'
