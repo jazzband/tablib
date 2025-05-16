@@ -233,7 +233,7 @@ class Dbf:
     # 'magic' methods (representation and sequence interface)
 
     def __repr__(self):
-        return "Dbf stream '%s'\n" % self.stream + repr(self.header)
+        return f"Dbf stream '{self.stream}'\n" + repr(self.header)
 
     def __len__(self):
         """Return number of records."""

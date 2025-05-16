@@ -74,6 +74,7 @@ lint.select = [
   "PIE",    # flake8-pie
   "RUF022", # unsorted-dunder-all
   "RUF100", # unused noqa (yesqa)
+  "UP",     # pyupgrade
   "W",      # pycodestyle warnings
   "YTT",    # flake8-2020
 ]
@@ -84,5 +85,6 @@ lint.ignore = [
   "E241",   # Multiple spaces after ','
   "E741",   # Ambiguous variable name
   "PIE790", # Unnecessary pass statement
+  "UP038",  # Makes code slower and more verbose
 ]
 lint.isort.known-first-party = [ "tablib" ]

@@ -147,7 +147,7 @@ class DbfRecord:
     # object representation
 
     def __repr__(self):
-        _template = "%%%ds: %%s (%%s)" % max(len(_fld) for _fld in self.dbf.fieldNames)
+        _template = "%%%ds: %%s (%%s)" % max(len(_fld) for _fld in self.dbf.fieldNames)  # noqa: UP031
         _rv = []
         for _fld in self.dbf.fieldNames:
             _val = self[_fld]
@@ -193,10 +193,11 @@ class DbfRecord:
             if not allowUndefined:
                 raise ValueError("Index is undefined")
         elif self.index < 0:
-            raise ValueError("Index can't be negative (%s)" % self.index)
+            raise ValueError(f"Index can't be negative ({self.index})")
         elif checkRange and self.index <= self.dbf.header.recordCount:
-            raise ValueError("There are only %d records in the DBF" %
-                             self.dbf.header.recordCount)
+            raise ValueError(
+                f"There are only {self.dbf.header.recordCount} records in the DBF"
+            )
 
     # interface methods
 

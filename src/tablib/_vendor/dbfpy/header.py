@@ -169,7 +169,7 @@ Version (signature): 0x%02x
         _rv = _rv % (self.signature, self.lastUpdate, self.headerLength,
                      self.recordLength, self.recordCount)
         _rv += "\n".join(
-            ["%10s %4s %3s %3s" % _fld.fieldInfo() for _fld in self.fields]
+            ["%10s %4s %3s %3s" % _fld.fieldInfo() for _fld in self.fields]  # noqa: UP031
         )
         return _rv
 
