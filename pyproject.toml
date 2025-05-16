@@ -68,6 +68,7 @@ lint.select = [
   "C4",     # flake8-comprehensions
   "E",      # pycodestyle errors
   "F",      # pyflakes
+  "I",      # isort
   "W",      # pycodestyle warnings
 ]
 lint.ignore = [
@@ -77,6 +78,4 @@ lint.ignore = [
   "E241",   # Multiple spaces after ','
   "E741",   # Ambiguous variable name
 ]
-
-[tool.isort]
-profile = "black"
+lint.isort.known-first-party = [ "tablib" ]
