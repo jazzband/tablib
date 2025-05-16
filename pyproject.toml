@@ -65,6 +65,7 @@ fix = true
 line-length = 99
 
 lint.select = [
+  "C4",     # flake8-comprehensions
   "E",      # pycodestyle errors
   "F",      # pyflakes
   "W",      # pycodestyle warnings
