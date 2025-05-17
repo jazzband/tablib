@@ -1875,3 +1875,86 @@ class CliTests(BaseTestCase):
             '+---+---+---+\n| a | b | c |\n+---+---+---+',
             tablib.Dataset(['a', 'b', 'c']).export('cli', tablefmt='grid')
         )
+
+
+class SQLFormatTests(unittest.TestCase):
+    def test_sql_date_and_timestamp_literals(self):
+        # ANSI SQL date and timestamp literals
+        ds = tablib.Dataset(title='tbl')
+        ds.headers = ['col_date', 'col_timestamp']
+        ds.append([
+            dt.date(2020, 1, 2),
+            dt.datetime(2020, 1, 2, 3, 4, 5)
+        ])
+        sql = ds.export('sql')
+        expected = (
+            "INSERT INTO tbl (col_date,col_timestamp) VALUES "
+            "(DATE '2020-01-02', TIMESTAMP '2020-01-02 03:04:05');\n"
+        )
+        self.assertEqual(sql, expected)
+
+    def test_sql_microseconds_and_default_table(self):
+        # Full microsecond precision and default table name 'data'
+        ds = tablib.Dataset()
+        ds.headers = ['ts']
+        ds.append([dt.datetime(2021, 12, 31, 23, 59, 59, 123456)])
+        sql = ds.export('sql')
+        expected = (
+            "INSERT INTO export_table (ts) VALUES "
+            "(TIMESTAMP '2021-12-31 23:59:59.123456');\n"
+        )
+        self.assertEqual(sql, expected)
+
+    def test_sql_regular_literals(self):
+        # Test int, quoted string, decimal, bool, NULL, and multiline string
+        ds = tablib.Dataset(title='t')
+        ds.headers = ['i', 's', 'd', 'b', 'n', 'm', 'ml']
+        ds.append([
+            1,
+            "O'Reilly",
+            Decimal('3.14'),
+            5.1,
+            False,
+            None,
+            'Line1\nLine2'
+        ])
+        sql = ds.export('sql')
+        expected = (
+            "INSERT INTO t (i,s,d,b,n,m,ml) VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');\n"
+        )
+        self.assertEqual(sql, expected)
+
+    def test_sql_no_headers(self):
+        # Test SQL export without headers
+        ds = tablib.Dataset(title='t')
+        ds.append([
+            1,
+            "O'Reilly",
+            Decimal('3.14'),
+            5.1,
+            False,
+            None,
+            'Line1\nLine2'
+        ])
+        sql = ds.export('sql')
+        expected = (
+            "INSERT INTO t VALUES (1, 'O''Reilly', 3.14, 5.1, "
+            "FALSE, NULL, 'Line1\nLine2');\n"
+        )
+        self.assertEqual(sql, expected)
+
+        # Test with default table name
+        ds = tablib.Dataset()
+        ds.append([1, 'test'])
+        sql = ds.export('sql')
+        expected = "INSERT INTO export_table VALUES (1, 'test');\n"
+        self.assertEqual(sql, expected)
+
+        ds = tablib.Dataset()
+        ds.append([1, 'test'])
+        sql = ds.export('sql', table='schema_name.custom_table',
+                        columns=['col1', 'col2'], commit=True)
+        expected = ("INSERT INTO schema_name.custom_table (col1,col2)"
+                    " VALUES (1, 'test');\nCOMMIT;\n")
+        self.assertEqual(sql, expected)
