@@ -17,9 +17,7 @@ class SQLFormat:
             return 'NULL'
         if isinstance(value, bool):
             return 'TRUE' if value else 'FALSE'
-        if isinstance(value, int) and not isinstance(value, bool):
-            return str(value)
-        if isinstance(value, decimal.Decimal):
+        if isinstance(value, (int, decimal.Decimal)):
             return str(value)
         if isinstance(value, float):
             # Represent finite floats; non-finite as NULL
