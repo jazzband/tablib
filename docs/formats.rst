@@ -308,9 +308,9 @@ sql
 
 The ``sql`` format is export-only. It produces SQL INSERT statements (one per row)
 assuming the target table already exists with the same columns.
-The table name can be passed as an argument or will be taken from the dataset's title (or defaults to ``export_table``)
+The table name can be passed as an argument or will be taken from the dataset's title (or defaults to ``export_table``).
 Columns can be passed as an argument or will be taken from the dataset's headers.
-Values are rendered as ANSI SQL literals:
+Values are rendered as ANSI SQL literals.
 Additionally the argument ``commit`` can be passed to add a ``COMMIT;`` statement at the end.
 
 - ``NULL`` for null values
