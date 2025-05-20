@@ -300,3 +300,41 @@ This format is optional, install Tablib with ``pip install "tablib[yaml]"`` to
 make the format available.
 
 .. _YAML: https://yaml.org
+
+sql
+===
+
+.. versionadded:: 3.9.0
+
+The ``sql`` format is export-only. It produces SQL INSERT statements (one per row)
+assuming the target table already exists with the same columns.
+The table name can be passed as an argument or will be taken from the dataset's title (or defaults to ``export_table``).
+Columns can be passed as an argument or will be taken from the dataset's headers.
+Values are rendered as ANSI SQL literals.
+Additionally the argument ``commit`` can be passed to add a ``COMMIT;`` statement at the end.
+
+- ``NULL`` for null values
+- ``TRUE``/``FALSE`` for booleans
+- ``DATE 'YYYY-MM-DD'`` for date values
+- ``TIMESTAMP 'YYYY-MM-DD HH:MM:SS'`` for timestamp values
+- Numeric literals for ints/floats/decimals
+- Single-quoted strings with embedded quotes escaped
+
+Example::
+
+    import datetime
+    from tablib import Dataset
+
+    data = Dataset(title='users')
+    data.headers = ['id', 'name', 'joined']
+    data.append([1, 'Alice', datetime.date(2021,1,1)])
+
+    print(data.export('sql'))
+    print(data.export('sql', table='\"User_Updates\"', columns=['id', 'username', 'update_date'], commit=True))
+
+Output::
+
+    INSERT INTO users (id,name,joined) VALUES (1, 'Alice', DATE '2021-01-01');
+
+    INSERT INTO "User_Updates" (id,username,update_date) VALUES (1, 'Alice', DATE '2021-01-01');
+    COMMIT;
