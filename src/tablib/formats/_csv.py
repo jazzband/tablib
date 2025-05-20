@@ -55,7 +55,7 @@ class CSVFormat:
     def detect(cls, stream, delimiter=None):
         """Returns True if given stream is valid CSV."""
         try:
-            csv.Sniffer().sniff(stream.read(2048), delimiters=delimiter or cls.DEFAULT_DELIMITER)
+            csv.Sniffer().sniff(stream.readline(), delimiters=delimiter or cls.DEFAULT_DELIMITER)
             return True
         except Exception:
             return False
