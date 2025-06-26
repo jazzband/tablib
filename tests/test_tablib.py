@@ -1369,6 +1369,26 @@ class XLSXTests(BaseTestCase):
         width_after = _get_width(data, width_before)
         return width_before, width_after
 
+    def _book_helper_export_column_width(self, column_width):
+        """check that column width adapts to value length"""
+
+        def _get_width(data, input_arg):
+            xlsx_content = data.export("xlsx", column_width=input_arg)
+            wb = load_workbook(filename=BytesIO(xlsx_content))
+            ws = wb.active
+            return ws.column_dimensions["A"].width
+
+        xls_source = Path(__file__).parent / "files" / "xlsx_cell_values.xlsx"
+        with xls_source.open("rb") as fh:
+            data = tablib.Databook().load(fh, format='xlsx')
+        width_before = _get_width(data, column_width)
+        data.sheets()[0].append([
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+        ])
+        width_after = _get_width(data, width_before)
+        return width_before, width_after
+
     def test_xlsx_format_detect(self):
         """Test the XLSX format detection."""
         in_stream = self.founders.xlsx
@@ -1535,6 +1555,29 @@ class XLSXTests(BaseTestCase):
         """Raise ValueError if column_width is not a valid input"""
         with self.assertRaises(ValueError):
             self._helper_export_column_width("invalid input")
+
+    def test_xlsx_book_column_width_adaptive(self):
+        """Test that column width adapts to value length from a databook"""
+        width_before, width_after = self._book_helper_export_column_width("adaptive")
+        self.assertEqual(width_before, 11)
+        self.assertEqual(width_after, 11)
+
+    def test_xlsx_book_column_width_integer(self):
+        """Test that column width changes to integer length from a databook"""
+        width_before, width_after = self._book_helper_export_column_width(10)
+        self.assertEqual(width_before, 10)
+        self.assertEqual(width_after, 10)
+
+    def test_xlsx_book_column_width_none(self):
+        """Test that column width does not change from a databook"""
+        width_before, width_after = self._book_helper_export_column_width(None)
+        self.assertEqual(width_before, 13)
+        self.assertEqual(width_after, 13)
+
+    def test_xlsx_book_column_width_value_error(self):
+        """Raise ValueError if column_width is not a valid input for a databook"""
+        with self.assertRaises(ValueError):
+            self._book_helper_export_column_width("invalid input")
 
 
 class JSONTests(BaseTestCase):
