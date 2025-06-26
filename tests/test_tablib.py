@@ -1350,43 +1350,39 @@ class XLSTests(BaseTestCase):
 
 
 class XLSXTests(BaseTestCase):
-    def _helper_export_column_width(self, column_width):
-        """check that column width adapts to value length"""
-        def _get_width(data, input_arg):
-            xlsx_content = data.export('xlsx', column_width=input_arg)
-            wb = load_workbook(filename=BytesIO(xlsx_content))
-            ws = wb.active
-            return ws.column_dimensions['A'].width
+    def _get_width(self, data, input_arg):
+        xlsx_content = data.export('xlsx', column_width=input_arg)
+        wb = load_workbook(filename=BytesIO(xlsx_content))
+        ws = wb.active
+        return ws.column_dimensions['A'].width
 
+    def _xlsx_cell_values_data(self, cls):
         xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
         with xls_source.open('rb') as fh:
-            data = tablib.Dataset().load(fh)
-        width_before = _get_width(data, column_width)
+            return cls().load(fh, format='xlsx')
+
+    def _helper_export_column_width(self, column_width):
+        """check that column width adapts to value length"""
+
+        data = self._xlsx_cell_values_data(cls=tablib.Dataset)
+        width_before = self._get_width(data, column_width)
         data.append([
             'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
             'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
         ])
-        width_after = _get_width(data, width_before)
+        width_after = self._get_width(data, width_before)
         return width_before, width_after
 
     def _book_helper_export_column_width(self, column_width):
         """check that column width adapts to value length"""
 
-        def _get_width(data, input_arg):
-            xlsx_content = data.export("xlsx", column_width=input_arg)
-            wb = load_workbook(filename=BytesIO(xlsx_content))
-            ws = wb.active
-            return ws.column_dimensions["A"].width
-
-        xls_source = Path(__file__).parent / "files" / "xlsx_cell_values.xlsx"
-        with xls_source.open("rb") as fh:
-            data = tablib.Databook().load(fh, format='xlsx')
-        width_before = _get_width(data, column_width)
+        data = self._xlsx_cell_values_data(cls=tablib.Databook)
+        width_before = self._get_width(data, column_width)
         data.sheets()[0].append([
             'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
             'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
         ])
-        width_after = _get_width(data, width_before)
+        width_after = self._get_width(data, width_before)
         return width_before, width_after
 
     def test_xlsx_format_detect(self):
