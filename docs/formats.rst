@@ -259,6 +259,13 @@ For example::
     data = tablib.Dataset()
     data.export('xlsx', column_width='adaptive')
 
+This works with ``Databook`` as well::
+
+    data = tablib.Databook()
+    data.export('xlsx', column_width='adaptive')
+
+The adaptive width will be calculated for each sheet in the databook.
+
 .. versionchanged:: 3.8.0
     The ``column_width`` parameter for ``export_set()`` was added.
 
