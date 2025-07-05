@@ -72,7 +72,8 @@ class XLSXFormat:
         return stream.getvalue()
 
     @classmethod
-    def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-", escape=False):
+    def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-",
+                    escape=False, column_width=None):
         """Returns XLSX representation of DataBook.
         See export_set().
         """
@@ -88,6 +89,8 @@ class XLSXFormat:
             )
 
             cls.dset_sheet(dset, ws, freeze_panes=freeze_panes, escape=escape)
+
+            cls._adapt_column_width(ws, column_width)
 
         stream = BytesIO()
         wb.save(stream)
