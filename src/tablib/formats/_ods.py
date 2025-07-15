@@ -127,7 +127,7 @@ class ODSFormat:
             if not row_vals:
                 continue
             if i == skip_lines and headers:
-                dset.headers = row_vals
+                dset.headers = limit_row(row_vals)
             else:
                 if i > skip_lines:
                     if len(row_vals) < dset.width:
@@ -255,3 +255,18 @@ class ODSFormat:
             return True
         except Exception:
             return False
+
+
+def limit_row(headers, limit=5):
+    """Limits the number of trailing empty row values"""
+    limited = []
+    count = 0
+
+    for v in headers:
+        limited += [v]
+        count = count + 1 if v == "" else 0
+
+        if count == limit:
+            break
+
+    return limited
