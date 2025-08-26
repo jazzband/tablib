@@ -1348,6 +1348,24 @@ class XLSTests(BaseTestCase):
         self.assertEqual('h:mm:ss', get_format_str(row[1]))
         self.assertEqual('m/d/yy h:mm', get_format_str(row[2]))
 
+    def test_xls_bad_chars_sheet_name(self):
+        """
+        Sheet names are limited to 30 chars and the following chars
+        are not permitted: \\ / * ? : [ ]
+        """
+        _dataset = tablib.Dataset(
+            title='bad name \\/*?:[]qwertyuiopasdfghjklzxcvbnm'
+        )
+        _xls = _dataset.export('xls')
+        new_data = tablib.Dataset().load(_xls)
+        self.assertEqual(new_data.title, 'bad name -------qwertyuiopasdfg')
+
+        _book = tablib.Databook()
+        _book.add_sheet(_dataset)
+        _xls = _book.export('xls')
+        new_data = tablib.Databook().load(_xls, 'xls')
+        self.assertEqual(new_data.sheets()[0].title, 'bad name -------qwertyuiopasdfg')
+
 
 class XLSXTests(BaseTestCase):
     def _get_width(self, data, input_arg):
