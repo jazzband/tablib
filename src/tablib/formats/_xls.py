@@ -1,6 +1,7 @@
 """ Tablib - XLS Support.
 """
 import datetime
+import re
 from io import BytesIO
 
 import xlrd
@@ -15,6 +16,12 @@ bold = xlwt.easyxf("font: bold on")
 datetime_style = xlwt.easyxf(num_format_str='M/D/YY h:mm')
 date_style = xlwt.easyxf(num_format_str='M/D/YY')
 time_style = xlwt.easyxf(num_format_str='h:mm:ss')
+
+INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
+
+
+def safe_xls_sheet_title(s, replace="-"):
+    return re.sub(INVALID_TITLE_REGEX, replace, s)[:31]
 
 
 class XLSFormat:
@@ -41,11 +48,22 @@ class XLSFormat:
             return False
 
     @classmethod
-    def export_set(cls, dataset):
-        """Returns XLS representation of Dataset."""
+    def export_set(cls, dataset, invalid_char_subst="-"):
+        """Returns XLS representation of Dataset.
+
+        If ``dataset.title`` contains characters which are
+        considered invalid for an XLSX/XLS file sheet name
+        (https://web.archive.org/web/20230323081941/https://www.excelcodex.com/2012/06/worksheets-naming-conventions/),
+        they will be replaced with ``invalid_char_subst``.
+
+        """
 
         wb = xlwt.Workbook(encoding='utf8')
-        ws = wb.add_sheet(dataset.title if dataset.title else 'Tablib Dataset')
+        ws = wb.add_sheet(
+            safe_xls_sheet_title(dataset.title, invalid_char_subst)
+            if dataset.title
+            else 'Tablib Dataset'
+        )
 
         cls.dset_sheet(dataset, ws)
 
@@ -54,13 +72,16 @@ class XLSFormat:
         return stream.getvalue()
 
     @classmethod
-    def export_book(cls, databook):
+    def export_book(cls, databook, invalid_char_subst="-"):
         """Returns XLS representation of DataBook."""
 
         wb = xlwt.Workbook(encoding='utf8')
 
         for i, dset in enumerate(databook._datasets):
-            ws = wb.add_sheet(dset.title if dset.title else f"Sheet{i}")
+            ws = wb.add_sheet(safe_xls_sheet_title(
+                dset.title, invalid_char_subst)
+                if dset.title else f"Sheet{i}"
+            )
 
             cls.dset_sheet(dset, ws)
 
