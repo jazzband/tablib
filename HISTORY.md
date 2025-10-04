@@ -1,5 +1,11 @@
 # History
 
+## 3.9.0 (unreleased)
+
+### Improvements
+
+- Drop support for EOL Python 3.9 (#628)
+
 ## 3.8.0 (2025-01-22)
 
 ### Improvements
