@@ -1,5 +1,11 @@
 # History
 
+## 3.9.0 and newer
+
+See GitHub Releases:
+
+- https://github.com/jazzband/tablib/releases
+
 ## 3.8.0 (2025-01-22)
 
 ### Improvements

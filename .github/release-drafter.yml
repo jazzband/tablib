@@ -1,0 +1,48 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "Added"
+    labels:
+      - "changelog: Added"
+      - "enhancement"
+  - title: "Changed"
+    label: "changelog: Changed"
+  - title: "Deprecated"
+    label: "changelog: Deprecated"
+  - title: "Removed"
+    label: "changelog: Removed"
+  - title: "Fixed"
+    labels:
+      - "changelog: Fixed"
+      - "bug"
+  - title: "Security"
+    label: "changelog: Security"
+
+exclude-labels:
+  - "changelog: skip"
+
+autolabeler:
+  - label: "changelog: skip"
+    branch:
+      - "/pre-commit-ci-update-config/"
+
+template: |
+  $CHANGES
+
+version-resolver:
+  major:
+    labels:
+      - "changelog: Removed"
+  minor:
+    labels:
+      - "changelog: Added"
+      - "changelog: Changed"
+      - "changelog: Deprecated"
+      - "enhancement"
+
+  patch:
+    labels:
+      - "changelog: Fixed"
+      - "bug"
+  default: minor
