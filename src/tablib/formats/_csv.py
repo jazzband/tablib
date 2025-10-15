@@ -1,7 +1,6 @@
 """ Tablib - *SV Support.
 """
 
-import csv
 from io import StringIO
 
 
@@ -14,6 +13,8 @@ class CSVFormat:
     @classmethod
     def export_stream_set(cls, dataset, **kwargs):
         """Returns CSV representation of Dataset as file-like."""
+        import csv
+
         stream = StringIO()
 
         kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
@@ -35,6 +36,7 @@ class CSVFormat:
     @classmethod
     def import_set(cls, dset, in_stream, headers=True, skip_lines=0, **kwargs):
         """Returns dataset from CSV stream."""
+        import csv
 
         dset.wipe()
 
@@ -54,6 +56,8 @@ class CSVFormat:
     @classmethod
     def detect(cls, stream, delimiter=None):
         """Returns True if given stream is valid CSV."""
+        import csv
+
         try:
             csv.Sniffer().sniff(stream.read(2048), delimiters=delimiter or cls.DEFAULT_DELIMITER)
             return True
