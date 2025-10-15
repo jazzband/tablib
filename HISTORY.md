@@ -1,16 +1,10 @@
 # History
 
-## 3.10.0 (unreleased)
+## 3.9.0 and newer
 
-### Improvements
+See GitHub Releases:
 
-- Drop support for EOL Python 3.9 (#628)
-
-## 3.9.0 (unreleased)
-
-### Improvements
-
-- TODO
+- https://github.com/jazzband/tablib/releases
 
 ## 3.8.0 (2025-01-22)
 
