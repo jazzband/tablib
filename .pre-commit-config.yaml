@@ -9,6 +9,7 @@ repos:
     rev: 0.4.3
     hooks:
       -   id: teyit
+          language_version: python3.13 # Pending https://github.com/isidentical/teyit/issues/23
 
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
