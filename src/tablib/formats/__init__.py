@@ -9,6 +9,7 @@ from ..utils import normalize_input
 from ._csv import CSVFormat
 from ._json import JSONFormat
 from ._tsv import TSVFormat
+from ._txt import TextFormat
 
 uninstalled_format_messages = {
     "cli": {"package_name": "tabulate package", "extras_name": "cli"},
@@ -95,6 +96,7 @@ class Registry:
             self.register('yaml', 'tablib.formats._yaml.YAMLFormat')
         self.register('csv', CSVFormat())
         self.register('tsv', TSVFormat())
+        self.register('text', TextFormat())
         if find_spec('odf'):
             self.register('ods', 'tablib.formats._ods.ODSFormat')
         self.register('dbf', 'tablib.formats._dbf.DBFFormat')
