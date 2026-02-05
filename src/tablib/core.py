@@ -804,6 +804,33 @@ class Dataset:
     def subset(self, rows=None, cols=None):
         """Returns a new instance of the :class:`Dataset`,
         including only specified rows and columns.
+
+        Note: Headers must be set on the Dataset for this method to work properly.
+
+        :param rows: (optional) A list of row indices to include. If None, all rows are included.
+                     Example: [0, 2, 4] includes rows at indices 0, 2, and 4.
+        :param cols: (optional) A list of column headers to include. If None, all columns are included.
+                     Example: ['Name', 'Age'] includes only the 'Name' and 'Age' columns.
+
+        :returns: A new :class:`Dataset` containing only the specified rows and columns.
+
+        :raises KeyError: If a specified column header is not found in the Dataset.
+
+        Usage example::
+
+            import tablib
+
+            data = tablib.Dataset()
+            data.headers = ['Name', 'Age', 'City']
+            data.append(['Alice', 25, 'New York'])
+            data.append(['Bob', 30, 'Los Angeles'])
+            data.append(['Charlie', 35, 'Chicago'])
+
+            # Get subset with specific rows and columns
+            subset = data.subset(rows=[0, 2], cols=['Name', 'City'])
+            print(subset.headers)  # ['Name', 'City']
+            print(subset[0])       # ['Alice', 'New York']
+            print(subset[1])       # ['Charlie', 'Chicago']
         """
 
         # Don't return if no data
