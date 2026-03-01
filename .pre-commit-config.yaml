@@ -29,6 +29,11 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
 
+  - repo: https://github.com/Open-Paws/no-animal-violence-pre-commit
+    rev: HEAD
+    hooks:
+      - id: speciesist-language
+
   - repo: meta
     hooks:
       - id: check-hooks-apply
