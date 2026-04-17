@@ -1112,12 +1112,37 @@ class CSVTests(BaseTestCase):
         _csv = data.export('csv', **kwargs)
         self.assertEqual(expected, _csv)
 
-        # the import works but consider default delimiter=','
+        # Auto-detection picks up the ';' delimiter, so all three headers are found.
         d1 = tablib.import_set(_csv, format="csv")
-        self.assertEqual(1, len(d1.headers))
+        self.assertEqual(3, len(d1.headers))
 
         d2 = tablib.import_set(_csv, format="csv", **kwargs)
         self.assertEqual(3, len(d2.headers))
+
+    def test_csv_import_set_auto_detect_delimiter(self):
+        """CSV import auto-detects non-comma delimiters via Sniffer. Regression for #622."""
+        from io import StringIO
+
+        # Colon-delimited (the exact case from issue #622)
+        colon_csv = StringIO('header1:header2\nvalue1:value2\n')
+        dataset = tablib.Dataset().load(colon_csv, format='csv')
+        self.assertEqual(dataset.headers, ['header1', 'header2'])
+        self.assertEqual(dataset[0], ('value1', 'value2'))
+
+        # Pipe-delimited
+        pipe_csv = 'Name|Age|City\nAlice|30|NYC\nBob|25|LA\n'
+        dataset2 = tablib.import_set(pipe_csv, format='csv')
+        self.assertEqual(dataset2.headers, ['Name', 'Age', 'City'])
+        self.assertEqual(dataset2[0], ('Alice', '30', 'NYC'))
+
+    def test_csv_detect_non_comma_delimiter(self):
+        """CSV format detection works for non-comma delimiters. Regression for #622."""
+        from io import StringIO
+
+        fmt = registry.get_format('csv')
+        self.assertTrue(fmt.detect(StringIO('a:b:c\n1:2:3\n')))
+        self.assertTrue(fmt.detect(StringIO('Name|Age|City\nAlice|30|NYC\n')))
+        self.assertTrue(fmt.detect(StringIO('a;b;c\n1;2;3\n')))
 
 
 class TSVTests(BaseTestCase):
