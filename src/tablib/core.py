@@ -338,7 +338,7 @@ class Dataset:
         """
         error_details = (
             "Please check format documentation "
-            "https://tablib.readthedocs.io/en/stable/formats.html#yaml"
+            "https://tablib.readthedocs.io/en/stable/formats.html"
         )
 
         if not pickle:
