@@ -3,6 +3,7 @@
 
 import csv
 from io import StringIO
+from typing import Any, Optional, TextIO
 
 
 class CSVFormat:
@@ -12,7 +13,7 @@ class CSVFormat:
     DEFAULT_DELIMITER = ','
 
     @classmethod
-    def export_stream_set(cls, dataset, **kwargs):
+    def export_stream_set(cls, dataset: Any, **kwargs: Any) -> StringIO:
         """Returns CSV representation of Dataset as file-like."""
         stream = StringIO()
 
@@ -27,13 +28,13 @@ class CSVFormat:
         return stream
 
     @classmethod
-    def export_set(cls, dataset, **kwargs):
+    def export_set(cls, dataset: Any, **kwargs: Any) -> str:
         """Returns CSV representation of Dataset."""
         stream = cls.export_stream_set(dataset, **kwargs)
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, skip_lines=0, **kwargs):
+    def import_set(cls, dset: Any, in_stream: TextIO, headers: bool = True, skip_lines: int = 0, **kwargs: Any) -> None:
         """Returns dataset from CSV stream."""
 
         dset.wipe()
@@ -52,10 +53,11 @@ class CSVFormat:
                 dset.append(row)
 
     @classmethod
-    def detect(cls, stream, delimiter=None):
+    def detect(cls, stream: TextIO, delimiter: Optional[str] = None) -> bool:
         """Returns True if given stream is valid CSV."""
         try:
             csv.Sniffer().sniff(stream.read(2048), delimiters=delimiter or cls.DEFAULT_DELIMITER)
             return True
         except Exception:
             return False
+
