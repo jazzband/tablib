@@ -1772,6 +1772,11 @@ class LatexTests(BaseTestCase):
         self.assertIn('foo', output)
         self.assertNotIn('None', output)
 
+    def test_latex_export_falsy_values(self):
+        # 0 and False are real values and must be rendered, not dropped.
+        output = tablib.Dataset([0, False, 90]).latex
+        self.assertIn('0 & False & 90', output)
+
     def test_latex_escaping(self):
         d = tablib.Dataset(['~', '^'])
         output = d.latex
@@ -1901,6 +1906,10 @@ class JiraTests(BaseTestCase):
 
     def test_jira_export_none_and_empty_values(self):
         self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
+
+    def test_jira_export_falsy_values(self):
+        # 0 and False are real values, not empty cells.
+        self.assertEqual('|0|False|c|', tablib.Dataset([0, False, 'c']).jira)
 
     def test_jira_export_empty_dataset(self):
         self.assertIsNotNone(tablib.Dataset().jira)

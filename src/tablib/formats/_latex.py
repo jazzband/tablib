@@ -117,7 +117,7 @@ class LATEXFormat:
         :param row: single dataset row
         """
 
-        new_row = [cls._escape_tex_reserved_symbols(str(item)) if item else ''
+        new_row = [cls._escape_tex_reserved_symbols(str(item)) if item not in (None, '') else ''
                    for item in row]
         return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
 
