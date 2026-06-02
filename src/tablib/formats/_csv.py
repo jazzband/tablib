@@ -3,7 +3,7 @@
 
 import csv
 from io import StringIO
-from typing import Any, Optional, TextIO
+from typing import Any, TextIO
 
 
 class CSVFormat:
@@ -34,7 +34,9 @@ class CSVFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset: Any, in_stream: TextIO, headers: bool = True, skip_lines: int = 0, **kwargs: Any) -> None:
+    def import_set(
+        cls, dset: Any, in_stream: TextIO, headers: bool = True, skip_lines: int = 0, **kwargs: Any
+    ) -> None:
         """Returns dataset from CSV stream."""
 
         dset.wipe()
@@ -53,7 +55,7 @@ class CSVFormat:
                 dset.append(row)
 
     @classmethod
-    def detect(cls, stream: TextIO, delimiter: Optional[str] = None) -> bool:
+    def detect(cls, stream: TextIO, delimiter: str | None = None) -> bool:
         """Returns True if given stream is valid CSV."""
         try:
             csv.Sniffer().sniff(stream.read(2048), delimiters=delimiter or cls.DEFAULT_DELIMITER)
