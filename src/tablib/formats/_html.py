@@ -47,7 +47,9 @@ class HTMLFormat:
         result = ''
         for i, dset in enumerate(databook._datasets):
             title = dset.title if dset.title else f'Set {i}'
-            result += f'<{cls.BOOK_ENDINGS}>{title}</{cls.BOOK_ENDINGS}>\n'
+            title_el = ET.Element(cls.BOOK_ENDINGS)
+            title_el.text = title
+            result += ET.tostring(title_el, method='html', encoding='unicode') + '\n'
             result += dset.html
             result += '\n'
 

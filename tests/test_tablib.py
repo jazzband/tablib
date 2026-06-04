@@ -802,6 +802,21 @@ class HTMLTests(BaseTestCase):
             f"<h3>Founders</h3>{self.founders_html}<h3>Founders</h3>{self.founders_html}"
         )
 
+    def test_html_databook_export_escaped(self):
+        book = tablib.Databook()
+        dset_with_markup = tablib.Dataset(
+            ["<script>BOOM</script>"],
+            headers=["<b>a</b>"],
+            title='<script>BOOM</script>Founders'
+        )
+        book.add_sheet(dset_with_markup)
+        self.assertEqual(
+            book.html,
+            "<h3>&lt;script&gt;BOOM&lt;/script&gt;Founders</h3>\n"
+            "<table><thead><tr><th>&lt;b&gt;a&lt;/b&gt;</th></tr></thead>"
+            "<tbody><tr><td>&lt;script&gt;BOOM&lt;/script&gt;</td></tr></tbody></table>\n"
+        )
+
     def test_html_import(self):
         data.html = self.founders_html
 
