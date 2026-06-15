@@ -14,14 +14,20 @@ class YAMLFormat:
     def export_set(cls, dataset):
         """Returns YAML representation of Dataset."""
         return yaml.safe_dump(
-            dataset._package(), default_flow_style=None, allow_unicode=True
+            dataset._package(),
+            default_flow_style=None,
+            allow_unicode=True,
+            sort_keys=False,
         )
 
     @classmethod
     def export_book(cls, databook):
         """Returns YAML representation of Databook."""
         return yaml.safe_dump(
-            databook._package(), default_flow_style=None, allow_unicode=True
+            databook._package(),
+            default_flow_style=None,
+            allow_unicode=True,
+            sort_keys=False,
         )
 
     @classmethod
