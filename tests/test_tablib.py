@@ -1709,13 +1709,21 @@ class YAMLTests(BaseTestCase):
 
         self.founders.append(('名字', '李', 60))
         expected = """\
-- {first_name: John, gpa: 90, last_name: Adams}
-- {first_name: George, gpa: 67, last_name: Washington}
-- {first_name: Thomas, gpa: 50, last_name: Jefferson}
-- {first_name: 名字, gpa: 60, last_name: 李}
+- {first_name: John, last_name: Adams, gpa: 90}
+- {first_name: George, last_name: Washington, gpa: 67}
+- {first_name: Thomas, last_name: Jefferson, gpa: 50}
+- {first_name: 名字, last_name: 李, gpa: 60}
 """
         output = self.founders.yaml
         self.assertEqual(output, expected)
+
+    def test_yaml_export_preserves_column_order(self):
+        """YAML export must keep the dataset's column order instead of sorting the keys
+        alphabetically."""
+        data = tablib.Dataset()
+        data.headers = ('name', 'id', 'zebra', 'apple')
+        data.append(('x', 1, 'z', 'a'))
+        self.assertEqual(data.yaml.strip(), '- {name: x, id: 1, zebra: z, apple: a}')
 
     def test_yaml_load(self):
         """ test issue 524: invalid format  """
