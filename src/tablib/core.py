@@ -8,6 +8,13 @@
     :license: MIT, see LICENSE for more details.
 """
 
+__lazy_modules__ = {
+    "copy",
+    "operator",
+    "tablib.exceptions",
+    "tablib.utils",
+}
+
 from copy import copy
 from operator import itemgetter
 

@@ -1,6 +1,8 @@
 """ Tablib - ODF Support.
 """
 
+__lazy_modules__ = {"datetime", "io", "numbers"}
+
 import datetime as dt
 import numbers
 from io import BytesIO

@@ -1,5 +1,8 @@
 """ Tablib - HTML export support.
 """
+
+__lazy_modules__ = {"xml", "xml.etree"}
+
 from html.parser import HTMLParser
 from xml.etree import ElementTree as ET
 

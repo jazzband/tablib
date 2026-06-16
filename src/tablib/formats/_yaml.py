@@ -1,6 +1,8 @@
 """ Tablib - YAML Support.
 """
 
+__lazy_modules__ = {"yaml"}
+
 import yaml
 
 import tablib

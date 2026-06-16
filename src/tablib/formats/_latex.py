@@ -2,6 +2,9 @@
 
    Generates a LaTeX booktabs-style table from the dataset.
 """
+
+__lazy_modules__ = {"re"}
+
 import re
 
 
