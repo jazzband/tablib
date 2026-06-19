@@ -1,5 +1,13 @@
 """ Tablib - DBF Support.
 """
+
+__lazy_modules__ = {
+    "io",
+    "os",
+    "tablib._vendor",
+    "tempfile",
+}
+
 import io
 import os
 import tempfile

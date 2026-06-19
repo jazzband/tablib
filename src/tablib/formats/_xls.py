@@ -1,5 +1,8 @@
 """ Tablib - XLS Support.
 """
+
+__lazy_modules__ = {"datetime", "io", "xlrd", "xlrd.xldate"}
+
 import datetime
 import re
 from io import BytesIO

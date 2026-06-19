@@ -3,6 +3,9 @@
    Generates a representation for CLI from the dataset.
    Wrapper for tabulate library.
 """
+
+__lazy_modules__ = {"tabulate"}
+
 from tabulate import tabulate as Tabulate
 
 

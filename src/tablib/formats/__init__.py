@@ -1,5 +1,17 @@
 """ Tablib - formats
 """
+
+__lazy_modules__ = {
+    "functools",
+    "importlib",
+    "importlib.util",
+    "tablib.exceptions",
+    "tablib.formats._csv",
+    "tablib.formats._json",
+    "tablib.formats._tsv",
+    "tablib.utils",
+}
+
 from functools import partialmethod
 from importlib import import_module
 from importlib.util import find_spec

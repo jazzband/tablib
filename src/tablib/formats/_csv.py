@@ -1,6 +1,8 @@
 """ Tablib - *SV Support.
 """
 
+__lazy_modules__ = {"csv", "io"}
+
 import csv
 from io import StringIO
 

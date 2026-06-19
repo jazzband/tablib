@@ -1,6 +1,8 @@
 """ Tablib - reStructuredText Support
 """
 
+__lazy_modules__ = {"itertools", "statistics", "textwrap"}
+
 from itertools import zip_longest
 from statistics import median
 from textwrap import TextWrapper
