@@ -176,6 +176,8 @@ class Dataset:
 
     def __getitem__(self, key):
         if isinstance(key, str):
+            if self.headers is None:
+                raise HeadersNeeded()
             if key in self.headers:
                 pos = self.headers.index(key)  # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -194,6 +196,8 @@ class Dataset:
 
     def __delitem__(self, key):
         if isinstance(key, str):
+            if self.headers is None:
+                raise HeadersNeeded()
 
             if key in self.headers:
 
