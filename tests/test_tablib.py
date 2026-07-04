@@ -1348,6 +1348,20 @@ class XLSTests(BaseTestCase):
         self.assertEqual('h:mm:ss', get_format_str(row[1]))
         self.assertEqual('m/d/yy h:mm', get_format_str(row[2]))
 
+    def test_xls_large_int_kept_precise(self):
+        big = 568883383628111872
+        data.append([big])
+        data.headers = ['id']
+        book = xlrd.open_workbook(file_contents=data.xls)
+        self.assertEqual(str(big), book.sheet_by_index(0).cell_value(1, 0))
+
+    def test_xlsx_large_int_kept_precise(self):
+        big = 568883383628111872
+        data.append([big])
+        data.headers = ['id']
+        book = load_workbook(BytesIO(data.xlsx))
+        self.assertEqual(str(big), book.active['A2'].value)
+
     def test_xls_bad_chars_sheet_name(self):
         """
         Sheet names are limited to 30 chars and the following chars
