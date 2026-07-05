@@ -789,11 +789,18 @@ class Dataset:
 
         _dset = Dataset()
 
-        for column in self.headers:
-            _dset.append_col(col=self[column])
+        if self.headers:
+            for column in self.headers:
+                _dset.append_col(col=self[column])
 
-        for column in other.headers:
-            _dset.append_col(col=other[column])
+            for column in other.headers:
+                _dset.append_col(col=other[column])
+        else:
+            for index in range(self.width):
+                _dset.append_col(col=self.get_col(index))
+
+            for index in range(other.width):
+                _dset.append_col(col=other.get_col(index))
 
         _dset.headers = new_headers
 
