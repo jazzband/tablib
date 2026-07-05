@@ -523,6 +523,23 @@ class TablibTestCase(BaseTestCase):
         with self.assertRaises(TypeError):
             self.founders.stack_cols('not a dataset')
 
+    def test_column_stacking_headerless(self):
+        """Column stacking two datasets that both have no headers."""
+
+        left = tablib.Dataset()
+        left.append(("x", "y"))
+        left.append(("p", "q"))
+
+        right = tablib.Dataset()
+        right.append(("1", "2", "3"))
+        right.append(("4", "5", "6"))
+
+        column_stacked = left.stack_cols(right)
+
+        self.assertIsNone(column_stacked.headers)
+        self.assertEqual(column_stacked[0], ("x", "y", "1", "2", "3"))
+        self.assertEqual(column_stacked[1], ("p", "q", "4", "5", "6"))
+
     def test_sorting(self):
         """Sort columns."""
 
