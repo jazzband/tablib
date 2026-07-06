@@ -322,6 +322,20 @@ class TablibTestCase(BaseTestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
+    def test_getitem_str_key_no_headers_raises(self):
+        """Verify that accessing by column name on a headerless Dataset raises HeadersNeeded."""
+        d = tablib.Dataset()
+        d.append([1, 2, 3])
+        with self.assertRaises(tablib.core.HeadersNeeded):
+            _ = d['col']
+
+    def test_delitem_str_key_no_headers_raises(self):
+        """Verify that deleting by column name on a headerless Dataset raises HeadersNeeded."""
+        d = tablib.Dataset()
+        d.append([1, 2, 3])
+        with self.assertRaises(tablib.core.HeadersNeeded):
+            del d['col']
+
     def test_str_no_columns(self):
         d = tablib.Dataset(['a', 1], ['b', 2], ['c', 3])
         output = f'{d}'
