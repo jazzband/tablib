@@ -4,6 +4,8 @@
 """
 import re
 
+from tablib.utils import is_empty_cell
+
 
 class LATEXFormat:
     title = 'latex'
@@ -117,20 +119,10 @@ class LATEXFormat:
         :param row: single dataset row
         """
 
-        new_row = ['' if cls._is_empty_value(item)
+        new_row = ['' if is_empty_cell(item)
                    else cls._escape_tex_reserved_symbols(str(item))
                    for item in row]
         return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
-
-    @classmethod
-    def _is_empty_value(cls, item):
-        if item is None:
-            return True
-        if isinstance(item, (str, bytes, bytearray)):
-            return len(item) == 0
-        if isinstance(item, (list, tuple, dict, set, frozenset)):
-            return len(item) == 0
-        return False
 
     @classmethod
     def _escape_tex_reserved_symbols(cls, string):
