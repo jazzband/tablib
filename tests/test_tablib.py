@@ -19,7 +19,7 @@ from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
-from tablib.exceptions import UnsupportedFormat
+from tablib.exceptions import InvalidDatasetIndex, UnsupportedFormat
 from tablib.formats import registry
 
 try:
@@ -602,6 +602,11 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(self.founders.dict, expected)
         # Test once more as the result should be the same
         self.assertEqual(self.founders.dict, expected)
+
+    def test_formatter_invalid_column_index(self):
+        """Registering a formatter on an out-of-range index is rejected."""
+        with self.assertRaises(InvalidDatasetIndex):
+            self.founders.add_formatter(self.founders.width, str)
 
     def test_formatters_all_cols(self):
         """
