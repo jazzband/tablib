@@ -750,7 +750,7 @@ class Dataset:
         ``Dataset`` instance."""
 
         if not isinstance(other, Dataset):
-            return
+            raise TypeError("'other' must be a Dataset instance")
 
         if self.width != other.width:
             raise InvalidDimensions
@@ -773,7 +773,7 @@ class Dataset:
         has headers set, than the other must as well."""
 
         if not isinstance(other, Dataset):
-            return
+            raise TypeError("'other' must be a Dataset instance")
 
         if self.headers or other.headers:
             if not self.headers or not other.headers:

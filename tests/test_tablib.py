@@ -516,6 +516,13 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(column_stacked[0],
                          ("John", "Adams", 90, "John", "Adams", 90))
 
+    def test_stack_rejects_non_dataset(self):
+        """stack() and stack_cols() raise TypeError for non-Dataset input."""
+        with self.assertRaises(TypeError):
+            self.founders.stack('not a dataset')
+        with self.assertRaises(TypeError):
+            self.founders.stack_cols('not a dataset')
+
     def test_sorting(self):
         """Sort columns."""
 
