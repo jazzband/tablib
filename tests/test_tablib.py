@@ -1229,6 +1229,16 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['None'], '')
         self.assertEqual(data.dict[0]['empty'], '')
 
+    def test_ods_export_import_boolean(self):
+        data.append(('alice', True))
+        data.append(('bob', False))
+        data.headers = ('name', 'flag')
+        _ods = data.ods
+        data.ods = _ods
+        self.assertIs(data.dict[0]['flag'], True)
+        self.assertIs(data.dict[1]['flag'], False)
+        self.assertEqual(data.dict[0]['name'], 'alice')
+
     def test_ods_export_display(self):
         """Test that exported datetime types are displayed correctly in office software"""
         date = dt.date(2019, 10, 4)

@@ -213,7 +213,12 @@ class ODSFormat:
             odf_row = table.TableRow(stylename=style)
             ws.addElement(odf_row)
             for j, col in enumerate(row):
-                if isinstance(col, numbers.Number):
+                if isinstance(col, bool):
+                    cell = table.TableCell(
+                        valuetype="boolean",
+                        booleanvalue="true" if col else "false",
+                    )
+                elif isinstance(col, numbers.Number):
                     cell = table.TableCell(valuetype="float", value=col)
                 elif isinstance(col, dt.datetime):
                     cell = table.TableCell(
