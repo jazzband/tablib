@@ -1228,8 +1228,8 @@ class ODSTests(BaseTestCase):
         data.headers = ('name', 'flag')
         _ods = data.ods
         data.ods = _ods
-        for index, expected in ((0, True), (1, False)):
-            self.assertIs(data.dict[index]['flag'], expected)
+        self.assertIs(data.dict[0]['flag'], True)
+        self.assertIs(data.dict[1]['flag'], False)
         self.assertEqual(data.dict[0]['name'], 'alice')
 
     def test_ods_export_display(self):
