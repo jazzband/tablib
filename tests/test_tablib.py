@@ -1511,6 +1511,16 @@ class XLSXTests(BaseTestCase):
         wb = load_workbook(filename=BytesIO(_xlsx))
         self.assertEqual('SUM(1+1)', wb.active['A1'].value)
 
+    def test_xlsx_export_set_escape_formulae_keeps_inner_equals(self):
+        """
+        Only the leading '=' should be stripped when escaping formulae; '='
+        characters inside the formula (e.g. a comparison) must be preserved.
+        """
+        data.append(('=A1=B1',))
+        _xlsx = data.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('A1=B1', wb.active['A1'].value)
+
     def test_xlsx_export_book_escape_formulae(self):
         """
         Test that formulae are sanitised on export.
