@@ -1516,6 +1516,38 @@ class XLSXTests(BaseTestCase):
             data.append(('string', b'\x0cf'))
             data.xlsx
 
+    def test_xlsx_export_illegal_char_raises_by_default(self):
+        """Control chars illegal in XLSX raise IllegalCharacterError by default (#370)."""
+        from openpyxl.utils.exceptions import IllegalCharacterError
+
+        data.append(('\x1f',))
+        with self.assertRaises(IllegalCharacterError):
+            data.export('xlsx')
+
+    def test_xlsx_export_set_sanitize_illegal_chars(self):
+        """Illegal control chars are replaced when sanitize_illegal_chars is set (#370)."""
+        data.append(('a\x1fb',))
+
+        # Strip with empty string.
+        _xlsx = data.export('xlsx', sanitize_illegal_chars='')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('ab', wb.active['A1'].value)
+
+        # Replace with a substitute character.
+        _xlsx = data.export('xlsx', sanitize_illegal_chars='?')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('a?b', wb.active['A1'].value)
+
+    def test_xlsx_export_book_sanitize_illegal_chars(self):
+        """sanitize_illegal_chars also applies to Databook export (#370)."""
+        data.append(('x\x0cy',))
+        _book = tablib.Databook()
+        _book.add_sheet(data)
+
+        _xlsx = _book.export('xlsx', sanitize_illegal_chars='-')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('x-y', wb.active['A1'].value)
+
     def test_xlsx_cell_values(self):
         """Test cell values are read and not formulas"""
         xls_source = Path(__file__).parent / 'files' / 'xlsx_cell_values.xlsx'
