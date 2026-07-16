@@ -153,6 +153,9 @@ class XLSFormat:
         for i, row in enumerate(_package):
             for j, col in enumerate(row):
 
+                if isinstance(col, int) and not isinstance(col, bool) and abs(col) > 2**53:
+                    col = str(col)
+
                 # bold headers
                 if (i == 0) and dataset.headers:
                     ws.write(i, j, col, bold)
