@@ -1029,6 +1029,30 @@ class CSVTests(BaseTestCase):
             'F |  |  '
         )
 
+    def test_csv_import_set_ragged_wider_than_header(self):
+        """Import ragged CSV where a data row is wider than the header."""
+        csv_text = (
+            "H1,H2\n"
+            "A,B\n"
+            "C,D,E\n"
+        )
+        dataset = tablib.import_set(csv_text, format="csv")
+        self.assertEqual(dataset.headers, ["H1", "H2", ""])
+        self.assertEqual(dataset.width, 3)
+        self.assertEqual(list(dataset[0]), ["A", "B", ""])
+        self.assertEqual(list(dataset[1]), ["C", "D", "E"])
+
+    def test_csv_import_set_ragged_wider_no_headers(self):
+        """Import ragged CSV without headers where a later row is widest."""
+        csv_text = (
+            "A,B\n"
+            "C,D,E\n"
+        )
+        dataset = tablib.import_set(csv_text, format="csv", headers=False)
+        self.assertEqual(dataset.width, 3)
+        self.assertEqual(list(dataset[0]), ["A", "B", ""])
+        self.assertEqual(list(dataset[1]), ["C", "D", "E"])
+
     def test_csv_import_set_skip_lines(self):
         csv_text = (
             'garbage,line\n'
