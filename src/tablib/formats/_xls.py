@@ -153,6 +153,12 @@ class XLSFormat:
         for i, row in enumerate(_package):
             for j, col in enumerate(row):
 
+                # Convert large ints to str to avoid XLS float precision loss
+                # (XLS uses 64-bit floats: precision is limited to ~15 digits)
+                if isinstance(col, int) and not isinstance(col, bool):
+                    if abs(col) > 9007199254740991:  # 2^53 - 1
+                        col = str(col)
+
                 # bold headers
                 if (i == 0) and dataset.headers:
                     ws.write(i, j, col, bold)
