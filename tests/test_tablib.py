@@ -19,7 +19,7 @@ from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
-from tablib.exceptions import UnsupportedFormat
+from tablib.exceptions import HeadersNeeded, UnsupportedFormat
 from tablib.formats import registry
 
 try:
@@ -1952,6 +1952,26 @@ class DBFTests(BaseTestCase):
         self.assertFalse(fmt.detect(_csv))
         self.assertFalse(fmt.detect(_json))
         self.assertFalse(fmt.detect(_bunk))
+
+    def test_dbf_export_headers_only(self):
+        # A dataset with headers but no rows exports to a valid dbf (field
+        # types default to character) instead of raising IndexError.
+        data = tablib.Dataset()
+        data.headers = ['name', 'gpa']
+        blob = data.export('dbf')
+
+        roundtrip = tablib.Dataset()
+        roundtrip.load(blob, format='dbf')
+        self.assertEqual(roundtrip.headers, ['NAME', 'GPA'])
+        self.assertEqual(roundtrip.height, 0)
+
+    def test_dbf_export_without_headers_raises(self):
+        # dbf needs field names; a headerless dataset must raise HeadersNeeded
+        # rather than leaking a raw TypeError.
+        data = tablib.import_set('[[1, 2], [3, 4]]', format='json')
+        self.assertIsNone(data.headers)
+        with self.assertRaises(HeadersNeeded):
+            data.export('dbf')
 
 
 class JiraTests(BaseTestCase):

@@ -14,6 +14,7 @@ import tempfile
 
 from .._vendor.dbfpy import dbf, dbfnew
 from .._vendor.dbfpy import record as dbfrecord
+from ..exceptions import HeadersNeeded
 
 
 class DBFFormat:
@@ -25,11 +26,14 @@ class DBFFormat:
     @classmethod
     def export_set(cls, dataset):
         """Returns DBF representation of a Dataset"""
+        if dataset.headers is None:
+            raise HeadersNeeded('DBF export requires headers to name the fields.')
         new_dbf = dbfnew.dbf_new()
         temp_file, temp_uri = tempfile.mkstemp()
 
-        # create the appropriate fields based on the contents of the first row
-        first_row = dataset[0]
+        # create the appropriate fields based on the contents of the first row;
+        # with no rows, field types cannot be inferred so default to character
+        first_row = dataset[0] if dataset.height else [None] * len(dataset.headers)
         for fieldname, field_value in zip(dataset.headers, first_row):
             if type(field_value) in [int, float]:
                 new_dbf.add_field(fieldname, 'N', 10, 8)
