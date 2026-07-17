@@ -241,7 +241,7 @@ class ReSTFormat:
         True
 
         """
-        if not dataset.dict:
+        if not dataset.dict or not dataset.width:
             return ''
         force_grid = kwargs.get('force_grid', False)
         max_table_width = kwargs.get('max_table_width', cls.MAX_TABLE_WIDTH)
