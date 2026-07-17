@@ -909,6 +909,18 @@ class RSTTests(BaseTestCase):
             "==========  =========  ===",
         )
 
+    def test_rst_export_zero_width(self):
+        # A zero-width dataset (rows present, no columns) round-trips through
+        # JSON as '[[]]'; rst must degrade to '' like the other text formats
+        # rather than raising IndexError.
+        data = tablib.import_set('[[]]', format='json')
+        self.assertEqual(data.width, 0)
+        self.assertEqual(data.export('rst'), '')
+
+        data2 = tablib.import_set('[[], []]', format='json')
+        self.assertEqual(data2.width, 0)
+        self.assertEqual(data2.export('rst'), '')
+
 
 class CSVTests(BaseTestCase):
     def test_csv_format_detect(self):
