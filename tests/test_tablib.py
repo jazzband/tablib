@@ -19,7 +19,7 @@ from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
-from tablib.exceptions import UnsupportedFormat
+from tablib.exceptions import HeadersNeeded, UnsupportedFormat
 from tablib.formats import registry
 
 try:
@@ -609,6 +609,13 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(subset.headers, list(columns))
         self.assertEqual(subset._data[0].list, ['John', 90])
         self.assertEqual(subset._data[1].list, ['Thomas', 50])
+
+    def test_subset_without_headers_raises(self):
+        """subset selects columns by name, so headers are required"""
+        headerless = tablib.import_set('[[1, 2], [3, 4]]', format='json')
+        self.assertIsNone(headerless.headers)
+        with self.assertRaises(HeadersNeeded):
+            headerless.subset(rows=[0])
 
     def test_formatters(self):
         """Confirm formatters are being triggered."""
