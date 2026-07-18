@@ -12,6 +12,7 @@ import xlwt
 from xlrd.xldate import xldate_as_datetime
 
 import tablib
+from tablib.utils import spreadsheet_safe_value
 
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")
@@ -174,6 +175,7 @@ class XLSFormat:
                     ws.write(i, j, col, time_style)
                 # wrap the rest
                 else:
+                    col = spreadsheet_safe_value(col)
                     try:
                         if '\n' in col:
                             ws.write(i, j, col, wrap)
