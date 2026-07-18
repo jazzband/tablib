@@ -828,6 +828,10 @@ class Dataset:
         if not self:
             return
 
+        # subset selects columns by name, so headers are required
+        if self.headers is None:
+            raise HeadersNeeded()
+
         if rows is None:
             rows = list(range(self.height))
 
