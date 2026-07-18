@@ -1396,6 +1396,31 @@ class XLSTests(BaseTestCase):
         self.assertEqual('h:mm:ss', get_format_str(row[1]))
         self.assertEqual('m/d/yy h:mm', get_format_str(row[2]))
 
+    def test_xls_export_large_int_precision(self):
+        """Regression test for
+        https://github.com/jazzband/tablib/issues/197
+
+        Large integers exceeding the range exactly representable by an
+        IEEE-754 double (the numeric storage XLS uses internally) must
+        not be silently corrupted into a nearby, incorrect value. They
+        should round-trip exactly, even if that means storing them as
+        text rather than as a spreadsheet "number".
+        """
+        big_int = 123456789012345677  # not exactly representable as a double
+        data.headers = ('test_id',)
+        data.append((big_int,))
+        _xls = data.xls
+        xls_book = xlrd.open_workbook(file_contents=_xls)
+        cell_value = xls_book.sheet_by_index(0).cell_value(1, 0)
+        self.assertEqual(str(cell_value), str(big_int))
+
+        # Small, normal-range integers must remain untouched (still
+        # numeric, not converted to strings).
+        data2 = tablib.Dataset(headers=('n',))
+        data2.append((42,))
+        xls_book2 = xlrd.open_workbook(file_contents=data2.xls)
+        self.assertEqual(xls_book2.sheet_by_index(0).cell_value(1, 0), 42)
+
     def test_xls_bad_chars_sheet_name(self):
         """
         Sheet names are limited to 30 chars and the following chars
@@ -1522,6 +1547,25 @@ class XLSXTests(BaseTestCase):
         with xls_source.open('rb') as fh:
             data = tablib.Dataset().load(fh)
         self.assertEqual(data.headers[0], 'Hello World')
+
+    def test_xlsx_export_large_int_precision(self):
+        """Regression test for
+        https://github.com/jazzband/tablib/issues/197 (XLSX side of the
+        same underlying issue as test_xls_export_large_int_precision).
+        """
+        big_int = 123456789012345677  # not exactly representable as a double
+        data.headers = ('test_id',)
+        data.append((big_int,))
+        _xlsx = data.xlsx
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        cell_value = wb.active['A2'].value
+        self.assertEqual(str(cell_value), str(big_int))
+
+        # Small, normal-range integers must remain untouched.
+        data2 = tablib.Dataset(headers=('n',))
+        data2.append((42,))
+        wb2 = load_workbook(filename=BytesIO(data2.xlsx))
+        self.assertEqual(wb2.active['A2'].value, 42)
 
     def test_xlsx_export_set_escape_formulae(self):
         """
