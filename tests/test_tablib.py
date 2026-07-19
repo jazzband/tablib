@@ -1693,6 +1693,14 @@ class JSONTests(BaseTestCase):
 
         self.assertEqual(json.loads(_json), json.loads(data.json))
 
+    def test_json_import_heterogeneous_key_order(self):
+        """Records with keys in a different order must align by key, not position."""
+        ds = tablib.Dataset()
+        ds.json = '[{"name": "alice", "age": 30}, {"age": 25, "name": "bob"}]'
+        self.assertEqual(list(ds.headers), ['name', 'age'])
+        self.assertEqual(ds[0], ('alice', 30))
+        self.assertEqual(ds[1], ('bob', 25))
+
     def test_json_export(self):
         """Verify exporting dataset object as JSON"""
 
