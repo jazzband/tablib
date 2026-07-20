@@ -93,22 +93,19 @@ class XLSFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, skip_lines=0):
-        """Returns databook from XLS stream."""
+    def read_cell(cls, value, type_, datemode):
+        """Returns the Python value of a cell, based on its xlrd type."""
+        if type_ == xlrd.XL_CELL_ERROR:
+            return xlrd.error_text_from_code[value]
+        elif type_ == xlrd.XL_CELL_DATE:
+            return xldate_as_datetime(value, datemode)
+        return value
 
-        dset.wipe()
-
-        xls_book = xlrd.open_workbook(file_contents=in_stream.read())
-        sheet = xls_book.sheet_by_index(0)
+    @classmethod
+    def import_sheet(cls, dset, sheet, datemode, headers=True, skip_lines=0):
+        """Populates dataset with sheet."""
 
         dset.title = sheet.name
-
-        def cell_value(value, type_):
-            if type_ == xlrd.XL_CELL_ERROR:
-                return xlrd.error_text_from_code[value]
-            elif type_ == xlrd.XL_CELL_DATE:
-                return xldate_as_datetime(value, xls_book.datemode)
-            return value
 
         for i in range(sheet.nrows):
             if i < skip_lines:
@@ -117,9 +114,20 @@ class XLSFormat:
                 dset.headers = sheet.row_values(i)
             else:
                 dset.append([
-                    cell_value(val, typ)
+                    cls.read_cell(val, typ, datemode)
                     for val, typ in zip(sheet.row_values(i), sheet.row_types(i))
                 ])
+
+    @classmethod
+    def import_set(cls, dset, in_stream, headers=True, skip_lines=0):
+        """Returns databook from XLS stream."""
+
+        dset.wipe()
+
+        xls_book = xlrd.open_workbook(file_contents=in_stream.read())
+        sheet = xls_book.sheet_by_index(0)
+
+        cls.import_sheet(dset, sheet, xls_book.datemode, headers, skip_lines)
 
     @classmethod
     def import_book(cls, dbook, in_stream, headers=True):
@@ -130,16 +138,9 @@ class XLSFormat:
         xls_book = xlrd.open_workbook(file_contents=in_stream.read())
 
         for sheet in xls_book.sheets():
-            data = tablib.Dataset()
-            data.title = sheet.name
-
-            for i in range(sheet.nrows):
-                if i == 0 and headers:
-                    data.headers = sheet.row_values(0)
-                else:
-                    data.append(sheet.row_values(i))
-
-            dbook.add_sheet(data)
+            dset = tablib.Dataset()
+            cls.import_sheet(dset, sheet, xls_book.datemode, headers)
+            dbook.add_sheet(dset)
 
     @classmethod
     def dset_sheet(cls, dataset, ws):

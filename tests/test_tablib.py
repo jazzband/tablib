@@ -1374,6 +1374,30 @@ class XLSTests(BaseTestCase):
             }
         )
 
+    def test_xls_book_date_import(self):
+        """Dates are converted when a book is imported, as they are for a set."""
+        xls_source = Path(__file__).parent / 'files' / 'dates.xls'
+        with xls_source.open('rb') as fh:
+            dbook = tablib.Databook().load(fh, 'xls')
+        self.assertEqual(
+            dbook.sheets()[0].dict[0]['birth_date'], dt.datetime(2015, 4, 12, 0, 0)
+        )
+
+    def test_xls_book_import_with_errors(self):
+        """Errors are kept as errors when a book is imported, as they are for a set."""
+        xls_source = Path(__file__).parent / 'files' / 'errors.xls'
+        with xls_source.open('rb') as fh:
+            dbook = tablib.Databook().load(fh, 'xls')
+        self.assertEqual(
+            dbook.sheets()[0].dict[0],
+            {
+                'div by 0': '#DIV/0!',
+                'name unknown': '#NAME?',
+                'not available (formula)': '#N/A',
+                'not available (static)': '#N/A',
+            }
+        )
+
     def test_book_import_from_stream(self):
         in_stream = self.founders.xls
         book = tablib.Databook().load(in_stream, 'xls')
