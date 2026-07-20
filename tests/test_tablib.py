@@ -909,6 +909,21 @@ class RSTTests(BaseTestCase):
             "==========  =========  ===",
         )
 
+    def test_rst_export_empty_column_without_headers(self):
+        # A column that is empty in every row gives that column a width of 0
+        # when there are no headers to enforce a minimum. That used to raise
+        # "ValueError: invalid width 0 (must be > 0)" while wrapping the cells.
+        data = tablib.Dataset()
+        data.append(('', 'a'))
+        data.append(('', 'b'))
+        self.assertEqual(
+            data.export('rst'),
+            '=  =\n'
+            '   a\n'
+            '   b\n'
+            '=  ='
+        )
+
 
 class CSVTests(BaseTestCase):
     def test_csv_format_detect(self):

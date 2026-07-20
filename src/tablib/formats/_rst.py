@@ -104,8 +104,9 @@ class ReSTFormat:
             column_widths = (lens for lens in median_lens)
         # Allow for separator and padding:
         column_widths = (w - pad_len if w > pad_len else w for w in column_widths)
-        # Rather widen table than break words:
-        column_widths = [max(w, l) for w, l in zip(column_widths, word_lens)]
+        # Rather widen table than break words, but keep at least one character
+        # so a column of only empty cells still has a valid, non-zero width:
+        column_widths = [max(w, l, 1) for w, l in zip(column_widths, word_lens)]
         return column_widths
 
     @classmethod
