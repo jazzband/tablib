@@ -2,6 +2,8 @@ name-template: "v$RESOLVED_VERSION"
 tag-template: "v$RESOLVED_VERSION"
 
 categories:
+  - title: "Security"
+    label: "changelog: Security"
   - title: "Added"
     labels:
       - "changelog: Added"
@@ -16,8 +18,6 @@ categories:
     labels:
       - "changelog: Fixed"
       - "bug"
-  - title: "Security"
-    label: "changelog: Security"
 
 exclude-labels:
   - "changelog: skip"
