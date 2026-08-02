@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Tests for Tablib."""
 
+import csv
 import datetime as dt
 import doctest
 import json
@@ -1171,6 +1172,19 @@ class CSVTests(BaseTestCase):
 
         d2 = tablib.import_set(_csv, format="csv", **kwargs)
         self.assertEqual(3, len(d2.headers))
+
+    def test_csv_dialect_is_not_overridden_by_default_delimiter(self):
+        """A caller-supplied dialect must win over DEFAULT_DELIMITER."""
+        text = 'test:test2\nvalue1:value2\n'
+        dialect = csv.Sniffer().sniff(text.splitlines()[0])
+        self.assertEqual(':', dialect.delimiter)
+
+        imported = tablib.Dataset().load(text, format='csv', dialect=dialect)
+        self.assertEqual(['test', 'test2'], imported.headers)
+        self.assertEqual(('value1', 'value2'), imported[0])
+
+        exported = imported.export('csv', dialect=dialect)
+        self.assertEqual('test:test2\r\nvalue1:value2\r\n', exported)
 
 
 class TSVTests(BaseTestCase):
