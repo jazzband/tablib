@@ -12,9 +12,9 @@ import io
 import os
 import tempfile
 
-from ..exceptions import UnsupportedFormat
 from .._vendor.dbfpy import dbf, dbfnew
 from .._vendor.dbfpy import record as dbfrecord
+from ..exceptions import UnsupportedFormat
 
 
 class DBFFormat:
