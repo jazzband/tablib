@@ -364,6 +364,11 @@ class Dataset:
         if isinstance(pickle[0], list):
             self.wipe()
             for row in pickle:
+                # only the first element's type is checked above, so a later
+                # row of a different type (e.g. a null item in a YAML list)
+                # would otherwise raise a bare TypeError.
+                if not isinstance(row, list):
+                    raise UnsupportedFormat(error_details)
                 self.append(Row(row))
 
         # if list of objects
@@ -371,6 +376,10 @@ class Dataset:
             self.wipe()
             self.headers = list(pickle[0].keys())
             for row in pickle:
+                # guard against a later row that is not a dict, which would
+                # otherwise raise a bare AttributeError from row.values().
+                if not isinstance(row, dict):
+                    raise UnsupportedFormat(error_details)
                 self.append(Row(list(row.values())))
         else:
             raise UnsupportedFormat(error_details)

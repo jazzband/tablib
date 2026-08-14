@@ -1801,6 +1801,14 @@ class YAMLTests(BaseTestCase):
 
         self.assertEqual(_yaml, data.yaml)
 
+    def test_yaml_import_set_with_non_dict_row(self):
+        """A YAML list whose first item is a dict but a later item is not
+        (e.g. a trailing bare ``-`` which parses to null) used to raise a bare
+        AttributeError from row.values(); it should raise UnsupportedFormat."""
+        _yaml = '- {id: 0, name: n0}\n- {id: 1, name: n1}\n-\n'
+        with self.assertRaises(UnsupportedFormat):
+            tablib.Dataset().load(_yaml, 'yaml')
+
     def test_yaml_export(self):
         """YAML export"""
 
