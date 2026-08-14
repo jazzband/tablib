@@ -1910,6 +1910,19 @@ class DBFTests(BaseTestCase):
                     )
                 index += 1
 
+    def test_dbf_import_malformed(self):
+        """A malformed DBF stream raises UnsupportedFormat rather than a raw
+        struct.error / IndexError from the vendored parser."""
+        data.append(self.john)
+        data.headers = self.headers
+        good = data.dbf
+        # truncate the DBF inside its header
+        truncated = good[:16]
+        with self.assertRaises(UnsupportedFormat):
+            tablib.Dataset().load(truncated, format='dbf')
+        with self.assertRaises(UnsupportedFormat):
+            tablib.Dataset().load(b'not a dbf file', format='dbf')
+
     def test_dbf_export_set(self):
         """Test DBF import."""
         data.append(self.john)

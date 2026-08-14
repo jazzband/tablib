@@ -12,6 +12,7 @@ import io
 import os
 import tempfile
 
+from ..exceptions import UnsupportedFormat
 from .._vendor.dbfpy import dbf, dbfnew
 from .._vendor.dbfpy import record as dbfrecord
 
@@ -58,10 +59,22 @@ class DBFFormat:
         """Returns a dataset from a DBF stream."""
 
         dset.wipe()
-        _dbf = dbf.Dbf(in_stream)
-        dset.headers = _dbf.fieldNames
-        for record in range(_dbf.recordCount):
-            row = [_dbf[record][f] for f in _dbf.fieldNames]
+        # A malformed DBF makes the vendored parser raise a variety of low-level
+        # errors (struct.error, IndexError, UnicodeDecodeError, ...). Report
+        # them as UnsupportedFormat, consistent with detect() treating any
+        # parsing error as "not a valid DBF".
+        try:
+            _dbf = dbf.Dbf(in_stream)
+            headers = _dbf.fieldNames
+            rows = [[_dbf[record][f] for f in headers]
+                    for record in range(_dbf.recordCount)]
+        except Exception as e:
+            raise UnsupportedFormat(
+                'Error parsing DBF: the stream is not a valid DBF file.'
+            ) from e
+
+        dset.headers = headers
+        for row in rows:
             dset.append(row)
 
     @classmethod
