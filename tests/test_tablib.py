@@ -381,6 +381,16 @@ class TablibTestCase(BaseTestCase):
         unsupported = ['csv', 'tsv', 'jira', 'latex', 'df']
         self._test_export_data_in_all_formats(book, exclude=unsupported)
 
+    def test_dict_setter_with_non_dict_row(self):
+        # A list whose first item is a dict but which contains a non-dict item
+        # (e.g. from YAML "- null" or JSON "[{...}, null]") used to raise a bare
+        # AttributeError instead of UnsupportedFormat.
+        data = tablib.Dataset()
+        with self.assertRaises(UnsupportedFormat):
+            data.dict = [{'a': 1}, None]
+        with self.assertRaises(UnsupportedFormat):
+            tablib.import_set('[{"a": 1}, null]', format='json')
+
     def test_book_unsupported_loading(self):
         with self.assertRaises(UnsupportedFormat):
             tablib.Databook().load('Any stream', 'csv')
