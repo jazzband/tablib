@@ -19,7 +19,7 @@ from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
-from tablib.exceptions import UnsupportedFormat
+from tablib.exceptions import InvalidDatasetIndex, UnsupportedFormat
 from tablib.formats import registry
 
 try:
@@ -642,6 +642,21 @@ class TablibTestCase(BaseTestCase):
             {'first_name': 'GEORGE', 'last_name': 'WASHINGTON', 'gpa': '67'},
             {'first_name': 'THOMAS', 'last_name': 'JEFFERSON', 'gpa': '50'},
         ])
+
+    def test_add_formatter_out_of_range_column(self):
+        """A column index past the last column must be rejected, not silently
+        accepted (which then crashed on export)."""
+
+        def _formatter(cell_value):
+            return cell_value
+
+        # width is 3 -> valid indices are 0, 1, 2
+        self.assertEqual(self.founders.width, 3)
+        # the last valid index is accepted
+        self.assertTrue(self.founders.add_formatter(2, _formatter))
+        # one past the last column raises instead of being silently accepted
+        with self.assertRaises(InvalidDatasetIndex):
+            self.founders.add_formatter(3, _formatter)
 
     def test_unicode_renders_markdown_table(self):
         # add another entry to test right field width for
