@@ -1172,6 +1172,38 @@ class CSVTests(BaseTestCase):
         d2 = tablib.import_set(_csv, format="csv", **kwargs)
         self.assertEqual(3, len(d2.headers))
 
+    def test_csv_import_custom_dialect_delimiter_not_overridden(self):
+        """A custom dialect's delimiter must not be overridden by the
+        CSV formatter's own default delimiter (issue #622).
+
+        ``import_set``/``export_stream_set`` used to unconditionally set
+        ``delimiter=','`` in kwargs before calling ``csv.reader``/
+        ``csv.writer``. Since Python's csv module lets explicit fmtparams
+        override attributes of a passed ``dialect``, this silently
+        overrode any delimiter configured on a custom dialect back to
+        the default comma, even though no delimiter was requested by the
+        caller.
+        """
+        import csv as csv_module
+
+        class ColonDialect(csv_module.excel):
+            delimiter = ":"
+
+        content = "first_name:last_name\nJohn:Adams\nGeorge:Washington\n"
+        d = tablib.import_set(
+            StringIO(content), format="csv", dialect=ColonDialect
+        )
+        self.assertEqual(["first_name", "last_name"], d.headers)
+        self.assertEqual(("John", "Adams"), d[0])
+        self.assertEqual(("George", "Washington"), d[1])
+
+        data.append(self.john)
+        data.append(self.george)
+        data.headers = self.headers
+        exported = data.export("csv", dialect=ColonDialect)
+        self.assertIn(":", exported)
+        self.assertNotIn(",", exported.split("\n")[0])
+
 
 class TSVTests(BaseTestCase):
     def test_tsv_import_set(self):
