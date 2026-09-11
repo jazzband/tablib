@@ -371,7 +371,10 @@ class Dataset:
             self.wipe()
             self.headers = list(pickle[0].keys())
             for row in pickle:
-                self.append(Row(list(row.values())))
+                # Align values to the headers by key, not by position: JSON
+                # object member order is not significant (RFC 8259) and dict
+                # keys may legitimately differ in order across records.
+                self.append(Row([row.get(header) for header in self.headers]))
         else:
             raise UnsupportedFormat(error_details)
 
