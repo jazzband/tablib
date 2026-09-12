@@ -1547,6 +1547,55 @@ class XLSXTests(BaseTestCase):
             dataset = tablib.Dataset().load(fh, 'xlsx')
         self.assertEqual(dataset.pop(), (1.0, ''))
 
+    def test_xlsx_import_skips_empty_used_range_rows(self):
+        """Google Drive / Excel used-ranges add blank trailing rows.
+
+        Those rows must not raise InvalidDimensions or appear as data.
+        """
+        from openpyxl import Workbook
+        from openpyxl.styles import PatternFill
+
+        wb = Workbook()
+        ws = wb.active
+        ws['A1'] = 'name'
+        ws['B1'] = 'played'
+        ws['C1'] = 'chips'
+        ws['A2'] = 'alice'
+        ws['B2'] = 1
+        ws['C2'] = 4
+        ws['A3'] = 'bob'
+        ws['B3'] = 2
+        ws['C3'] = 8
+        # Extend the used range with a styled empty cell, as spreadsheet
+        # exporters often do.
+        ws['A10'].fill = PatternFill('solid', fgColor='FFFF00')
+        buf = BytesIO()
+        wb.save(buf)
+        buf.seek(0)
+
+        dataset = tablib.Dataset().load(buf, 'xlsx')
+        self.assertEqual(dataset.headers, ['name', 'played', 'chips'])
+        self.assertEqual(dataset.height, 2)
+        self.assertEqual(list(dataset), [('alice', 1, 4), ('bob', 2, 8)])
+
+    def test_xlsx_import_extra_wide_empty_row(self):
+        """An empty row wider than the header must not raise InvalidDimensions."""
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['h1', 'h2'])
+        ws.append(['x', 'y'])
+        ws.append([None, None, None, None])
+        buf = BytesIO()
+        wb.save(buf)
+        buf.seek(0)
+
+        dataset = tablib.Dataset().load(buf, 'xlsx')
+        self.assertEqual(dataset.headers, ['h1', 'h2', None, None])
+        self.assertEqual(dataset.height, 1)
+        self.assertEqual(list(dataset), [('x', 'y', None, None)])
+
     def test_xlsx_wrong_char(self):
         """Bad characters are not silently ignored. We let the exception bubble up."""
         from openpyxl.utils.exceptions import IllegalCharacterError
