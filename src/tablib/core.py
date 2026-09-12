@@ -820,8 +820,31 @@ class Dataset:
         self.__headers = None
 
     def subset(self, rows=None, cols=None):
-        """Returns a new instance of the :class:`Dataset`,
-        including only specified rows and columns.
+        """Returns a new :class:`Dataset` with selected rows and columns.
+
+        :param rows: (optional) iterable of zero-based row positions. If
+                     omitted, all rows are selected in source order.
+        :param cols: (optional) iterable of column header values. If omitted,
+                     all columns are selected in their existing header order.
+        :returns: a new :class:`Dataset` containing the selected data, or
+                  ``None`` if this dataset has no rows.
+
+        The :class:`Dataset` must have headers. Column selections use header
+        values, including when a header is numeric. The result preserves the
+        source row order and follows the order of ``cols``.
+
+        For example::
+
+            >>> people = tablib.Dataset(
+            ...     ('Ada', 'Lovelace', 36),
+            ...     ('Grace', 'Hopper', 85),
+            ...     headers=['First Name', 'Last Name', 'Age'],
+            ... )
+            >>> selected = people.subset(rows=[1], cols=['Age', 'First Name'])
+            >>> selected.headers
+            ['Age', 'First Name']
+            >>> list(selected)
+            [(85, 'Grace')]
         """
 
         # Don't return if no data
