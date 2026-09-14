@@ -75,7 +75,12 @@ class UtilsGetDateTestCase(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(output, dt.date)
-        self.assertEqual(output, dt.date(2019, 10, 19))
+        # getDate converts a number with datetime.fromtimestamp(), which uses
+        # the local timezone. This timestamp is 2019-10-19 20:01:46 UTC, so
+        # east of UTC+3:58 the local date is already 2019-10-20 — a hardcoded
+        # date makes the test fail for any contributor in those timezones.
+        # Assert the documented contract instead of one timezone's rendering.
+        self.assertEqual(output, dt.date.fromtimestamp(value))
 
     def test_getDate_datetime_string_yyyy_mm_dd(self):
         # Arrange
