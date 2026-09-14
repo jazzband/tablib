@@ -255,7 +255,7 @@ class Dataset:
 
     def _validate(self, row=None, col=None, safety=False):
         """Assures size of every row in dataset is of proper proportions."""
-        if row:
+        if row is not None:
             if self.width:
                 is_valid = (
                     len(row) == self.width or
@@ -263,7 +263,7 @@ class Dataset:
                 )
             else:
                 is_valid = True
-        elif col:
+        elif col is not None:
             if len(col) < 1:
                 is_valid = True
             else:
