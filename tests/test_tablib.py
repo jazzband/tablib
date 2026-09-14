@@ -1992,6 +1992,11 @@ class DBFTests(BaseTestCase):
         self.assertFalse(fmt.detect(_json))
         self.assertFalse(fmt.detect(_bunk))
 
+    def test_dbf_format_extension(self):
+        """Test the DBF format advertises its own file extension."""
+        fmt = registry.get_format('dbf')
+        self.assertEqual(('dbf',), fmt.extensions)
+
 
 class JiraTests(BaseTestCase):
     def test_jira_export(self):
