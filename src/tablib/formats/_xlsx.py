@@ -14,6 +14,7 @@ __lazy_modules__ = {
 import re
 from io import BytesIO
 
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
@@ -23,9 +24,28 @@ import tablib
 
 INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
 
+# Lone surrogates (e.g. produced by ``surrogateescape`` error handling)
+# cannot be encoded to valid XML/UTF-8 either, so they need stripping
+# alongside the ASCII control characters openpyxl itself rejects.
+SURROGATES_RE = re.compile(r'[\ud800-\udfff]')
+
 
 def safe_xlsx_sheet_title(s, replace="-"):
     return re.sub(INVALID_TITLE_REGEX, replace, s)[:31]
+
+
+def _sanitize_value(value):
+    """Strip characters that openpyxl/XML cannot represent in a cell.
+
+    openpyxl raises ``IllegalCharacterError`` (not a ``ValueError``) for
+    strings containing certain ASCII control characters, and silently
+    writes an unreadable file for lone surrogate characters. Sanitize
+    both cases up front so the value can be written safely.
+    """
+    if isinstance(value, str):
+        value = ILLEGAL_CHARACTERS_RE.sub('', value)
+        value = SURROGATES_RE.sub('', value)
+    return value
 
 
 class XLSXFormat:
@@ -182,7 +202,7 @@ class XLSXFormat:
                         cell.alignment = wrap_text
 
                 try:
-                    cell.value = col
+                    cell.value = _sanitize_value(col)
                 except ValueError:
                     cell.value = str(col)
 

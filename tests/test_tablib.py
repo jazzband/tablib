@@ -1644,6 +1644,16 @@ class XLSXTests(BaseTestCase):
         wb = load_workbook(filename=BytesIO(_xlsx))
         self.assertEqual('[1]', wb.active['A1'].value)
 
+    def test_xlsx_export_strips_illegal_characters(self):
+        """Cell values containing XML-illegal ASCII control characters
+        must be sanitized rather than raising IllegalCharacterError.
+        See: https://github.com/jazzband/tablib/issues/370
+        """
+        data.append((f'a{chr(31)}b',))
+        _xlsx = data.export('xlsx')
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('ab', wb.active['A1'].value)
+
     def test_xlsx_column_width_adaptive(self):
         """ Test that column width adapts to value length"""
         width_before, width_after = self._helper_export_column_width("adaptive")
