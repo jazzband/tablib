@@ -7,6 +7,8 @@ __lazy_modules__ = {"re"}
 
 import re
 
+from tablib.utils import is_empty_cell
+
 
 class LATEXFormat:
     title = 'latex'
@@ -120,7 +122,8 @@ class LATEXFormat:
         :param row: single dataset row
         """
 
-        new_row = [cls._escape_tex_reserved_symbols(str(item)) if item else ''
+        new_row = ['' if is_empty_cell(item)
+                   else cls._escape_tex_reserved_symbols(str(item))
                    for item in row]
         return 6 * ' ' + ' & '.join(new_row) + ' \\\\'
 
