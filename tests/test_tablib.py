@@ -16,6 +16,7 @@ from uuid import uuid4
 import xlrd
 from odf import opendocument, table
 from openpyxl.reader.excel import load_workbook
+from openpyxl.workbook import Workbook
 
 import tablib
 from tablib.core import Row, detect_format
@@ -1494,6 +1495,25 @@ class XLSXTests(BaseTestCase):
         """Test the XLSX format detection."""
         in_stream = self.founders.xlsx
         self.assertEqual(detect_format(in_stream), 'xlsx')
+
+    def test_xlsx_import_set_uses_first_sheet_not_active(self):
+        """Dataset.load('xlsx') imports the first sheet, not the active sheet."""
+        wb = Workbook()
+        first = wb.active
+        first.title = 'First'
+        first.append(['col'])
+        first.append(['first-sheet'])
+
+        second = wb.create_sheet('Second')
+        second.append(['col'])
+        second.append(['second-sheet'])
+        wb.active = second
+
+        stream = BytesIO()
+        wb.save(stream)
+        dataset = tablib.Dataset().load(stream.getvalue(), 'xlsx')
+        self.assertEqual(dataset.title, 'First')
+        self.assertEqual(dataset[0], ('first-sheet',))
 
     def test_xlsx_import_set(self):
         date_time = dt.datetime(2019, 10, 4, 12, 30, 8)

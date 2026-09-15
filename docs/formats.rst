@@ -250,6 +250,14 @@ The ``import_set()`` method also supports a ``skip_lines`` parameter that you
 can set to a number of lines that should be skipped before starting to read
 data.
 
+When importing into a :class:`~tablib.Dataset`, Tablib reads the first
+worksheet in the workbook, not the last-active sheet. To import every sheet,
+use :class:`~tablib.Databook`.
+
+.. versionchanged:: 3.11.0
+
+    ``import_set()`` loads the first worksheet instead of the active sheet.
+
 The ``export_set()`` method supports a ``column_width`` parameter. Depending
 on the value passed, the column width will be set accordingly. It can be
 either ``None``, an integer, or default "adaptive". If "adaptive" is passed,
