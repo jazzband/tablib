@@ -266,6 +266,21 @@ This works with ``Databook`` as well::
 
 The adaptive width will be calculated for each sheet in the databook.
 
+The ``export_set()`` and ``export_book()`` methods support a
+``sanitize_illegal_chars`` parameter. Some control characters (matched by
+``openpyxl.cell.cell.ILLEGAL_CHARACTERS_RE``) are not allowed in an XLSX file,
+and by default exporting a value containing one raises openpyxl's
+``IllegalCharacterError``. Pass a string to replace such characters instead
+(use ``""`` to strip them out)::
+
+    data = tablib.Dataset()
+    data.append(('some\x1ftext',))
+    data.export('xlsx', sanitize_illegal_chars='')
+
+.. versionadded:: 3.10.0
+    The ``sanitize_illegal_chars`` parameter for ``export_set()`` and
+    ``export_book()`` was added.
+
 .. versionchanged:: 3.8.0
     The ``column_width`` parameter for ``export_set()`` was added.
 
