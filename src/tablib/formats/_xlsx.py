@@ -20,6 +20,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 
 import tablib
+from tablib.utils import spreadsheet_safe_value
 
 INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
 
@@ -181,6 +182,7 @@ class XLSXFormat:
                     if '\n' in str(col):
                         cell.alignment = wrap_text
 
+                col = spreadsheet_safe_value(col)
                 try:
                     cell.value = col
                 except ValueError:
