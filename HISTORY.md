@@ -2,6 +2,11 @@
 
 ## 3.9.0 and newer
 
+### Bugfixes
+
+- Resolve dynamic column callables supplied as row placeholders when appending
+  rows (#576).
+
 See GitHub Releases:
 
 - https://github.com/jazzband/tablib/releases

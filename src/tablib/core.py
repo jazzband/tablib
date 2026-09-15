@@ -458,10 +458,16 @@ class Dataset:
         :class:`Dataset` later.
         """
 
+        row = list(row)
+        if len(row) == self.width:
+            for pos, func in sorted(self._dynamic_columns.items()):
+                if pos < len(row) and row[pos] is func:
+                    source_row = row[:pos] + row[pos + 1:]
+                    row[pos] = func(source_row)
+
         self._validate(row)
         if len(row) < self.width:
             for pos, func in self._dynamic_columns.items():
-                row = list(row)
                 row.insert(pos, func(row))
         self._data.insert(index, Row(row, tags=tags))
 
