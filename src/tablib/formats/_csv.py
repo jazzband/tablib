@@ -18,7 +18,8 @@ class CSVFormat:
         """Returns CSV representation of Dataset as file-like."""
         stream = StringIO()
 
-        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
+        if 'dialect' not in kwargs:
+            kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
         _csv = csv.writer(stream, **kwargs)
 
@@ -40,7 +41,8 @@ class CSVFormat:
 
         dset.wipe()
 
-        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
+        if 'dialect' not in kwargs:
+            kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
         rows = csv.reader(in_stream, **kwargs)
         for i, row in enumerate(rows):
