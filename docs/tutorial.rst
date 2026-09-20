@@ -127,21 +127,21 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
 **Comma-Separated Values** ::
 
     >>> data.export('csv')
-    Last Name,First Name,Age
-    Reitz,Kenneth,22
-    Monke,Bessie,20
+    First Name,Last Name,Age
+    Kenneth,Reitz,22
+    Bessie,Monke,20
 
 **JavaScript Object Notation** ::
 
     >>> data.export('json')
-    [{"Last Name": "Reitz", "First Name": "Kenneth", "Age": 22}, {"Last Name": "Monke", "First Name": "Bessie", "Age": 20}]
+    [{"First Name": "Kenneth", "Last Name": "Reitz", "Age": 22}, {"First Name": "Bessie", "Last Name": "Monke", "Age": 20}]
 
 
 **YAML Ain't Markup Language** ::
 
     >>> data.export('yaml')
-    - {Age: 22, First Name: Kenneth, Last Name: Reitz}
-    - {Age: 20, First Name: Bessie, Last Name: Monke}
+    - {First Name: Kenneth, Last Name: Reitz, Age: 22}
+    - {First Name: Bessie, Last Name: Monke, Age: 20}
 
 
 **Microsoft Excel** ::
@@ -155,7 +155,7 @@ Tablib's killer feature is the ability to export your :class:`Dataset` objects i
     >>> data.export('df')
       First Name Last Name  Age
     0    Kenneth     Reitz   22
-    1     Bessie     Monke   21
+    1     Bessie     Monke   20
 
 
 ------------------------
