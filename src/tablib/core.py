@@ -837,12 +837,12 @@ class Dataset:
         # filter out impossible rows and columns
         rows = {row for row in rows if row in range(self.height)}
         cols = [header for header in cols if header in self.headers]
-        col_indexes = [self.headers.index(header) for header in cols]
 
         _dset = Dataset()
 
         # filtering rows and columns
         _dset.headers = list(cols)
+        col_indexes = [self.headers.index(header) for header in _dset.headers]
 
         _dset._data = []
         for row_no, row in enumerate(self._data):
