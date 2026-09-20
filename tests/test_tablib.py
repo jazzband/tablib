@@ -610,6 +610,21 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(subset._data[0].list, ['John', 90])
         self.assertEqual(subset._data[1].list, ['Thomas', 50])
 
+    def test_subset_preserves_selection_behavior(self):
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(self.george)
+        data.append(self.tom)
+
+        subset = data.subset(
+            rows=(2, 0, 2, -1, 99),
+            cols=('gpa', 'missing', 'first_name', 'gpa'),
+        )
+
+        self.assertEqual(subset.headers, ['gpa', 'first_name', 'gpa'])
+        self.assertEqual(subset._data[0].list, [90, 'John', 90])
+        self.assertEqual(subset._data[1].list, [50, 'Thomas', 50])
+
     def test_formatters(self):
         """Confirm formatters are being triggered."""
 

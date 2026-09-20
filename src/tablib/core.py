@@ -835,8 +835,9 @@ class Dataset:
             cols = list(self.headers)
 
         # filter out impossible rows and columns
-        rows = [row for row in rows if row in range(self.height)]
+        rows = {row for row in rows if row in range(self.height)}
         cols = [header for header in cols if header in self.headers]
+        col_indexes = [self.headers.index(header) for header in cols]
 
         _dset = Dataset()
 
@@ -845,15 +846,8 @@ class Dataset:
 
         _dset._data = []
         for row_no, row in enumerate(self._data):
-            data_row = []
-            for key in _dset.headers:
-                if key in self.headers:
-                    pos = self.headers.index(key)
-                    data_row.append(row[pos])
-                else:
-                    raise KeyError
-
             if row_no in rows:
+                data_row = [row[index] for index in col_indexes]
                 _dset.append(row=Row(data_row))
 
         return _dset
