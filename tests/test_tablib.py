@@ -540,6 +540,17 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(column_stacked[0], ("x", "y", "1", "2", "3"))
         self.assertEqual(column_stacked[1], ("p", "q", "4", "5", "6"))
 
+    def test_column_stacking_repeated_headers(self):
+        left = tablib.Dataset(('a', 'b'), ('c', 'd'), headers=['name', 'name'])
+        right = tablib.Dataset((1, 2), (3, 4), headers=['value', 'value'])
+
+        stacked = left.stack_cols(right)
+
+        self.assertEqual(stacked.headers, ['name', 'name', 'value', 'value'])
+        self.assertEqual(list(stacked), [('a', 'b', 1, 2), ('c', 'd', 3, 4)])
+        self.assertEqual(list(left), [('a', 'b'), ('c', 'd')])
+        self.assertEqual(list(right), [(1, 2), (3, 4)])
+
     def test_sorting(self):
         """Sort columns."""
 
