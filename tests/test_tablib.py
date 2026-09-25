@@ -634,6 +634,22 @@ class TablibTestCase(BaseTestCase):
                 with self.assertRaisesRegex(TypeError, "'NoneType' object is not iterable"):
                     data.subset(cols=columns)
 
+    def test_subset_preserves_unhashable_row_selection(self):
+        class FirstRow:
+            __hash__ = None
+
+            def __eq__(self, other):
+                return other == 0
+
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(self.george)
+
+        subset = data.subset(rows=[1, FirstRow()], cols=['first_name'])
+        self.assertEqual(subset[0], ('John',))
+        self.assertEqual(subset[1], ('George',))
+        self.assertEqual(subset.height, 2)
+
     def test_formatters(self):
         """Confirm formatters are being triggered."""
 

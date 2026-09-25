@@ -835,7 +835,10 @@ class Dataset:
             cols = list(self.headers)
 
         # filter out impossible rows and columns
-        rows = {row for row in rows if row in range(self.height)}
+        rows = [row for row in rows if row in range(self.height)]
+        # Keep list membership for selectors with custom equality or hashing.
+        if all(type(row) is int for row in rows):
+            rows = set(rows)
         cols = [header for header in cols if header in self.headers]
 
         _dset = Dataset()
