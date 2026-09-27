@@ -845,9 +845,32 @@ class Dataset:
 
         # filtering rows and columns
         _dset.headers = list(cols)
-        col_indexes = [self.headers.index(header) for header in _dset.headers]
-
         _dset._data = []
+        # Custom headers can change equality or raise their own exceptions.
+        # Keep their original per-row comparisons instead of caching them.
+        if (
+            type(self) is not Dataset
+            or not all(type(header) is str for header in self.headers)
+            or not all(type(header) is str for header in _dset.headers)
+        ):
+            for row_no, row in enumerate(self._data):
+                data_row = []
+                for header in _dset.headers:
+                    if header in self.headers:
+                        data_row.append(row[self.headers.index(header)])
+                    else:
+                        raise KeyError
+                if row_no in rows:
+                    _dset.append(row=Row(data_row))
+            return _dset
+
+        col_indexes = []
+        for header in _dset.headers:
+            # A selector may have changed headers while it was consumed.
+            if header not in self.headers:
+                raise KeyError
+            col_indexes.append(self.headers.index(header))
+
         for row_no, row in enumerate(self._data):
             if row_no in rows:
                 data_row = [row[index] for index in col_indexes]
