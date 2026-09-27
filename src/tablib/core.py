@@ -650,7 +650,30 @@ class Dataset:
         that do not contain the given :ref:`tags <tags>`.
         """
         _dset = copy(self)
-        _dset._data = [row for row in _dset._data if row.has_tag(tag)]
+        tag_count = len(tag) if type(tag) in (list, tuple, set, frozenset) else 0
+        # Reuse ordinary string selections, but leave iterators and custom
+        # values to has_tag() so their consumption and errors stay unchanged.
+        # Small tables, short selections and heavily tagged rows keep the
+        # original C-level set operations. The cutoffs amortize validation
+        # in benchmarks; they are not universal timing crossover points.
+        if (
+            tag_count >= 20
+            and type(_dset) is Dataset
+            and type(_dset._data) is list
+            and len(_dset._data) >= 16
+            and all(type(value) is str for value in tag)
+            and all(
+                type(row) is Row
+                and type(row.tags) is list
+                and len(row.tags) * 2 <= tag_count
+                and all(type(value) is str for value in row.tags)
+                for row in _dset._data
+            )
+        ):
+            tags = set(tag)
+            _dset._data = [row for row in _dset._data if not tags.isdisjoint(row.tags)]
+        else:
+            _dset._data = [row for row in _dset._data if row.has_tag(tag)]
 
         return _dset
 
