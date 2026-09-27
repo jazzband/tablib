@@ -107,6 +107,9 @@ class Row:
             return bool(len(set(tag) & set(self.tags)))
 
 
+_DEFAULT_ROW_HAS_TAG = Row.has_tag
+
+
 class Dataset:
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
@@ -655,21 +658,23 @@ class Dataset:
             _dset._data = []
             return _dset
         tag_count = len(tag) if type(tag) in (list, tuple, set, frozenset) else 0
+        prebuilt_set = type(tag) in (set, frozenset)
         # Reuse ordinary string selections, but leave iterators and custom
         # values to has_tag() so their consumption and errors stay unchanged.
-        # Small tables, short selections and heavily tagged rows keep the
-        # original C-level set operations. The cutoffs amortize validation
-        # in benchmarks; they are not universal timing crossover points.
+        # Copying a prebuilt set is cheaper than rebuilding a sequence. Use
+        # stricter cutoffs for it, and keep heavily tagged rows on the original
+        # C-level operations. These are heuristics, not universal crossovers.
         if (
-            tag_count >= 20
+            tag_count >= (100 if prebuilt_set else 20)
+            and Row.has_tag is _DEFAULT_ROW_HAS_TAG
             and type(_dset) is Dataset
             and type(_dset._data) is list
-            and len(_dset._data) >= 16
+            and len(_dset._data) >= (64 if prebuilt_set else 16)
             and all(type(value) is str for value in tag)
             and all(
                 type(row) is Row
                 and type(row.tags) is list
-                and len(row.tags) * 2 <= tag_count
+                and len(row.tags) * (8 if prebuilt_set else 4) <= tag_count
                 and all(type(value) is str for value in row.tags)
                 for row in _dset._data
             )

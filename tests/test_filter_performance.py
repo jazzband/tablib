@@ -228,12 +228,17 @@ def test_filter_large_selection_keeps_order_and_duplicates():
     assert list(dataset.filter(selection)) == [(0,), (1,), (3,)]
 
 
-@pytest.mark.parametrize('rows,queries,row_tags,fast', [
-    (15, 20, 3, False), (16, 19, 3, False), (16, 20, 3, True),
-    (16, 20, 10, True), (16, 20, 11, False), (2, 100, 3, False),
+@pytest.mark.parametrize('rows,queries,row_tags,fast_sequence,fast_set', [
+    (15, 20, 3, False, False), (16, 19, 3, False, False),
+    (16, 20, 3, True, False), (16, 20, 5, True, False),
+    (16, 20, 6, False, False), (16, 20, 10, False, False),
+    (16, 20, 11, False, False), (2, 100, 3, False, False),
+    (63, 100, 12, True, False), (64, 99, 12, True, False),
+    (64, 100, 12, True, True), (64, 100, 13, True, False),
+    (64, 100, 25, True, False), (64, 100, 26, False, False),
 ])
 @pytest.mark.parametrize('container', [list, tuple, set, frozenset])
-def test_filter_dispatch_boundaries(rows, queries, row_tags, fast, container):
+def test_filter_dispatch_boundaries(rows, queries, row_tags, fast_sequence, fast_set, container):
     dataset = Dataset(headers=['value'], title='Boundary')
     for value in range(rows):
         tags = [f'tag{index}' for index in range(row_tags)]
@@ -249,12 +254,47 @@ def test_filter_dispatch_boundaries(rows, queries, row_tags, fast, container):
         calls.append(row)
         return original(row, tag)
 
-    with patch.object(Row, 'has_tag', has_tag):
+    # Treat the counting wrapper as the default only for dispatch observation.
+    # A separate regression test checks that real method patches use fallback.
+    with (
+        patch.object(Row, 'has_tag', has_tag),
+        patch('tablib.core._DEFAULT_ROW_HAS_TAG', has_tag),
+    ):
         actual = dataset.filter(selection)
+    fast = fast_set if container in (set, frozenset) else fast_sequence
     assert len(calls) == (0 if fast else rows)
     assert actual._data == expected._data
     assert actual.headers == expected.headers
     assert actual.title == expected.title
+
+
+@pytest.mark.parametrize('rows', [15, 16, 64])
+@pytest.mark.parametrize('container', [list, tuple, set, frozenset])
+@pytest.mark.parametrize('behavior', ['exclude', 'casefold', 'raise'])
+def test_filter_keeps_patched_has_tag_behavior(rows, container, behavior):
+    def run(method):
+        dataset = Dataset(*([index] for index in range(rows)), headers=['value'])
+        for row in dataset._data:
+            row.tags = ['WANTED' if behavior == 'casefold' else 'wanted']
+        selection = container(['wanted'] + [f'query{index}' for index in range(99)])
+        calls = []
+
+        def has_tag(row, tag):
+            calls.append(row._row[0])
+            if behavior == 'raise':
+                raise ValueError('custom tag check')
+            if behavior == 'exclude':
+                return False
+            return any(value.casefold() in tag for value in row.tags)
+
+        with patch.object(Row, 'has_tag', has_tag):
+            try:
+                result = list(method(dataset, selection))
+            except ValueError as error:
+                result = type(error), error.args
+        return result, calls
+
+    assert run(Dataset.filter) == run(original_filter)
 
 
 def test_filter_fast_sized_unhashable_tags_keep_original_error():
