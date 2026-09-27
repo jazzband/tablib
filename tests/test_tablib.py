@@ -610,6 +610,46 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(subset._data[0].list, ['John', 90])
         self.assertEqual(subset._data[1].list, ['Thomas', 50])
 
+    def test_subset_preserves_selection_behavior(self):
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(self.george)
+        data.append(self.tom)
+
+        subset = data.subset(
+            rows=(2, 0, 2, -1, 99),
+            cols=('gpa', 'missing', 'first_name', 'gpa'),
+        )
+
+        self.assertEqual(subset.headers, ['gpa', 'first_name', 'gpa'])
+        self.assertEqual(subset._data[0].list, [90, 'John', 90])
+        self.assertEqual(subset._data[1].list, [50, 'Thomas', 50])
+
+    def test_subset_preserves_no_matching_column_behavior(self):
+        data.headers = self.headers
+        data.append(self.john)
+
+        for columns in ([], ['missing']):
+            with self.subTest(columns=columns):
+                with self.assertRaisesRegex(TypeError, "'NoneType' object is not iterable"):
+                    data.subset(cols=columns)
+
+    def test_subset_preserves_unhashable_row_selection(self):
+        class FirstRow:
+            __hash__ = None
+
+            def __eq__(self, other):
+                return other == 0
+
+        data.headers = self.headers
+        data.append(self.john)
+        data.append(self.george)
+
+        subset = data.subset(rows=[1, FirstRow()], cols=['first_name'])
+        self.assertEqual(subset[0], ('John',))
+        self.assertEqual(subset[1], ('George',))
+        self.assertEqual(subset.height, 2)
+
     def test_formatters(self):
         """Confirm formatters are being triggered."""
 

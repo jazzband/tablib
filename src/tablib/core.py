@@ -107,6 +107,9 @@ class Row:
             return bool(len(set(tag) & set(self.tags)))
 
 
+_DEFAULT_ROW_GETITEM = Row.__getitem__
+
+
 class Dataset:
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
@@ -836,24 +839,72 @@ class Dataset:
 
         # filter out impossible rows and columns
         rows = [row for row in rows if row in range(self.height)]
+        # Keep list membership for selectors with custom equality or hashing.
+        if all(type(row) is int for row in rows):
+            rows = set(rows)
         cols = [header for header in cols if header in self.headers]
 
         _dset = Dataset()
 
         # filtering rows and columns
         _dset.headers = list(cols)
-
         _dset._data = []
-        for row_no, row in enumerate(self._data):
-            data_row = []
-            for key in _dset.headers:
-                if key in self.headers:
-                    pos = self.headers.index(key)
-                    data_row.append(row[pos])
-                else:
-                    raise KeyError
+        col_indexes = None
+        header_width = (
+            len(self.headers)
+            if type(self) is Dataset and type(self.headers) is list
+            else None
+        )
+        # Small tables and custom/inconsistent inputs keep the original path,
+        # including reads of unselected rows and their possible exceptions.
+        if (
+            type(self) is Dataset
+            and type(self._data) is list
+            and len(self._data) >= 16
+            and type(rows) is set
+            and Row.__getitem__ is _DEFAULT_ROW_GETITEM
+            and header_width is not None
+            and all(type(header) is str for header in _dset.headers)
+            and all(
+                type(row) is Row
+                and type(row._row) is list
+                and len(row._row) == header_width
+                for row in self._data
+            )
+        ):
+            # Stop at the last needed first occurrence, not the end of a wide
+            # header list. Never compare a custom header while probing: let
+            # the original path perform its comparisons and side effects.
+            remaining = set(_dset.headers)
+            positions = {}
+            for index, header in enumerate(self.headers):
+                if type(header) is not str:
+                    break
+                if header in remaining:
+                    positions[header] = index
+                    remaining.remove(header)
+                    if not remaining:
+                        col_indexes = [positions[header] for header in _dset.headers]
+                        break
+            else:
+                # A selector may have removed a previously accepted header.
+                raise KeyError
 
+        if col_indexes is None:
+            for row_no, row in enumerate(self._data):
+                data_row = []
+                for header in _dset.headers:
+                    if header in self.headers:
+                        data_row.append(row[self.headers.index(header)])
+                    else:
+                        raise KeyError
+                if row_no in rows:
+                    _dset.append(row=Row(data_row))
+            return _dset
+
+        for row_no, row in enumerate(self._data):
             if row_no in rows:
+                data_row = [row[index] for index in col_indexes]
                 _dset.append(row=Row(data_row))
 
         return _dset
