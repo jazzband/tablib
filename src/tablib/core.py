@@ -650,6 +650,10 @@ class Dataset:
         that do not contain the given :ref:`tags <tags>`.
         """
         _dset = copy(self)
+        if type(_dset) is Dataset and type(_dset._data) is list and not _dset._data:
+            # Keep the shallow-copy metadata, but don't share the row list.
+            _dset._data = []
+            return _dset
         tag_count = len(tag) if type(tag) in (list, tuple, set, frozenset) else 0
         # Reuse ordinary string selections, but leave iterators and custom
         # values to has_tag() so their consumption and errors stay unchanged.

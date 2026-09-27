@@ -61,6 +61,77 @@ def test_empty_filter_does_not_validate_selection(selection):
     assert Dataset().filter(selection).height == 0
 
 
+@pytest.mark.parametrize('selection', [None, 0, [], [['invalid']], ['tag'] * 20])
+def test_empty_filter_preserves_metadata_and_detaches_rows(selection):
+    dataset = Dataset(headers=['value'], title='Empty source')
+    dataset.add_formatter(0, str)
+    dataset.append_separator('Source marker')
+    dataset._dynamic_columns[0] = str
+    dataset.custom_marker = object()
+    result = dataset.filter(selection)
+    assert result is not dataset and result.height == 0
+    assert result._data is not dataset._data
+    assert result.headers is dataset.headers
+    assert result.title == dataset.title
+    assert result.custom_marker is dataset.custom_marker
+    for name in ('_formatters', '_dynamic_columns', '_separators'):
+        assert getattr(result, name) is getattr(dataset, name)
+    result.append(['Synthetic A'])
+    assert dataset.height == 0
+
+
+def test_empty_filter_does_not_consume_an_iterator():
+    selection = iter(['a', 'b'])
+    assert Dataset().filter(selection).height == 0
+    assert list(selection) == ['a', 'b']
+
+
+def test_empty_filter_does_not_call_a_required_subclass_constructor():
+    class RequiredArgumentDataset(Dataset):
+        def __init__(self, token, **kwargs):
+            super().__init__(**kwargs)
+            self.token = token
+
+    dataset = RequiredArgumentDataset('example-token', headers=['value'], title='Subclass')
+    result = dataset.filter(['missing'] * 20)
+    assert type(result) is RequiredArgumentDataset
+    assert result.token == dataset.token
+    assert result.headers is dataset.headers and result.title == dataset.title
+    assert result._data is not dataset._data
+
+
+def test_empty_filter_keeps_custom_row_container_iteration():
+    def run(method):
+        events = []
+
+        class Rows(list):
+            def __bool__(self):
+                events.append('bool')
+                return False
+
+            def __iter__(self):
+                events.append('iter')
+                return super().__iter__()
+
+        dataset = Dataset()
+        dataset._data = Rows()
+        result = method(dataset, ['missing'] * 20)
+        return list(result), events
+
+    assert run(Dataset.filter) == run(original_filter)
+
+
+def test_empty_filter_checks_the_copied_dataset():
+    class CustomCopyDataset(Dataset):
+        def __copy__(self):
+            result = Dataset(['Synthetic A'], headers=['value'], title='Custom copy')
+            result._data[0].tags = ['wanted']
+            return result
+
+    dataset = CustomCopyDataset()
+    assert list(dataset.filter('wanted')) == list(original_filter(dataset, 'wanted'))
+
+
 @pytest.mark.parametrize('tags', [['a', []], [[]], ['a', {'x': 1}]])
 def test_filter_still_validates_all_row_tags(tags):
     dataset = Dataset([1])
