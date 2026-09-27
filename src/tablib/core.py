@@ -107,6 +107,9 @@ class Row:
             return bool(len(set(tag) & set(self.tags)))
 
 
+_DEFAULT_ROW_GETITEM = Row.__getitem__
+
+
 class Dataset:
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
@@ -846,13 +849,48 @@ class Dataset:
         # filtering rows and columns
         _dset.headers = list(cols)
         _dset._data = []
-        # Custom headers can change equality or raise their own exceptions.
-        # Keep their original per-row comparisons instead of caching them.
+        col_indexes = None
+        header_width = (
+            len(self.headers)
+            if type(self) is Dataset and type(self.headers) is list
+            else None
+        )
+        # Small tables and custom/inconsistent inputs keep the original path,
+        # including reads of unselected rows and their possible exceptions.
         if (
-            type(self) is not Dataset
-            or not all(type(header) is str for header in self.headers)
-            or not all(type(header) is str for header in _dset.headers)
+            type(self) is Dataset
+            and type(self._data) is list
+            and len(self._data) >= 16
+            and type(rows) is set
+            and Row.__getitem__ is _DEFAULT_ROW_GETITEM
+            and header_width is not None
+            and all(type(header) is str for header in _dset.headers)
+            and all(
+                type(row) is Row
+                and type(row._row) is list
+                and len(row._row) == header_width
+                for row in self._data
+            )
         ):
+            # Stop at the last needed first occurrence, not the end of a wide
+            # header list. Never compare a custom header while probing: let
+            # the original path perform its comparisons and side effects.
+            remaining = set(_dset.headers)
+            positions = {}
+            for index, header in enumerate(self.headers):
+                if type(header) is not str:
+                    break
+                if header in remaining:
+                    positions[header] = index
+                    remaining.remove(header)
+                    if not remaining:
+                        col_indexes = [positions[header] for header in _dset.headers]
+                        break
+            else:
+                # A selector may have removed a previously accepted header.
+                raise KeyError
+
+        if col_indexes is None:
             for row_no, row in enumerate(self._data):
                 data_row = []
                 for header in _dset.headers:
@@ -863,13 +901,6 @@ class Dataset:
                 if row_no in rows:
                     _dset.append(row=Row(data_row))
             return _dset
-
-        col_indexes = []
-        for header in _dset.headers:
-            # A selector may have changed headers while it was consumed.
-            if header not in self.headers:
-                raise KeyError
-            col_indexes.append(self.headers.index(header))
 
         for row_no, row in enumerate(self._data):
             if row_no in rows:
