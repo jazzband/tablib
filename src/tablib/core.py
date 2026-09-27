@@ -107,6 +107,9 @@ class Row:
             return bool(len(set(tag) & set(self.tags)))
 
 
+_DEFAULT_ROW_HAS_TAG = Row.has_tag
+
+
 class Dataset:
     """The :class:`Dataset` object is the heart of Tablib. It provides all core
     functionality.
@@ -650,7 +653,36 @@ class Dataset:
         that do not contain the given :ref:`tags <tags>`.
         """
         _dset = copy(self)
-        _dset._data = [row for row in _dset._data if row.has_tag(tag)]
+        if type(_dset) is Dataset and type(_dset._data) is list and not _dset._data:
+            # Keep the shallow-copy metadata, but don't share the row list.
+            _dset._data = []
+            return _dset
+        tag_count = len(tag) if type(tag) in (list, tuple, set, frozenset) else 0
+        prebuilt_set = type(tag) in (set, frozenset)
+        # Reuse ordinary string selections, but leave iterators and custom
+        # values to has_tag() so their consumption and errors stay unchanged.
+        # Copying a prebuilt set is cheaper than rebuilding a sequence. Use
+        # stricter cutoffs for it, and keep heavily tagged rows on the original
+        # C-level operations. These are heuristics, not universal crossovers.
+        if (
+            tag_count >= (100 if prebuilt_set else 20)
+            and Row.has_tag is _DEFAULT_ROW_HAS_TAG
+            and type(_dset) is Dataset
+            and type(_dset._data) is list
+            and len(_dset._data) >= (64 if prebuilt_set else 16)
+            and all(type(value) is str for value in tag)
+            and all(
+                type(row) is Row
+                and type(row.tags) is list
+                and len(row.tags) * (8 if prebuilt_set else 4) <= tag_count
+                and all(type(value) is str for value in row.tags)
+                for row in _dset._data
+            )
+        ):
+            tags = set(tag)
+            _dset._data = [row for row in _dset._data if not tags.isdisjoint(row.tags)]
+        else:
+            _dset._data = [row for row in _dset._data if row.has_tag(tag)]
 
         return _dset
 
