@@ -371,7 +371,7 @@ class Dataset:
             self.wipe()
             self.headers = list(pickle[0].keys())
             for row in pickle:
-                self.append(Row(list(row.values())))
+                self.append(Row([row[key] for key in self.headers]))
         else:
             raise UnsupportedFormat(error_details)
 

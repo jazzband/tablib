@@ -1732,6 +1732,24 @@ class JSONTests(BaseTestCase):
 
         self.assertEqual(json.loads(_json), json.loads(data.json))
 
+    def test_dict_rows_follow_header_keys(self):
+        data = tablib.Dataset()
+        data.dict = [
+            {'age': 90, 'first_name': 'John'},
+            {'first_name': 'George', 'age': 67},
+        ]
+        self.assertEqual(data.headers, ['age', 'first_name'])
+        self.assertEqual(data[0], (90, 'John'))
+        self.assertEqual(data[1], (67, 'George'))
+
+        loaded = tablib.Dataset().load(
+            '[{"age": 90, "first_name": "John"},'
+            ' {"first_name": "George", "age": 67}]',
+            'json',
+        )
+        self.assertEqual(loaded.headers, ['age', 'first_name'])
+        self.assertEqual(loaded[1], (67, 'George'))
+
     def test_json_export(self):
         """Verify exporting dataset object as JSON"""
 
