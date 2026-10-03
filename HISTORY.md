@@ -2,6 +2,11 @@
 
 ## 3.9.0 and newer
 
+### Bugfixes
+
+- Keep generated values in their intended columns after inserting columns into
+  a dataset with dynamic columns.
+
 See GitHub Releases:
 
 - https://github.com/jazzband/tablib/releases
