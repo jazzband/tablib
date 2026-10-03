@@ -795,6 +795,9 @@ class Dataset:
         if (
             type(self) is Dataset
             and type(other) is Dataset
+            and Row.__getitem__ is _DEFAULT_ROW_GETITEM
+            and Dataset.__getitem__ is _DEFAULT_DATASET_GETITEM
+            and Dataset.get_col is _DEFAULT_DATASET_GET_COL
             and type(self._data) is list
             and type(other._data) is list
             and all(
@@ -908,6 +911,12 @@ class Dataset:
                 _dset.append(row=Row(data_row))
 
         return _dset
+
+
+# Replaced accessors must keep the original column reads and call order.
+_DEFAULT_ROW_GETITEM = Row.__getitem__
+_DEFAULT_DATASET_GETITEM = Dataset.__getitem__
+_DEFAULT_DATASET_GET_COL = Dataset.get_col
 
 
 class Databook:

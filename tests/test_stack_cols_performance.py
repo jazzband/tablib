@@ -208,3 +208,60 @@ def test_stack_cols_wide_ragged_rows_keep_original_error():
     with pytest.raises(IndexError) as actual:
         left.stack_cols(right)
     assert str(actual.value) == str(expected.value)
+
+
+@pytest.mark.parametrize('accessor,headerless', [
+    ('row', False), ('row', True), ('dataset', False), ('get_col', True),
+])
+@pytest.mark.parametrize('columns', [15, 16, 17])
+@pytest.mark.parametrize('behavior', ['values', 'raise'])
+def test_stack_cols_preserves_patched_accessors(accessor, headerless, columns, behavior):
+    def run(method):
+        datasets = []
+        for offset, width in zip((0, 100), (columns // 2, columns - columns // 2)):
+            headers = None if headerless else [f'col{index}' for index in range(width)]
+            datasets.append(Dataset(
+                [offset + index for index in range(width)],
+                [offset + 50 + index for index in range(width)],
+                headers=headers,
+            ))
+        calls = []
+
+        def record_call(kind, value, key):
+            calls.append((kind, value, key))
+            if behavior == 'raise' and len(calls) == 4:
+                raise ValueError('custom accessor error')
+            return len(calls) * 1000
+
+        original_row_getitem = Row.__getitem__
+        original_dataset_getitem = Dataset.__getitem__
+        original_get_col = Dataset.get_col
+
+        def row_getitem(row, index):
+            offset = record_call('row', row._row[0], index)
+            return original_row_getitem(row, index) + offset
+
+        def dataset_getitem(dataset, key):
+            if not isinstance(key, str):
+                return original_dataset_getitem(dataset, key)
+            offset = record_call('dataset', dataset._data[0]._row[0], key)
+            return [value + offset for value in original_dataset_getitem(dataset, key)]
+
+        def get_col(dataset, index):
+            offset = record_call('get_col', dataset._data[0]._row[0], index)
+            return [value + offset for value in original_get_col(dataset, index)]
+
+        owner, name, replacement = {
+            'row': (Row, '__getitem__', row_getitem),
+            'dataset': (Dataset, '__getitem__', dataset_getitem),
+            'get_col': (Dataset, 'get_col', get_col),
+        }[accessor]
+        with patch.object(owner, name, replacement):
+            try:
+                result = method(*datasets)
+                outcome = 'ok', list(result), result.headers
+            except ValueError as error:
+                outcome = 'error', type(error), error.args
+        return outcome, calls
+
+    assert run(Dataset.stack_cols) == run(original_stack_cols)
