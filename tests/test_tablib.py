@@ -2011,6 +2011,32 @@ class JiraTests(BaseTestCase):
         self.assertIsNotNone(tablib.Dataset().jira)
 
 
+@unittest.skipIf(pandas is None, 'pandas is not installed')
+class DataFrameTests(BaseTestCase):
+    def test_empty_dataframe_roundtrip(self):
+        for headers in (['name', 'score'], [0, 1]):
+            for format_ in ('df', None):
+                with self.subTest(headers=headers, format=format_):
+                    source = tablib.Dataset(headers=headers)
+                    frame = source.export('df')
+                    restored = tablib.Dataset().load(frame, format_)
+                    self.assertEqual(restored.headers, headers)
+                    self.assertEqual(restored.width, len(headers))
+                    self.assertEqual(restored.height, 0)
+                    self.assertEqual(restored.export('csv'), source.export('csv'))
+
+    def test_empty_dataframe_replaces_existing_data(self):
+        frame = pandas.DataFrame(columns=['new_column'])
+        self.founders.load(frame, 'df')
+        self.assertEqual(self.founders.headers, ['new_column'])
+        self.assertEqual(self.founders.height, 0)
+
+    def test_nonempty_dataframe_roundtrip(self):
+        restored = tablib.Dataset().load(self.founders.export('df'), 'df')
+        self.assertEqual(restored.headers, self.founders.headers)
+        self.assertEqual(restored.dict, self.founders.dict)
+
+
 class DocTests(unittest.TestCase):
 
     def test_rst_formatter_doctests(self):
