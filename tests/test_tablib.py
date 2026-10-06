@@ -1472,8 +1472,10 @@ class XLSXTests(BaseTestCase):
         data = self._xlsx_cell_values_data(cls=tablib.Dataset)
         width_before = self._get_width(data, column_width)
         data.append([
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+            (
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue'
+            ),
         ])
         width_after = self._get_width(data, width_before)
         return width_before, width_after
@@ -1484,8 +1486,10 @@ class XLSXTests(BaseTestCase):
         data = self._xlsx_cell_values_data(cls=tablib.Databook)
         width_before = self._get_width(data, column_width)
         data.sheets()[0].append([
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+            (
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue'
+            ),
         ])
         width_after = self._get_width(data, width_before)
         return width_before, width_after
