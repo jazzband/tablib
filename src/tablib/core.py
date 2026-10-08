@@ -789,6 +789,60 @@ class Dataset:
 
         _dset = Dataset()
 
+        # Inspect width before scanning rows: narrow tables are faster with
+        # the original column loop. Subclasses keep their access semantics.
+        widths = None
+        if (
+            type(self) is Dataset
+            and type(other) is Dataset
+            and Row.__getitem__ is _DEFAULT_ROW_GETITEM
+            and Dataset.__getitem__ is _DEFAULT_DATASET_GETITEM
+            and Dataset.get_col is _DEFAULT_DATASET_GET_COL
+            and type(self._data) is list
+            and type(other._data) is list
+            and all(
+                headers is None or type(headers) is list
+                for headers in (self.headers, other.headers)
+            )
+        ):
+            if self.headers:
+                widths = (len(self.headers), len(other.headers))
+            elif self._data and all(
+                type(dset._data[0]) is Row and type(dset._data[0]._row) is list
+                for dset in (self, other)
+            ):
+                widths = (len(self._data[0]._row), len(other._data[0]._row))
+        # A conservative benchmark cutoff, not an exact complexity-based timer.
+        if (
+            widths is not None
+            and sum(widths) >= 16
+            and all(
+                headers is None or all(type(header) is str for header in headers)
+                for headers in (self.headers, other.headers)
+            )
+            and all(
+                type(row) is Row and type(row._row) is list and len(row._row) == width
+                for dset, width in zip((self, other), widths)
+                for row in dset._data
+            )
+        ):
+            indexes = []
+            for dset, width in zip((self, other), widths):
+                if dset.headers:
+                    first_indexes = {}
+                    for index, header in enumerate(dset.headers):
+                        first_indexes.setdefault(header, index)
+                    indexes.append([first_indexes[header] for header in dset.headers])
+                else:
+                    indexes.append(range(width))
+            for left, right in zip(self._data, other._data):
+                _dset.append(
+                    [left[index] for index in indexes[0]]
+                    + [right[index] for index in indexes[1]]
+                )
+            _dset.headers = new_headers
+            return _dset
+
         if self.headers:
             for column in self.headers:
                 _dset.append_col(col=self[column])
@@ -857,6 +911,12 @@ class Dataset:
                 _dset.append(row=Row(data_row))
 
         return _dset
+
+
+# Replaced accessors must keep the original column reads and call order.
+_DEFAULT_ROW_GETITEM = Row.__getitem__
+_DEFAULT_DATASET_GETITEM = Dataset.__getitem__
+_DEFAULT_DATASET_GET_COL = Dataset.get_col
 
 
 class Databook:
