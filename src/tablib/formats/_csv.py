@@ -34,11 +34,52 @@ class CSVFormat:
         stream = cls.export_stream_set(dataset, **kwargs)
         return stream.getvalue()
 
+    #: Delimiters considered when detecting the dialect of a CSV stream.
+    CANDIDATE_DELIMITERS = (',', ';', '	', '|', ':')
+
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, skip_lines=0, **kwargs):
+    def sniff_delimiter(cls, in_stream):
+        """Detect the delimiter used by a CSV stream.
+
+        Only a small set of common delimiters is considered, and the
+        default comma is used whenever the dialect cannot be determined
+        or only one column is present.
+        """
+        try:
+            position = in_stream.tell()
+        except (AttributeError, OSError):
+            position = None
+
+        try:
+            sample = in_stream.read(2048)
+        except Exception:
+            return cls.DEFAULT_DELIMITER
+
+        if position is not None:
+            in_stream.seek(position)
+
+        for candidate in cls.CANDIDATE_DELIMITERS:
+            if candidate not in sample:
+                continue
+            try:
+                dialect = csv.Sniffer().sniff(sample, delimiters=candidate)
+            except Exception:
+                continue
+            if dialect.delimiter == candidate:
+                return candidate
+
+        return cls.DEFAULT_DELIMITER
+
+    @classmethod
+    def import_set(
+            cls, dset, in_stream, headers=True, skip_lines=0, **kwargs
+    ):
         """Returns dataset from CSV stream."""
 
         dset.wipe()
+
+        if 'delimiter' not in kwargs and not skip_lines:
+            kwargs['delimiter'] = cls.sniff_delimiter(in_stream)
 
         kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
