@@ -1165,13 +1165,78 @@ class CSVTests(BaseTestCase):
         _csv = data.export('csv', **kwargs)
         self.assertEqual(expected, _csv)
 
-        # the import works but consider default delimiter=','
+        # the delimiter is now detected, so no explicit delimiter is needed
         d1 = tablib.import_set(_csv, format="csv")
-        self.assertEqual(1, len(d1.headers))
+        self.assertEqual(3, len(d1.headers))
 
         d2 = tablib.import_set(_csv, format="csv", **kwargs)
         self.assertEqual(3, len(d2.headers))
 
+
+    def test_csv_import_set_sniffs_colon_delimiter(self):
+        """Colon-separated CSV is detected without an explicit delimiter."""
+        csv_text = (
+            'test:test2\n'
+            'value1:value2\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(('test', 'test2'), tuple(data.headers))
+        self.assertEqual(('value1', 'value2'), tuple(data[0]))
+
+    def test_csv_import_set_sniffs_semicolon_delimiter(self):
+        """Semicolon-separated CSV is detected without an explicit
+        delimiter."""
+        csv_text = (
+            'a;b;c\n'
+            '1;2;3\n'
+            '4;5;6\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(('a', 'b', 'c'), tuple(data.headers))
+        self.assertEqual(('1', '2', '3'), tuple(data[0]))
+        self.assertEqual(('4', '5', '6'), tuple(data[1]))
+
+    def test_csv_import_set_sniffs_pipe_delimiter(self):
+        """Pipe-separated CSV is detected without an explicit delimiter."""
+        csv_text = (
+            'a|b|c\n'
+            '1|2|3\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(('a', 'b', 'c'), tuple(data.headers))
+        self.assertEqual(('1', '2', '3'), tuple(data[0]))
+
+    def test_csv_import_set_sniffs_tab_delimiter(self):
+        """Tab-separated CSV is detected without an explicit delimiter."""
+        csv_text = (
+            'a\tb\tc\n'
+            '1\t2\t3\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(('a', 'b', 'c'), tuple(data.headers))
+        self.assertEqual(('1', '2', '3'), tuple(data[0]))
+
+    def test_csv_import_set_single_column_falls_back_to_comma(self):
+        """A single-column CSV has no delimiter to detect, so it falls back
+        to the default without raising."""
+        csv_text = (
+            'name\n'
+            'Alice\n'
+            'Bob\n'
+        )
+        data.csv = csv_text
+        self.assertEqual(('name',), tuple(data.headers))
+        self.assertEqual(('Alice',), tuple(data[0]))
+
+    def test_csv_import_set_explicit_delimiter_still_wins(self):
+        """An explicitly supplied delimiter takes precedence over
+        detection."""
+        csv_text = (
+            'a;b;c\n'
+            '1;2;3\n'
+        )
+        data.set_csv(csv_text, delimiter='|')
+        self.assertEqual(('a;b;c',), tuple(data.headers))
 
 class TSVTests(BaseTestCase):
     def test_tsv_import_set(self):
