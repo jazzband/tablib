@@ -5,6 +5,7 @@ __lazy_modules__ = {
     "io",
     "os",
     "tablib._vendor",
+    "tablib.core",
     "tempfile",
 }
 
@@ -14,6 +15,7 @@ import tempfile
 
 from .._vendor.dbfpy import dbf, dbfnew
 from .._vendor.dbfpy import record as dbfrecord
+from ..core import Dataset, Row
 
 
 class DBFFormat:
@@ -39,10 +41,42 @@ class DBFFormat:
         new_dbf.write(temp_uri)
 
         dbf_file = dbf.Dbf(temp_uri, readOnly=0)
+        indexes = None
+        # Only validate/cache when there is enough lookup work to amortize it.
+        # These conservative size cutoffs come from paired benchmarks.
+        if (
+            type(dataset) is Dataset
+            and type(dataset.headers) is list
+            and type(dataset._data) is list
+            and len(dataset.headers) >= 10
+            and (
+                len(dataset._data) >= 100
+                or (len(dataset.headers) >= 20 and len(dataset._data) >= 10)
+            )
+            and all(type(name) is str for name in dataset.headers)
+            and all(
+                type(row) is Row
+                and type(row._row) is list
+                and all(
+                    type(value) in (str, bytes, int, float, bool, type(None))
+                    for value in row._row
+                )
+                for row in dataset._data
+            )
+        ):
+            first_indexes = {}
+            for index, name in enumerate(dbf_file.fieldNames):
+                first_indexes.setdefault(name, index)
+            if all(name.upper() in first_indexes for name in dataset.headers):
+                indexes = [first_indexes[name.upper()] for name in dataset.headers]
         for row in dataset:
             record = dbfrecord.DbfRecord(dbf_file)
-            for fieldname, field_value in zip(dataset.headers, row):
-                record[fieldname] = field_value
+            if indexes is None:
+                for fieldname, field_value in zip(dataset.headers, row):
+                    record[fieldname] = field_value
+            else:
+                for index, field_value in zip(indexes, row):
+                    record.fieldData[index] = field_value
             record.store()
 
         dbf_file.close()
@@ -60,6 +94,28 @@ class DBFFormat:
         dset.wipe()
         _dbf = dbf.Dbf(in_stream)
         dset.headers = _dbf.fieldNames
+        # A BytesIO stream has stable reads. Custom streams retain the original
+        # per-field reads, including any side effects they may have.
+        if (
+            type(in_stream) is io.BytesIO
+            and type(dset) is Dataset
+            and _dbf.recordCount > 0
+            and dset.headers is not None
+            and (
+                len(dset.headers) >= 2
+                or (len(dset.headers) == 1 and _dbf.recordCount >= 16)
+            )
+        ):
+            names = _dbf.fieldNames
+            first_indexes = {}
+            for index, name in enumerate(names):
+                first_indexes.setdefault(name, index)
+            indexes = [first_indexes[name.upper()] for name in names]
+            for index in range(_dbf.recordCount):
+                record = _dbf[index]
+                row = [record[field] for field in indexes]
+                dset.append(row)
+            return
         for record in range(_dbf.recordCount):
             row = [_dbf[record][f] for f in _dbf.fieldNames]
             dset.append(row)
