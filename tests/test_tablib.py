@@ -2091,6 +2091,24 @@ class SQLFormatTests(unittest.TestCase):
         )
         self.assertEqual(sql, expected)
 
+    def test_sql_column_formatter(self):
+        data = tablib.Dataset([1, "O'Reilly"], headers=['id', 'name'])
+        data.add_formatter('name', str.upper)
+        self.assertEqual(
+            data.export('sql'),
+            "INSERT INTO export_table (id,name) VALUES (1, 'O''REILLY');\n",
+        )
+        self.assertEqual(data[0], (1, "O'Reilly"))
+
+    def test_sql_all_column_formatter_without_headers(self):
+        data = tablib.Dataset([1, 2])
+        data.add_formatter(None, lambda value: value * 10)
+        self.assertEqual(
+            data.export('sql', columns=['first', 'second']),
+            'INSERT INTO export_table (first,second) VALUES (10, 20);\n',
+        )
+        self.assertEqual(data[0], (1, 2))
+
     def test_sql_no_headers(self):
         # Test SQL export without headers
         ds = tablib.Dataset(title='t')

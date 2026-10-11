@@ -59,7 +59,10 @@ class SQLFormat:
         )
         columns_headers = f' ({columns_headers})' if columns_headers else ''
         statements = []
-        for row in dataset._data:
+        rows = dataset._package(dicts=False)
+        if dataset.headers:
+            rows = rows[1:]
+        for row in rows:
             values = ', '.join(cls._render_literal(v) for v in row)
             statements.append(
                 f'INSERT INTO {tbl_ident}{columns_headers} VALUES ({values});'
