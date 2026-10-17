@@ -147,6 +147,9 @@ ods
 
 Import/export data in OpenDocument Spreadsheet format.
 
+When importing into a :class:`~tablib.Dataset`, only the first sheet is read.
+Use :class:`~tablib.Databook` to import all sheets.
+
 .. versionadded:: 3.6.0
 
     Import functionality was added.

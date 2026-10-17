@@ -182,6 +182,7 @@ class ODSFormat:
         for sheet in ods_book.spreadsheet.childNodes:
             if sheet.qname[1] == 'table':
                 cls.import_sheet(dset, sheet, headers, skip_lines)
+                break
 
     @classmethod
     def import_book(cls, dbook, in_stream, headers=True):
