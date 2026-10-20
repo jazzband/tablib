@@ -2044,6 +2044,18 @@ class CliTests(BaseTestCase):
 
 
 class SQLFormatTests(unittest.TestCase):
+    def test_sql_nonfinite_decimals(self):
+        for value in ('NaN', '-NaN', 'sNaN', 'Infinity', '-Infinity'):
+            with self.subTest(value=value):
+                ds = tablib.Dataset([Decimal(value)], title='t')
+                self.assertEqual(ds.export('sql'), 'INSERT INTO t VALUES (NULL);\n')
+
+    def test_sql_finite_decimals(self):
+        for value in ('0', '-0', '3.1400', '1E+30', '1.2345678901234567890123456789'):
+            with self.subTest(value=value):
+                ds = tablib.Dataset([Decimal(value)], title='t')
+                self.assertEqual(ds.export('sql'), f'INSERT INTO t VALUES ({value});\n')
+
     def test_sql_date_and_timestamp_literals(self):
         # ANSI SQL date and timestamp literals
         ds = tablib.Dataset(title='tbl')
