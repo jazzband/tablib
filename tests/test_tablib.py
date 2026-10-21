@@ -627,6 +627,39 @@ class TablibTestCase(BaseTestCase):
         # Test once more as the result should be the same
         self.assertEqual(self.founders.dict, expected)
 
+    def test_formatters_after_column_deletion(self):
+        for column in ('name', 1, -2):
+            with self.subTest(column=column):
+                dataset = tablib.Dataset(['7', 'Ada', 'London'],
+                                         headers=['id', 'name', 'city'])
+                dataset.add_formatter(column, str.upper)
+                del dataset['id']
+                self.assertEqual(dataset.dict, [{'name': 'ADA', 'city': 'London'}])
+
+    def test_deleted_column_formatter_is_removed(self):
+        for column in ('name', 0, -2):
+            with self.subTest(column=column):
+                dataset = tablib.Dataset(['Ada', 42], headers=['name', 'age'])
+                dataset.add_formatter(column, str.upper)
+                del dataset['name']
+                self.assertEqual(dataset.dict, [{'age': 42}])
+
+    def test_formatters_keep_order_after_column_deletion(self):
+        dataset = tablib.Dataset(['Ada', 'London', 'unused'],
+                                 headers=['name', 'city', 'extra'])
+        dataset.add_formatter(None, str.upper)
+        dataset.add_formatter(-3, lambda value: value + '!')
+        del dataset['extra']
+        self.assertEqual(dataset.dict, [{'name': 'ADA!', 'city': 'LONDON'}])
+        self.assertEqual(dataset[0], ('Ada', 'London'))
+
+    def test_negative_formatter_stays_relative_after_column_deletion(self):
+        dataset = tablib.Dataset(['unused', 'london'], headers=['id', 'city'])
+        dataset.add_formatter(-1, str.upper)
+        del dataset['id']
+        dataset.append_col(['paris'], header='new')
+        self.assertEqual(dataset.dict, [{'city': 'london', 'new': 'PARIS'}])
+
     def test_formatters_all_cols(self):
         """
         Passing None as first add_formatter param apply formatter to all columns.
