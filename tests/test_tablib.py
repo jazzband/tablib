@@ -240,7 +240,7 @@ class TablibTestCase(BaseTestCase):
 
         self.assertEqual(self.founders['gpa'],
                          [self.john[2], self.george[2], self.tom[2]])
-    
+
     def test_get_missing_column_includes_name(self):
         """Missing column access should include its name in KeyError."""
 
@@ -262,7 +262,7 @@ class TablibTestCase(BaseTestCase):
             error.exception.args,
             ("missing_column",)
         )
-    
+
     def test_get(self):
         """Verify getting rows by index"""
 
