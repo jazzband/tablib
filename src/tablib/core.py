@@ -182,7 +182,7 @@ class Dataset:
                 pos = self.headers.index(key)  # get 'key' index from each data
                 return [row[pos] for row in self._data]
             else:
-                raise KeyError
+                raise KeyError(key)
         else:
             _results = self._data[key]
             if isinstance(_results, Row):
@@ -211,7 +211,7 @@ class Dataset:
                     del row[pos]
                     self._data[i] = row
             else:
-                raise KeyError
+                raise KeyError(key)
         else:
             del self._data[key]
 
