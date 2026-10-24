@@ -104,18 +104,30 @@ It's that easy.
 --------------
 Importing Data
 --------------
-Creating a :class:`tablib.Dataset` object by importing a pre-existing file is simple. ::
+Creating a :class:`tablib.Dataset` object by importing a pre-existing file is simple.
+Open text formats, such as CSV, in text mode with the appropriate encoding. ::
 
-    with open('data.csv', 'r') as fh:
+    with open('data.csv', 'r', encoding='utf-8', newline='') as fh:
         imported_data = Dataset().load(fh)
 
-This detects what sort of data is being passed in, and uses an appropriate formatter to do the import. So you can import from a variety of different file types.
+Open binary formats, such as XLSX, in binary mode. ::
+
+    with open('data.xlsx', 'rb') as fh:
+        imported_data = Dataset().load(fh)
+
+When ``format`` is omitted, Tablib tries to detect the format from the supplied content.
+This does not open files or choose text or binary mode for you.
+Pass ``format='csv'`` or ``format='xlsx'`` to select a format explicitly.
+
+:meth:`Dataset.load` accepts a file-like object, a string containing text data,
+or a bytestring containing binary data. A filename passed as a string is treated
+as data, not as a path to open.
 
 .. admonition:: Source without headers
 
     When the format is :class:`csv <Dataset.csv>`, :class:`tsv <Dataset.tsv>`, :class:`dbf <Dataset.dbf>`, :class:`xls <Dataset.xls>` or :class:`xlsx <Dataset.xlsx>`, and the data source does not have headers, the import should be done as follows ::
 
-    with open('data.csv', 'r') as fh:
+    with open('data.csv', 'r', encoding='utf-8', newline='') as fh:
         imported_data = Dataset().load(fh, headers=False)
 
 --------------
