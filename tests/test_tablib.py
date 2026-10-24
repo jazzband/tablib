@@ -591,6 +591,59 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(data.width, len(new_row))
         self.assertEqual(data[0], new_row)
 
+    def test_dict_import(self):
+        """Verify a list of dicts can be loaded with the dict attribute."""
+
+        data.dict = [
+            {'first_name': 'John', 'last_name': 'Adams', 'gpa': 90},
+            {'first_name': 'George', 'last_name': 'Washington', 'gpa': 67},
+        ]
+
+        self.assertEqual(data.headers, list(self.headers))
+        self.assertEqual(data.height, 2)
+        self.assertEqual(data[0], self.john)
+        self.assertEqual(data[1], self.george)
+
+    def test_dict_import_missing_keys(self):
+        """Verify keys missing from a dict are filled with None (#491)."""
+
+        data.dict = [
+            {'first_name': 'John', 'last_name': 'Adams', 'gpa': 90},
+            {'first_name': 'George'},
+            {'last_name': 'Jefferson', 'gpa': 50},
+        ]
+
+        self.assertEqual(data.headers, list(self.headers))
+        self.assertEqual(data[0], self.john)
+        self.assertEqual(data[1], ('George', None, None))
+        self.assertEqual(data[2], (None, 'Jefferson', 50))
+
+    def test_dict_import_extra_keys(self):
+        """Verify keys absent from the first dict are added as columns (#491)."""
+
+        data.dict = [
+            {'first_name': 'John'},
+            {'first_name': 'George', 'last_name': 'Washington'},
+            {'gpa': 50, 'first_name': 'Thomas'},
+        ]
+
+        self.assertEqual(data.headers, ['first_name', 'last_name', 'gpa'])
+        self.assertEqual(data[0], ('John', None, None))
+        self.assertEqual(data[1], ('George', 'Washington', None))
+        self.assertEqual(data[2], ('Thomas', None, 50))
+
+    def test_dict_import_unordered_keys(self):
+        """Verify values are matched to columns by key, not by position (#491)."""
+
+        data.dict = [
+            {'first_name': 'John', 'last_name': 'Adams', 'gpa': 90},
+            {'gpa': 67, 'last_name': 'Washington', 'first_name': 'George'},
+        ]
+
+        self.assertEqual(data.headers, list(self.headers))
+        self.assertEqual(data[0], self.john)
+        self.assertEqual(data[1], self.george)
+
     def test_subset(self):
         """Create a subset of a dataset"""
 
@@ -1759,6 +1812,15 @@ class JSONTests(BaseTestCase):
         expected_yaml = "- [1, 2]\n- [3, 4]\n"
         dset = tablib.Dataset().load(in_stream=input_json, format="json")
         self.assertEqual(dset.export("yaml"), expected_yaml)
+
+    def test_json_import_set_with_missing_keys(self):
+        """JSON objects with differing keys are loaded into a single set (#491)."""
+        input_json = '[{"a": 1, "b": 2}, {"b": 4}, {"b": 6, "c": 7, "a": 5}]'
+        dset = tablib.Dataset().load(in_stream=input_json, format="json")
+        self.assertEqual(dset.headers, ['a', 'b', 'c'])
+        self.assertEqual(dset[0], (1, 2, None))
+        self.assertEqual(dset[1], (None, 4, None))
+        self.assertEqual(dset[2], (5, 6, 7))
 
 
 class YAMLTests(BaseTestCase):
