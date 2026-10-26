@@ -1777,6 +1777,19 @@ class YAMLTests(BaseTestCase):
         self.assertFalse(fmt.detect(_bunk))
         self.assertFalse(fmt.detect(_tsv))
 
+    def test_yaml_format_detect_unsupported_documents(self):
+        fmt = registry.get_format('yaml')
+        for source in ('---\n- first\n---\n- second\n', '- *missing\n', '!custom [1, 2]\n'):
+            with self.subTest(source=source):
+                self.assertFalse(fmt.detect(source))
+
+    def test_auto_detect_csv_with_tag_like_header(self):
+        source = '!name,age\nAlice,30\n'
+        self.assertEqual(detect_format(source), 'csv')
+        dataset = tablib.Dataset().load(source)
+        self.assertEqual(dataset.headers, ['!name', 'age'])
+        self.assertEqual(dataset[0], ('Alice', '30'))
+
     def test_yaml_import_book(self):
         """Generate and import YAML book serialization."""
         data.append(self.john)
