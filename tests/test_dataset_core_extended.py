@@ -20,7 +20,6 @@ from tablib import Dataset
 from tablib.core import Row
 from tablib.exceptions import (
     HeadersNeeded,
-    InvalidDatasetIndex,
     InvalidDimensions,
 )
 
