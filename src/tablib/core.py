@@ -11,11 +11,14 @@
 __lazy_modules__ = {
     "copy",
     "operator",
+    "sys",
     "tablib.exceptions",
     "tablib.utils",
 }
 
+import sys
 from copy import copy
+from operator import index as operator_index
 from operator import itemgetter
 
 from .exceptions import (
@@ -548,9 +551,14 @@ class Dataset:
         if col is None:
             col = []
 
+        index = operator_index(index)
+        if index > sys.maxsize or index < -sys.maxsize - 1:
+            raise OverflowError("Python int too large to convert to C ssize_t")
+        index = max(0, min(self.width, index if index >= 0 else self.width + index))
+
         # Callable Columns...
-        if callable(col):
-            self._dynamic_columns[self.width] = col
+        dynamic_col = col if callable(col) else None
+        if dynamic_col is not None:
             col = list(map(col, self._data))
 
         col = self._clean_col(col)
@@ -575,6 +583,14 @@ class Dataset:
                 self._data[i] = row
         else:
             self._data = [Row([row]) for row in col]
+
+        dynamic_columns = {
+            pos + 1 if pos >= index else pos: func
+            for pos, func in self._dynamic_columns.items()
+        }
+        if dynamic_col is not None:
+            dynamic_columns[index] = dynamic_col
+        self._dynamic_columns = dict(sorted(dynamic_columns.items()))
 
     def rpush_col(self, col, header=None):
         """Adds a column to the end of the :class:`Dataset`.
