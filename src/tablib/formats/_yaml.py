@@ -60,6 +60,5 @@ class YAMLFormat:
                 return True
             else:
                 return False
-        except (yaml.parser.ParserError, yaml.reader.ReaderError,
-                yaml.scanner.ScannerError):
+        except yaml.YAMLError:
             return False
