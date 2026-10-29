@@ -346,6 +346,10 @@ class Dataset:
             data = tablib.Dataset()
             data.dict = [{'age': 90, 'first_name': 'Kenneth', 'last_name': 'Reitz'}]
 
+        The headers are the keys of all the dictionaries, in order of first appearance.
+        Values are matched to columns by key, and a key missing from a dictionary
+        is filled with ``None``.
+
         """
         error_details = (
             "Please check format documentation "
@@ -369,9 +373,13 @@ class Dataset:
         # if list of objects
         elif isinstance(pickle[0], dict):
             self.wipe()
-            self.headers = list(pickle[0].keys())
+            # Headers are the keys of all rows, in order of first appearance.
+            headers = list(dict.fromkeys(key for row in pickle for key in row))
+            self.headers = headers
             for row in pickle:
-                self.append(Row(list(row.values())))
+                # Look values up by key, so key order doesn't matter and
+                # missing keys are filled with None.
+                self.append(Row([row.get(header) for header in headers]))
         else:
             raise UnsupportedFormat(error_details)
 
