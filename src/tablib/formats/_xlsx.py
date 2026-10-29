@@ -14,9 +14,11 @@ __lazy_modules__ = {
 import re
 from io import BytesIO
 
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.reader.excel import ExcelReader, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
+from openpyxl.utils.exceptions import IllegalCharacterError
 from openpyxl.workbook import Workbook
 
 import tablib
@@ -46,7 +48,8 @@ class XLSXFormat:
 
     @classmethod
     def export_set(cls, dataset, freeze_panes=True, invalid_char_subst="-",
-                   escape=False, column_width="adaptive"):
+                   escape=False, column_width="adaptive",
+                   sanitize_illegal_chars=None):
         """Returns XLSX representation of Dataset.
 
         If ``freeze_panes`` is True, Export will freeze panes only after first line.
@@ -65,6 +68,13 @@ class XLSXFormat:
         set to that integer value. If it is set to None, the column width will be set as the
         default openpyxl.Worksheet width value.
 
+        If ``sanitize_illegal_chars`` is a string, characters which are illegal in
+        an XLSX file (control characters matched by
+        ``openpyxl.cell.cell.ILLEGAL_CHARACTERS_RE``) will be replaced with that
+        string in string cell values (use ``""`` to strip them). If it is None
+        (the default) or False, such characters are left untouched and openpyxl
+        raises ``IllegalCharacterError``.
+
         """
         wb = Workbook()
         ws = wb.worksheets[0]
@@ -74,7 +84,10 @@ class XLSXFormat:
             if dataset.title else 'Tablib Dataset'
         )
 
-        cls.dset_sheet(dataset, ws, freeze_panes=freeze_panes, escape=escape)
+        cls.dset_sheet(
+            dataset, ws, freeze_panes=freeze_panes, escape=escape,
+            sanitize_illegal_chars=sanitize_illegal_chars,
+        )
 
         cls._adapt_column_width(ws, column_width)
 
@@ -84,7 +97,7 @@ class XLSXFormat:
 
     @classmethod
     def export_book(cls, databook, freeze_panes=True, invalid_char_subst="-",
-                    escape=False, column_width=None):
+                    escape=False, column_width=None, sanitize_illegal_chars=None):
         """Returns XLSX representation of DataBook.
         See export_set().
         """
@@ -99,7 +112,10 @@ class XLSXFormat:
                 if dset.title else f"Sheet{i}"
             )
 
-            cls.dset_sheet(dset, ws, freeze_panes=freeze_panes, escape=escape)
+            cls.dset_sheet(
+                dset, ws, freeze_panes=freeze_panes, escape=escape,
+                sanitize_illegal_chars=sanitize_illegal_chars,
+            )
 
             cls._adapt_column_width(ws, column_width)
 
@@ -148,7 +164,8 @@ class XLSXFormat:
             dbook.add_sheet(dset)
 
     @classmethod
-    def dset_sheet(cls, dataset, ws, freeze_panes=True, escape=False):
+    def dset_sheet(cls, dataset, ws, freeze_panes=True, escape=False,
+                   sanitize_illegal_chars=None):
         """Completes given worksheet from given Dataset."""
         _package = dataset._package(dicts=False)
 
@@ -183,6 +200,16 @@ class XLSXFormat:
 
                 try:
                     cell.value = col
+                except IllegalCharacterError:
+                    # openpyxl refuses control characters that are illegal in
+                    # XLSX. Replace them only if a replacement string was
+                    # requested, otherwise let the exception bubble up.
+                    if (sanitize_illegal_chars is None
+                            or sanitize_illegal_chars is False):
+                        raise
+                    cell.value = ILLEGAL_CHARACTERS_RE.sub(
+                        sanitize_illegal_chars, str(col)
+                    )
                 except ValueError:
                     cell.value = str(col)
 
