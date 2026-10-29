@@ -205,16 +205,19 @@ class TablibTestCase(BaseTestCase):
         self.founders.append(('Some', 'One', 71))
         # Also acceptable when all dynamic column values are provided.
         self.founders.append(('Other', 'Second', 84, 'Other', 'OS'))
+        # Callable placeholders for dynamic columns are resolved when adding rows.
+        self.founders.append(('Brad', 'Montgomery', 70, new_col, initials))
 
         self.assertEqual(self.founders[3], ('Some', 'One', 71, 'Some', 'SO'))
         self.assertEqual(self.founders[4], ('Other', 'Second', 84, 'Other', 'OS'))
+        self.assertEqual(self.founders[5], ('Brad', 'Montgomery', 70, 'Brad', 'BM'))
         self.assertEqual(
             self.founders['first_again'],
-            ['John', 'George', 'Thomas', 'Some', 'Other']
+            ['John', 'George', 'Thomas', 'Some', 'Other', 'Brad']
         )
         self.assertEqual(
             self.founders['initials'],
-            ['JA', 'GW', 'TJ', 'SO', 'OS']
+            ['JA', 'GW', 'TJ', 'SO', 'OS', 'BM']
         )
 
         # However only partial dynamic values provided is not accepted.
@@ -226,7 +229,7 @@ class TablibTestCase(BaseTestCase):
         self.founders.append(('After', 'Deletion', 75))
         self.assertEqual(
             self.founders['initials'],
-            ['JA', 'GW', 'TJ', 'SO', 'OS', 'AD']
+            ['JA', 'GW', 'TJ', 'SO', 'OS', 'BM', 'AD']
         )
 
     def test_header_slicing(self):
