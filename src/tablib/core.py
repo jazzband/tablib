@@ -704,7 +704,7 @@ class Dataset:
         _dset.headers = new_headers
         for index, column in enumerate(self.headers):
 
-            if column == self.headers[0]:
+            if index == 0:
                 # It's in the headers, so skip it
                 continue
 

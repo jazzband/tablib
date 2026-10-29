@@ -483,6 +483,31 @@ class TablibTestCase(BaseTestCase):
         data.append(('John', 'Tyler', 71))
         self.assertEqual(data.transpose().transpose().dict, data.dict)
 
+    def test_transpose_repeated_first_header(self):
+        data = tablib.Dataset(
+            ('John', 'Adams', 90),
+            ('George', 'Washington', 67),
+            headers=['name', 'last_name', 'name'],
+        )
+
+        transposed = data.transpose()
+
+        self.assertEqual(transposed.headers, ['name', 'John', 'George'])
+        self.assertEqual(list(transposed), [
+            ('last_name', 'Adams', 'Washington'),
+            ('name', 90, 67),
+        ])
+
+    def test_transpose_roundtrip_value_matching_first_header(self):
+        data = tablib.Dataset(
+            ('fname', 'Doe', '10'), headers=['fname', 'lname', 'age'],
+        )
+
+        roundtrip = data.transpose().transpose()
+
+        self.assertEqual(roundtrip.headers, data.headers)
+        self.assertEqual(list(roundtrip), list(data))
+
     def test_row_stacking(self):
         """Row stacking."""
 
