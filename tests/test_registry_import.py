@@ -1,23 +1,18 @@
 """Exercise registry entry points without first resolving Dataset or Databook."""
 
-import os
 import subprocess
 import sys
 import textwrap
 import unittest
-from pathlib import Path
 
 
 class RegistryImportTests(unittest.TestCase):
     def run_in_fresh_process(self, code):
-        env = os.environ.copy()
-        env['PYTHONPATH'] = str(Path(__file__).resolve().parents[1] / 'src')
         result = subprocess.run(
-            [sys.executable, '-X', 'utf8', '-c', textwrap.dedent(code)],
+            [sys.executable, '-c', textwrap.dedent(code)],
             capture_output=True,
             text=True,
             timeout=30,
-            env=env,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
