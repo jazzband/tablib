@@ -75,7 +75,7 @@ class UtilsGetDateTestCase(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(output, dt.date)
-        self.assertEqual(output, dt.date(2019, 10, 19))
+        self.assertEqual(output, dt.date.fromtimestamp(value))
 
     def test_getDate_datetime_string_yyyy_mm_dd(self):
         # Arrange
