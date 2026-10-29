@@ -100,6 +100,23 @@ html
 The exports produce an HTML page with the data in a ``<table>``. If headers have
 been set, they will be used as table headers (``thead``).
 
+To add CSS classes to the exported table, pass a ``table_class`` string::
+
+    import tablib
+
+    data = tablib.Dataset(['Alice'], headers=['name'])
+    data.export('html', table_class='table table-striped')
+
+The same option applies to every table in a ``Databook`` export::
+
+    book = tablib.Databook()
+    book.add_sheet(data)
+    book.export('html', table_class='table table-striped')
+
+The class value is escaped as an HTML attribute. Tablib does not include a
+stylesheet. Omitting ``table_class`` or passing ``None`` leaves the default
+output unchanged; an empty string produces ``class=""``.
+
 When you import HTML, you can specify a specific table to import by providing
 the ``table_id`` argument::
 

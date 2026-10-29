@@ -14,10 +14,12 @@ class HTMLFormat:
     extensions = ('html', )
 
     @classmethod
-    def export_set(cls, dataset):
-        """HTML representation of a Dataset."""
+    def export_set(cls, dataset, table_class=None):
+        """HTML representation of a Dataset, with an optional table CSS class."""
 
         table = ET.Element('table')
+        if table_class is not None:
+            table.set('class', table_class)
         if dataset.headers is not None:
             head = ET.Element('thead')
             tr = ET.Element('tr')
@@ -41,8 +43,8 @@ class HTMLFormat:
         return ET.tostring(table, method='html', encoding='unicode')
 
     @classmethod
-    def export_book(cls, databook):
-        """HTML representation of a Databook."""
+    def export_book(cls, databook, table_class=None):
+        """HTML representation of a Databook, with an optional CSS class on each table."""
 
         result = ''
         for i, dset in enumerate(databook._datasets):
@@ -50,7 +52,10 @@ class HTMLFormat:
             title_el = ET.Element(cls.BOOK_ENDINGS)
             title_el.text = title
             result += ET.tostring(title_el, method='html', encoding='unicode') + '\n'
-            result += dset.html
+            if table_class is None:
+                result += dset.html
+            else:
+                result += dset.export('html', table_class=table_class)
             result += '\n'
 
         return result
