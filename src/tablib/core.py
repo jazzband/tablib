@@ -818,6 +818,9 @@ class Dataset:
         """Removes all content and headers from the :class:`Dataset` object."""
         self._data = []
         self.__headers = None
+        self._formatters = []
+        self._dynamic_columns = {}
+        self._separators = []
 
     def subset(self, rows=None, cols=None):
         """Returns a new instance of the :class:`Dataset`,
