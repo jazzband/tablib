@@ -131,7 +131,7 @@ class XLSXFormat:
         dset.wipe()
 
         xls_book = load_workbook(in_stream, read_only=read_only, data_only=True)
-        sheet = xls_book.active
+        sheet = xls_book.worksheets[0]
         cls.import_sheet(dset, sheet, headers, skip_lines)
 
     @classmethod
