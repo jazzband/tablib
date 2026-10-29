@@ -78,6 +78,10 @@ class ImportExportSetDescriptor(FormatDescriptorBase):
 class Registry:
     _formats = {}
 
+    def _ensure_builtins_registered(self):
+        # Importing tablib.core registers the builtins. It's lazy on Python 3.15+.
+        from .. import core  # noqa: F401
+
     def register(self, key, format_or_path):
         from ..core import Databook, Dataset
 
@@ -121,12 +125,14 @@ class Registry:
             self.register('cli', 'tablib.formats._cli.CLIFormat')
 
     def formats(self):
+        self._ensure_builtins_registered()
         for key, frm in self._formats.items():
             if isinstance(frm, str):
                 self._formats[key] = load_format_class(frm)
             yield self._formats[key]
 
     def get_format(self, key):
+        self._ensure_builtins_registered()
         if key not in self._formats:
             if key in uninstalled_format_messages:
                 raise UnsupportedFormat(
