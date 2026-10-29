@@ -2,6 +2,11 @@
 
 ## 3.9.0 and newer
 
+### Bugfixes
+
+- Keep export formatters attached to their columns when deleting a column, and
+  remove formatters belonging to the deleted column.
+
 See GitHub Releases:
 
 - https://github.com/jazzband/tablib/releases

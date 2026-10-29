@@ -202,6 +202,19 @@ class Dataset:
             if key in self.headers:
 
                 pos = self.headers.index(key)
+                formatters = []
+                for col, callback in self._formatters:
+                    if col is None:
+                        formatters.append((col, callback))
+                        continue
+                    target = col + self.width if col < 0 else col
+                    if target != pos:
+                        if col < 0:
+                            col += target < pos
+                        else:
+                            col -= target > pos
+                        formatters.append((col, callback))
+                self._formatters = formatters
                 del self.headers[pos]
                 if pos in self._dynamic_columns:
                     del self._dynamic_columns[pos]
