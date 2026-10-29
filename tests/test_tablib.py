@@ -1311,6 +1311,48 @@ class ODSTests(BaseTestCase):
         self.assertEqual(len(dbook.sheets()), 2)
         self.assertEqual(["This", "is", "a", "second", "sheet"], dbook.sheets()[1].headers)
 
+    def test_ods_import_set_uses_first_sheet(self):
+        first = tablib.Dataset(('alice', 10), headers=['name', 'score'], title='Scores')
+        for second in (
+            tablib.Dataset(('bob', 99), headers=['user', 'rank'], title='Rankings'),
+            tablib.Dataset(('internal',), headers=['notes'], title='Notes'),
+        ):
+            payload = tablib.Databook([first, second]).export('ods')
+            for headers in (True, False):
+                with self.subTest(second=second.title, headers=headers):
+                    dataset = tablib.Dataset().load(payload, 'ods', headers=headers)
+                    expected = first[:] if headers else [tuple(first.headers)] + first[:]
+                    self.assertEqual(dataset[:], expected)
+                    self.assertEqual(dataset.headers, first.headers if headers else None)
+                    self.assertEqual(dataset.title, first.title)
+
+            dbook = tablib.Databook().load(payload, 'ods')
+            self.assertEqual(dbook.size, 2)
+            for imported, original in zip(dbook.sheets(), (first, second)):
+                self.assertEqual(imported.title, original.title)
+                self.assertEqual(imported.headers, original.headers)
+                self.assertEqual(imported[:], original[:])
+
+    def test_ods_import_set_first_sheet_skip_lines(self):
+        first = tablib.Dataset(
+            ('ignored', ''), ('name', 'score'), ('alice', 10), title='Scores',
+        )
+        second = tablib.Dataset(('bob', 99), headers=['user', 'rank'], title='Rankings')
+        payload = tablib.Databook([first, second]).export('ods')
+        dataset = tablib.Dataset().load(payload, 'ods', skip_lines=1)
+        self.assertEqual(dataset.headers, ['name', 'score'])
+        self.assertEqual(dataset[:], [('alice', 10)])
+        self.assertEqual(dataset.title, first.title)
+
+    def test_ods_import_set_empty_first_sheet(self):
+        first = tablib.Dataset(title='Empty')
+        second = tablib.Dataset(('internal',), headers=['notes'], title='Notes')
+        payload = tablib.Databook([first, second]).export('ods')
+        dataset = tablib.Dataset().load(payload, 'ods')
+        self.assertEqual(dataset[:], [])
+        self.assertIsNone(dataset.headers)
+        self.assertEqual(dataset.title, first.title)
+
     def test_ods_import_set_skip_lines(self):
         data.append(('garbage', 'line', ''))
         data.append(('', '', ''))
