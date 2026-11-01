@@ -516,6 +516,46 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(column_stacked[0],
                          ("John", "Adams", 90, "John", "Adams", 90))
 
+    def test_column_stacking_duplicate_headers(self):
+        """Stack by column position instead of resolving repeated names."""
+        for left_headers, right_headers in (
+            (['value', 'value'], ['name', 'score']),
+            (['name', 'score'], ['value', 'value']),
+            (['value', 'value'], ['value', 'value']),
+        ):
+            with self.subTest(left=left_headers, right=right_headers):
+                left = tablib.Dataset((1, 2), (3, 4), headers=left_headers)
+                right = tablib.Dataset((5, 6), (7, 8), headers=right_headers)
+
+                stacked = left.stack_cols(right)
+
+                self.assertEqual(stacked.headers, left_headers + right_headers)
+                self.assertEqual(list(stacked), [(1, 2, 5, 6), (3, 4, 7, 8)])
+                self.assertEqual(list(left), [(1, 2), (3, 4)])
+                self.assertEqual(list(right), [(5, 6), (7, 8)])
+                self.assertEqual(left.headers, left_headers)
+                self.assertEqual(right.headers, right_headers)
+
+    def test_column_stacking_csv_with_duplicate_headers(self):
+        left = tablib.Dataset().load('value,value\nfirst,second\n', format='csv')
+        right = tablib.Dataset(('third',), headers=['value'])
+
+        stacked = left.stack_cols(right)
+
+        self.assertEqual(stacked.headers, ['value', 'value', 'value'])
+        self.assertEqual(stacked[0], ('first', 'second', 'third'))
+        self.assertEqual(stacked.export('csv'), 'value,value,value\r\nfirst,second,third\r\n')
+
+    def test_column_stacking_empty_datasets_keeps_headers(self):
+        left = tablib.Dataset(headers=['value', 'value'])
+        right = tablib.Dataset(headers=['other'])
+
+        stacked = left.stack_cols(right)
+
+        self.assertEqual(stacked.headers, ['value', 'value', 'other'])
+        self.assertEqual(stacked.height, 0)
+        self.assertEqual(stacked.width, 3)
+
     def test_stack_rejects_non_dataset(self):
         """stack() and stack_cols() raise TypeError for non-Dataset input."""
         with self.assertRaises(TypeError):
