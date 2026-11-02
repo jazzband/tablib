@@ -107,6 +107,10 @@ class XLSXFormat:
         wb.save(stream)
         return stream.getvalue()
 
+    @staticmethod
+    def _is_empty_row(row_vals):
+        return all(v is None or v == '' for v in row_vals)
+
     @classmethod
     def import_sheet(cls, dset, sheet, headers=True, skip_lines=0):
         """Populates dataset with sheet."""
@@ -120,8 +124,18 @@ class XLSXFormat:
             if i == skip_lines and headers:
                 dset.headers = row_vals
             else:
-                if i > skip_lines and len(row_vals) < dset.width:
+                # Spreadsheet used-ranges (e.g. Google Drive exports) often
+                # include trailing blank rows and extra empty cells. Skip
+                # those so they do not raise InvalidDimensions or inflate
+                # the dataset.
+                if cls._is_empty_row(row_vals):
+                    continue
+                if dset.width and len(row_vals) < dset.width:
                     row_vals += [''] * (dset.width - len(row_vals))
+                elif dset.width and len(row_vals) > dset.width:
+                    extra = row_vals[dset.width:]
+                    if cls._is_empty_row(extra):
+                        row_vals = row_vals[:dset.width]
                 dset.append(row_vals)
 
     @classmethod
