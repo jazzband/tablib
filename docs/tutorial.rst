@@ -281,6 +281,16 @@ either provide all values in the row, or only the non-dynamic values and then
 the dynamic values will be automatically generated using the function initially
 provided for the column calculation.
 
+Callable columns can also be inserted at a chosen position with
+:meth:`Dataset.insert_col`. Generated values retain that position when adding
+rows containing only the non-dynamic values. For example::
+
+    >>> names = tablib.Dataset(['ada'], headers=['name'])
+    >>> names.insert_col(0, lambda row: row[0].upper(), header='uppercase')
+    >>> names.append(['grace'])
+    >>> names[-1]
+    ('GRACE', 'grace')
+
 ..versionchanged:: 3.6.0
 
     In older versions, you could only add new rows with fully-populated rows,

@@ -6,6 +6,7 @@ import doctest
 import json
 import pickle
 import re
+import sys
 import tempfile
 import unittest
 from decimal import Decimal
@@ -228,6 +229,68 @@ class TablibTestCase(BaseTestCase):
             self.founders['initials'],
             ['JA', 'GW', 'TJ', 'SO', 'OS', 'AD']
         )
+
+    def test_insert_callable_column_positions(self):
+        for headers in (None, ['name', 'city']):
+            for index in (0, 1, -1, -3, 8):
+                with self.subTest(headers=headers, index=index):
+                    dataset = tablib.Dataset(['Ada', 'London'], headers=headers)
+                    dataset.insert_col(index, lambda row: row[0].upper(), header='uppercase')
+                    dataset.append(['Grace', 'New York'])
+                    expected = ['Grace', 'New York']
+                    expected.insert(index, 'GRACE')
+                    self.assertEqual(dataset[-1], tuple(expected))
+                    if headers:
+                        self.assertEqual(dataset['uppercase'], ['ADA', 'GRACE'])
+
+    def test_insert_column_index_bounds(self):
+        class Index:
+            def __index__(self):
+                return -1
+
+        for index in (sys.maxsize, -sys.maxsize - 1, False, True, Index()):
+            with self.subTest(index=index):
+                dataset = tablib.Dataset(['ada'], headers=['name'])
+                dataset.insert_col(index, lambda row: row[0].upper(), header='uppercase')
+                dataset.append(['grace'])
+                expected = ['grace']
+                expected.insert(index, 'GRACE')
+                self.assertEqual(dataset[-1], tuple(expected))
+
+        for index in (sys.maxsize + 1, -sys.maxsize - 2):
+            with self.subTest(index=index):
+                dataset = tablib.Dataset(['ada'], headers=['name'])
+                dataset.append_col(lambda row: row[0].upper(), header='uppercase')
+                with self.assertRaises(OverflowError):
+                    dataset.insert_col(index, ['active'], header='status')
+                self.assertEqual(dataset.headers, ['name', 'uppercase'])
+                self.assertEqual(dataset[0], ('ada', 'ADA'))
+                dataset.append(['grace'])
+                self.assertEqual(dataset[-1], ('grace', 'GRACE'))
+
+    def test_insert_columns_before_dynamic_column(self):
+        dataset = tablib.Dataset(['ada'], headers=['name'])
+        dataset.append_col(lambda row: row[-1].upper(), header='uppercase')
+        dataset.insert_col(0, ['active'], header='status')
+        dataset.append(['pending', 'grace'])
+        self.assertEqual(dataset[-1], ('pending', 'grace', 'GRACE'))
+
+    def test_insert_callable_column_without_rows(self):
+        for index in (0, 8):
+            with self.subTest(index=index):
+                dataset = tablib.Dataset(headers=['name'])
+                dataset.insert_col(index, lambda row: row[0].upper(), header='uppercase')
+                dataset.append(['grace'])
+                expected = ['grace']
+                expected.insert(index, 'GRACE')
+                self.assertEqual(dataset[0], tuple(expected))
+
+    def test_insert_multiple_callable_columns(self):
+        dataset = tablib.Dataset(['ada', 'London'], headers=['name', 'city'])
+        dataset.insert_col(1, lambda row: row[0].upper(), header='uppercase')
+        dataset.insert_col(0, lambda row: row[0].title(), header='display_name')
+        dataset.append(['linus', 'Helsinki'])
+        self.assertEqual(dataset[-1], ('Linus', 'linus', 'LINUS', 'Helsinki'))
 
     def test_header_slicing(self):
         """Verify slicing by headers."""
