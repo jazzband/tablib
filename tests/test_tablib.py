@@ -9,6 +9,7 @@ import re
 import tempfile
 import unittest
 from decimal import Decimal
+from html.parser import HTMLParser
 from io import BytesIO, StringIO
 from pathlib import Path
 from uuid import uuid4
@@ -775,6 +776,19 @@ class HTMLTests(BaseTestCase):
         """HTML export"""
         self.assertEqual(self.founders_html, self.founders.html.replace('\n', ''))
 
+    def test_html_dataset_export_table_class(self):
+        for table_class in ['report', 'table table-striped', 'réport', '']:
+            with self.subTest(table_class=table_class):
+                expected = self.founders_html.replace(
+                    '<table>', f'<table class="{table_class}">', 1
+                )
+                self.assertEqual(
+                    expected, self.founders.export('html', table_class=table_class)
+                )
+        self.assertEqual(
+            self.founders_html, self.founders.export('html', table_class=None)
+        )
+
     def test_html_export_none_value(self):
         """HTML export"""
 
@@ -801,6 +815,35 @@ class HTMLTests(BaseTestCase):
             book.html.replace('\n', ''),
             f"<h3>Founders</h3>{self.founders_html}<h3>Founders</h3>{self.founders_html}"
         )
+
+    def test_html_databook_export_table_class(self):
+        book = tablib.Databook()
+        book.add_sheet(self.founders)
+        book.add_sheet(self.founders)
+        table = self.founders_html.replace('<table>', '<table class="report">', 1)
+        self.assertEqual(
+            f'<h3>Founders</h3>\n{table}\n<h3>Founders</h3>\n{table}\n',
+            book.export('html', table_class='report')
+        )
+        self.assertEqual(book.html, book.export('html', table_class=None))
+        self.assertEqual('', tablib.Databook().export('html', table_class='report'))
+
+    def test_html_export_table_class_escaped(self):
+        table_class = 'report" onclick="alert(1) & <script>'
+        book = tablib.Databook()
+        book.add_sheet(self.founders)
+        for exporter in [self.founders, book]:
+            with self.subTest(exporter=type(exporter).__name__):
+                elements = []
+                parser = HTMLParser()
+                parser.handle_starttag = lambda tag, attrs: elements.append((tag, attrs))
+                parser.feed(exporter.export('html', table_class=table_class))
+                parser.close()
+                self.assertEqual(
+                    [[('class', table_class)]],
+                    [attrs for tag, attrs in elements if tag == 'table']
+                )
+                self.assertNotIn('script', [tag for tag, attrs in elements])
 
     def test_html_databook_export_escaped(self):
         book = tablib.Databook()
