@@ -24,7 +24,9 @@ class SQLFormat:
             return 'NULL'
         if isinstance(value, bool):
             return 'TRUE' if value else 'FALSE'
-        if isinstance(value, (int, decimal.Decimal)):
+        if isinstance(value, decimal.Decimal):
+            return str(value) if value.is_finite() else 'NULL'
+        if isinstance(value, int):
             return str(value)
         if isinstance(value, float):
             # Represent finite floats; non-finite as NULL
