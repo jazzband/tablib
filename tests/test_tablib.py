@@ -591,6 +591,20 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(data.width, len(new_row))
         self.assertEqual(data[0], new_row)
 
+    def test_wipe_clears_column_configuration(self):
+        dataset = tablib.Dataset(['Ada', 'Lovelace'], headers=['first', 'last'])
+        dataset.add_formatter('last', str.upper)
+        dataset.append_col(lambda row: row[0][0], header='initial')
+        dataset.append_separator('old section')
+
+        dataset.wipe()
+        dataset.headers = ['value']
+        dataset.append(['new'])
+
+        self.assertEqual(dataset.dict, [{'value': 'new'}])
+        self.assertEqual(dataset._dynamic_columns, {})
+        self.assertEqual(dataset._separators, [])
+
     def test_subset(self):
         """Create a subset of a dataset"""
 
