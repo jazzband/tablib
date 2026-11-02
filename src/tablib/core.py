@@ -664,32 +664,23 @@ class Dataset:
         """
 
         if isinstance(col, str):
-
             if not self.headers:
                 raise HeadersNeeded
+            try:
+                col = self.headers.index(col)
+            except ValueError:
+                if self.height:
+                    raise KeyError(col) from None
+        elif self.headers:
+            col = range(len(self.headers))[col]
 
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers, title=self.title)
-
-            for item in _sorted:
-                row = [item[key] for key in self.headers]
-                _dset.append(row=row)
-
-        else:
-            if self.headers:
-                col = self.headers[col]
-
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
-            _dset = Dataset(headers=self.headers, title=self.title)
-
-            for item in _sorted:
-                if self.headers:
-                    row = [item[key] for key in self.headers]
-                else:
-                    row = item
-                _dset.append(row=row)
-
-        return _dset
+        rows = self._package(dicts=False)
+        if self.headers:
+            rows = rows[1:]
+        rows = sorted(rows, key=itemgetter(col), reverse=reverse)
+        result = Dataset(headers=self.headers, title=self.title)
+        result.extend(rows)
+        return result
 
     def _transpose_with_headers(self):
         """Transpose a :class:`Dataset`, turning rows into columns and vice

@@ -19,7 +19,7 @@ from openpyxl.reader.excel import load_workbook
 
 import tablib
 from tablib.core import Row, detect_format
-from tablib.exceptions import UnsupportedFormat
+from tablib.exceptions import HeadersNeeded, UnsupportedFormat
 from tablib.formats import registry
 
 try:
@@ -556,6 +556,48 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(first_row, expected_first)
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
+
+    def test_sorting_duplicate_headers(self):
+        rows = [(2, 'a', 'first'), (1, 'b', 'second'), (1, 'a', 'third')]
+        dataset = tablib.Dataset(*rows, headers=['value', 'value', 'label'], title='Values')
+        for column, index in [(0, 0), (1, 1), (-2, 1), ('value', 0)]:
+            for reverse in [False, True]:
+                with self.subTest(column=column, reverse=reverse):
+                    result = dataset.sort(column, reverse=reverse)
+                    self.assertEqual(list(result), sorted(rows, key=lambda row: row[index],
+                                                         reverse=reverse))
+                    self.assertEqual(result.headers, dataset.headers)
+                    self.assertEqual(result.title, dataset.title)
+                    self.assertEqual(list(dataset), rows)
+
+    def test_sorting_preserves_formatters(self):
+        for headers in [None, ['id', 'name']]:
+            with self.subTest(headers=headers):
+                dataset = tablib.Dataset((1, 'b'), (2, 'a'), headers=headers)
+                dataset.add_formatter(0, lambda value: -value)
+                self.assertEqual(list(dataset.sort(0)), [(-2, 'a'), (-1, 'b')])
+                self.assertEqual(list(dataset), [(1, 'b'), (2, 'a')])
+
+    def test_sorting_invalid_columns(self):
+        with self.assertRaises(HeadersNeeded):
+            tablib.Dataset((1, 'a')).sort('missing')
+        with self.assertRaises(KeyError):
+            self.founders.sort('missing')
+        with self.assertRaises(IndexError):
+            self.founders.sort(3)
+
+    def test_sorting_empty_dataset_columns(self):
+        dataset = tablib.Dataset(headers=['value', 'value'])
+        for column in [0, -1, 'value', 'missing']:
+            with self.subTest(column=column):
+                result = dataset.sort(column)
+                self.assertEqual(list(result), [])
+                self.assertEqual(result.headers, dataset.headers)
+        for column in [2, -3]:
+            with self.subTest(column=column), self.assertRaises(IndexError):
+                dataset.sort(column)
+        with self.assertRaises(TypeError):
+            dataset.sort(0.5)
 
     def test_remove_duplicates(self):
         """Unique Rows."""
