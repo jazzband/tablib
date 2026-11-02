@@ -38,4 +38,5 @@ class DataFrameFormat:
     def import_set(cls, dset, in_stream):
         """Returns dataset from DataFrame."""
         dset.wipe()
+        dset.headers = list(in_stream.columns)
         dset.dict = in_stream.to_dict(orient='records')
