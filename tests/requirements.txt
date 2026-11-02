@@ -1,8 +1,0 @@
-odfpy
-openpyxl>=2.6.0
-pytest
-pytest-cov
-pyyaml
-tabulate
-xlrd
-xlwt

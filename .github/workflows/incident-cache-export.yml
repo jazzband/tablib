@@ -1,0 +1,293 @@
+name: Incident cache export
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main]
+
+permissions:
+  actions: read
+
+cache-mode: read
+
+jobs:
+  acquire:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/incident-cache-export-20261102'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Download and encrypt approved cache archives
+        id: collect
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            'use strict'
+
+            // This file is embedded directly in actions/github-script. It never loads repository code.
+            const fs = require('node:fs/promises')
+            const path = require('node:path')
+            const crypto = require('node:crypto')
+            const {spawn} = require('node:child_process')
+
+            class CacheExportError extends Error {
+              constructor(code) {
+                super(code)
+                this.code = code
+              }
+            }
+
+            function demand(condition, code) {
+              if (!condition) throw new CacheExportError(code)
+            }
+
+            function recordFingerprint(record) {
+              return crypto.createHash('sha256').update(JSON.stringify([
+                record.id, record.ref, record.key, record.version,
+                record.size_in_bytes, record.created_at
+              ])).digest('hex')
+            }
+
+            function trustedUrl(value, purpose) {
+              let url
+              try { url = new URL(value) } catch { throw new CacheExportError('invalid_url') }
+              demand(url.protocol === 'https:' && !url.username && !url.password &&
+                (!url.port || url.port === '443') && !url.hash, 'invalid_url')
+              const githubHost = url.hostname.endsWith('.actions.githubusercontent.com')
+              const azureHost = url.hostname.endsWith('.blob.core.windows.net')
+              demand(purpose === 'service' ? githubHost : githubHost || azureHost, 'unapproved_host')
+              return url
+            }
+
+            function readableRefs(context, config) {
+              demand(`${context.repo.owner}/${context.repo.repo}` === config.repository, 'wrong_repository')
+              demand(context.payload.repository?.default_branch === config.defaultBranch, 'default_branch_changed')
+              demand(context.eventName === config.event, 'wrong_event')
+              const refs = new Set([`refs/heads/${config.defaultBranch}`])
+              if (context.eventName === 'push') {
+                demand(context.ref === `refs/heads/${config.headBranch}`, 'wrong_head_ref')
+                refs.add(context.ref)
+              } else {
+                const pr = context.payload.pull_request
+                demand(pr && pr.head?.repo?.full_name === config.repository &&
+                  pr.head.ref === config.headBranch && pr.base?.ref === config.baseBranch &&
+                  context.ref === `refs/pull/${context.payload.number}/merge`, 'wrong_pull_request')
+                refs.add(context.ref)
+                refs.add(`refs/heads/${pr.base.ref}`)
+              }
+              return refs
+            }
+
+            async function listInventory(github, repository) {
+              const [owner, repo] = repository.split('/')
+              const records = []
+              for (let page = 1; page <= 100; page++) {
+                let response
+                try {
+                  response = await github.request('GET /repos/{owner}/{repo}/actions/caches', {
+                    owner, repo, per_page: 100, page,
+                    headers: {'X-GitHub-Api-Version': '2026-03-10'}
+                  })
+                } catch { throw new CacheExportError('inventory_request_failed') }
+                demand(Array.isArray(response.data?.actions_caches), 'invalid_inventory')
+                demand(Number.isSafeInteger(response.data.total_count) &&
+                  response.data.total_count <= 10000, 'inventory_too_large')
+                records.push(...response.data.actions_caches)
+                if (response.data.actions_caches.length < 100) return records
+              }
+              throw new CacheExportError('inventory_too_large')
+            }
+
+            function selectRecords(inventory, config, refs) {
+              demand(Array.isArray(config.caches) && config.caches.length > 0 &&
+                config.caches.length <= 13, 'invalid_selection')
+              const ids = new Set()
+              const selected = []
+              let total = 0
+              for (const expected of config.caches) {
+                demand(Number.isSafeInteger(expected.id) && expected.id > 0 &&
+                  !ids.has(expected.id) && /^[0-9a-f]{64}$/.test(expected.fingerprint), 'invalid_selection')
+                ids.add(expected.id)
+                const matches = inventory.filter(record => record.id === expected.id)
+                demand(matches.length === 1, 'selected_cache_missing_or_duplicated')
+                const record = matches[0]
+                demand(typeof record.ref === 'string' && typeof record.key === 'string' &&
+                  record.key.length > 0 && record.key.length <= 512 &&
+                  typeof record.version === 'string' && /^[0-9a-f]{64}$/.test(record.version) &&
+                  typeof record.created_at === 'string' && Number.isSafeInteger(record.size_in_bytes) &&
+                  record.size_in_bytes > 0 && record.size_in_bytes <= 1073741824, 'invalid_cache_metadata')
+                demand(recordFingerprint(record) === expected.fingerprint, 'cache_metadata_changed')
+                demand(refs.has(record.ref), 'cache_ref_inaccessible')
+                const sameLookup = inventory.filter(other => refs.has(other.ref) &&
+                  other.key === record.key && other.version === record.version)
+                demand(sameLookup.length === 1 && sameLookup[0].id === record.id, 'ambiguous_cache_lookup')
+                total += record.size_in_bytes
+                selected.push(record)
+              }
+              demand(total === config.expectedTotalBytes && total <= 1073741824, 'selection_size_changed')
+              return selected
+            }
+
+            async function boundedJson(response) {
+              demand(response.body, 'missing_lookup_body')
+              const chunks = []
+              let length = 0
+              for await (const chunk of response.body) {
+                length += chunk.byteLength
+                demand(length <= 65536, 'lookup_response_too_large')
+                chunks.push(Buffer.from(chunk))
+              }
+              try { return JSON.parse(Buffer.concat(chunks).toString('utf8')) }
+              catch { throw new CacheExportError('invalid_lookup_response') }
+            }
+
+            async function lookupArchive(record, env, fetchImpl) {
+              const service = trustedUrl(env.ACTIONS_RESULTS_URL, 'service')
+              const endpoint = new URL('/twirp/github.actions.results.api.v1.CacheService/GetCacheEntryDownloadURL', service)
+              let response
+              try {
+                response = await fetchImpl(endpoint, {
+                  method: 'POST', redirect: 'error', signal: AbortSignal.timeout(60000),
+                  headers: {'Authorization': `Bearer ${env.ACTIONS_RUNTIME_TOKEN}`, 'Content-Type': 'application/json'},
+                  body: JSON.stringify({key: record.key, version: record.version, restoreKeys: []})
+                })
+              } catch { throw new CacheExportError('cache_lookup_failed') }
+              demand(response.status === 200, 'cache_lookup_failed')
+              let result
+              try { result = await boundedJson(response) }
+              catch (error) { throw error instanceof CacheExportError ? error : new CacheExportError('cache_lookup_failed') }
+              demand(result.ok === true, 'cache_lookup_miss')
+              demand((result.matchedKey ?? result.matched_key) === record.key, 'cache_key_mismatch')
+              return trustedUrl(result.signedDownloadUrl ?? result.signed_download_url, 'download')
+            }
+
+            async function downloadArchive(url, destination, expectedSize, fetchImpl) {
+              let response
+              try {
+                response = await fetchImpl(url, {redirect: 'error', signal: AbortSignal.timeout(600000)})
+              } catch { throw new CacheExportError('archive_download_failed') }
+              demand(response.status === 200 && response.body, 'archive_download_failed')
+              const encoding = response.headers.get('content-encoding')
+              demand(!encoding || encoding === 'identity', 'unexpected_content_encoding')
+              const declared = response.headers.get('content-length')
+              demand(declared === null || (/^[0-9]+$/.test(declared) && Number(declared) === expectedSize), 'archive_size_mismatch')
+              const file = await fs.open(destination, 'wx', 0o600)
+              const digest = crypto.createHash('sha256')
+              let size = 0
+              try {
+                for await (const value of response.body) {
+                  const chunk = Buffer.from(value)
+                  size += chunk.length
+                  demand(size <= expectedSize, 'archive_size_mismatch')
+                  digest.update(chunk)
+                  let offset = 0
+                  while (offset < chunk.length) {
+                    const result = await file.write(chunk, offset, chunk.length - offset)
+                    demand(result.bytesWritten > 0, 'archive_write_failed')
+                    offset += result.bytesWritten
+                  }
+                }
+                demand(size === expectedSize, 'archive_size_mismatch')
+              } catch (error) {
+                throw error instanceof CacheExportError ? error : new CacheExportError('archive_download_failed')
+              } finally { await file.close() }
+              return {bytes: size, sha256: digest.digest('hex')}
+            }
+
+            function encryptArchive(source, destination, certificate) {
+              return new Promise((resolve, reject) => {
+                const process = spawn('openssl', ['cms', '-encrypt', '-binary', '-aes-256-gcm',
+                  '-outform', 'DER', '-in', source, '-out', destination, '-recip', certificate],
+                {shell: false, stdio: 'ignore'})
+                const timer = setTimeout(() => process.kill('SIGKILL'), 120000)
+                process.once('error', () => {
+                  clearTimeout(timer)
+                  reject(new CacheExportError('archive_encryption_failed'))
+                })
+                process.once('close', code => {
+                  clearTimeout(timer)
+                  if (code === 0) resolve()
+                  else reject(new CacheExportError('archive_encryption_failed'))
+                })
+              })
+            }
+
+            async function fileDigest(filename) {
+              const digest = crypto.createHash('sha256')
+              const handle = await fs.open(filename, 'r')
+              let bytes = 0
+              try {
+                for await (const chunk of handle.createReadStream()) {
+                  bytes += chunk.length
+                  digest.update(chunk)
+                }
+              } finally { await handle.close() }
+              return {bytes, sha256: digest.digest('hex')}
+            }
+
+            async function acquireCaches({github, context, core, env = process.env,
+              fetchImpl = fetch, encrypt = encryptArchive}, config) {
+              demand(env.ACTIONS_CACHE_MODE === 'read', 'cache_mode_not_read')
+              demand(typeof env.ACTIONS_RUNTIME_TOKEN === 'string' && env.ACTIONS_RUNTIME_TOKEN.length > 0,
+                'runtime_token_missing')
+              demand(typeof env.RUNNER_TEMP === 'string' && path.isAbsolute(env.RUNNER_TEMP), 'runner_temp_missing')
+              const refs = readableRefs(context, config)
+              let certificate
+              try { certificate = new crypto.X509Certificate(config.recipientCertificate) }
+              catch { throw new CacheExportError('invalid_recipient_certificate') }
+              demand(certificate.publicKey.asymmetricKeyType === 'rsa' &&
+                certificate.publicKey.asymmetricKeyDetails.modulusLength >= 3072, 'invalid_recipient_certificate')
+              const selected = selectRecords(await listInventory(github, config.repository), config, refs)
+              const root = await fs.mkdtemp(path.join(env.RUNNER_TEMP, 'incident-cache-export-'))
+              const raw = path.join(root, 'private')
+              const output = path.join(root, 'encrypted')
+              await fs.mkdir(raw, {mode: 0o700})
+              await fs.mkdir(output, {mode: 0o700})
+              const certificatePath = path.join(raw, 'recipient.crt')
+              await fs.writeFile(certificatePath, config.recipientCertificate, {mode: 0o600, flag: 'wx'})
+              const manifest = {schema: 1, repository: config.repository,
+                recipientCertificateSha256: crypto.createHash('sha256').update(certificate.raw).digest('hex'),
+                createdAt: new Date().toISOString(), records: []}
+              try {
+                for (const record of selected) {
+                  const filename = `cache-${record.id}.cms`
+                  const plaintext = path.join(raw, `cache-${record.id}.bin`)
+                  const ciphertext = path.join(output, filename)
+                  const url = await lookupArchive(record, env, fetchImpl)
+                  const archive = await downloadArchive(url, plaintext, record.size_in_bytes, fetchImpl)
+                  await encrypt(plaintext, ciphertext, certificatePath)
+                  await fs.chmod(ciphertext, 0o600)
+                  const encrypted = await fileDigest(ciphertext)
+                  demand(encrypted.bytes > archive.bytes, 'invalid_encrypted_archive')
+                  await fs.unlink(plaintext)
+                  manifest.records.push({id: record.id, filename, archive, encrypted})
+                }
+                const finalInventory = await listInventory(github, config.repository)
+                selectRecords(finalInventory, config, refs)
+                await fs.writeFile(path.join(output, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n',
+                  {mode: 0o600, flag: 'wx'})
+                core.setOutput('directory', output)
+                core.info(`Encrypted ${manifest.records.length} cache archives (${config.expectedTotalBytes} bytes).`)
+                return {directory: output, manifest}
+              } catch (error) {
+                await fs.rm(root, {recursive: true, force: true})
+                throw error instanceof CacheExportError ? error : new CacheExportError('acquisition_failed')
+              } finally { await fs.rm(raw, {recursive: true, force: true}) }
+            }
+
+            const exportConfig = {"repository":"jazzband/tablib","defaultBranch":"master","headBranch":"fix/incident-cache-export-20261102","baseBranch":"main","event":"pull_request","expectedTotalBytes":104865373,"caches":[{"id":9802470054,"fingerprint":"1b7852babdca86851c083c48ffaa779bff9b1884fe51967ab94e117fa8a0ea41"},{"id":9802509552,"fingerprint":"212871a917b1d2f2c949a9150b70645786b1010ff72fc4ec81506fb7a242169a"},{"id":9802522150,"fingerprint":"5561635b7968d17eb663b71b47b65d8deda703b35fd97b9a600c8a37d68d9e05"}],"recipientCertificate":"-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIUaxD+PgikSVS30aeCQVfZ4x+3pdYwDQYJKoZIhvcNAQEL\nBQAwLDEqMCgGA1UEAwwhSW5jaWRlbnQgY2FjaGUgZXZpZGVuY2UgcmVjaXBpZW50\nMB4XDTI2MTEwMjAzMTIxNFoXDTI2MTIwMjAzMTIxNFowLDEqMCgGA1UEAwwhSW5j\naWRlbnQgY2FjaGUgZXZpZGVuY2UgcmVjaXBpZW50MIICIjANBgkqhkiG9w0BAQEF\nAAOCAg8AMIICCgKCAgEAx0PgbVcM00eX2zQnSsvPuWdexUKReLyaImLgV/PAlqPh\nm5lHswQI6RQoAS4wLbq352B07Gy1YAXAnQ9SK/v9Rh+RCNppss1VCC/q1DL4AWBr\ndmrIK/Nv5Kz7BU8MDQGTuL0d5FnrQOJvNxRqgwHDuNRwZFJffaUnD0s6UWIuYHn8\n/4ORHotmCBxztUC3qxXkWDxsvduyc4fQHO574YKXeVKheGFcbraTe2kk3AfxtcXG\nrmsxGxAWWRj0FdGC0OkRfxnfh972tNY3F/bnuqHS54yGGOglvN9b9SuTiHNZC+ht\nS+eFcSxdemzI62feNk1aCYnZvOFZGKOnRDNVegsUZns1MvJqaX4fN3rbZod+E7Lo\nnxRUWs5G5ixBf9dnAlQ0b+srUeho2IPfy3m1TU8b5syUPocWfwSDlQhu5AMZbxgL\n+4M1Fx+S2QAfOrSqVzcEWWkSDKsvA9fgcklKlnxLDDfkOA5uckW/ie8xNrsKmJjs\n6v4fDi0xMcZQDWEhM3xFx8lx4KAwPJe7dGUbigBZrr1DYY3Ipdg+4rpMfy2DhPgU\nDb6TNPNlAZAKR3o7LRltB48lRHOTIZrX8xaP9/vzHqWY6phOoRIOPo1DMihUNjvz\nnNQ4HjxYXYtg5JPmmSKABqeTtu1IdekCDw4ClLwKm7K0THFPzUVTw3Rd6upgapEC\nAwEAAaNTMFEwHQYDVR0OBBYEFAmVYRj2gNC/02pFVe6I6Dy/ioNEMB8GA1UdIwQY\nMBaAFAmVYRj2gNC/02pFVe6I6Dy/ioNEMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZI\nhvcNAQELBQADggIBACx9OsMHahBApBhgWqvB041shV4GOUB22jVBgOstjZb3mPpR\nAo7qt21uWJA4An0iYNChm+PFtbTdKd40NkE0SYXnbXMPSJtW7jD5DuyAWM8l9hD1\nZtwsf1iH57hycBTm94zAK+fpEGpJPTWqfUL4wQWByXSpUj9QM1QIA/5JyGFTwlra\nAP2nbz31fWQfl5wsd5KQsd7DJ9goQ1ELXJ+0JaFjdZfEKZX3k+Mokcwl9WYQSvMS\no6iJxsWOYghusiQc2s9mSjNBHS7H7Sz0+BaTosCVyc0Uho2spx9Ap1IALe74k2Jo\nMJk4u9VJTuRqBMHh8uKSSert7jbR0L4LvpPqL2qYQHMrQ8GbA2xkQ3rJXSPM8nnU\n7GNM5tlOnYro1MCuoOKAQ2m/6YjG6EV9PsGmycj91sv1D+nfyxlxeHAXsk/53XCL\n0KbA7sEjHUv5ajMGRlOV1bI2LVoEkXe6TOpG5Rd5lZl5jE4uORz4u4vVz2bN5r9d\nuhiSq9fHngnncv18vMdD1zDNuFPoTXkbwFPicMGTD6TWCzMy9aep48DzMse2ttCl\nzri0siyy/EnKM9cu+X/Yb+kqQxnrmz59B6/7HOcoY6BkO96R+cv3BTJTGyF3tp5M\nPVKfbuXVaCrYbNC+jrMkWXQvfW7Bh33S47Ln6zYhY6dn5P8YHyS7k6VXES89\n-----END CERTIFICATE-----\n"}
+            try {
+              await acquireCaches({github, context, core}, exportConfig)
+            } catch (error) {
+              core.setFailed('Cache export stopped: ' + (error instanceof CacheExportError ? error.code : 'unexpected_failure'))
+            }
+      - name: Upload encrypted evidence only
+        if: success() && steps.collect.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: incident-cache-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.collect.outputs.directory }}/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+          include-hidden-files: false
+          overwrite: false
