@@ -52,7 +52,10 @@ class LATEXFormat:
         :type dataset: tablib.core.Dataset
         """
 
-        caption = f'\\caption{{{dataset.title}}}' if dataset.title else '%'
+        caption = '%'
+        if dataset.title:
+            title = cls._escape_tex_reserved_symbols(str(dataset.title))
+            caption = f'\\caption{{{title}}}'
         colspec = cls._colspec(dataset.width)
         header = cls._serialize_row(dataset.headers) if dataset.headers else ''
         midrule = cls._midrule(dataset.width)

@@ -1889,6 +1889,10 @@ class LatexTests(BaseTestCase):
         d.title = 'Title'
         self.assertIn('\\caption{Title}', d.latex)
 
+    def test_latex_export_caption_escaping(self):
+        d = tablib.Dataset(('one', 'two'), title='Q&A_100%')
+        self.assertIn('\\caption{Q\\&A\\_100\\%}', d.latex)
+
     def test_latex_export_none_values(self):
         headers = ['foo', None, 'bar']
         d = tablib.Dataset(['foo', None, 'bar'], headers=headers)
