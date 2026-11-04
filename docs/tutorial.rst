@@ -195,6 +195,22 @@ Let's find the average age. ::
     >>> float(sum(ages)) / len(ages)
     21.0
 
+To create a new dataset containing selected rows and columns, use
+:meth:`tablib.Dataset.subset`. Rows are selected by their zero-based position,
+and columns are selected by their header values. ::
+
+    >>> import tablib
+    >>> people = tablib.Dataset(
+    ...     ('Ada', 'Lovelace', 36),
+    ...     ('Grace', 'Hopper', 85),
+    ...     headers=['First Name', 'Last Name', 'Age'],
+    ... )
+    >>> selected = people.subset(rows=[1], cols=['Age', 'First Name'])
+    >>> selected.headers
+    ['Age', 'First Name']
+    >>> list(selected)
+    [(85, 'Grace')]
+
 
 
 -----------------------
