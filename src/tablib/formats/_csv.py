@@ -43,15 +43,28 @@ class CSVFormat:
         kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
 
         rows = csv.reader(in_stream, **kwargs)
+
+        header_row = None
+        data_rows = []
         for i, row in enumerate(rows):
             if i < skip_lines:
                 continue
             if i == skip_lines and headers:
-                dset.headers = row
+                header_row = row
             elif row:
-                if i > 0 and len(row) < dset.width:
-                    row += [''] * (dset.width - len(row))
-                dset.append(row)
+                data_rows.append(row)
+
+        # Ragged rows are normalized to the width of the widest row by filling
+        # in empty elements, not just to the width of the header row (issue #226).
+        width = max((len(r) for r in data_rows), default=0)
+        if header_row is not None:
+            width = max(width, len(header_row))
+            dset.headers = header_row + [''] * (width - len(header_row))
+
+        for row in data_rows:
+            if len(row) < width:
+                row = row + [''] * (width - len(row))
+            dset.append(row)
 
     @classmethod
     def detect(cls, stream, delimiter=None):
