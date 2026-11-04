@@ -2,6 +2,7 @@
 
    Generates a Jira table from the dataset.
 """
+from tablib.utils import is_empty_cell
 
 
 class JIRAFormat:
@@ -35,6 +36,6 @@ class JIRAFormat:
     def _serialize_row(cls, row, delimiter='|'):
         return '{}{}{}'.format(
             delimiter,
-            delimiter.join([str(item) if item else ' ' for item in row]),
+            delimiter.join([' ' if is_empty_cell(item) else str(item) for item in row]),
             delimiter
         )
