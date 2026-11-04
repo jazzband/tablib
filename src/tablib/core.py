@@ -747,7 +747,9 @@ class Dataset:
     def stack(self, other):
         """Stack two :class:`Dataset` instances together by
         joining at the row level, and return new combined
-        ``Dataset`` instance."""
+        ``Dataset`` instance. Row containers and dataset metadata are copied,
+        while cell values retain their original references.
+        """
 
         if not isinstance(other, Dataset):
             raise TypeError("'other' must be a Dataset instance")
@@ -758,11 +760,13 @@ class Dataset:
         # Copy the source data
         _dset = copy(self)
 
-        rows_to_stack = list(_dset._data)
-        other_rows = list(other._data)
-
-        rows_to_stack.extend(other_rows)
+        rows_to_stack = [row.copy() for row in self._data]
+        rows_to_stack.extend(row.copy() for row in other._data)
         _dset._data = rows_to_stack
+        _dset.headers = self.headers
+        _dset._separators = self._separators.copy()
+        _dset._formatters = self._formatters.copy()
+        _dset._dynamic_columns = self._dynamic_columns.copy()
 
         return _dset
 

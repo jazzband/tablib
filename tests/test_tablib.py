@@ -516,6 +516,90 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(column_stacked[0],
                          ("John", "Adams", 90, "John", "Adams", 90))
 
+    def test_row_stacking_column_append_preserves_inputs(self):
+        for headers in (None, ['a', 'b']):
+            with self.subTest(headers=headers):
+                left = tablib.Dataset((1, 2), headers=headers)
+                right = tablib.Dataset((3, 4), headers=headers)
+                stacked = left.stack(right)
+
+                stacked.append_col([5, 6], header='c' if headers else None)
+
+                self.assertEqual(list(stacked), [(1, 2, 5), (3, 4, 6)])
+                self.assertEqual(left.headers, headers)
+                self.assertEqual(right.headers, headers)
+                self.assertEqual(list(left), [(1, 2)])
+                self.assertEqual(list(right), [(3, 4)])
+
+    def test_row_stacking_column_delete_preserves_inputs(self):
+        left = tablib.Dataset((1, 2), headers=['a', 'b'])
+        right = tablib.Dataset((3, 4), headers=['a', 'b'])
+        stacked = left.stack(right)
+
+        del stacked['b']
+
+        self.assertEqual(list(stacked), [(1,), (3,)])
+        self.assertEqual(left.headers, ['a', 'b'])
+        self.assertEqual(right.headers, ['a', 'b'])
+        self.assertEqual(list(left), [(1, 2)])
+        self.assertEqual(list(right), [(3, 4)])
+
+    def test_row_stacking_input_edits_preserve_result(self):
+        for source_index in (0, 1):
+            with self.subTest(source_index=source_index):
+                left = tablib.Dataset((1, 2), headers=['a', 'b'])
+                right = tablib.Dataset((3, 4), headers=['a', 'b'])
+                stacked = left.stack(right)
+
+                del (left, right)[source_index]['b']
+
+                self.assertEqual(stacked.headers, ['a', 'b'])
+                self.assertEqual(list(stacked), [(1, 2), (3, 4)])
+
+    def test_row_stacking_formatters_are_independent(self):
+        left = tablib.Dataset(('left',), headers=['value'])
+        right = tablib.Dataset(('right',), headers=['value'])
+        left.add_formatter('value', str.upper)
+        stacked = left.stack(right)
+
+        stacked.add_formatter('value', lambda value: f'[{value}]')
+
+        self.assertEqual(json.loads(stacked.json), [{'value': '[LEFT]'}, {'value': '[RIGHT]'}])
+        self.assertEqual(json.loads(left.json), [{'value': 'LEFT'}])
+        self.assertEqual(json.loads(right.json), [{'value': 'right'}])
+
+    def test_row_stacking_dynamic_columns_are_independent(self):
+        left = tablib.Dataset((1, 2), headers=['a', 'b'])
+        left.append_col(lambda row: row[0] + row[1], header='total')
+        right = tablib.Dataset((4, 5, 9), headers=['a', 'b', 'total'])
+        stacked = left.stack(right)
+
+        del stacked['total']
+        left.append((6, 7))
+
+        self.assertEqual(left.headers, ['a', 'b', 'total'])
+        self.assertEqual(list(left), [(1, 2, 3), (6, 7, 13)])
+        self.assertEqual(right[0], (4, 5, 9))
+        self.assertEqual(list(stacked), [(1, 2), (4, 5)])
+
+    def test_row_stacking_preserves_subclass_title_tags_and_cell_identity(self):
+        class CustomDataset(tablib.Dataset):
+            pass
+
+        cell = {'shared': []}
+        left = CustomDataset(headers=['value'], title='Left')
+        left.append((cell,), tags=['left'])
+        right = tablib.Dataset(headers=['value'])
+        right.append(('right',), tags=['right'])
+
+        stacked = left.stack(right)
+
+        self.assertIsInstance(stacked, CustomDataset)
+        self.assertEqual(stacked.title, 'Left')
+        self.assertIs(stacked[0][0], cell)
+        self.assertIs(stacked.filter('left')[0][0], cell)
+        self.assertEqual(list(stacked.filter('right')), [('right',)])
+
     def test_stack_rejects_non_dataset(self):
         """stack() and stack_cols() raise TypeError for non-Dataset input."""
         with self.assertRaises(TypeError):
