@@ -531,6 +531,15 @@ class TablibTestCase(BaseTestCase):
                 self.assertEqual(list(left), [(1, 2)])
                 self.assertEqual(list(right), [(3, 4)])
 
+    def test_row_stacking_self_copies_each_row(self):
+        source = tablib.Dataset((1, 2), headers=['a', 'b'])
+        stacked = source.stack(source)
+
+        stacked.append_col([3, 4], header='c')
+
+        self.assertEqual(list(source), [(1, 2)])
+        self.assertEqual(list(stacked), [(1, 2, 3), (1, 2, 4)])
+
     def test_row_stacking_column_delete_preserves_inputs(self):
         left = tablib.Dataset((1, 2), headers=['a', 'b'])
         right = tablib.Dataset((3, 4), headers=['a', 'b'])
