@@ -203,8 +203,10 @@ class Dataset:
 
                 pos = self.headers.index(key)
                 del self.headers[pos]
-                if pos in self._dynamic_columns:
-                    del self._dynamic_columns[pos]
+                self._dynamic_columns = {
+                    index - 1 if index > pos else index: func
+                    for index, func in self._dynamic_columns.items() if index != pos
+                }
 
                 for i, row in enumerate(self._data):
 
