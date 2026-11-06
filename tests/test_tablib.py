@@ -229,6 +229,14 @@ class TablibTestCase(BaseTestCase):
             ['JA', 'GW', 'TJ', 'SO', 'OS', 'AD']
         )
 
+    def test_delete_before_dynamic_column(self):
+        dataset = tablib.Dataset(['unused', 2], headers=['drop', 'units'])
+        dataset.append_col(lambda row: 99, header='total')
+        dataset.append_col([5], header='tail')
+        del dataset['drop']
+        dataset.append([3, 7])
+        self.assertEqual(dataset[-1], (3, 99, 7))
+
     def test_header_slicing(self):
         """Verify slicing by headers."""
 
