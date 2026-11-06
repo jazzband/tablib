@@ -36,6 +36,11 @@ class ReSTFormat:
     MAX_TABLE_WIDTH = 80  # Roughly. It may be wider to avoid breaking words.
 
     @classmethod
+    def _get_rows(cls, dataset):
+        rows = dataset._package(dicts=False)
+        return rows[1:] if dataset.headers else rows
+
+    @classmethod
     def _get_column_string_lengths(cls, dataset):
         """
         Returns a list of string lengths of each column, and a list of
@@ -47,9 +52,8 @@ class ReSTFormat:
         else:
             column_lengths = [[] for _ in range(dataset.width)]
             word_lens = [0 for _ in range(dataset.width)]
-        for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
-            for i, val in enumerate(values):
+        for row in cls._get_rows(dataset):
+            for i, val in enumerate(row):
                 text = to_str(val)
                 column_lengths[i].append(len(text))
                 word_lens[i] = max(word_lens[i], _max_word_len(text))
@@ -130,9 +134,8 @@ class ReSTFormat:
                 justify=JUSTIFY_CENTER,
             ))
             lines.append(border)
-        for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
-            lines.extend(cls._row_to_lines(values, column_widths, wrapper, ''))
+        for row in cls._get_rows(dataset):
+            lines.extend(cls._row_to_lines(row, column_widths, wrapper, ''))
         lines.append(border)
         return '\n'.join(lines)
 
@@ -182,9 +185,8 @@ class ReSTFormat:
                 justify=JUSTIFY_CENTER,
             ))
             lines.append(header_sep)
-        for row in dataset.dict:
-            values = iter(row.values() if hasattr(row, 'values') else row)
-            lines.extend(cls._row_to_lines(values, column_widths, wrapper))
+        for row in cls._get_rows(dataset):
+            lines.extend(cls._row_to_lines(row, column_widths, wrapper))
             lines.append(row_sep)
         return '\n'.join(lines)
 
