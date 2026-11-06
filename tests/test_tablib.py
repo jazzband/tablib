@@ -872,6 +872,19 @@ class HTMLTests(BaseTestCase):
 
 
 class RSTTests(BaseTestCase):
+    def test_rst_preserves_duplicate_header_columns(self):
+        data = tablib.Dataset(['first', 'second'], headers=['same', 'same'])
+        data.add_formatter(0, str.upper)
+
+        for force_grid, expected_row in (
+            (False, 'FIRST  second'),
+            (True, '| FIRST | second |'),
+        ):
+            with self.subTest(force_grid=force_grid):
+                output = data.export('rst', force_grid=force_grid)
+                self.assertIn(expected_row, output.splitlines())
+        self.assertEqual(data[0], ('first', 'second'))
+
     def test_rst_force_grid(self):
         data = tablib.Dataset()
         data.append(self.john)
