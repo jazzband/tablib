@@ -38,7 +38,7 @@ class CSVFormat:
 
         dset.wipe()
 
-        if 'delimiter' not in kwargs:
+        if cls is CSVFormat and 'delimiter' not in kwargs:
             # Auto-detect the delimiter using the CSV Sniffer.
             # Reading a sample and then seeking back to the start lets the
             # Sniffer work on real data while keeping the stream intact for
@@ -60,6 +60,7 @@ class CSVFormat:
             if hasattr(in_stream, 'seek'):
                 in_stream.seek(0)
 
+        kwargs.setdefault('delimiter', cls.DEFAULT_DELIMITER)
         rows = csv.reader(in_stream, **kwargs)
         for i, row in enumerate(rows):
             if i < skip_lines:

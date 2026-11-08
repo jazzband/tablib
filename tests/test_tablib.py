@@ -1158,6 +1158,13 @@ class TSVTests(BaseTestCase):
 
         self.assertEqual(_tsv, data.tsv)
 
+    def test_tsv_import_one_column_with_non_tab_punctuation(self):
+        for delimiter in ',:|':
+            with self.subTest(delimiter=delimiter):
+                dataset = tablib.Dataset().load(f'a{delimiter}b\nc{delimiter}d\n', format='tsv')
+                self.assertEqual(dataset.headers, [f'a{delimiter}b'])
+                self.assertEqual(dataset[0], (f'c{delimiter}d',))
+
     def test_tsv_format_detect(self):
         """Test TSV format detection."""
 
