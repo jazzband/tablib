@@ -1069,6 +1069,51 @@ class CSVTests(BaseTestCase):
         dataset = tablib.import_set(csv_text, format="csv", skip_lines=2)
         self.assertEqual(dataset.headers, ['id', 'name', 'description'])
 
+    def test_csv_import_set_na_filter(self):
+        """Empty cells are imported as None when na_filter is enabled."""
+        csv_text = (
+            'id,name,description,count\r\n'
+            '12,Smith,,4\r\n'
+            '13,,"",5\r\n'
+            '14,Jones,rounded,\r\n'
+        )
+        dataset = tablib.import_set(csv_text, format='csv', na_filter=True)
+        self.assertEqual(dataset.headers, ['id', 'name', 'description', 'count'])
+        self.assertEqual(dataset[0], ('12', 'Smith', None, '4'))
+        self.assertEqual(dataset[1], ('13', None, None, '5'))
+        self.assertEqual(dataset[2], ('14', 'Jones', 'rounded', None))
+
+    def test_csv_import_set_na_filter_default(self):
+        """Empty cells stay empty strings unless na_filter is enabled."""
+        csv_text = (
+            'id,name,description,count\r\n'
+            '12,Smith,,4\r\n'
+        )
+        dataset = tablib.import_set(csv_text, format='csv')
+        self.assertEqual(dataset[0], ('12', 'Smith', '', '4'))
+
+    def test_csv_import_set_na_filter_ragged(self):
+        """Missing cells in ragged rows are None when na_filter is enabled."""
+        csv_text = (
+            'H1,H2,H3\n'
+            'A,B\n'
+            'C,D,E\n'
+        )
+        dataset = tablib.import_set(csv_text, format='csv', na_filter=True)
+        self.assertEqual(dataset[0], ('A', 'B', None))
+        self.assertEqual(dataset[1], ('C', 'D', 'E'))
+
+    def test_csv_import_set_na_filter_roundtrip(self):
+        """None values export as empty cells and import back as None."""
+        data = tablib.Dataset(headers=('a', 'b'))
+        data.append(('x', None))
+        data.append((None, 'y'))
+
+        dataset = tablib.import_set(data.export('csv'), format='csv', na_filter=True)
+        self.assertEqual(dataset.headers, ['a', 'b'])
+        self.assertEqual(dataset[0], ('x', None))
+        self.assertEqual(dataset[1], (None, 'y'))
+
     def test_csv_import_mac_os_lf(self):
         csv_text = (
             'id,name,description\r'
@@ -1200,6 +1245,17 @@ class TSVTests(BaseTestCase):
         data.tsv = _tsv
 
         self.assertEqual(_tsv, data.tsv)
+
+    def test_tsv_import_set_na_filter(self):
+        """Empty cells are imported as None when na_filter is enabled."""
+        tsv_text = (
+            'id\tname\tcount\r\n'
+            '12\tSmith\t\r\n'
+            '13\t\t5\r\n'
+        )
+        dataset = tablib.import_set(tsv_text, format='tsv', na_filter=True)
+        self.assertEqual(dataset[0], ('12', 'Smith', None))
+        self.assertEqual(dataset[1], ('13', None, '5'))
 
     def test_tsv_format_detect(self):
         """Test TSV format detection."""
