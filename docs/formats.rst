@@ -47,6 +47,18 @@ lines that should be skipped before starting to read data.
 
     The ``skip_lines`` parameter was added.
 
+Empty cells are imported as empty strings by default. If you pass the
+``na_filter`` parameter (defaults to ``False``), empty cells are imported as
+``None`` instead, matching how empty cells are read from Excel files — similar
+to the ``na_filter`` argument of :py:func:`pandas.read_csv`::
+
+    tablib.import_set(your_data_stream, format='csv', na_filter=True)
+
+.. versionadded:: 3.12.0
+
+    The ``na_filter`` parameter was added. It also applies to the ``tsv``
+    format, which shares the CSV importer.
+
 When exporting with the ``csv`` format, the top row will contain headers, if
 they have been set. Otherwise, the top row will contain the first row of the
 dataset.
