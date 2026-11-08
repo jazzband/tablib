@@ -35,8 +35,13 @@ class CSVFormat:
         return stream.getvalue()
 
     @classmethod
-    def import_set(cls, dset, in_stream, headers=True, skip_lines=0, **kwargs):
-        """Returns dataset from CSV stream."""
+    def import_set(cls, dset, in_stream, headers=True, skip_lines=0, na_filter=False, **kwargs):
+        """Returns dataset from CSV stream.
+
+        When ``na_filter`` is True, empty cells are imported as ``None``
+        instead of empty strings, mirroring how empty cells are read from
+        Excel files. The default (``False``) keeps the previous behaviour.
+        """
 
         dset.wipe()
 
@@ -51,6 +56,8 @@ class CSVFormat:
             elif row:
                 if i > 0 and len(row) < dset.width:
                     row += [''] * (dset.width - len(row))
+                if na_filter:
+                    row = [None if value == '' else value for value in row]
                 dset.append(row)
 
     @classmethod
