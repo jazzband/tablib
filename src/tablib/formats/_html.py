@@ -28,8 +28,12 @@ class HTMLFormat:
             head.append(tr)
             table.append(head)
 
+        rows = dataset._package(dicts=False)
+        if dataset.headers:
+            rows = rows[1:]
+
         body = ET.Element('tbody')
-        for row in dataset:
+        for row in rows:
             tr = ET.Element('tr')
             for item in row:
                 td = ET.Element('td')

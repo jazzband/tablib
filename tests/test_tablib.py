@@ -775,6 +775,18 @@ class HTMLTests(BaseTestCase):
         """HTML export"""
         self.assertEqual(self.founders_html, self.founders.html.replace('\n', ''))
 
+    def test_html_export_formatters(self):
+        for headers in (None, ['a', 'a']):
+            with self.subTest(headers=headers):
+                dataset = tablib.Dataset(['secret', None], headers=headers)
+                dataset.add_formatter(0, lambda value: '<redacted>')
+                dataset.add_formatter(None, lambda value: value.upper() if value else value)
+                expected = '<td>&lt;REDACTED&gt;</td><td></td>'
+                self.assertIn(expected, dataset.html)
+                self.assertIn(expected, tablib.Databook([dataset]).html)
+                self.assertEqual(dataset[0], ('secret', None))
+                self.assertEqual(dataset.headers, headers)
+
     def test_html_export_none_value(self):
         """HTML export"""
 
