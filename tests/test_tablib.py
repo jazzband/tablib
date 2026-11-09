@@ -1777,6 +1777,16 @@ class JSONTests(BaseTestCase):
 
 
 class YAMLTests(BaseTestCase):
+    def test_yaml_export_decimal_uuid_time(self):
+        data = tablib.Dataset(headers=['price', 'id', 'at'])
+        uid = uuid4()
+        data.append([Decimal('1.10'), uid, dt.time(12, 30)])
+
+        self.assertEqual(
+            tablib.Dataset().load(data.export('yaml'), 'yaml').dict,
+            [{'price': '1.10', 'id': str(uid), 'at': '12:30:00'}],
+        )
+
     def test_yaml_format_detect(self):
         """Test YAML format detection."""
 

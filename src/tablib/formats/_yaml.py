@@ -1,11 +1,32 @@
 """ Tablib - YAML Support.
 """
 
-__lazy_modules__ = {"yaml"}
+__lazy_modules__ = {"datetime", "decimal", "uuid", "yaml"}
+
+import datetime as dt
+import decimal
+from uuid import UUID
 
 import yaml
 
 import tablib
+
+
+def _dump(data):
+    class Dumper(yaml.SafeDumper):
+        pass
+
+    # Written as strings, like the JSON format does.
+    for type_ in (decimal.Decimal, UUID, dt.time):
+        Dumper.add_representer(type_, lambda dumper, value: dumper.represent_str(str(value)))
+
+    return yaml.dump(
+        data,
+        Dumper=Dumper,
+        default_flow_style=None,
+        allow_unicode=True,
+        sort_keys=False,
+    )
 
 
 class YAMLFormat:
@@ -15,22 +36,12 @@ class YAMLFormat:
     @classmethod
     def export_set(cls, dataset):
         """Returns YAML representation of Dataset."""
-        return yaml.safe_dump(
-            dataset._package(),
-            default_flow_style=None,
-            allow_unicode=True,
-            sort_keys=False,
-        )
+        return _dump(dataset._package())
 
     @classmethod
     def export_book(cls, databook):
         """Returns YAML representation of Databook."""
-        return yaml.safe_dump(
-            databook._package(),
-            default_flow_style=None,
-            allow_unicode=True,
-            sort_keys=False,
-        )
+        return _dump(databook._package())
 
     @classmethod
     def import_set(cls, dset, in_stream):
