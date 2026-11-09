@@ -2031,6 +2031,13 @@ class JiraTests(BaseTestCase):
     def test_jira_export_none_and_empty_values(self):
         self.assertEqual('| | |c|', tablib.Dataset(['', None, 'c']).jira)
 
+    def test_jira_export_escapes_pipes(self):
+        data = tablib.Dataset()
+        data.headers = ['h | 1', 'plain']
+        data.append(['a | b', 'x'])
+        expected = '||h \\| 1||plain||\n|a \\| b|x|'
+        self.assertEqual(expected, data.jira)
+
     def test_jira_export_empty_dataset(self):
         self.assertIsNotNone(tablib.Dataset().jira)
 
