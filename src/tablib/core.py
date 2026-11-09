@@ -263,11 +263,8 @@ class Dataset:
                 )
             else:
                 is_valid = True
-        elif col:
-            if len(col) < 1:
-                is_valid = True
-            else:
-                is_valid = (len(col) == self.height) if self.height else True
+        elif col is not None:
+            is_valid = not self.height or len(col) == self.height
         else:
             is_valid = all(len(x) == self.width for x in self._data)
 

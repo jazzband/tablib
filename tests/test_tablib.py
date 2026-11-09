@@ -128,6 +128,15 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(data['age'], age_col)
         self.assertEqual(data['size'], size_col)
 
+    def test_add_empty_column_rejects_without_mutating_dataset(self):
+        data = tablib.Dataset(self.john, headers=self.headers)
+
+        with self.assertRaises(tablib.InvalidDimensions):
+            data.insert_col(1, [], header='middle_name')
+
+        self.assertEqual(data.headers, list(self.headers))
+        self.assertEqual(list(data), [self.john])
+
     def test_add_column_no_data_with_headers(self):
         """Verify adding empty column when dataset has only headers."""
         data.headers = ('fname', 'lname')
