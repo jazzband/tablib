@@ -1,5 +1,13 @@
 """ Tablib - DBF Support.
 """
+
+__lazy_modules__ = {
+    "io",
+    "os",
+    "tablib._vendor",
+    "tempfile",
+}
+
 import io
 import os
 import tempfile
@@ -10,7 +18,7 @@ from .._vendor.dbfpy import record as dbfrecord
 
 class DBFFormat:
     title = 'dbf'
-    extensions = ('csv',)
+    extensions = ('dbf',)
 
     DEFAULT_ENCODING = 'utf-8'
 

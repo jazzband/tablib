@@ -322,6 +322,20 @@ class TablibTestCase(BaseTestCase):
         # Delete from invalid index
         self.assertRaises(IndexError, self.founders.__delitem__, 3)
 
+    def test_getitem_str_key_no_headers_raises(self):
+        """Verify that accessing by column name on a headerless Dataset raises HeadersNeeded."""
+        d = tablib.Dataset()
+        d.append([1, 2, 3])
+        with self.assertRaises(tablib.core.HeadersNeeded):
+            _ = d['col']
+
+    def test_delitem_str_key_no_headers_raises(self):
+        """Verify that deleting by column name on a headerless Dataset raises HeadersNeeded."""
+        d = tablib.Dataset()
+        d.append([1, 2, 3])
+        with self.assertRaises(tablib.core.HeadersNeeded):
+            del d['col']
+
     def test_str_no_columns(self):
         d = tablib.Dataset(['a', 1], ['b', 2], ['c', 3])
         output = f'{d}'
@@ -501,6 +515,30 @@ class TablibTestCase(BaseTestCase):
 
         self.assertEqual(column_stacked[0],
                          ("John", "Adams", 90, "John", "Adams", 90))
+
+    def test_stack_rejects_non_dataset(self):
+        """stack() and stack_cols() raise TypeError for non-Dataset input."""
+        with self.assertRaises(TypeError):
+            self.founders.stack('not a dataset')
+        with self.assertRaises(TypeError):
+            self.founders.stack_cols('not a dataset')
+
+    def test_column_stacking_headerless(self):
+        """Column stacking two datasets that both have no headers."""
+
+        left = tablib.Dataset()
+        left.append(("x", "y"))
+        left.append(("p", "q"))
+
+        right = tablib.Dataset()
+        right.append(("1", "2", "3"))
+        right.append(("4", "5", "6"))
+
+        column_stacked = left.stack_cols(right)
+
+        self.assertIsNone(column_stacked.headers)
+        self.assertEqual(column_stacked[0], ("x", "y", "1", "2", "3"))
+        self.assertEqual(column_stacked[1], ("p", "q", "4", "5", "6"))
 
     def test_sorting(self):
         """Sort columns."""
@@ -764,6 +802,21 @@ class HTMLTests(BaseTestCase):
             f"<h3>Founders</h3>{self.founders_html}<h3>Founders</h3>{self.founders_html}"
         )
 
+    def test_html_databook_export_escaped(self):
+        book = tablib.Databook()
+        dset_with_markup = tablib.Dataset(
+            ["<script>BOOM</script>"],
+            headers=["<b>a</b>"],
+            title='<script>BOOM</script>Founders'
+        )
+        book.add_sheet(dset_with_markup)
+        self.assertEqual(
+            book.html,
+            "<h3>&lt;script&gt;BOOM&lt;/script&gt;Founders</h3>\n"
+            "<table><thead><tr><th>&lt;b&gt;a&lt;/b&gt;</th></tr></thead>"
+            "<tbody><tr><td>&lt;script&gt;BOOM&lt;/script&gt;</td></tr></tbody></table>\n"
+        )
+
     def test_html_import(self):
         data.html = self.founders_html
 
@@ -869,6 +922,21 @@ class RSTTests(BaseTestCase):
             "==========  =========  ===\n"
             "John        Adams      90 \n"
             "==========  =========  ===",
+        )
+
+    def test_rst_export_empty_column_without_headers(self):
+        # A column that is empty in every row gives that column a width of 0
+        # when there are no headers to enforce a minimum. That used to raise
+        # "ValueError: invalid width 0 (must be > 0)" while wrapping the cells.
+        data = tablib.Dataset()
+        data.append(('', 'a'))
+        data.append(('', 'b'))
+        self.assertEqual(
+            data.export('rst'),
+            '=  =\n'
+            '   a\n'
+            '   b\n'
+            '=  ='
         )
 
 
@@ -1240,6 +1308,16 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['None'], '')
         self.assertEqual(data.dict[0]['empty'], '')
 
+    def test_ods_export_import_boolean(self):
+        data.append(('alice', True))
+        data.append(('bob', False))
+        data.headers = ('name', 'flag')
+        _ods = data.ods
+        data.ods = _ods
+        self.assertIs(data.dict[0]['flag'], True)
+        self.assertIs(data.dict[1]['flag'], False)
+        self.assertEqual(data.dict[0]['name'], 'alice')
+
     def test_ods_export_display(self):
         """Test that exported datetime types are displayed correctly in office software"""
         date = dt.date(2019, 10, 4)
@@ -1358,6 +1436,30 @@ class XLSTests(BaseTestCase):
             }
         )
 
+    def test_xls_book_date_import(self):
+        """Dates are converted when a book is imported, as they are for a set."""
+        xls_source = Path(__file__).parent / 'files' / 'dates.xls'
+        with xls_source.open('rb') as fh:
+            dbook = tablib.Databook().load(fh, 'xls')
+        self.assertEqual(
+            dbook.sheets()[0].dict[0]['birth_date'], dt.datetime(2015, 4, 12, 0, 0)
+        )
+
+    def test_xls_book_import_with_errors(self):
+        """Errors are kept as errors when a book is imported, as they are for a set."""
+        xls_source = Path(__file__).parent / 'files' / 'errors.xls'
+        with xls_source.open('rb') as fh:
+            dbook = tablib.Databook().load(fh, 'xls')
+        self.assertEqual(
+            dbook.sheets()[0].dict[0],
+            {
+                'div by 0': '#DIV/0!',
+                'name unknown': '#NAME?',
+                'not available (formula)': '#N/A',
+                'not available (static)': '#N/A',
+            }
+        )
+
     def test_book_import_from_stream(self):
         in_stream = self.founders.xls
         book = tablib.Databook().load(in_stream, 'xls')
@@ -1417,8 +1519,10 @@ class XLSXTests(BaseTestCase):
         data = self._xlsx_cell_values_data(cls=tablib.Dataset)
         width_before = self._get_width(data, column_width)
         data.append([
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+            (
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue'
+            ),
         ])
         width_after = self._get_width(data, width_before)
         return width_before, width_after
@@ -1429,8 +1533,10 @@ class XLSXTests(BaseTestCase):
         data = self._xlsx_cell_values_data(cls=tablib.Databook)
         width_before = self._get_width(data, column_width)
         data.sheets()[0].append([
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
-            'verylongvalue-verylongvalue-verylongvalue-verylongvalue',
+            (
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue-'
+                'verylongvalue-verylongvalue-verylongvalue-verylongvalue'
+            ),
         ])
         width_after = self._get_width(data, width_before)
         return width_before, width_after
@@ -1521,6 +1627,16 @@ class XLSXTests(BaseTestCase):
         _xlsx = data.export('xlsx', escape=True)
         wb = load_workbook(filename=BytesIO(_xlsx))
         self.assertEqual('SUM(1+1)', wb.active['A1'].value)
+
+    def test_xlsx_export_set_escape_formulae_keeps_inner_equals(self):
+        """
+        Only the leading '=' should be stripped when escaping formulae; '='
+        characters inside the formula (e.g. a comparison) must be preserved.
+        """
+        data.append(('=A1=B1',))
+        _xlsx = data.export('xlsx', escape=True)
+        wb = load_workbook(filename=BytesIO(_xlsx))
+        self.assertEqual('A1=B1', wb.active['A1'].value)
 
     def test_xlsx_export_book_escape_formulae(self):
         """
@@ -1741,13 +1857,21 @@ class YAMLTests(BaseTestCase):
 
         self.founders.append(('名字', '李', 60))
         expected = """\
-- {first_name: John, gpa: 90, last_name: Adams}
-- {first_name: George, gpa: 67, last_name: Washington}
-- {first_name: Thomas, gpa: 50, last_name: Jefferson}
-- {first_name: 名字, gpa: 60, last_name: 李}
+- {first_name: John, last_name: Adams, gpa: 90}
+- {first_name: George, last_name: Washington, gpa: 67}
+- {first_name: Thomas, last_name: Jefferson, gpa: 50}
+- {first_name: 名字, last_name: 李, gpa: 60}
 """
         output = self.founders.yaml
         self.assertEqual(output, expected)
+
+    def test_yaml_export_preserves_column_order(self):
+        """YAML export must keep the dataset's column order instead of sorting the keys
+        alphabetically."""
+        data = tablib.Dataset()
+        data.headers = ('name', 'id', 'zebra', 'apple')
+        data.append(('x', 1, 'z', 'a'))
+        self.assertEqual(data.yaml.strip(), '- {name: x, id: 1, zebra: z, apple: a}')
 
     def test_yaml_load(self):
         """ test issue 524: invalid format  """
@@ -1918,6 +2042,11 @@ class DBFTests(BaseTestCase):
         self.assertFalse(fmt.detect(_csv))
         self.assertFalse(fmt.detect(_json))
         self.assertFalse(fmt.detect(_bunk))
+
+    def test_dbf_format_extension(self):
+        """Test the DBF format advertises its own file extension."""
+        fmt = registry.get_format('dbf')
+        self.assertEqual(('dbf',), fmt.extensions)
 
 
 class JiraTests(BaseTestCase):

@@ -1,5 +1,17 @@
 """ Tablib - formats
 """
+
+__lazy_modules__ = {
+    "functools",
+    "importlib",
+    "importlib.util",
+    "tablib.exceptions",
+    "tablib.formats._csv",
+    "tablib.formats._json",
+    "tablib.formats._tsv",
+    "tablib.utils",
+}
+
 from functools import partialmethod
 from importlib import import_module
 from importlib.util import find_spec
@@ -66,6 +78,10 @@ class ImportExportSetDescriptor(FormatDescriptorBase):
 class Registry:
     _formats = {}
 
+    def _ensure_builtins_registered(self):
+        # Importing tablib.core registers the builtins. It's lazy on Python 3.15+.
+        from .. import core  # noqa: F401
+
     def register(self, key, format_or_path):
         from ..core import Databook, Dataset
 
@@ -109,12 +125,14 @@ class Registry:
             self.register('cli', 'tablib.formats._cli.CLIFormat')
 
     def formats(self):
+        self._ensure_builtins_registered()
         for key, frm in self._formats.items():
             if isinstance(frm, str):
                 self._formats[key] = load_format_class(frm)
             yield self._formats[key]
 
     def get_format(self, key):
+        self._ensure_builtins_registered()
         if key not in self._formats:
             if key in uninstalled_format_messages:
                 raise UnsupportedFormat(

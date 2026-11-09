@@ -1,5 +1,16 @@
 """ Tablib - XLSX Support.
 """
+
+__lazy_modules__ = {
+    "io",
+    "openpyxl",
+    "openpyxl.reader",
+    "openpyxl.reader.excel",
+    "openpyxl.styles",
+    "openpyxl.utils",
+    "openpyxl.workbook",
+}
+
 import re
 from io import BytesIO
 
@@ -176,7 +187,7 @@ class XLSXFormat:
                     cell.value = str(col)
 
                 if escape and cell.data_type == 'f' and cell.value.startswith('='):
-                    cell.value = cell.value.replace("=", "")
+                    cell.value = cell.value[1:]
 
     @classmethod
     def _adapt_column_width(cls, worksheet, width):

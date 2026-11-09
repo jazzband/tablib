@@ -1,5 +1,8 @@
 """ Tablib - JSON Support
 """
+
+__lazy_modules__ = {"decimal", "json", "uuid"}
+
 import decimal
 import json
 from uuid import UUID

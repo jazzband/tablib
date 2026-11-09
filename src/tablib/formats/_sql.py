@@ -1,4 +1,11 @@
 """Tablib - SQL INSERT Export Support."""
+
+__lazy_modules__ = {
+    "datetime",
+    "decimal",
+    "tablib.exceptions",
+}
+
 import datetime
 import decimal
 

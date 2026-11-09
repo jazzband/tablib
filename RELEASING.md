@@ -8,7 +8,7 @@ Jazzband guidelines: https://jazzband.co/about/releases
       [![GitHub Actions status](https://github.com/jazzband/tablib/workflows/Test/badge.svg)](https://github.com/jazzband/tablib/actions)
 
 * [ ] Edit release draft, adjust text if needed:
-      https://github.com/hugovk/em-keyboard/releases
+      https://github.com/jazzband/tablib/releases
 
 * [ ] Check next tag is correct, amend if needed
 

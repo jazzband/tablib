@@ -8,6 +8,13 @@
     :license: MIT, see LICENSE for more details.
 """
 
+__lazy_modules__ = {
+    "copy",
+    "operator",
+    "tablib.exceptions",
+    "tablib.utils",
+}
+
 from copy import copy
 from operator import itemgetter
 
@@ -169,6 +176,8 @@ class Dataset:
 
     def __getitem__(self, key):
         if isinstance(key, str):
+            if self.headers is None:
+                raise HeadersNeeded()
             if key in self.headers:
                 pos = self.headers.index(key)  # get 'key' index from each data
                 return [row[pos] for row in self._data]
@@ -187,6 +196,8 @@ class Dataset:
 
     def __delitem__(self, key):
         if isinstance(key, str):
+            if self.headers is None:
+                raise HeadersNeeded()
 
             if key in self.headers:
 
@@ -338,7 +349,7 @@ class Dataset:
         """
         error_details = (
             "Please check format documentation "
-            "https://tablib.readthedocs.io/en/stable/formats.html#yaml"
+            "https://tablib.readthedocs.io/en/stable/formats.html"
         )
 
         if not pickle:
@@ -739,7 +750,7 @@ class Dataset:
         ``Dataset`` instance."""
 
         if not isinstance(other, Dataset):
-            return
+            raise TypeError("'other' must be a Dataset instance")
 
         if self.width != other.width:
             raise InvalidDimensions
@@ -762,7 +773,7 @@ class Dataset:
         has headers set, than the other must as well."""
 
         if not isinstance(other, Dataset):
-            return
+            raise TypeError("'other' must be a Dataset instance")
 
         if self.headers or other.headers:
             if not self.headers or not other.headers:
@@ -778,11 +789,18 @@ class Dataset:
 
         _dset = Dataset()
 
-        for column in self.headers:
-            _dset.append_col(col=self[column])
+        if self.headers:
+            for column in self.headers:
+                _dset.append_col(col=self[column])
 
-        for column in other.headers:
-            _dset.append_col(col=other[column])
+            for column in other.headers:
+                _dset.append_col(col=other[column])
+        else:
+            for index in range(self.width):
+                _dset.append_col(col=self.get_col(index))
+
+            for index in range(other.width):
+                _dset.append_col(col=other.get_col(index))
 
         _dset.headers = new_headers
 

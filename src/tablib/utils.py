@@ -1,3 +1,5 @@
+__lazy_modules__ = {"io"}
+
 from io import BytesIO, StringIO
 
 
