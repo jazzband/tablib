@@ -872,6 +872,18 @@ class HTMLTests(BaseTestCase):
 
 
 class RSTTests(BaseTestCase):
+    def test_rst_escapes_pipes_and_backslashes(self):
+        data = tablib.Dataset()
+        data.headers = ['name', 'note']
+        data.append(['a|b', 'w1'])
+        data.append(['x\\y', 'w2'])
+        data.append(['longer text here', 'w3'])
+        grid = data.export('rst', force_grid=True)
+        self.assertIn('a\\|b', grid)
+        self.assertIn('x\\\\y', grid)
+        # an unescaped pipe would end the grid-table cell
+        self.assertNotIn('| a|b |', grid)
+
     def test_rst_force_grid(self):
         data = tablib.Dataset()
         data.append(self.john)

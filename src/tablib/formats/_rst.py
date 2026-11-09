@@ -19,6 +19,13 @@ def to_str(value):
     return str(value)
 
 
+def _escape(text):
+    # In reStructuredText a backslash escapes the next character, and an
+    # unescaped pipe would end a grid-table cell. Escaping both keeps the
+    # cell content intact when the table is rendered.
+    return text.replace('\\', '\\\\').replace('|', '\\|')
+
+
 def _max_word_len(text):
     """
     Return the length of the longest word in `text`.
@@ -42,15 +49,15 @@ class ReSTFormat:
         maximum word lengths.
         """
         if dataset.headers:
-            column_lengths = [[len(h)] for h in dataset.headers]
-            word_lens = [_max_word_len(h) for h in dataset.headers]
+            column_lengths = [[len(_escape(to_str(h)))] for h in dataset.headers]
+            word_lens = [_max_word_len(_escape(to_str(h))) for h in dataset.headers]
         else:
             column_lengths = [[] for _ in range(dataset.width)]
             word_lens = [0 for _ in range(dataset.width)]
         for row in dataset.dict:
             values = iter(row.values() if hasattr(row, 'values') else row)
             for i, val in enumerate(values):
-                text = to_str(val)
+                text = _escape(to_str(val))
                 column_lengths[i].append(len(text))
                 word_lens[i] = max(word_lens[i], _max_word_len(text))
         return column_lengths, word_lens
@@ -78,7 +85,7 @@ class ReSTFormat:
         cells = []
         for value, width in zip(values, widths):
             wrapper.width = width
-            text = to_str(value)
+            text = _escape(to_str(value))
             cell = wrapper.wrap(text)
             cells.append(cell)
         lines = zip_longest(*cells, fillvalue='')
@@ -203,11 +210,11 @@ class ReSTFormat:
 
         """
         if head0 is not None:
-            head0 = to_str(head0)
+            head0 = _escape(to_str(head0))
             if len(head0) > width0:
                 return False
         for cell in col0:
-            cell = to_str(cell)
+            cell = _escape(to_str(cell))
             if len(cell) > width0:
                 return False
         return True
