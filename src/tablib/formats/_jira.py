@@ -32,9 +32,15 @@ class JIRAFormat:
         return cls._serialize_row(headers, delimiter='||')
 
     @classmethod
+    def _escape(cls, value):
+        # A pipe character starts a new cell in Jira wiki markup, so it has
+        # to be escaped to be rendered as part of the cell content.
+        return value.replace('|', '\\|')
+
+    @classmethod
     def _serialize_row(cls, row, delimiter='|'):
         return '{}{}{}'.format(
             delimiter,
-            delimiter.join([str(item) if item else ' ' for item in row]),
+            delimiter.join([cls._escape(str(item) if item else ' ') for item in row]),
             delimiter
         )
