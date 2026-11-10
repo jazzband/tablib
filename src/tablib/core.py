@@ -638,7 +638,7 @@ class Dataset:
             else:
                 raise KeyError
 
-        if col is None or col <= self.width:
+        if col is None or col < self.width:
             self._formatters.append((col, handler))
         else:
             raise InvalidDatasetIndex
