@@ -181,6 +181,9 @@ class XLSXFormat:
                     if '\n' in str(col):
                         cell.alignment = wrap_text
 
+                if isinstance(col, int) and not isinstance(col, bool) and abs(col) > 2**53:
+                    col = str(col)
+
                 try:
                     cell.value = col
                 except ValueError:
