@@ -191,7 +191,8 @@ class Dataset:
                 return [result.tuple for result in _results]
 
     def __setitem__(self, key, value):
-        self._validate(value)
+        if len(value) != self.width:
+            raise InvalidDimensions
         self._data[key] = Row(value)
 
     def __delitem__(self, key):
