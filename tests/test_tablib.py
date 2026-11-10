@@ -229,6 +229,20 @@ class TablibTestCase(BaseTestCase):
             ['JA', 'GW', 'TJ', 'SO', 'OS', 'AD']
         )
 
+    def test_replace_row_with_dynamic_column_requires_full_width(self):
+        dataset = tablib.Dataset(('Alice', 10), headers=['name', 'score'])
+        dataset.append_col(lambda row: row[1] * 2, header='double')
+
+        with self.assertRaises(tablib.InvalidDimensions):
+            dataset[0] = ('Bob', 20)
+
+        self.assertEqual(dataset[0], ('Alice', 10, 20))
+        self.assertEqual(dataset['double'], [20])
+
+        dataset[0] = ('Bob', 20, 40)
+        self.assertEqual(dataset[0], ('Bob', 20, 40))
+        self.assertEqual(dataset['double'], [40])
+
     def test_header_slicing(self):
         """Verify slicing by headers."""
 
