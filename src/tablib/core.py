@@ -69,18 +69,29 @@ class Row:
         self._row, self.tags = state
 
     def rpush(self, value):
+        """Adds a value to the end of the :class:`Row`.
+        See :method:`Row.insert` for additional documentation.
+        """
         self.insert(len(self._row), value)
 
     def lpush(self, value):
+        """Adds a value to the start of the :class:`Row`.
+        See :method:`Row.insert` for additional documentation.
+        """
         self.insert(0, value)
 
     def append(self, value):
+        """Adds a value to the :class:`Row`.
+        See :method:`Row.insert` for additional documentation.
+        """
         self.rpush(value)
 
     def insert(self, index, value):
+        """Inserts a value into the :class:`Row` at the given index."""
         self._row.insert(index, value)
 
     def copy(self):
+        """Returns a copy of the :class:`Row`."""
         return Row(self._row.copy(), self.tags.copy())
 
     def __contains__(self, item):
@@ -877,6 +888,7 @@ class Databook:
         self._datasets = []
 
     def sheets(self):
+        """Returns a list of the :class:`Dataset` objects in the :class:`Databook`."""
         return self._datasets
 
     def add_sheet(self, dataset):
