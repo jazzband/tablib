@@ -14,7 +14,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import xlrd
-from odf import opendocument, table
+from odf import opendocument, table, text
 from openpyxl.reader.excel import load_workbook
 
 import tablib
@@ -1275,6 +1275,25 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['date/time'], date_time)
         self.assertEqual(data.dict[0]['None'], '')
         self.assertEqual(data.dict[0]['empty'], '')
+
+    def test_ods_import_numeric_values_ignore_display_format(self):
+        document = opendocument.OpenDocumentSpreadsheet()
+        sheet = table.Table(name='Numbers')
+        document.spreadsheet.addElement(sheet)
+        row = table.TableRow()
+        sheet.addElement(row)
+        for value, display in [
+            ('0.125', '12.5%'), ('1234.5', '1,234.50'), ('0.125', '0.13'),
+        ]:
+            cell = table.TableCell(valuetype='float', value=value)
+            cell.addElement(text.P(text=display))
+            row.addElement(cell)
+        stream = BytesIO()
+        document.save(stream)
+
+        dataset = tablib.Dataset().load(BytesIO(stream.getvalue()), 'ods', headers=False)
+
+        self.assertEqual(list(dataset), [(0.125, 1234.5, 0.125)])
 
     def test_ods_export_import_boolean(self):
         data.append(('alice', True))

@@ -154,7 +154,7 @@ class ODSFormat:
         if value_type == 'boolean':
             bool_value = cell.getAttribute('booleanvalue')
             return bool_value == 'true'
-        if not cell.childNodes:
+        if value_type == 'float' or not cell.childNodes:
             value = getattr(cell, 'data', None)
             if value is None:
                 try:
