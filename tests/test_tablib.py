@@ -1319,6 +1319,23 @@ class ODSTests(BaseTestCase):
         self.assertEqual(str(date_time), str(cells[2]))
         self.assertEqual('%Y-%m-%d %H:%M:%S', get_format(cells[2]))
 
+    def test_ods_export_book_date_styles(self):
+        values = (dt.date(2026, 11, 11), dt.time(12, 30), dt.datetime(2026, 11, 11, 12, 30))
+        dataset = tablib.Dataset(values, headers=('date', 'time', 'datetime'))
+        workbook = opendocument.load(BytesIO(tablib.Databook([dataset]).ods))
+        styles = {node.getAttribute('name') for node in workbook.styles.childNodes}
+        automatic_styles = {
+            node.getAttribute('name'): node.getAttribute('datastylename')
+            for node in workbook.automaticstyles.childNodes
+            if node.getAttribute('name') != 'bold'
+        }
+        cells = workbook.spreadsheet.getElementsByType(table.TableRow)[1].childNodes
+        for cell in cells:
+            with self.subTest(value_type=cell.getAttribute('valuetype')):
+                self.assertIn(cell.getAttribute('stylename'), automatic_styles)
+                data_style = automatic_styles[cell.getAttribute('stylename')]
+                self.assertIn(data_style, styles)
+
     def test_ods_import_book(self):
         ods_source = Path(__file__).parent / 'files' / 'book.ods'
         with ods_source.open('rb') as fh:

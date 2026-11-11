@@ -69,10 +69,8 @@ class ODSFormat:
     title = 'ods'
     extensions = ('ods',)
 
-    @classmethod
-    def export_set(cls, dataset):
-        """Returns ODF representation of Dataset."""
-
+    @staticmethod
+    def _create_workbook():
         wb = opendocument.OpenDocumentSpreadsheet()
         wb.automaticstyles.addElement(bold)
         wb.styles.addElement(date_style)
@@ -81,6 +79,14 @@ class ODSFormat:
         wb.automaticstyles.addElement(ts)
         wb.styles.addElement(datetime_style)
         wb.automaticstyles.addElement(dts)
+
+        return wb
+
+    @classmethod
+    def export_set(cls, dataset):
+        """Returns ODF representation of Dataset."""
+
+        wb = cls._create_workbook()
 
         ws = table.Table(name=dataset.title if dataset.title else 'Tablib Dataset')
         wb.spreadsheet.addElement(ws)
@@ -94,8 +100,7 @@ class ODSFormat:
     def export_book(cls, databook):
         """Returns ODF representation of DataBook."""
 
-        wb = opendocument.OpenDocumentSpreadsheet()
-        wb.automaticstyles.addElement(bold)
+        wb = cls._create_workbook()
 
         for i, dset in enumerate(databook._datasets):
             ws = table.Table(name=dset.title if dset.title else f"Sheet{i}")
