@@ -1276,6 +1276,33 @@ class ODSTests(BaseTestCase):
         self.assertEqual(data.dict[0]['None'], '')
         self.assertEqual(data.dict[0]['empty'], '')
 
+    def test_ods_import_fractional_datetime(self):
+        workbook = opendocument.OpenDocumentSpreadsheet()
+        sheet = table.Table(name='dates')
+        row = table.TableRow()
+        row.addElement(table.TableCell(
+            valuetype='date', datevalue='2019-10-04T12:30:08.123456',
+        ))
+        sheet.addElement(row)
+        workbook.spreadsheet.addElement(sheet)
+        stream = BytesIO()
+        workbook.save(stream)
+
+        dataset = tablib.Dataset().load(stream.getvalue(), 'ods', headers=False)
+
+        self.assertEqual(dataset[0][0], dt.datetime(2019, 10, 4, 12, 30, 8, 123456))
+
+    def test_ods_export_import_fractional_datetime(self):
+        for tzinfo in (None, dt.timezone(dt.timedelta(hours=5, minutes=30))):
+            with self.subTest(tzinfo=tzinfo):
+                value = dt.datetime(2019, 10, 4, 12, 30, 8, 123456, tzinfo=tzinfo)
+                dataset = tablib.Dataset((value,), headers=['datetime'])
+
+                restored = tablib.Dataset().load(dataset.ods, 'ods')
+
+                self.assertEqual(restored[0][0], value)
+                self.assertEqual(restored[0][0].utcoffset(), value.utcoffset())
+
     def test_ods_export_import_boolean(self):
         data.append(('alice', True))
         data.append(('bob', False))
