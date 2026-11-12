@@ -134,7 +134,7 @@ class ODSFormat:
     def read_cell(cls, cell, value_type=None):
         def convert_date(val):
             if 'T' in val:
-                return dt.datetime.strptime(val, "%Y-%m-%dT%H:%M:%S")
+                return dt.datetime.fromisoformat(val)
             else:
                 return dt.datetime.strptime(val, "%Y-%m-%d").date()
 
@@ -223,7 +223,7 @@ class ODSFormat:
                 elif isinstance(col, dt.datetime):
                     cell = table.TableCell(
                         valuetype="date",
-                        datevalue=col.strftime('%Y-%m-%dT%H:%M:%S'),
+                        datevalue=col.isoformat(),
                         stylename=dts,
                     )
                     cell.addElement(text.P(text=col.strftime('%Y-%m-%d %H:%M:%S')))
