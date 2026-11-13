@@ -410,6 +410,17 @@ class TablibTestCase(BaseTestCase):
         dset = tablib.Dataset().load(tmp_file, 'yaml')
         self.assertEqual(dset.json, '[]')
 
+    @unittest.skipIf(pandas is None, "pandas is not installed")
+    def test_dataframe_export_duplicate_headers(self):
+        dataset = tablib.Dataset([1, 2], [3, 4], headers=['value', 'value'])
+        dataset.add_formatter(0, lambda value: value * 10)
+
+        dataframe = dataset.export('df')
+
+        self.assertEqual(list(dataframe.columns), ['value', 'value'])
+        self.assertEqual(dataframe.values.tolist(), [[10, 2], [30, 4]])
+        self.assertEqual(dataset[0], (1, 2))
+
     def test_auto_format_detect(self):
         """Test auto format detection."""
         # html, jira, latex, rst are export only.
