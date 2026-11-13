@@ -31,7 +31,10 @@ class DataFrameFormat:
             raise NotImplementedError(
                 'DataFrame Format requires `pandas` to be installed.'
                 ' Try `pip install "tablib[pandas]"`.')
-        dataframe = DataFrame(dset.dict, columns=dset.headers)
+        rows = dset._package(dicts=False)
+        if dset.headers:
+            rows.pop(0)
+        dataframe = DataFrame(rows, columns=dset.headers)
         return dataframe
 
     @classmethod
