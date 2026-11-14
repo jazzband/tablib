@@ -557,6 +557,29 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
 
+    def test_sorting_preserves_tags(self):
+        for headers, column in [(None, 1), (['name', 'score'], 1),
+                                (['name', 'score'], 'score')]:
+            with self.subTest(headers=headers, column=column):
+                data = tablib.Dataset(headers=headers, title='Scores')
+                data.append(['Alice', 20], tags=['selected', 'shared'])
+                data.append(['Bob', 10], tags=['other', 'shared'])
+                data.append(['Carol', 20])
+                for reverse in [False, True]:
+                    result = data.sort(column, reverse=reverse)
+                    self.assertEqual(list(result), sorted(data,
+                                                         key=lambda row: row[1], reverse=reverse))
+                    self.assertEqual(list(result.filter('selected')), [('Alice', 20)])
+                    self.assertEqual(list(result.filter('other')), [('Bob', 10)])
+                    self.assertEqual(len(result.filter('shared')), 2)
+                    self.assertEqual(result.headers, headers)
+                    self.assertEqual(result.title, 'Scores')
+                    result._data[0].tags.append('new')
+                    self.assertEqual(list(data.filter('new')), [])
+                self.assertEqual(list(data), [('Alice', 20), ('Bob', 10), ('Carol', 20)])
+                data.add_formatter(1, lambda value: -value)
+                self.assertEqual(list(data.sort(column).filter('selected')), [('Alice', -20)])
+
     def test_remove_duplicates(self):
         """Unique Rows."""
 
