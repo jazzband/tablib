@@ -16,7 +16,6 @@ __lazy_modules__ = {
 }
 
 from copy import copy
-from operator import itemgetter
 
 from .exceptions import (
     HeadersNeeded,
@@ -668,26 +667,28 @@ class Dataset:
             if not self.headers:
                 raise HeadersNeeded
 
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+            _sorted = sorted(zip(self.dict, self._data),
+                             key=lambda item: item[0][col], reverse=reverse)
             _dset = Dataset(headers=self.headers, title=self.title)
 
-            for item in _sorted:
+            for item, source in _sorted:
                 row = [item[key] for key in self.headers]
-                _dset.append(row=row)
+                _dset.append(row=row, tags=source.tags)
 
         else:
             if self.headers:
                 col = self.headers[col]
 
-            _sorted = sorted(self.dict, key=itemgetter(col), reverse=reverse)
+            _sorted = sorted(zip(self.dict, self._data),
+                             key=lambda item: item[0][col], reverse=reverse)
             _dset = Dataset(headers=self.headers, title=self.title)
 
-            for item in _sorted:
+            for item, source in _sorted:
                 if self.headers:
                     row = [item[key] for key in self.headers]
                 else:
                     row = item
-                _dset.append(row=row)
+                _dset.append(row=row, tags=source.tags)
 
         return _dset
 
