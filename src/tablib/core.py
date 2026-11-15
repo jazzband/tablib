@@ -766,6 +766,18 @@ class Dataset:
 
         return _dset
 
+    def join(self, other, on=None, *, left_on=None, right_on=None, how='inner',
+             suffixes=('_left', '_right'), validate='many_to_many'):
+        """Return a new dataset joined by shared or corresponding key columns.
+
+        ``how`` selects inner, left, right, or outer row retention. Duplicate
+        keys produce all matching pairs; keys containing None never match.
+        ``validate`` may require one_to_one, one_to_many, or many_to_one keys.
+        """
+        from ._join import join
+
+        return join(self, other, on, left_on, right_on, how, suffixes, validate)
+
     def stack_cols(self, other):
         """Stack two :class:`Dataset` instances together by
         joining at the column level, and return a new
