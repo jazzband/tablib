@@ -214,8 +214,14 @@ class DbfCharacterFieldDef(DbfFieldDef):
         return value.rstrip(b' ').decode('utf-8')
 
     def encodeValue(self, value):
-        """Return raw data string encoded from a ``value``."""
-        return str(value)[:self.length].ljust(self.length)
+        """Return raw data string encoded from a ``value``.
+
+        The field length is a number of bytes, so the value is truncated
+        and padded according to its UTF-8 encoded length, without splitting
+        a multi-byte character.
+        """
+        _rv = str(value).encode('utf-8')[:self.length].decode('utf-8', 'ignore')
+        return _rv + ' ' * (self.length - len(_rv.encode('utf-8')))
 
 
 class DbfNumericFieldDef(DbfFieldDef):
