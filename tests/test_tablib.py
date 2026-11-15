@@ -2011,6 +2011,22 @@ class DBFTests(BaseTestCase):
         self.assertFalse(fmt.detect(_json))
         self.assertFalse(fmt.detect(_bunk))
 
+    def test_dbf_export_import_non_ascii(self):
+        """Non-ASCII text must not overflow into the following fields."""
+        data.headers = ['word', 'city', 'n']
+        data.append(('café', 'Zürich', 1))
+        data.append(('東京', 'Ελλάδα', 2))
+        data.append(('é' * 79 + 'x', 'tail', 3))
+
+        imported = tablib.Dataset().load(data.export('dbf'), 'dbf')
+
+        self.assertEqual(imported.headers, ['WORD', 'CITY', 'N'])
+        self.assertEqual(imported[0], ('café', 'Zürich', 1))
+        self.assertEqual(imported[1], ('東京', 'Ελλάδα', 2))
+        # The 80-byte character field holds 40 two-byte characters,
+        # and the next field is left untouched.
+        self.assertEqual(imported[2], ('é' * 40, 'tail', 3))
+
     def test_dbf_format_extension(self):
         """Test the DBF format advertises its own file extension."""
         fmt = registry.get_format('dbf')

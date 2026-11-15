@@ -1,5 +1,3 @@
-import sys
-
 from . import utils
 
 __version__ = "$Revision: 1.7 $"[11:-2]
@@ -171,8 +169,9 @@ class DbfRecord:
         """
         self._validateIndex(False)
         self.dbf.stream.seek(self.position)
-        self.dbf.stream.write(bytes(self.toString(),
-                              sys.getfilesystemencoding()))
+        # character fields are decoded as UTF-8, so records must be written
+        # as UTF-8 for the field offsets to match.
+        self.dbf.stream.write(self.toString().encode('utf-8'))
         # FIXME: may be move this write somewhere else?
         # why we should check this condition for each record?
         if self.index == len(self.dbf):
