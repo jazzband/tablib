@@ -99,6 +99,8 @@ class XLSFormat:
             return xlrd.error_text_from_code[value]
         elif type_ == xlrd.XL_CELL_DATE:
             return xldate_as_datetime(value, datemode)
+        elif type_ == xlrd.XL_CELL_BOOLEAN:
+            return bool(value)
         return value
 
     @classmethod
