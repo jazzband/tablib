@@ -1381,6 +1381,20 @@ class XLSTests(BaseTestCase):
             dset = tablib.Dataset().load(fh, 'xls')
         self.assertEqual(dset.dict[0]['birth_date'], dt.datetime(2015, 4, 12, 0, 0))
 
+    def test_xls_boolean_import(self):
+        source = tablib.Dataset((True, False, 1, 0), headers=['yes', 'no', 'one', 'zero'])
+        dset = tablib.Dataset().load(source.xls, 'xls')
+        self.assertEqual(tuple(type(value) for value in dset[0]), (bool, bool, float, float))
+        self.assertEqual(dset[0], (True, False, 1.0, 0.0))
+
+    def test_xls_book_boolean_import(self):
+        source = tablib.Dataset((True, False, 1, 0), headers=['yes', 'no', 'one', 'zero'])
+        dbook = tablib.Databook()
+        dbook.add_sheet(source)
+        imported = tablib.Databook().load(dbook.xls, 'xls').sheets()[0]
+        self.assertEqual(tuple(type(value) for value in imported[0]), (bool, bool, float, float))
+        self.assertEqual(imported[0], (True, False, 1.0, 0.0))
+
     def test_xlsx_import_set_skip_lines(self):
         data.append(('garbage', 'line', ''))
         data.append(('', '', ''))
