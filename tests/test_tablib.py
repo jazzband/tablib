@@ -557,6 +557,28 @@ class TablibTestCase(BaseTestCase):
         self.assertEqual(second_row, expected_second)
         self.assertEqual(third_row, expected_third)
 
+    def test_remove_duplicates_with_nested_json_cells(self):
+        data = tablib.Dataset().load(
+            '[{"id": 1, "payload": {"tags": ["a", "b"]}}, '
+            '{"id": 2, "payload": ["c"]}, '
+            '{"id": 1, "payload": {"tags": ["a", "b"]}}]',
+            format='json',
+        )
+        data.remove_duplicates()
+        self.assertEqual(list(data), [(1, {"tags": ["a", "b"]}), (2, ["c"])])
+
+    def test_remove_duplicates_keeps_first_equal_cell_and_its_tags(self):
+        for first, second in [({1}, frozenset({1})), (frozenset({1}), {1})]:
+            with self.subTest(first=first):
+                data = tablib.Dataset()
+                data.append([first], tags=['first'])
+                data.append([second], tags=['second'])
+                data.remove_duplicates()
+                self.assertEqual(data.height, 1)
+                self.assertIs(data[0][0], first)
+                self.assertEqual(data.filter('first').height, 1)
+                self.assertEqual(data.filter('second').height, 0)
+
     def test_remove_duplicates(self):
         """Unique Rows."""
 

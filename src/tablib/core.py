@@ -810,9 +810,23 @@ class Dataset:
         """Removes all duplicate rows from the :class:`Dataset` object
         while maintaining the original order."""
         seen = set()
-        self._data[:] = [
-            row for row in self._data if not (tuple(row) in seen or seen.add(tuple(row)))
-        ]
+        unhashable = []
+        unique = []
+        for row in self._data:
+            values = row.tuple
+            if values in unhashable:
+                continue
+            try:
+                if values in seen:
+                    continue
+                seen.add(values)
+            except TypeError:
+                # Unhashable cells can compare equal to hashable ones (e.g. set and frozenset).
+                if any(previous == values for previous in seen):
+                    continue
+                unhashable.append(values)
+            unique.append(row)
+        self._data[:] = unique
 
     def wipe(self):
         """Removes all content and headers from the :class:`Dataset` object."""
