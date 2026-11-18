@@ -140,6 +140,10 @@ class ODSFormat:
 
         if value_type is None:
             value_type = cell.getAttribute('valuetype')
+            if value_type == 'string':
+                string_value = cell.getAttribute('stringvalue')
+                if string_value is not None:
+                    return string_value
         if value_type == 'date':
             date_value = cell.getAttribute('datevalue')
             if date_value:
