@@ -1340,6 +1340,19 @@ class ODSTests(BaseTestCase):
             dataset = tablib.Dataset().load(fh, 'ods')
         self.assertEqual(dataset.pop(), (1, '', True, ''))
 
+    def test_ods_import_stored_string_values(self):
+        source = tablib.Dataset(('eight', 'display', 'plain'))
+        ods_book = opendocument.load(BytesIO(source.ods))
+        row = ods_book.spreadsheet.getElementsByType(table.TableRow)[0]
+        row.childNodes[0].setAttribute('stringvalue', '008')
+        row.childNodes[1].setAttribute('stringvalue', '')
+        row.addElement(table.TableCell(valuetype='string', stringvalue='007'))
+        stream = BytesIO()
+        ods_book.save(stream)
+
+        dataset = tablib.Dataset().load(stream.getvalue(), 'ods', headers=False)
+        self.assertEqual(dataset[0], ('008', '', 'plain', '007'))
+
     def test_ods_unknown_value_type(self):
         # The ods file was trafficked to contain:
         # <table:table-cell office:value-type="unknown" calcext:value-type="string">
