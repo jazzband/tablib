@@ -50,6 +50,17 @@ and seamless format import & export.
    1     Bessie     Monke   21
 
 
+To load an existing CSV, pass the text to :meth:`Dataset.load`. The first row
+becomes the headers::
+
+   >>> import tablib
+   >>> data = tablib.Dataset().load("Name,Age\nBessie,21\n", format="csv")
+   >>> data.dict
+   [{'Name': 'Bessie', 'Age': '21'}]
+
+See :doc:`tutorial` for importing files and handling data without headers.
+
+
 Testimonials
 ------------
 
