@@ -17,6 +17,15 @@
 
 Tablib is a format-agnostic tabular dataset library, written in Python.
 
+To import CSV text, pass it to `Dataset.load()` with the format name. The first row provides the column headers.
+
+```python
+>>> import tablib
+>>> data = tablib.Dataset().load("Name,Age\nBessie,21\n", format="csv")
+>>> data.dict
+[{'Name': 'Bessie', 'Age': '21'}]
+```
+
 Output formats supported:
 
 - Excel (Sets + Books)
