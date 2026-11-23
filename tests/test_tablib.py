@@ -845,7 +845,7 @@ class HTMLTests(BaseTestCase):
         for br in ('<br>', '<br/>', '<br />'):
             with self.subTest(br=br):
                 data.html = (
-                    f'<table><tr><th>first{br}name</th></tr>'
+                    f'<table><thead><tr><th>first{br}name</th></tr></thead>'
                     f'<tr><td>one{br}two</td></tr></table>'
                 )
                 self.assertEqual(['first\nname'], data.headers)
