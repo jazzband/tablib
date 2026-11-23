@@ -94,6 +94,8 @@ class TablibHTMLParser(HTMLParser):
                 self.thead_open = True
             elif tag in ['td', 'th']:
                 self.cell_open = True
+            elif tag == 'br' and self.cell_open:
+                self.current_data += '\n'
 
     def handle_endtag(self, tag):
         if not self.table_open:
