@@ -109,6 +109,10 @@ the ``table_id`` argument::
 
 Otherwise, the first table found will be imported.
 
+If the table has no ``<thead>``, the first row with cells becomes the dataset
+headers if every cell is a ``<th>`` and none use ``scope="row"`` or
+``scope="rowgroup"``.
+
 .. versionchanged:: 3.6.0
 
     The ability to import HTML was added. The dependency on MarkupPy was dropped.
