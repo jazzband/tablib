@@ -827,6 +827,75 @@ class HTMLTests(BaseTestCase):
             ('Thomas', 'Jefferson', '50'),
         ], data[:])
 
+    def test_html_import_implicit_headers(self):
+        html = '<table><tr><th>Name</th></tr><tr><td>Alice</td></tr></table>'
+        dataset = tablib.Dataset().load(html, format='html')
+
+        self.assertEqual(['Name'], dataset.headers)
+        self.assertEqual([('Alice',)], dataset[:])
+        self.assertEqual(['Alice'], dataset['Name'])
+        self.assertEqual([{'Name': 'Alice'}], json.loads(dataset.export('json')))
+
+    def test_html_import_implicit_headers_with_table_id(self):
+        html = (
+            '<table><thead><tr><th>Ignore</th></tr></thead></table>'
+            '<table id="people"><tbody>'
+            '<tr><th scope="col"><b>First</b> name</th><th>Group &amp; team</th></tr>'
+            '<tr><td>Alice</td><td>Support</td></tr>'
+            '</tbody></table>'
+        )
+        dataset = tablib.import_set(html, format='html', table_id='people')
+
+        self.assertEqual(['First name', 'Group & team'], dataset.headers)
+        self.assertEqual([('Alice', 'Support')], dataset[:])
+        self.assertIn(
+            '<thead><tr><th>First name</th><th>Group &amp; team</th></tr></thead>',
+            dataset.html,
+        )
+
+        dataset.html = '<table><tr><td>Bob</td></tr></table>'
+        self.assertIsNone(dataset.headers)
+        self.assertEqual([('Bob',)], dataset[:])
+
+    def test_html_import_row_headers_stay_in_data(self):
+        for first_row in (
+            '<th>Alice</th><td>Support</td>',
+            '<th scope="ROW">Alice</th><th>Support</th>',
+            '<th>Alice</th><th scope="rowgroup">Support</th>',
+            '<td>Alice</td><td>Support</td>',
+        ):
+            with self.subTest(first_row=first_row):
+                data.html = (
+                    f'<table><tr>{first_row}</tr>'
+                    '<tr><th>Bob</th><th>Sales</th></tr></table>'
+                )
+
+                self.assertIsNone(data.headers)
+                self.assertEqual([('Alice', 'Support'), ('Bob', 'Sales')], data[:])
+
+    def test_html_import_explicit_header_section_has_precedence(self):
+        row = '<tr><th>Alice</th></tr>'
+        head = '<thead><tr><th>Name</th></tr></thead>'
+        for contents, expected_headers in (
+            (head + row, ['Name']),
+            (row + head, ['Name']),
+            ('<thead></thead>' + row, None),
+        ):
+            with self.subTest(contents=contents):
+                data.html = f'<table>{contents}</table>'
+
+                self.assertEqual(expected_headers, data.headers)
+                self.assertEqual([('Alice',)], data[:])
+
+    def test_html_import_empty_and_implicit_header_only_tables(self):
+        data.html = '<table></table>'
+        self.assertIsNone(data.headers)
+        self.assertEqual([], data[:])
+
+        data.html = '<table><tr><th>Name</th></tr></table>'
+        self.assertEqual(['Name'], data.headers)
+        self.assertEqual([], data[:])
+
     def test_html_import_no_headers(self):
         data.html = """
             <table>

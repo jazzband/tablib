@@ -68,6 +68,10 @@ class HTMLFormat:
             else:
                 raise ValueError('No <table> found in input HTML')
 
+        # An explicit <thead> takes precedence even if it follows the first row.
+        if dset and not parser.thead_found and parser.first_row_can_be_header:
+            dset.headers = dset.lpop()
+
 
 class TablibHTMLParser(HTMLParser):
     def __init__(self, dataset, *args, table_id=None, **kwargs):
@@ -76,8 +80,10 @@ class TablibHTMLParser(HTMLParser):
         self.table_id = table_id
         self.table_found = False
         self.table_open = False
+        self.thead_found = False
         self.thead_open = False
         self.cell_open = False
+        self.first_row_can_be_header = True
         self.headers = []
         self.current_row = []
         self.current_data = ''
@@ -91,9 +97,15 @@ class TablibHTMLParser(HTMLParser):
             self.table_found = True
         elif self.table_open:
             if tag == 'thead':
+                self.thead_found = True
                 self.thead_open = True
             elif tag in ['td', 'th']:
                 self.cell_open = True
+                if not self.thead_found and not self.dset and self.first_row_can_be_header:
+                    scope = (dict(attrs).get('scope') or '').lower()
+                    self.first_row_can_be_header = (
+                        tag == 'th' and scope not in ('row', 'rowgroup')
+                    )
 
     def handle_endtag(self, tag):
         if not self.table_open:
