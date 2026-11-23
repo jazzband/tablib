@@ -841,6 +841,16 @@ class HTMLTests(BaseTestCase):
             ('George', 'Washington', '67'),
         ], data[:])
 
+    def test_html_import_line_breaks(self):
+        for br in ('<br>', '<br/>', '<br />'):
+            with self.subTest(br=br):
+                data.html = (
+                    f'<table><tr><th>first{br}name</th></tr>'
+                    f'<tr><td>one{br}two</td></tr></table>'
+                )
+                self.assertEqual(['first\nname'], data.headers)
+                self.assertEqual([('one\ntwo',)], data[:])
+
     def test_html_import_no_table(self):
         html = "<html><body></body></html>"
 
