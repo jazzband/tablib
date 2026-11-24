@@ -1246,6 +1246,70 @@ class ODSTests(BaseTestCase):
         'secondslong0': '%S',
     }
 
+    def _ods_with_repeated_rows(self, dataset, repeats):
+        ods_book = opendocument.load(BytesIO(dataset.ods))
+        rows = ods_book.spreadsheet.getElementsByType(table.TableRow)
+        for index, count in repeats.items():
+            rows[index].setAttribute('numberrowsrepeated', count)
+        stream = BytesIO()
+        ods_book.save(stream)
+        return stream.getvalue()
+
+    def test_ods_import_repeated_rows(self):
+        source = self._ods_with_repeated_rows(self.founders, {1: 3})
+        expected = [self.john] * 3 + [self.george, self.tom]
+        dataset = tablib.Dataset().load(source, 'ods')
+        self.assertEqual(dataset.headers, list(self.headers))
+        self.assertEqual(dataset[:], expected)
+
+        book = tablib.Databook().load(source, 'ods')
+        self.assertEqual(book.sheets()[0][:], expected)
+
+    def test_ods_import_repeated_rows_without_headers(self):
+        self.founders.headers = None
+        source = self._ods_with_repeated_rows(self.founders, {0: 2, 2: 3})
+        dataset = tablib.Dataset().load(source, 'ods', headers=False)
+        self.assertIsNone(dataset.headers)
+        self.assertEqual(dataset[:], [self.john] * 2 + [self.george] + [self.tom] * 3)
+
+    def test_ods_import_repeated_rows_skip_lines(self):
+        source = self._ods_with_repeated_rows(self.founders, {0: 2, 1: 3})
+        expected = [self.headers] * 2 + [self.john] * 3 + [self.george, self.tom]
+        for skip_lines in range(len(expected) + 2):
+            for headers in (True, False):
+                with self.subTest(skip_lines=skip_lines, headers=headers):
+                    dataset = tablib.Dataset().load(
+                        source, 'ods', skip_lines=skip_lines, headers=headers,
+                    )
+                    remaining = expected[skip_lines:]
+                    if headers and remaining:
+                        self.assertEqual(dataset.headers, list(remaining[0]))
+                        self.assertEqual(dataset[:], remaining[1:])
+                    else:
+                        self.assertIsNone(dataset.headers)
+                        self.assertEqual(dataset[:], remaining)
+
+    def test_ods_import_repeated_ragged_rows(self):
+        ods_book = opendocument.load(BytesIO(self.founders.ods))
+        row = ods_book.spreadsheet.getElementsByType(table.TableRow)[1]
+        row.removeChild(row.childNodes[-1])
+        row.setAttribute('numberrowsrepeated', 3)
+        stream = BytesIO()
+        ods_book.save(stream)
+        dataset = tablib.Dataset().load(stream.getvalue(), 'ods')
+        self.assertEqual(dataset[:], [self.john[:2] + ('',)] * 3 + [self.george, self.tom])
+
+    def test_ods_import_repeated_empty_rows(self):
+        ods_book = opendocument.load(BytesIO(self.founders.ods))
+        sheet = ods_book.spreadsheet.getElementsByType(table.Table)[0]
+        empty_row = table.TableRow(numberrowsrepeated=1048576)
+        empty_row.addElement(table.TableCell(numbercolumnsrepeated=1024))
+        sheet.addElement(empty_row)
+        stream = BytesIO()
+        ods_book.save(stream)
+        dataset = tablib.Dataset().load(stream.getvalue(), 'ods')
+        self.assertEqual(dataset[:], self.founders[:])
+
     def test_ods_export_import_set(self):
         date = dt.date(2019, 10, 4)
         date_time = dt.datetime(2019, 10, 4, 12, 30, 8)
