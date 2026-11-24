@@ -117,18 +117,22 @@ class ODSFormat:
 
         rows = (row for row in sheet.childNodes if row.tagName == "table:table-row")
 
-        for i, row in enumerate(rows):
-            if i < skip_lines:
+        row_end = 0
+        for row in rows:
+            row_start = row_end
+            row_end += int(row.getAttribute('numberrowsrepeated') or 1)
+            if row_end <= skip_lines:
                 continue
             row_vals = [cls.read_cell(cell) for cell in row.childNodes if is_real_cell(cell)]
             if not row_vals:
                 continue
-            if i == skip_lines and headers:
-                dset.headers = row_vals
-            else:
-                if i > skip_lines and len(row_vals) < dset.width:
-                    row_vals += [''] * (dset.width - len(row_vals))
-                dset.append(row_vals)
+            for i in range(max(row_start, skip_lines), row_end):
+                if i == skip_lines and headers:
+                    dset.headers = row_vals
+                else:
+                    if i > skip_lines and len(row_vals) < dset.width:
+                        row_vals += [''] * (dset.width - len(row_vals))
+                    dset.append(row_vals)
 
     @classmethod
     def read_cell(cls, cell, value_type=None):
