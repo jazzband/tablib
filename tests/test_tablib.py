@@ -775,6 +775,15 @@ class HTMLTests(BaseTestCase):
         """HTML export"""
         self.assertEqual(self.founders_html, self.founders.html.replace('\n', ''))
 
+    def test_html_export_applies_formatters(self):
+        """HTML export applies registered formatters like other formats."""
+
+        d = tablib.Dataset(headers=['price'])
+        d.append([9.5])
+        d.add_formatter('price', lambda v: f"${v:.2f}")
+        html = d.html.replace('\n', '')
+        self.assertIn('<td>$9.50</td>', html)
+
     def test_html_export_none_value(self):
         """HTML export"""
 
