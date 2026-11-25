@@ -1929,6 +1929,12 @@ class DBFTests(BaseTestCase):
                     )
                 index += 1
 
+    def test_dbf_export_headers_without_records(self):
+        dataset = tablib.Dataset(headers=['ITEM', 'QTY'])
+        result = tablib.Dataset().load(dataset.export('dbf'), format='dbf')
+        self.assertEqual(result.headers, ['ITEM', 'QTY'])
+        self.assertEqual(result.height, 0)
+
     def test_dbf_export_set(self):
         """Test DBF import."""
         data.append(self.john)

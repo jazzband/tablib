@@ -74,7 +74,8 @@ functions. For example::
 dbf
 ===
 
-Import/export using the dBASE_ format.
+Import/export using the dBASE_ format. Exporting a dataset with headers and
+no rows creates an empty DBF table with character fields.
 
 .. admonition:: Binary Warning
 
@@ -82,7 +83,7 @@ Import/export using the dBASE_ format.
     mode::
 
         with open('output.dbf', 'wb') as f:
-            f.write(dataset.export('dbf')
+            f.write(dataset.export('dbf'))
 
 .. _dBASE: https://en.wikipedia.org/wiki/DBase
 

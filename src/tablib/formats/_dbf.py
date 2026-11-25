@@ -26,16 +26,16 @@ class DBFFormat:
     def export_set(cls, dataset):
         """Returns DBF representation of a Dataset"""
         new_dbf = dbfnew.dbf_new()
-        temp_file, temp_uri = tempfile.mkstemp()
 
-        # create the appropriate fields based on the contents of the first row
-        first_row = dataset[0]
+        # Without a sample row, use the default character type for each field.
+        first_row = dataset[0] if dataset.height else (None,) * dataset.width
         for fieldname, field_value in zip(dataset.headers, first_row):
             if type(field_value) in [int, float]:
                 new_dbf.add_field(fieldname, 'N', 10, 8)
             else:
                 new_dbf.add_field(fieldname, 'C', 80)
 
+        temp_file, temp_uri = tempfile.mkstemp()
         new_dbf.write(temp_uri)
 
         dbf_file = dbf.Dbf(temp_uri, readOnly=0)
